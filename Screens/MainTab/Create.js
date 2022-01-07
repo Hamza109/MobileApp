@@ -14,7 +14,7 @@ import Collapsible from 'react-native-collapsible';
 import {Card} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
-
+import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {backendHost} from '../../components/apiConfig';
@@ -34,7 +34,7 @@ const CreateScreen = () => {
   const [type, setType] = useState([]);
   const [disclaimer, setDisclaimer] = useState(1);
   const [copyright, setCopyright] = useState(11);
-  const [regId, setRegId] = useState();
+  const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
   const getId = () => {
     try {
@@ -61,10 +61,27 @@ const CreateScreen = () => {
       console.log(error);
     }
   };
+const isFocus= useIsFocused();
+  const check=()=>{
+   console.log('#########: ', regId)
+      if(regId.length === 0)
+      {
+         // navigation.navigate('Cures',{screen:'My Cures'})
+         navigation.navigate('SignIn')
+    
+      }
+      else{
+         navigation.navigate('ArticleTab',{Screen:'Create Article'})
+      }
+  }
   useEffect(() => {
-    getId();
+    if(isFocus){
+      getId();
     getType();
-  }, []);
+      check();
+    }
+  
+  });
   const submitArticleForm = async e => {
     e.preventDefault();
     console.log(

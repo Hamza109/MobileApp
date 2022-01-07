@@ -21,6 +21,7 @@ import {Card, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PhoneInput from 'react-native-phone-number-input';
 import { backendHost } from '../../components/apiConfig';
+import searchArt from '../search/SearchArticle';
 const HomeScreen = ({navigation, route}) => {
   const userId = route.userId;
 
@@ -58,10 +59,10 @@ const HomeScreen = ({navigation, route}) => {
      if(phoneNumber){
     
       axios.post(`${backendHost}/users/subscribe/${StringValue}`, {
-      "nl_subscription_disease_id": 0,
+      "nl_subscription_disease_id": '0',
       "nl_sub_type":1,
-      "nl_subscription_cures_id":0,
-      "country_code": countryCode,
+      "nl_subscription_cures_id":'0',
+      "country_code": `'${countryCode}'`,
       })
         .then(res => {
        
@@ -206,7 +207,7 @@ const HomeScreen = ({navigation, route}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity activeOpacity={0.8}>
+          <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('searchArt')}}>
             <Card style={styles.card}>
               <View style={styles.inCard}>
                 <Icon name="search-sharp" size={20} style={styles.icon}></Icon>
@@ -219,15 +220,13 @@ const HomeScreen = ({navigation, route}) => {
         </View>
       </View>
 
-      <Autocomplete />
-
       <TouchableOpacity
         style={styles.b2}
         onPress={() => navigation.push('SearchBar')}>
         <Text style={styles.text}>Looking for doctors ?</Text>
       </TouchableOpacity>
 
-      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+    
     </View>
   );
 };
@@ -249,7 +248,7 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 20,
     fontWeight: 'bold',
-
+    borderRadius:5,
     marginTop: 0,
     borderWidth: 1,
     shadowRadius: 35,
@@ -264,11 +263,11 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 18,
-    marginTop: Platform.OS === 'ios' ? 0 : -6,
+    marginTop: Platform.OS === 'android' ? -5 : 0,
     borderColor: '#fff',
     borderWidth: 0.1,
     alignItems: 'center',
-    width: 400,
+    width:400,
     height: 150,
     elevation: 5,
   },

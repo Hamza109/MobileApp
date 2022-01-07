@@ -9,6 +9,7 @@ import Profile from './Profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Autocomplete from './Autocomplete';
 import { useState } from 'react';
+import searchArt from '../search/SearchArticle';
 
 const HomeStack = createStackNavigator();
 const MyCuresStack = createStackNavigator();
@@ -138,6 +139,7 @@ const HomeStackScreen = () =>(
          <HomeStack.Screen name="Create Article" component={CreateScreen} options={{
        
       }} />
+     
 </HomeStack.Navigator>
 )
       ;

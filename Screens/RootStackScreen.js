@@ -6,6 +6,7 @@ import SplashScreen from "./MainTab/SplashScreen";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import CreateScreen from "./MainTab/Create";
+import searchArt from "./search/SearchArticle";
 const Stack = createStackNavigator();
 
 const RootStack=()=> {
@@ -28,6 +29,7 @@ const RootStack=()=> {
 <Stack.Screen name="SplashScreen" component={SplashScreen} options={{headerShown: false}} />
         <Stack.Screen name="MainTab" component={MainTabScreen} options={{headerShown: false}} />
         <Stack.Screen name="CreateScreen" component={CreateScreen} options={{headerTitle:'Create Article'}} />
+        <Stack.Screen name="searchArt" component={searchArt} options={{headerShown:false}} />
         <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerStyle:{backgroundColor:'#00415e'},headerTitleStyle:{color:'#fff'}, headerTitle:'',
           headerLeft: ()=> <Icon name="close-outline" size={40}  style={{marginLeft:20,color:'#fff'} } backgroundColor="#fff" onPress={()=>navigation.navigate('HomeTab',{Screen:'Home'})}></Icon> }}/>
 
