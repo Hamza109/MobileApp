@@ -8,7 +8,7 @@ import { useIsFocused } from "@react-navigation/native";
 import Autocomplete from "../MainTab/Autocomplete";
 
 
-const searchArt = ()=>{
+const SearchArt = ()=>{
    const navigation=useNavigation();
     return(
 <View style={styles.container}>
@@ -28,22 +28,23 @@ const searchArt = ()=>{
 
     )
 }
-export default searchArt;
+export default SearchArt;
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#fff',
-        height: '100%',
-        width: '100%',
-        alignItems: 'center',
-    
-      },
+  container: {
+    backgroundColor: '#fff',
+    height: '100%',
+    width: '100%',
+   
+  },
+   
 flex:{
-    flex:1
+    flex:1,
+   
 },
 header:{
 flexDirection:'row',
 padding: 0,
-marginTop: Platform.OS === 'ios' ? 0 : -5,
+marginTop: Platform.OS === 'ios' ? 0 : -7,
 borderColor: '#fff',
 borderWidth: 0.1,
 alignItems: 'center',

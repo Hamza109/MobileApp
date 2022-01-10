@@ -63,10 +63,13 @@ const Autocomplete = () => {
   const navigation = useNavigation();
 
   const result = () => {
-    if (text)
-      return navigation.navigate('Result', {
+    
+    if (text){
+      navigation.navigate('Result', {
         texts: `${text}`,
       });
+      setText(null)
+    }
     else {
       navigation.navigate('Home', {
         texts: `${text}`,
@@ -187,7 +190,6 @@ const styles = StyleSheet.create({
   },
 body:{
 marginTop:20,
-
 
 
 },

@@ -47,9 +47,12 @@ const MyCures = ()=>{
      useEffect(() => {
          if(isFocused){
        getId()
-        check()
+       
          }
      })
+     useEffect(()=> {
+      check()
+    }, [regId])
     return(
 <View>
     <Text>

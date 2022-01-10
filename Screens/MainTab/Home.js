@@ -12,12 +12,13 @@ import {
   TouchableHighlight,
   Image,
 } from 'react-native';
+import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
-import {useTheme} from '@react-navigation/native';
+import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import Autocomplete from './Autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Card, Modal, Portal, Provider} from 'react-native-paper';
+import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PhoneInput from 'react-native-phone-number-input';
 import { backendHost } from '../../components/apiConfig';
@@ -84,13 +85,14 @@ const HomeScreen = ({navigation, route}) => {
      }
   };
 
-  const getId = () => {
+  const getId =  () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-        console.log(value1);
+        console.log('home:',value1);
         if (value1 != null) {
           setRegId(value1);
         }
+        
       });
     } catch (error) {
       console.log(error);
@@ -108,14 +110,19 @@ const HomeScreen = ({navigation, route}) => {
       console.log(error);
     }
   };
-
+const isFocuss=useIsFocused();
   useEffect(() => {
+    if(isFocuss){
+      console.log('hom:',regId)
     getId();
     getType();
+    
 
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
+   }
+
   }, []);
   const [value, setValue] = useState('');
   const [formattedValue, setFormattedValue] = useState('');
@@ -141,7 +148,7 @@ const HomeScreen = ({navigation, route}) => {
               </Text>
               <TouchableOpacity
                 style={{marginRight: 0, marginTop: 10}}
-                onPress={() => navigation.push('CreateScreen')}>
+                onPress={() => navigation.navigate('CreateScreenHome')}>
                 <Icon name="create" color={'#00415e'} size={37} />
               </TouchableOpacity>
               <Portal>

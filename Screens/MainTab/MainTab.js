@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Autocomplete from './Autocomplete';
 import { useState } from 'react';
 import searchArt from '../search/SearchArticle';
+import CreateScreenHome from './CreateHome';
 
 const HomeStack = createStackNavigator();
 const MyCuresStack = createStackNavigator();
@@ -43,18 +44,6 @@ const MainTabScreen = () =>
        }
      }
 
-     const check=(navigation)=>{
-         getId()
-         if(regId==null)
-         {
-            // navigation.navigate('Cures',{screen:'My Cures'})
-            navigation.navigate('SignIn')
-       
-         }
-         else{
-            navigation.navigate('SignIn')
-         }
-     }
      return(
     <Tab.Navigator
    
@@ -79,7 +68,7 @@ const MainTabScreen = () =>
           tabBarLabel: 'My Cures',
           tabBarColor: '#fff',
           tabBarIcon: ({ color }) => (
-            <Icon name="book" color={'#00415e'} size={26} onPress={()=>check} />
+            <Icon name="book" color={'#00415e'} size={26}  />
           ),
         }}
       />
@@ -126,17 +115,17 @@ const HomeStackScreen = () =>(
         backgroundColor: '#fff',
       
         },
-  headerShown:false,
+
         headerTintColor: '#00415e',
         headerTitle:'All Cures',
         headerTitleStyle: {
         fontWeight: 'bold'
         }
     }}>
-        <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerLeft: null
-       
+        <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerLeft: null,headerShown:false
+
         }} />
-         <HomeStack.Screen name="Create Article" component={CreateScreen} options={{
+         <HomeStack.Screen name="CreateScreenHome" component={CreateScreenHome} options={{
        
       }} />
      

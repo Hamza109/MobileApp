@@ -19,7 +19,7 @@ import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {backendHost} from '../../components/apiConfig';
-const CreateScreen = () => {
+const CreateScreenHome = () => {
   const navigation=useNavigation()
   const [comment, setComment] = useState('');
 
@@ -40,7 +40,7 @@ const CreateScreen = () => {
   const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-        console.log('create:',value1);
+        console.log(value1);
         if (value1 != null) {
           setRegId(value1);
         }
@@ -72,21 +72,20 @@ const isFocus= useIsFocused();
     
       }
       else{
-         navigation.navigate('ArticleTab',{Screen:'Create Article'})
+         navigation.navigate('CreateScreenHome')
       }
   }
   useEffect(() => {
     if(isFocus){
       getId();
     getType();
-  
-   
     }
-  
-  });
-  useEffect(()=> {
     check()
-  }, [regId])
+  },[regId]);
+
+//   useEffect(()=> {
+//     check()
+//   }, [regId])
   const submitArticleForm = async e => {
     e.preventDefault();
     console.log(
@@ -273,7 +272,7 @@ const isFocus= useIsFocused();
   );
 };
 
-export default CreateScreen;
+export default CreateScreenHome;
 
 const styles = StyleSheet.create({
   container: {
