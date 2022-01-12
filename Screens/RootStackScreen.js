@@ -11,6 +11,7 @@ import Result from "./search/Result";
 import SearchDoc from "./search/SearchDoctor";
 import SearchBar from "./search/SearchBar";
 import CreateScreenHome from "./MainTab/CreateHome";
+import Disease from "./Disease/Disease";
 const Stack = createStackNavigator();
 
 const RootStack=()=> {
@@ -35,6 +36,7 @@ const RootStack=()=> {
         <Stack.Screen name="CreateScreen" component={CreateScreen} options={{headerTitle:'Create Article'}} />
         <Stack.Screen name="CreateScreenHome" component={CreateScreenHome} options={{headerTitle:'Create Article'}} />
         <Stack.Screen name="Result" component={Result} options={{headerShown:null,headerLeft:null}} />
+        <Stack.Screen name="Disease" component={Disease} options={{headerShown:null,headerLeft:null}} />
         <Stack.Screen name="searchArt" component={SearchArt} options={{headerShown:false}} />
         <Stack.Screen name="searchDoc" component={SearchDoc} options={{headerShown:false}} />
         <Stack.Screen name="SearchBar" component={SearchBar} options={{headerShown:false}} />

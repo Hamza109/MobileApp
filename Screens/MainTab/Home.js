@@ -285,16 +285,7 @@ const styles = StyleSheet.create({
 
     color: 'grey',
   },
-  b1: {
-    borderWidth: 3,
-    borderColor: '#00415e',
-    padding: 10,
-
-    width: 350,
-    height: 50,
-    position: 'relative',
-    bottom: 450,
-  },
+  
   b2: {
     justifyContent: 'center',
     borderWidth: 3,
@@ -319,8 +310,8 @@ const styles = StyleSheet.create({
     borderColor: '#343a40',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
-    height: 35,
+    width: wp('20%'),
+    height: hp('4.5%'),
     backgroundColor: '#343a40',
     color: 'white',
     marginRight: 10,
@@ -330,13 +321,13 @@ const styles = StyleSheet.create({
   image: {
     padding: 20,
     marginTop: 5,
-    height: 30,
-    width: 30,
+    height: hp('5%'),
+    width: wp('5%'),
   },
   imageModal: {
     padding: 20,
     marginTop: 5,
-    height: 60,
-    width: 60,
+    height: hp('7%'),
+    width: wp('16%'),
   },
 });
