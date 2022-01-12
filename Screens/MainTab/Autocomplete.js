@@ -13,10 +13,11 @@ import {
 import {backendHost} from '../../components/apiConfig';
 import {Searchbar, ToggleButton} from 'react-native-paper';
 import axios from 'axios';
-
+import { Dimensions } from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/core';
 import {Card} from 'react-native-paper';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const Autocomplete = () => {
   const [dataSource, setDataSource] = useState([]);
 
@@ -92,8 +93,8 @@ const Autocomplete = () => {
 
   const getItem = ([item]) => {
     return (
-      <View style={{flex:1}}>
-       
+      <View style={{flex:1,marginRight:20,marginLeft:-20}}>
+       <View style={{marginTop:20,marginRight:20}}>
       <FlatList
         data={item}
         renderItem={({item}) => (
@@ -109,7 +110,7 @@ const Autocomplete = () => {
        
         )}
       />
- 
+ </View>
       </View>
       // {/*
       //             <Text style={styles.itemText}>{item}</Text>
@@ -118,7 +119,7 @@ const Autocomplete = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.containers}>
       <View>
         <Searchbar
           style={styles.textInput}
@@ -134,9 +135,9 @@ const Autocomplete = () => {
       </View>
 
       {searching && (
-      
-          <View>
-            <Card style={styles.card}>
+      <View style={{flex:1}}>
+          <View style={{height:height}}>
+    
             {dataSource.length ? (
               getItem(dataSource)
             ) : (
@@ -144,7 +145,8 @@ const Autocomplete = () => {
                 <Text style={styles.noResultText}>No search items matched</Text>
               </View>
             )}
-            </Card>
+            </View>
+            
           </View>
           
        
@@ -153,13 +155,14 @@ const Autocomplete = () => {
   );
 };
 export default Autocomplete;
-
+const width=Dimensions.get('screen').width
+const height=Dimensions.get('window').height
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
+  // container: {
+  //   alignItems: 'center',
 
-    flex: 1,
-  },
+  //   flex: 1,
+  // },
   containers: {
     zIndex: 999,
   },
@@ -171,21 +174,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#00415e',
     padding: 40,
   },
-  subcontainer2: {
-    position: 'relative',
-    top: 170,
-    left: 90,
-    backgroundColor: '#fff',
-  },
+  
   textInput: {
     backgroundColor: 'lightgrey',
-    width: 330,
+    width: wp('87%'),
     height: 50,
     borderRadius: 5,
     fontSize: 20,
     fontWeight: 'bold',
     paddingHorizontal: 10,
-    marginRight: 75,
+    
     marginTop: 0,
   },
 body:{
@@ -193,22 +191,23 @@ marginTop:20,
 
 
 },
-card:{
-  marginTop:20,
-  backgroundColor:'#fff',
-height:600,
-width:400,
-position:'relative',
-right:50
-},
+// card:{
+//   marginTop:20,
+//   backgroundColor:'#fff',
+// height:600,
+// width:width,
+// position:'relative',
+// right:
+// },
   itemView: {
-    borderBottomWidth:2,
-    marginRight: 12,
+    borderBottomWidth:.5,
+  marginTop:20,
+
     backgroundColor: '#fff',
-    height:60,
-    width: 400,
+    height:65,
+  
     justifyContent: 'center',
-    alignItems: 'center',
+
     padding: 10,
     zIndex: 999,
   },
@@ -221,7 +220,7 @@ right:50
   noResultView: {
     backgroundColor: 'aliceblue',
     height: 40,
-    width: 350,
+   
     justifyContent: 'center',
     alignItems: 'center',
     padding: 15,

@@ -66,7 +66,9 @@ const SignInScreen = ({navigation}) =>
              setStatus(res.status)
              setId(res.data.registration_id)
             setType(res.data.registration_type)
-             
+            setFirst(res.data.first_name)
+            setLast(res.data.last_name)
+            setEmail(res.data.email_address) 
            
          })
          
@@ -99,7 +101,42 @@ const SignInScreen = ({navigation}) =>
             console.log(error)
         }
 }
-
+const setFirst= async (first) =>{
+       
+    try{
+      
+        await AsyncStorage.setItem('firstName',first)
+  
+       
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+const setLast= async (last) =>{
+       
+    try{
+      
+        await AsyncStorage.setItem('lastName',last)
+  
+       
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+const setEmail= async (email) =>{
+       
+    try{
+      
+        await AsyncStorage.setItem('email',email)
+  
+       
+    }
+    catch(error){
+        console.log(error)
+    }
+}
     function AfterLogin() {
         
     

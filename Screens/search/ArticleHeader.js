@@ -15,7 +15,8 @@ import {
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-
+import { Dimensions } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const ArticleHeader =()=>{
     const navigation=useNavigation();
@@ -23,10 +24,10 @@ return(
 <View style={styles.container}>
   
   <View styles={styles.flex}>
-      <View style={styles.header}>
-    <Icon name="arrow-back-outline" style={{marginTop:4,marginLeft:11}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
-  <View>
-  <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('searchArt')}}>
+    <Card style={styles.header}>
+<View style={{flexDirection:'row'}}>
+<Icon name="arrow-back-outline" style={{marginTop:7,marginLeft:7}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+<TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('searchArt')}}>
  <Card style={styles.card}>
    <View style={styles.inCard}>
      <Icon name="search-sharp" size={20} style={styles.icon}></Icon>
@@ -36,8 +37,10 @@ return(
    </View>
  </Card>
 </TouchableOpacity>
-    </View>
-    </View>
+</View>
+</Card>
+
+
 
     </View>
  
@@ -46,7 +49,7 @@ return(
 }
  export default ArticleHeader;
 
-
+const width=Dimensions.get('screen').width
 
 const styles = StyleSheet.create({
     // container: {
@@ -57,12 +60,13 @@ const styles = StyleSheet.create({
 card: {
     flexDirection: 'row',
     backgroundColor: 'lightgrey',
-    width: 330,
+    width: wp('85%'),
     height: 50,
     fontSize: 20,
     fontWeight: 'bold',
     borderRadius:5,
     marginTop: 0,
+    marginLeft:0,
     borderWidth: 1,
     shadowRadius: 35,
     shadowOffset: 50,
@@ -74,19 +78,20 @@ card: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-//   flex:{
-//     flex:1,
+  flex:{
+    flex:1,
    
-// },
+},
 header:{
 flexDirection:'row',
 padding: 0,
 marginTop: Platform.OS === 'ios' ? 0 : -7,
+marginLeft:0,
 borderColor: '#fff',
 borderWidth: 0.1,
 alignItems: 'center',
-width: 400,
+width: wp('100%'),
 height: 85,
-elevation: 5,
+elevation: 3,
 }
 })

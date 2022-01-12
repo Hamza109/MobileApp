@@ -57,9 +57,8 @@ useEffect(()=>{
   const styles = StyleSheet.create({
     
     contain:{
-      padding:0,
-      margin:0,
      
+     zIndex:999
 
  
       

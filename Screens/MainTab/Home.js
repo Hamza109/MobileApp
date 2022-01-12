@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { Dimensions } from 'react-native';
 import {
   View,
   ScrollView,
@@ -23,6 +24,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PhoneInput from 'react-native-phone-number-input';
 import { backendHost } from '../../components/apiConfig';
 import searchArt from '../search/SearchArticle';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const HomeScreen = ({navigation, route}) => {
   const userId = route.userId;
 
@@ -130,7 +132,7 @@ const isFocuss=useIsFocused();
   return (
     <View style={styles.container}>
       <View style={{flex: 1}}>
-        <View style={styles.header}>
+        <Card style={styles.header}>
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             <View style={{flexDirection: 'row'}}>
               <Image
@@ -224,7 +226,7 @@ const isFocuss=useIsFocused();
               </View>
             </Card>
           </TouchableOpacity>
-        </View>
+        </Card>
       </View>
 
       <TouchableOpacity
@@ -239,19 +241,19 @@ const isFocuss=useIsFocused();
 };
 
 export default HomeScreen;
-
+ const width=Dimensions.get('screen').width
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    height: '100%',
-    width: '100%',
+   flex:1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   card: {
     flexDirection: 'row',
     backgroundColor: 'lightgrey',
-    width: 350,
+    width: wp('90%'),
+    marginLeft:5,
     height: 50,
     fontSize: 20,
     fontWeight: 'bold',
@@ -270,11 +272,11 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 18,
-    marginTop: Platform.OS === 'android' ? -5 : 0,
+    marginTop: Platform.OS === 'android' ? -7 : 0,
     borderColor: '#fff',
     borderWidth: 0.1,
     alignItems: 'center',
-    width:400,
+    width:wp('100%'),
     height: 150,
     elevation: 5,
   },
@@ -299,8 +301,8 @@ const styles = StyleSheet.create({
     borderColor: '#00415e',
     backgroundColor: '#fff',
     padding: 10,
-    width: 350,
-    height: 50,
+    width: wp('90%'),
+    height: hp('6%'),
     position: 'relative',
     bottom: 440,
   },

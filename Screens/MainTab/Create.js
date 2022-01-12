@@ -17,7 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Dimensions } from 'react-native';
 import {backendHost} from '../../components/apiConfig';
 const CreateScreen = () => {
   const navigation=useNavigation()
@@ -274,7 +274,7 @@ const isFocus= useIsFocused();
 };
 
 export default CreateScreen;
-
+ const width=Dimensions.get('window').width
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     Color: 'lightgrey',
     borderColor: 'lightgrey',
     marginTop: Platform.OS === 'ios' ? 0 : -35,
-    width: 380,
+    width: width,
    
 
   },
@@ -308,6 +308,7 @@ textAlign:'center',
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: 'lightgrey',
+    width:'100%'
   },
   card: {
     borderWidth: 1,

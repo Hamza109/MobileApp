@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SearchArt from './SearchArticle';
 import ArticleHeader from './ArticleHeader';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import StarRating from 'react-native-star-rating';
 
 
@@ -112,7 +113,7 @@ heading()
   {items.map((i) => (
                 
                   i.pubstatus_id === 3 ?
-                  <Card style={{padding: 5,margin:8,height:110,width:350,backgroundColor:'aliceblue'}}> 
+                  <Card style={styles.card}> 
                         <AllPost
                              
                             id = {i.article_id}
@@ -156,43 +157,21 @@ heading()
 export default Result;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff' ,
-   width:'100%',
-   height:'100%',
-    alignItems: 'center', 
-    justifyContent: 'center',
+  // container: {
+  //   backgroundColor: '#fff' ,
+  //  width:'100%',
+  //  height:'100%',
+  //   alignItems: 'center', 
+  //   justifyContent: 'center',
    
-  },
+  // },
+ 
+
+  card:{padding: 5,margin:10,height:hp('20%'),width:wp('95%'),backgroundColor:'aliceblue'},
  
  
-  search: {
-   
-position:'relative',
-bottom:282,
-    backgroundColor: '#fff' ,
-
-  },
-  subcontainer1: {
-
-    position:'relative',
-    bottom: 300,
-    backgroundColor: '#fff',
-    right:90
-  },
  
-  b1:{
-   backgroundColor:'#00415e',
-   padding: 40,
- },
- subcontainer3: {
 
-  position:'relative',
-  bottom: 30,
-  left: 150,
-  backgroundColor: '#fff',
-
-},
   text:{
     backgroundColor:'#00415e',
     color:'#fff',
