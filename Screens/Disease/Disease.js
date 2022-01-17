@@ -1,11 +1,11 @@
 import React,{useState,useEffect} from 'react';
-import { View, Text, FlatList, Button, StyleSheet, StatusBar,BackHandler,Alert,TouchableOpacity} from 'react-native';
-import { useTheme,Link } from '@react-navigation/native';
+import { View, Text, FlatList, StyleSheet, StatusBar,BackHandler,Alert,TouchableOpacity} from 'react-native';
+
 import { Card } from 'react-native-paper';
 import CenterWell from './CenterWell';
 
 import Autocomplete from '../MainTab/Autocomplete';
-import { Modal,Portal } from 'react-native-paper';
+import { Portal } from 'react-native-paper';
 import { backendHost } from '../../components/apiConfig';
 import Comment from './comment';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
@@ -15,6 +15,17 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ArticleHeader from '../search/ArticleHeader';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import Rating from '../../components/StarRating';
+import {
+  Container,
+  Modal,
+  Button,
+  Input,
+  VStack,
+  FormControl,
+  Center,
+  NativeBaseProvider,
+} from "native-base"
 // import Rating from './StarRating';
 const Disease = ({navigation,route}) => {
 
@@ -28,9 +39,6 @@ const Disease = ({navigation,route}) => {
 
 
 
-  const { colors } = useTheme();
-
-  const theme = useTheme();
 
   const [value, setValue] = useState()
 // const [params] = useState(props)
@@ -39,7 +47,11 @@ const Disease = ({navigation,route}) => {
   
 const[articleContent,setArticleContent]=useState([])
 const [id,setId]=useState(ids)
-const [modalVisible, setModalVisible] = useState(false);
+const [visible, setVisible] = React.useState(false);
+
+const showModal = () => setVisible(true);
+const hideModal = () => setVisible(false);
+const containerStyle = {backgroundColor: 'white', padding: 20, height: hp('100%')};
 
 
 
@@ -72,7 +84,7 @@ function  comments() {                        // For all available blogs "/blogs
       setCommentItems(json)
     });
 }
-
+const [modalVisible, setModalVisible] = useState(false)
      
   // useEffect(() => {
   //   console.log('AR: ', items[0].data.file.url)
@@ -117,55 +129,95 @@ const b= 'http://all-cures.com/cures/uitest/99.png'
          </Card>
          </View>
      
-         <Modal  animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        hasBackdrop='true'
-  avoidKeyboard='true'
-        backdropColor='black'
-        backdropOpacity='0.3'
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-           <View style={styles.centeredView}>
-           <View style={styles.modalView}>
-        
-             
-        <Comment   article_id={id}/>
-        <ScrollView style={{position:'relative',bottom:100}}>
-        {
+         <Modal
+        isOpen={modalVisible}
+        onClose={() => setModalVisible(false)}
+        avoidKeyboard
+        justifyContent="flex-end"
+        bottom="100"
+        size="full"
+      >
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>comments</Modal.Header>
+          <Modal.Body>
+            <Container>
+            <ScrollView>
+          {
           
           commentItems?
           commentItems.map((i) => (
-                
-                    <Card style={{backgroundColor:'lightgrey',padding:5,marginVertical:8,marginBottom:5,width:300,height:50}}>
+                <View style={{marginBottom:20}}>
+                    <Card style={{backgroundColor:'lightgrey',padding:15,marginVertical:0,marginBottom:0,maxWidth:wp('80%'),height:50}}>
                       <Text>{i.comments}</Text>
                       </Card>
+                      </View>
                
               ))
           : null
         }
+          </ScrollView>
+          </Container>
+          </Modal.Body>
+          <Modal.Footer>
+          <Comment   article_id={id}/>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
+
+
+        {/* <Portal>
+                <Modal
+                  visible={visible}
+                  onDismiss={hideModal}
+                  contentContainerStyle={containerStyle}>
+
+<View style={styles.centeredView}>
+<View style={{position:'relative',top:670,alignItems:'center',zIndex:99}}> 
+        <Comment   article_id={id}/>
+        </View> 
+           <View style={styles.modalView}>
+        
+           
+        <ScrollView >
+          <Card style={{height:hp('900%'),backgroundColor:'#fff',width:wp('100%'),flex:1,padding:10}}>
+        {
+          
+          commentItems?
+          commentItems.map((i) => (
+                <View style={{marginBottom:20}}>
+                    <Card style={{backgroundColor:'lightgrey',padding:15,marginVertical:0,marginBottom:0,maxWidth:wp('80%'),height:50}}>
+                      <Text>{i.comments}</Text>
+                      </Card>
+                      </View>
+               
+              ))
+          : null
+        }
+        </Card>
            </ScrollView>
        
       
         </View>
         </View>
-        </Modal>
-     
-     {/* <Card style={{padding:10,margin:0,height:50,width:390,position:'relative',top:30}}>  
-        <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-             
-              <FontAwesome name='comment' size={25} color='lightgrey'/>
-            
-            </TouchableOpacity>
-            <View style={{padding:5,margin:0,height:40,width:140,position:'relative',bottom:55,right:0}}>  
-            <Rating article_id={id} />
-            </View>
-            </Card> */}
-
+               
+                </Modal>
+              </Portal> */}
+              <Card style={{width:wp('100%'),height:hp('5%'),position:'relative',bottom:88,borderWidth:1,borderColor:'grey',backgroundColor:'#00415e'}}>
+                <View style={{flex:1}}>
+                  <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
+                   <View style={{marginLeft:30}}>
+                    <Rating article_id={id}/>
+                    </View>
+                    <View style={{marginRight:50,marginTop:5}}>
+              <TouchableOpacity activeOpacity={0.5} style={styles.btn}>
+               <Icon name='chatbox' style={{color:'lightgrey'}} size={25} onPress={()=>{setModalVisible(!modalVisible)}}/>
+              </TouchableOpacity>
+              </View>
+              </View>
+              </View>
+              </Card>
        
 
  
@@ -184,14 +236,14 @@ export default Disease;
 const styles = StyleSheet.create({
   container: {
     flex:1,
-    backgroundColor: '#b9daf1' ,
+    backgroundColor: 'lightgrey' ,
    
     alignItems: 'center', 
   
    
   },
   card:{
-    padding:10,margin:25,height:400,width:wp('98%'),position:'relative',bottom:90,borderRadius:20
+    padding:10,margin:0,height:hp('60%'),width:wp('100%'),position:'relative',bottom:90,borderRadius:0
   },
  
   search: {
@@ -201,26 +253,12 @@ bottom:282,
     backgroundColor: '#fff' ,
 
   },
-  subcontainer1: {
 
-    position:'relative',
-    bottom: 300,
-    backgroundColor: '#fff',
-    right:90
-  },
- 
   b1:{
    backgroundColor:'#00415e',
    padding: 40,
  },
- subcontainer3: {
 
-  position:'relative',
-  bottom: 100,
-  left: 90,
-
-
-},
   text:{
     backgroundColor:'#00415e',
     color:'#fff',
@@ -248,29 +286,13 @@ t2:{
 },
 centeredView: {
   flex: 1,
-  justifyContent: "flex-end",
-  alignItems: "center",
-  marginTop: 22
+
+
+  marginTop: 25
 },
 modalView: {
-  margin: 30,
-position:'relative',
-top:50,
-  backgroundColor: "white",
-  borderRadius: 0,
-  padding: 35,
-  height:750,
-  width:400,
   alignItems: "center",
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 2
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 4,
-  elevation: 5,
-  justifyContent:'flex-end'
+  
   
 },
 

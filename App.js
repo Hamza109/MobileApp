@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-
+import { NativeBaseProvider, Box } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import {
   SafeAreaView,
@@ -43,11 +43,15 @@ const App = () => {
 
 
   return (
-    <PaperProvider theme={theme}>
+   
+      <NativeBaseProvider>
+         <PaperProvider theme={theme}>
     <NavigationContainer>
   <RootStack/>
     </NavigationContainer>
     </PaperProvider>
+    </NativeBaseProvider>
+  
   );
 };
 

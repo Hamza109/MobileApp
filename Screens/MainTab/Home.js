@@ -22,6 +22,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PhoneInput from 'react-native-phone-number-input';
+import {
+  Container,
+  Heading,
+  Center,
+  NativeBaseProvider,
+} from "native-base"
 import { backendHost } from '../../components/apiConfig';
 import searchArt from '../search/SearchArticle';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -234,6 +240,7 @@ const isFocuss=useIsFocused();
         onPress={() => navigation.push('SearchBar')}>
         <Text style={styles.text}>Looking for doctors ?</Text>
       </TouchableOpacity>
+    
 
     
     </View>

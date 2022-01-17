@@ -10,7 +10,9 @@ import { TouchableOpacity } from 'react-native';
 import { View ,Text,StyleSheet} from 'react-native';
 import { useEffect } from 'react';
 import { Alert } from 'react-native';
-
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { KeyboardAvoidingView } from 'react-native';
+import { Card } from 'react-native-paper';
 const Comment = (props) => {
    
     const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -94,17 +96,20 @@ const Comment = (props) => {
     }
 
     return (
-        <View>
-            <View style={{position:'relative',top:650,right:25}}>
-              
+      <View style={{flex:1}}>
+      <View style={{height:hp('8%'),width:wp('100%'),padding:3}}> 
+        <View style={{flex:1}}>
+            <View style={{flexDirection:'row'}}>
+  
                     <TextInput 
                       style={[styles.textInput, {
-                          height: 50,
+                          height: hp('7%'),
                         
-                          width:300,
+                          width:wp('80%'),
                           backgroundColor:'lightgrey',
                           fontSize: 15
                       }]}
+                    
                     value={cmtText}
                     placeholderTextColor='darkgrey'
                     placeholder='comment'
@@ -114,7 +119,8 @@ const Comment = (props) => {
                    
                     
                         />
-                        </View>
+                     
+                      
                     
                     {
                             succAlert?
@@ -127,8 +133,10 @@ const Comment = (props) => {
                             <Text style={[s.btnText,s.btnPrimaryText]}>post</Text>
                       
                         </TouchableOpacity>
+                        </View>
                     </View>
-     
+                    </View>
+                    </View>
         
     )
 }
@@ -158,7 +166,7 @@ const styles = StyleSheet.create({
       
        
     },
-  button:{position:'relative',top:600,left:280,height:45,width:50},
+  button:{height:hp('7%'),width:wp('15%')},
   
     text:{
         backgroundColor:'#00415e',
