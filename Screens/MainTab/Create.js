@@ -85,7 +85,11 @@ const isFocus= useIsFocused();
   
   });
   useEffect(()=> {
+    if(isFocus)
+{
     check()
+
+}
   }, [regId])
   const submitArticleForm = async e => {
     e.preventDefault();

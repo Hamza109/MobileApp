@@ -10,6 +10,8 @@ import {
   TouchableHighlight,
   Alert,
 } from 'react-native';
+import { HStack, Stack, Center, Heading, NativeBaseProvider, Container ,Input,Box} from "native-base"
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {backendHost} from '../../components/apiConfig';
 import {Searchbar, ToggleButton} from 'react-native-paper';
 import axios from 'axios';
@@ -93,8 +95,8 @@ const Autocomplete = () => {
 
   const getItem = ([item]) => {
     return (
-      <View style={{flex:1,marginRight:20,marginLeft:-20}}>
-       <View style={{marginTop:20,marginRight:20}}>
+      <Container>
+       <View style={{marginTop:9,marginLeft:-36}}>
       <FlatList
         data={item}
         renderItem={({item}) => (
@@ -103,7 +105,7 @@ const Autocomplete = () => {
               <TouchableOpacity
                 onPress={() => setText(item) & setSearching(false)}>
                 <View style={styles.itemView}>
-                  <Text style={styles.itemText}>{item}</Text>
+                  <Text  style={styles.itemText}>{item}</Text>
                 </View>
               </TouchableOpacity>
           
@@ -111,7 +113,7 @@ const Autocomplete = () => {
         )}
       />
  </View>
-      </View>
+      </Container>
       // {/*
       //             <Text style={styles.itemText}>{item}</Text>
       //             */}
@@ -121,31 +123,70 @@ const Autocomplete = () => {
   return (
     <View style={styles.containers}>
       <View>
-        <Searchbar
+        <Input
+        placeholder="search cures"
+        placeholderTextColor="#E5E5E5"
+      
+        bg="#fff"
+        onChangeText={onSearch}
+        onSubmitEditing={(() => setText(text), result)}
+        value={text}
+        width="62%"
+        height="95%"
+        color="#E5E5E5"
+        borderRadius="15"
+        _focus={{borderColor:'grey'}}
+        backgroundColor="grey"
+        borderColor="lightgrey"
+        py="3"
+        px="1"
+        fontSize="18"
+    
+      
+ 
+        InputRightElement={
+    <View style={{position:'relative',right:20}}>
+          <Icon
+          m="2"
+          ml="3"
+          color="#E5E5E5"
+            name="search"
+          onPress={(() => setText(text), result)}
+            size={20}
+          />
+          </View>
+        }
+        />
+        {/* <Searchbar
           style={styles.textInput}
-          placeholder="Search for articles"
-          placeholderTextColor="grey"
+          color="#E5E5E5"
+          placeholder="search cures"
+          placeholderTextColor="#E5E5E5"
           value={text}
           returnKeyType="go"
           onSubmitEditing={(() => setText(text), result)}
           onChangeText={onSearch}
           onIconPress={(() => setText(text), result)}
+          iconColor='#E5E5E5'
+
           autoFocus
-        />
+        /> */}
       </View>
 
       {searching && (
       <View style={{flex:1}}>
-          <View style={{height:height}}>
+          <Box style={{height:height}}>
     
             {dataSource.length ? (
               getItem(dataSource)
             ) : (
+              <View style={{marginTop:9,marginLeft:-36}}>
               <View style={styles.noResultView}>
                 <Text style={styles.noResultText}>No search items matched</Text>
               </View>
+              </View>
             )}
-            </View>
+            </Box>
             
           </View>
           
@@ -176,13 +217,15 @@ const styles = StyleSheet.create({
   },
   
   textInput: {
-    backgroundColor: 'lightgrey',
+
+    backgroundColor: 'grey',
     width: wp('87%'),
     height: 50,
     borderRadius: 5,
     fontSize: 20,
     fontWeight: 'bold',
     paddingHorizontal: 10,
+    borderRadius:15,
     
     marginTop: 0,
   },
@@ -201,10 +244,9 @@ marginTop:20,
 // },
   itemView: {
     borderBottomWidth:.5,
-  marginTop:20,
 
     backgroundColor: '#fff',
-    height:65,
+    height:hp('9%'),
   
     justifyContent: 'center',
 
@@ -215,16 +257,21 @@ marginTop:20,
     color: 'black',
     paddingHorizontal: 10,
     fontSize: 17,
+    marginLeft:-5,
+    marginRight:3,
     zIndex: 999,
   },
   noResultView: {
-    backgroundColor: 'aliceblue',
-    height: 40,
-   
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-    zIndex: 999,
+    borderBottomWidth:.5,
+  
+  
+      backgroundColor: '#fff',
+      height:65,
+    
+      justifyContent: 'center',
+  
+      padding: 10,
+      zIndex: 999,
   },
   noResultText: {
     color: 'black',

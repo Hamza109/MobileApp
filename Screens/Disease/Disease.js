@@ -141,23 +141,23 @@ const b= 'http://all-cures.com/cures/uitest/99.png'
           <Modal.CloseButton />
           <Modal.Header>comments</Modal.Header>
           <Modal.Body>
-            <Container>
+      
             <ScrollView>
           {
           
           commentItems?
           commentItems.map((i) => (
-                <View style={{marginBottom:20}}>
-                    <Card style={{backgroundColor:'lightgrey',padding:15,marginVertical:0,marginBottom:0,maxWidth:wp('80%'),height:50}}>
+                <View style={{marginBottom:10}}>
+                    <View style={{padding:10,marginVertical:0,marginBottom:0,Width:wp('80%'),height:hp('10%'),borderBottomWidth:.2}}>
                       <Text>{i.comments}</Text>
-                      </Card>
+                      </View>
                       </View>
                
               ))
           : null
         }
           </ScrollView>
-          </Container>
+       
           </Modal.Body>
           <Modal.Footer>
           <Comment   article_id={id}/>

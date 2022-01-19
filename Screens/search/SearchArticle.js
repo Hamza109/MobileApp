@@ -9,12 +9,13 @@ import Autocomplete from "../MainTab/Autocomplete";
 import { Avatar } from "react-native-paper";
 import { Dimensions } from "react-native";
 import { Card } from "react-native-paper";
+import { HStack, Stack, Center, Heading, NativeBaseProvider, Container } from "native-base"
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const SearchArt = ()=>{
    const navigation=useNavigation();
     return(
-<View style={styles.container}>
+<Container>
   
       {/* <View styles={styles.flex}>
           <Card style={styles.header}>
@@ -28,14 +29,16 @@ const SearchArt = ()=>{
         </View> */}
         <View styles={styles.flex}>
     <Card style={styles.header}>
-<View style={{flexDirection:'row'}}>
-<Icon name="arrow-back-outline" style={{marginTop:7,marginLeft:0}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
-<View>
+      <HStack mt="5" ml="10" space={1}alignItems="center">
+
+<Icon name="arrow-back-outline" style={{marginLeft:20}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+
 <Autocomplete/>
-</View>
 
 
-</View>
+
+
+</HStack>
 </Card>
 
 
@@ -44,7 +47,7 @@ const SearchArt = ()=>{
  
 
 
-   </View>
+   </Container>
 
     )
 }
@@ -62,7 +65,7 @@ flex:{
    
 },
 header:{
-flexDirection:'row',
+
 padding: 0,
 marginTop: Platform.OS === 'ios' ? 0 : -7,
 marginLeft:0,

@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeScreen from './Home';
 import MyCures from './MyCures';
 import CreateScreen from './Create';
@@ -15,7 +15,7 @@ import CreateScreenHome from './CreateHome';
 const HomeStack = createStackNavigator();
 const MyCuresStack = createStackNavigator();
 const ArticleStack=createStackNavigator()
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 
 const MainTabScreen = () => 
@@ -46,18 +46,34 @@ const MainTabScreen = () =>
 
      return(
     <Tab.Navigator
-   
+     tabBarActiveTintColor='#00415e'
       initialRouteName="Home"
-      activeColor="#00415e"
+   
     >
       <Tab.Screen
         name="HomeTab"
         component={HomeStackScreen}
         options={{
-          tabBarLabel: 'Home',
+          headerShown:false,
+          tabBarActiveTintColor:'#00415e',
+          activeColor:'red',
+          tabBarLabel: 'home',
           tabBarColor: '#fff',
           tabBarIcon: ({ color }) => (
             <Icon name="home" color={'#00415e'} size={26} />
+          ),
+        }}
+      />
+       <Tab.Screen
+        name="ArticleTab"
+        component={ArticleStackScreen}
+        options={{
+          headerShown:false,
+          tabBarActiveTintColor:'#00415e',
+          tabBarLabel: 'Article',
+          tabBarColor: '#fff',
+          tabBarIcon: ({ color }) => (
+            <Icon name="user-md" color={'#00415e'} size={26} />
           ),
         }}
       />
@@ -65,26 +81,18 @@ const MainTabScreen = () =>
         name="Cures"
         component={MyCuresStackScreen}
         options={{
+          headerShown:false,
+          tabBarActiveTintColor:'#00415e',
           tabBarLabel: 'My Cures',
           tabBarColor: '#fff',
           tabBarIcon: ({ color }) => (
-            <Icon name="book" color={'#00415e'} size={26}  />
+            <Icon name="heartbeat" color={'#00415e'} size={26}  />
           ),
         }}
       />
      
-      <Tab.Screen
-        name="ArticleTab"
-        component={ArticleStackScreen}
-        options={{
-          tabBarLabel: 'Article',
-          tabBarColor: '#fff',
-          tabBarIcon: ({ color }) => (
-            <Icon name="create" color={'#00415e'} size={26} />
-          ),
-        }}
-      />
-       <Tab.Screen
+     
+       {/* <Tab.Screen
         name="ProfileTab"
         component={Profile}
         options={{
@@ -94,7 +102,7 @@ const MainTabScreen = () =>
             <Icon name="ios-person" color={'#00415e'} size={26} />
           ),
         }}
-      />
+      /> */}
 
     </Tab.Navigator>
   
@@ -148,11 +156,11 @@ const MyCuresStackScreen = () => (
         }
     }}>
       
-        <MyCuresStack.Screen name="My Cures" component={MyCures} options={{
+        <MyCuresStack.Screen name="MyCures" component={MyCures} options={{
           
         
         headerLeft: () => (
-            <Icon name="ios-book" size={30}  style={{marginLeft:20,color:'#00415e'}} backgroundColor="#fff" ></Icon>
+            <Icon name="heartbeat" size={30}  style={{marginLeft:20,color:'#00415e'}} backgroundColor="#fff" ></Icon>
          )
         }} />
 </MyCuresStack.Navigator>
@@ -172,7 +180,7 @@ const ArticleStackScreen = ({navigation}) =>(
       }}>
           <ArticleStack.Screen name="Create Article" component={CreateScreen} options={{
           headerLeft: () => (
-            <Icon.Button name="ios-create" size={30} iconStyle={{color:'#00415e',marginHorizontal:10}} backgroundColor="#fff" ></Icon.Button>
+            <Icon name="user-md" size={30}  style={{marginLeft:20,color:'#00415e'}} backgroundColor="#fff" ></Icon>
          )
           }} />
   </ArticleStack.Navigator>

@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { Dimensions } from 'react-native';
+import {Dimensions, ImageBackground} from 'react-native';
 import {
   View,
   ScrollView,
   Text,
   Button,
+  FlatList,
   StyleSheet,
   StatusBar,
   BackHandler,
@@ -20,17 +21,24 @@ import axios from 'axios';
 import Autocomplete from './Autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import PhoneInput from 'react-native-phone-number-input';
 import {
-  Container,
-  Heading,
+  HStack,
+  Stack,
   Center,
+  Heading,
   NativeBaseProvider,
-} from "native-base"
-import { backendHost } from '../../components/apiConfig';
-import searchArt from '../search/SearchArticle';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+  Container,
+} from 'native-base';
+import {backendHost} from '../../components/apiConfig';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 const HomeScreen = ({navigation, route}) => {
   const userId = route.userId;
 
@@ -60,47 +68,41 @@ const HomeScreen = ({navigation, route}) => {
   };
   const postSubscription = val => {
     var phoneNumber = val.split('+')[1];
-    console.log(phoneNumber)
-    console.log(phoneNumber.length)
-    var countryCodeLength = phoneNumber.length % 10
-    var countryCode = phoneNumber.slice(0, countryCodeLength)
-    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '')
-     if(phoneNumber){
-    
-      axios.post(`${backendHost}/users/subscribe/${StringValue}`, {
-      "nl_subscription_disease_id": '0',
-      "nl_sub_type":1,
-      "nl_subscription_cures_id":'0',
-      "country_code": `'${countryCode}'`,
-      })
+    console.log(phoneNumber);
+    console.log(phoneNumber.length);
+    var countryCodeLength = phoneNumber.length % 10;
+    var countryCode = phoneNumber.slice(0, countryCodeLength);
+    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
+    if (phoneNumber) {
+      axios
+        .post(`${backendHost}/users/subscribe/${StringValue}`, {
+          nl_subscription_disease_id: '0',
+          nl_sub_type: 1,
+          nl_subscription_cures_id: '0',
+          country_code: `'${countryCode}'`,
+        })
         .then(res => {
-       
-         if(res.data === 1){
-            Alert.alert('You have successfully subscribed to our Newsletter')
-         }
-         else {
-            Alert.alert('Some error occured! Please try again later.')
-         }
+          if (res.data === 1) {
+            Alert.alert('You have successfully subscribed to our Newsletter');
+          } else {
+            Alert.alert('Some error occured! Please try again later.');
+          }
         })
         .catch(err => {
-        
-        Alert.alert('Some error occured! Please try again later.')
-         
-   
-      })
-     } else {
-        Alert.alert('Please enter a valid number!')
-     }
+          Alert.alert('Some error occured! Please try again later.');
+        });
+    } else {
+      Alert.alert('Please enter a valid number!');
+    }
   };
 
-  const getId =  () => {
+  const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-        console.log('home:',value1);
+        console.log('home:', value1);
         if (value1 != null) {
           setRegId(value1);
         }
-        
       });
     } catch (error) {
       console.log(error);
@@ -118,48 +120,216 @@ const HomeScreen = ({navigation, route}) => {
       console.log(error);
     }
   };
-const isFocuss=useIsFocused();
+  const isFocuss = useIsFocused();
   useEffect(() => {
-    if(isFocuss){
-      console.log('hom:',regId)
-    getId();
-    getType();
-    
+    if (isFocuss) {
+      console.log('hom:', regId);
+      getId();
+      getType();
 
-    BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', backAction);
-   }
-
+      BackHandler.addEventListener('hardwareBackPress', backAction);
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', backAction);
+    }
   }, []);
   const [value, setValue] = useState('');
   const [formattedValue, setFormattedValue] = useState('');
+  const DATA = [
+    {
+      name: 'Arthritis',
+      source: require('../../assets/img/arthritis.png'),
+      color: 'pink',
+    },
+    {
+      name: 'Thyroid',
+      source: require('../../assets/img/thyroid.png'),
+      color: 'lightblue',
+    },
+    {
+      name: 'Diabetes',
+      source: require('../../assets/img/slider-2.png'),
+      color: 'orange',
+    },
+    {
+      name: 'Insomnia',
+      source: require('../../assets/img/insomnia.png'),
+      color: 'purple',
+    },
+    {
+      name: 'Skin Care',
+      source: require('../../assets/img/slider-5.png'),
+      color: 'pink',
+    },
+    {
+      name: 'Hyper Tension',
+      source: require('../../assets/img/bloodpressure.png'),
+      color: 'lightblue',
+    },
+  ];
+  const DATA1 = [
+    {name: 'Scandavian',source:require('../../assets/img/herbal.jpg')},
+    {name: 'Persian',source:require('../../assets/img/medicine.jpg')},
+    {name: 'Japanese',source:require('../../assets/img/homeopathy.jpg')},
+    {name: 'Chinese',source:require('../../assets/img/chinese.jpg')},
+    {name: 'Unani',source:require('../../assets/img/unani.jpg')},
+    {name: 'Ayurveda' ,source:require('../../assets/img/ayurvedic.jpg')},
+  
+  
+
+  
+ 
+  ];
+  const carouselRef = React.useRef(null);
+  function renderItem({item, index}) {
+    const {name, source, color} = item;
+    return (
+      <View style={{marginRight: 13}}>
+        <Card
+          style={{
+            width: wp('30%'),
+            height: hp('20%'),
+            backgroundColor: color,
+            borderRadius: 20,
+          }}
+          key={index}>
+          <Image
+            style={{
+              alignContent:'center',
+              width: wp('24%'),
+              height: hp('15%'),
+              position: 'relative',
+              top: 42,
+              left: 11,
+            }}
+            source={source}
+          />
+          <Text
+            style={{
+              color: '#fff',
+              fontWeight: '500',
+              position: 'relative',
+              bottom: 120,
+              left: 9,
+            }}>
+            {name}
+          </Text>
+        </Card>
+      </View>
+    );
+  }
+  function renderItemTrend({item, index}) {
+    const {name, source, color} = item;
+    return (
+      <View style={{marginRight: 13}}>
+        <Card
+          style={{
+            width: wp('30%'),
+            height: hp('15%'),
+            backgroundColor: '#00415e',
+           
+            borderRadius:200
+            ,         
+                    
+            alignItems: 'center',
+          }}
+          key={index}>
+          <ImageBackground
+            style={{
+              width: wp('30%'),
+              height: hp('15%'),
+              borderRadius:200,
+             overflow:'hidden'
+            }}
+            source={source}
+          />
+       
+        </Card>
+        <Text
+            style={{
+              color: '#00415e',
+              marginTop:5,
+              fontWeight: '500',
+              fontSize: 13,
+              position: 'relative',
+              bottom: 0,
+              textAlign: 'center',
+            }}>
+            {name}
+          </Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
+    <Container>
+      <Stack space={3} alignItems="center">
+        <HStack mt="10" ml="1" space={1} alignItems="center">
+          <View style={{position: 'relative', top: 2, right: 0}}>
+            <Icon name="user-circle" color={'#00415e'} size={45} />
+          </View>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate('searchArt');
+            }}>
+            <Card style={styles.card}>
+              <HStack ml="2" space={130} alignItems="center">
+                <Text style={{fontSize: 18, color: '#E5E5E5'}}>
+                  search cures
+                </Text>
+                <Icon name="search" size={20} style={styles.icon}></Icon>
+              </HStack>
+            </Card>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CreateScreenHome')}>
+            <Card
+              style={{
+                backgroundColor: '#00415e',
+                alignItems: 'center',
+                borderRadius: 55,
+                padding: 8,
+                width: wp('11.8%'),
+                height: hp('5.6%'),
+                position: 'relative',
+                top: 2,
+              }}>
+              <Icon name="pencil" color={'#fff'} size={27} />
+            </Card>
+          </TouchableOpacity>
+        </HStack>
+      </Stack>
+
+      <Stack mt="5" ml="2" space={5}>
+        <Text style={{fontSize: 20, color: '#00415e'}}>Choose by Category</Text>
+
+        <View style={{alignItems: 'center', marginLeft: 0, width: wp('100%')}}>
+          <FlatList
+            inverted
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={DATA}
+            renderItem={renderItem}
+          />
+        </View>
+        <Text style={{fontSize: 20, color: '#00415e'}}>Trending Cures</Text>
+        <View style={{alignItems: 'center', marginLeft: 0, width: wp('100%')}}>
+          <FlatList
+            inverted
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={DATA1}
+            renderItem={renderItemTrend}
+          />
+        </View>
+        <Text style={{fontSize: 20, color: '#00415e'}}>Recent Cures</Text>
+      </Stack>
       <View style={{flex: 1}}>
-        <Card style={styles.header}>
+        <View style={styles.header}>
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             <View style={{flexDirection: 'row'}}>
-              <Image
-                source={require('../../assets/img/heart.png')}
-                style={styles.image}></Image>
-              <Text
-                style={{
-                  marginRight: 140,
-                  marginTop: 20,
-                  fontWeight: 'bold',
-                  fontSize: 15,
-                  color: '#00415e',
-                }}>
-                All Cures
-              </Text>
-              <TouchableOpacity
-                style={{marginRight: 0, marginTop: 10}}
-                onPress={() => navigation.navigate('CreateScreenHome')}>
-                <Icon name="create" color={'#00415e'} size={37} />
-              </TouchableOpacity>
-              <Portal>
+              {/* <Portal>
                 <Modal
                   visible={visible}
                   onDismiss={hideModal}
@@ -219,61 +389,48 @@ const isFocuss=useIsFocused();
                   onPress={showModal}>
                   Subscribe
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
-          <TouchableOpacity activeOpacity={0.8} onPress={()=>{navigation.navigate('searchArt')}}>
-            <Card style={styles.card}>
-              <View style={styles.inCard}>
-                <Icon name="search-sharp" size={20} style={styles.icon}></Icon>
-                <Text style={{fontSize: 18, marginRight: 130, color: 'grey'}}>
-                  Search for articles
-                </Text>
-              </View>
-            </Card>
-          </TouchableOpacity>
-        </Card>
+        </View>
       </View>
-
+      {/* 
       <TouchableOpacity
         style={styles.b2}
         onPress={() => navigation.push('SearchBar')}>
         <Text style={styles.text}>Looking for doctors ?</Text>
-      </TouchableOpacity>
-    
-
-    
-    </View>
+      </TouchableOpacity> */}
+    </Container>
   );
 };
 
 export default HomeScreen;
- const width=Dimensions.get('screen').width
+const width = Dimensions.get('screen').width;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-   flex:1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: 'lightgrey',
-    width: wp('90%'),
-    marginLeft:5,
+    backgroundColor: 'grey',
+    width: wp('72%'),
     height: 50,
     fontSize: 20,
     fontWeight: 'bold',
-    borderRadius:5,
-    marginTop: 0,
+    borderRadius: 15,
+    position: 'relative',
+
     borderWidth: 1,
     shadowRadius: 35,
     shadowOffset: 50,
     elevation: 10,
     shadowColor: 'grey',
+    padding: 10,
   },
   inCard: {
-    padding: 12,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
@@ -281,18 +438,17 @@ const styles = StyleSheet.create({
     padding: 18,
     marginTop: Platform.OS === 'android' ? -7 : 0,
     borderColor: '#fff',
-    borderWidth: 0.1,
+
     alignItems: 'center',
-    width:wp('100%'),
+    width: wp('100%'),
     height: 150,
-    elevation: 5,
   },
   icon: {
     padding: 3,
 
-    color: 'grey',
+    color: '#E5E5E5',
   },
-  
+
   b2: {
     justifyContent: 'center',
     borderWidth: 3,

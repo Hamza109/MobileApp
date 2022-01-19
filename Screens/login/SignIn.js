@@ -27,7 +27,7 @@ const SignInScreen = ({navigation}) =>
     const [buttonClick, setClicked] = useState("");
     const [data, setData] = useState({
         email: "anilraina@etheriumtech.com",
-        password:"Pass123456",
+        password:"Password123",
         check_textInputChange: false,
         secureTextEntry:true
     }

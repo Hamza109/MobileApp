@@ -45,7 +45,7 @@ const App = () => {
   return (
    
       <NativeBaseProvider>
-         <PaperProvider theme={theme}>
+         <PaperProvider>
     <NavigationContainer>
   <RootStack/>
     </NavigationContainer>

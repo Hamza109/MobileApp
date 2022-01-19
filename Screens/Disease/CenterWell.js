@@ -14,7 +14,7 @@ const CenterWell = ({content, type, text, title, message, source, embed, caption
                 {
                     'header':                           
                                     <View>
-                                        <Text style={{fontSize: 10}}>{text}</Text>
+                                        <Text style={{fontSize: 10,fontWeight:'bold'}}>{title}</Text>
                                     </View>                        
                             ,
                     'paragraph': <View>    
