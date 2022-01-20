@@ -31,7 +31,7 @@ const SearchArt = ()=>{
     <Card style={styles.header}>
       <HStack mt="5" ml="10" space={1}alignItems="center">
 
-<Icon name="arrow-back-outline" style={{marginLeft:20}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+<Icon name="arrow-back-outline" style={{marginLeft:9}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
 
 <Autocomplete/>
 
