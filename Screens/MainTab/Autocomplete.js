@@ -34,7 +34,7 @@ const Autocomplete = () => {
         .then(res => res.data),
     ])
       .then(diseaseData => {
-        console.log(diseaseData);
+       
         setDataSource(diseaseData);
 
         // axios.get(`http://192.168.29.160:8080/cures/isearch/combo/${param.type}`)
@@ -99,8 +99,9 @@ const Autocomplete = () => {
        <View style={{marginTop:9,marginLeft:-36}}>
       <FlatList
         data={item}
+        indicatorStyle={'#00415e'}
         renderItem={({item}) => (
-          
+        
            
               <TouchableOpacity
                 onPress={() => setText(item) & setSearching(false)}>
@@ -141,7 +142,7 @@ const Autocomplete = () => {
         py="3"
         px="1"
         fontSize="18"
-    
+        autoFocus
       
  
         InputRightElement={
@@ -243,18 +244,19 @@ marginTop:20,
 // right:
 // },
   itemView: {
-    borderBottomWidth:.5,
+    borderBottomWidth:.8,
+    borderBottomColor:'#00415e',
 
     backgroundColor: '#fff',
-    height:hp('9%'),
-  
+    height:hp('10%'),
+  width:wp('100%'),
     justifyContent: 'center',
 
     padding: 10,
     zIndex: 999,
   },
   itemText: {
-    color: 'black',
+    color: '#00415e',
     paddingHorizontal: 10,
     fontSize: 17,
     marginLeft:-5,

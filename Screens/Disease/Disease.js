@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
    
   },
   card:{
-    padding:10,margin:0,height:hp('60%'),width:wp('100%'),position:'relative',bottom:90,borderRadius:0
+    padding:10,margin:0,height:hp('60%'),width:wp('100%'),position:'relative',bottom:90,borderRadius:0,backgroundColor:"#00415e"
   },
  
   search: {

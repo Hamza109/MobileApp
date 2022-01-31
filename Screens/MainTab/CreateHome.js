@@ -39,12 +39,12 @@ const CreateScreenHome = () => {
   const [regType, setRegType] = useState();
   const getId = () => {
     try {
-      AsyncStorage.getItem('author').then(value1 => {
+      Promise.all(AsyncStorage.getItem('author').then(value1 => {
         console.log(value1);
         if (value1 != null) {
           setRegId(value1);
         }
-      });
+      }));
     } catch (error) {
       console.log(error);
     }
@@ -76,11 +76,14 @@ const isFocus= useIsFocused();
       }
   }
   useEffect(() => {
+   
     if(isFocus){
-      getId();
+      
+      
     getType();
     }
-    check()
+     check()
+    getId();
   },[regId]);
 
 //   useEffect(()=> {

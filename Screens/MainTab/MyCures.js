@@ -10,6 +10,7 @@ import { get } from 'js-cookie';
 import { ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { TouchableHighlight } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { backendHost } from '../../components/apiConfig';
 import { useNavigation } from '@react-navigation/native';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -20,7 +21,7 @@ const MyCures = () => {
  
   const [items,setItems]=useState([])
   const [isLoaded,setIsLoaded]=useState(false)
-  const [regId, setRegId] = useState()
+  const [regId, setRegId] = useState([])
   const [regType, setRegType] = useState()
   const [pubStatus, setPubStatus] = useState()
   const getId= ()=>{
@@ -77,18 +78,41 @@ const MyCures = () => {
         setPubStatus(json.pubstatus_id)
       setIsLoaded(true)
       setItems(json)
-    console.log(json)
+  
         })
       }
-  
+      const isFocus= useIsFocused();
+      const check=()=>{
+       console.log('#########: ', regId)
+          if(regId.length === 0)
+          {
+             // navigation.navigate('Cures',{screen:'My Cures'})
+             navigation.navigate('SignIn')
+        
+          }
+          else{
+             navigation.navigate('CreateScreenHome')
+          }
+      }
   useEffect(()=>
   {
+    if(isFocus)
+    {
     getId()
     getType()
     console.log('auth: ',regId)
     console.log('auth: ',regType)
     receivedData()
-  },[])
+    }
+  
+  })
+  useEffect(()=> {
+    if(isFocus)
+{
+    // check()
+
+}
+  }, [regId])
   const status=()=>{
  
     if(pubStatus===2)

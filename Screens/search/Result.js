@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { View, Text, Button, StyleSheet, StatusBar,BackHandler,Alert,TouchableOpacity} from 'react-native';
+import { View, Text, Button, StyleSheet, StatusBar,BackHandler,Alert,TouchableOpacity,Image} from 'react-native';
 import { useTheme,Link } from '@react-navigation/native';
 import AllPost from './AllPost';
 import { Card } from 'react-native-paper';
@@ -10,8 +10,22 @@ import { ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SearchArt from './SearchArticle';
 import ArticleHeader from './ArticleHeader';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import StarRating from 'react-native-star-rating';
+import {
+  HStack,
+  Stack,
+  Center,
+  Heading,
+  NativeBaseProvider,
+  Container,
+  Box,
+} from 'native-base';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import CenterWell from '../Disease/CenterWell';
 
 
 const Result = ({navigation,route}) => {
@@ -36,6 +50,14 @@ const { s, c } = bootstrapStyleSheet;
  
 
 const [text,setText]=useState(texts)
+function IsJsonValid(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return [];
+  }
+  return JSON.parse(str).blocks;
+}
 
 
  const receivedData=()=>{
@@ -100,55 +122,133 @@ useEffect(()=> {
 
   
     return (
-   
-      <View style={styles.container}>
-  <ArticleHeader/>
- <View>
-{   
-heading()
-}
- </View>
+      <>
+      <View style={{flex:1}}>
+        <ArticleHeader/>
+        <View style={{margin:6,flex:1}}>
+          <ScrollView
+             style={{width: wp('100%'),height:hp('100%')}}
 
-  <ScrollView>
-  {items.map((i) => (
-                
-                  i.pubstatus_id === 3 ?
-                  <Card style={styles.card}> 
-                        <AllPost
+            >
+         
+             {
+                    items.length !== 0?
+                    items.filter((i, idx) => idx < 9).map((i) => {
+                    var content = []
+                    var imgLocation = i.content_location
+                    var imageLoc = '';
+                    if(i.content){
+                        content = IsJsonValid(decodeURIComponent(i.content))
+                    }
+                    if(imgLocation && imgLocation.includes('cures_articleimages')){
+                        imageLoc = 'https://all-cures.com:444/'
+                    } else {
+                        imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
+                    }
+
+                    var title = i.title
+                    var regex = new RegExp(' ', 'g');
+
+                    //replace via regex
+                    title = title.replace(regex, '-');
+                    return(
+                    <View >
+                    <View>
+                    <Card
+                          
+                          style={{
+                            width: wp('97%'),
+                            height: hp('25%'),
+                            backgroundColor: '#00415e',
+                            borderRadius: 0,
+                           marginBottom:5,
+                            justifyContent:'center',
+                    
+                  
+                            paddingHorizontal:5,
+                            alignItems:'center'
+                          }}>
+                            <HStack space={1}>
+        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("45%"),height:hp("25%"),marginTop:0}}/>
+                        <View>
+                          
+                           
+                            <AllPost
                              
-                            id = {i.article_id}
-                            title = {i.title}
-                            f_title = {i.friendly_name}
-                            w_title = {i.window_title}
-                            allPostsContent={() => receivedData()}
-                        />
-                        <View style={{position:'relative',bottom:40,left:4}}>
-                        {/* <StarRating
-        disabled={false}
-      
-        emptyStar={'ios-star'}
-        fullStar={'ios-star'}
-    
-        iconSet={'Ionicons'}
-        starSize={23}
-        maxStars={1}
-         rating={1}
-       fullStarColor={'orange'}
-      
-      
-      /> */}
-      </View>
+                             id = {i.article_id}
+                             title = {i.title}
+                             f_title = {i.friendly_name}
+                             w_title = {i.window_title}
+                             allPostsContent={() => receivedData()}
+                         />
+                            <View style={{flex:1}}>
+                
+            <Box>
+                                <Text>
+                                    {
+                                        content?
+                                            content.map((j, idx) => idx<1 && (
+                                                <CenterWell
+                                                    content = {j.data.content}
+                                                    type = {j.type}
+                                                    text = {j.data.text.substr(0, 150) + '....'}
+                                                    title = {j.data.title}
+                                                    message = {j.data.message}
+                                                    source = {j.data.source}
+                                                    embed = {j.data.embed}
+                                                    caption = {j.data.caption}
+                                                    alignment = {j.data.alignment}
+                                                    imageUrl = {j.data.file? j.data.file.url: null}
+                                                    url = {j.data.url}
+                                                />
+                                            ))
+                                            : null
+                                    }
+                                 
+                                </Text>
+                                </Box>
+                                <Text  style={{
+            color: '#fff',
+           
+            fontFamily:'Raleway-Bold',
+            fontSize: 13,
+            position:'absolute',
+            bottom:15,
+            
+          
+            
+          }}>{i.authors_name} </Text>
+          <Text style={{
+            color: '#fff',
+          
+            fontFamily:'Raleway-Bold',
+            fontSize: 13,
+            position:'absolute',
+            bottom:3,
+            
+          
+            
+          }}>{i.published_date}</Text>
+                            </View>
+                        </View>
+                        </HStack>
                         </Card>
-                        : null
-                    ))}
-                    </ScrollView>
-              
-  
-    
-        
+                    </View>
+                </View>
+                )}
+                
+                // : null
+                
+                ): 
+               <Image Source={require('../../assets/img/heart.png')} style={{width:wp('10%'),height:hp('10%')}} />
+            }
+         
+          </ScrollView>
+     
+        </View>
        
-
       </View>
+    </>
      
     );
 };

@@ -5,6 +5,7 @@ import { backendHost } from '../../components/apiConfig';
 import { useNavigation } from '@react-navigation/core';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import axios from 'axios';
+import { widthPercentageToDP } from 'react-native-responsive-screen';
 
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const { s, c } = bootstrapStyleSheet;
@@ -32,15 +33,15 @@ useEffect(()=>{
  const navigation=useNavigation()
         return (
           <View style={styles.contain}>
-            <View>
+            <View style={{width:widthPercentageToDP('54%')}}>
            <Text onPress={()=> navigation.navigate(`Disease`, {ids:`${id}`})} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>
-                   <Text style={styles.t1}>{w_title}</Text>
+            
                          </View>
                          <View>
-                   <Text style={styles.t2}>{showValue}</Text>
+           
                          </View>
 
 
@@ -64,16 +65,16 @@ useEffect(()=>{
       
     },
     title: {
-     fontSize:13,
-     fontWeight:'bold',
+     
+        color: '#fff',
+        position:'absolute',
+        top:0,
+        fontFamily:'Raleway-Bold',
+        fontSize: 13,
+     
+      
+        
 
-      position: 'relative',
-      bottom: 3,
-     left: 0,
-      zIndex:999,
-      // color: 'blue',
-      padding : 5,
-      margin: 0
     },
     t1:{
       fontSize:10,

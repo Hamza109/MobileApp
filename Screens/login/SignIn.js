@@ -1,392 +1,338 @@
-import React,{useState} from 'react';
-import { 
-    View, 
-    Text, 
-    TouchableOpacity, 
-    TextInput,
-    Platform,
-    StyleSheet ,
-    StatusBar,
-    Alert
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Platform,
+  StyleSheet,
+  StatusBar,
+  Alert,
+  ImageBackground,
 } from 'react-native';
+import {
+  HStack,
+  Stack,
+  Center,
+  Heading,
+  NativeBaseProvider,
+  Container,
+  VStack,
+} from 'native-base';
 import axios from 'axios';
 import Home from '../MainTab/Home';
 import * as Animatable from 'react-native-animatable';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import { useTheme } from 'react-native-paper';
-
-import { backendHost } from '../../components/apiConfig';
+import {useTheme} from 'react-native-paper';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {backendHost} from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
-const SignInScreen = ({navigation}) =>
-{
+import Icon from 'react-native-vector-icons/Ionicons';
+const SignInScreen = ({navigation,props}) => {
+  const [status, setStatus] = useState('');
+  const [buttonClick, setClicked] = useState('');
+  const [isSignedIn,setIsSignedIn]= useState(props)
+  const [data, setData] = useState({
+    email: '',
+    password: '',
+    check_textInputChange: false,
+    secureTextEntry: true,
+  });
+  const [authid, setauthid] = useState([]);
+  const verify = () => {
+    navigation.navigate('Verify');
+  };
 
-    const [status, setStatus] = useState("");
-    const [buttonClick, setClicked] = useState("");
-    const [data, setData] = useState({
-        email: "anilraina@etheriumtech.com",
-        password:"Password123",
-        check_textInputChange: false,
-        secureTextEntry:true
+  const bootstrapStyleSheet = new BootstrapStyleSheet();
+  const {s, c} = bootstrapStyleSheet;
+
+  const {colors} = useTheme();
+
+  const updateSecureTextEntry = () => {
+    setData({
+      ...data,
+      secureTextEntry: !data.secureTextEntry,
+    });
+  };
+
+  const loginForm = () => {
+    setClicked(1);
+    axios
+      .post(
+        `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
+      )
+
+      .then(res => {
+     
+        setStatus(res.status);
+        setId(res.data.registration_id);
+        setType(res.data.registration_type);
+        setFirst(res.data.first_name);
+        setLast(res.data.last_name);
+        setEmail(res.data.email_address);
+      })
+
+      .catch(err => err);
+  };
+  const setCheck = async value =>{
+      try{
+          await AsyncStorage.setItem('check',JSON.stringify(value))
+      }catch(error){
+          console.log(error)
+      }
+  }
+  const setId = async id => {
+    try {
+      console.log(JSON.stringify(id));
+      await AsyncStorage.setItem('author', JSON.stringify(id));
+    } catch (error) {
+      console.log(error);
     }
-    )
-     const [authid,setauthid]=useState([])
-    const verify=()=>
-    {
-        navigation.navigate('Verify')
+  };
+  const setType = async type => {
+    try {
+      await AsyncStorage.setItem('rateType', JSON.stringify(type));
+    } catch (error) {
+      console.log(error);
     }
-  
-
-    const bootstrapStyleSheet = new BootstrapStyleSheet();
-    const { s, c } = bootstrapStyleSheet;
-
-    const { colors } = useTheme();
-
-   
-
-
-    const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
-        });
+  };
+  const setFirst = async first => {
+    try {
+      await AsyncStorage.setItem('firstName', first);
+    } catch (error) {
+      console.log(error);
     }
-
- const loginForm = () => {
-   
-        
-        setClicked(1);
-        axios.post(`${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`)
-         
-        .then(res =>{ 
-            console.log(res.data.registration_id)
-            console.log(res.data.registration_type)
-             setStatus(res.status)
-             setId(res.data.registration_id)
-            setType(res.data.registration_type)
-            setFirst(res.data.first_name)
-            setLast(res.data.last_name)
-            setEmail(res.data.email_address) 
-           
-         })
-         
+  };
+  const setLast = async last => {
+    try {
+      await AsyncStorage.setItem('lastName', last);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const setEmail = async email => {
+    try {
+      await AsyncStorage.setItem('email', email);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  function AfterLogin() {
+    if (status === 200) {
+      console.log(status);
       
-        .catch(err => err)
-           
-        
-    }
-    const setId = async (id) =>{
-       
-             try{
-                 console.log(JSON.stringify(id))
-                 await AsyncStorage.setItem('author',JSON.stringify(id))
-              
-                
-             }
-             catch(error){
-                 console.log(error)
-             }
-    }
-    const setType= async (type) =>{
-       
-        try{
-         
-            await AsyncStorage.setItem('rateType',JSON.stringify(type))
-      
-           
-        }
-        catch(error){
-            console.log(error)
-        }
-}
-const setFirst= async (first) =>{
-       
-    try{
-      
-        await AsyncStorage.setItem('firstName',first)
-  
-       
-    }
-    catch(error){
-        console.log(error)
-    }
-}
-const setLast= async (last) =>{
-       
-    try{
-      
-        await AsyncStorage.setItem('lastName',last)
-  
-       
-    }
-    catch(error){
-        console.log(error)
-    }
-}
-const setEmail= async (email) =>{
-       
-    try{
-      
-        await AsyncStorage.setItem('email',email)
-  
-       
-    }
-    catch(error){
-        console.log(error)
-    }
-}
-    function AfterLogin() {
-        
+      navigation.navigate('MainTab', {
     
-        if(status === 200)
-        {
-     
-            console.log(status)
-
-            navigation.navigate('MainTab',{screen:'Home',params:{
-                    userId: authid 
-                }
-            },
-            )
-   
-        }
-         if(status === 401){
-          return(
-            Alert.alert('Invalid Password or Email!')
-          )
-        } 
-        // else if(status === 401){
-        //   return(
-        //     <div className="alert alert-secondary">Incorrect email or password!</div> 
-        //   )
-        // } 
-      } 
-   
-     
-    return (
- 
-      <View style={styles.container}>
-          <StatusBar backgroundColor='#00415e' barStyle="light-content"/>
-        <View style={styles.header}>
-            <Text style={styles.text_header}>Welcome!</Text>
-        </View>
-        <Animatable.View 
-            animation="fadeInUpBig"
-            style={[styles.footer, {
-                backgroundColor: colors.background
-            }]}
-        >
-            <Text style={[styles.text_footer, {
-                color: colors.text
-            }]}>Username</Text>
-            <View style={styles.action}>
-                <FontAwesome 
-                    name="user-o"
-                    color={colors.text}
-                    size={20}
-                />
-                <TextInput 
-                    placeholder="Email"
-                    placeholderTextColor="#666666"
-                    style={[styles.textInput, {
-                        color: colors.text
-                    }]}
-                    autoCapitalize="none"
-                    value={data.email}
-                    returnKeyType='done'
-                    onChangeText={
-                        e => setData({...data,email:e})
-                      } 
-                
-                />
-                {data.check_textInputChange ? 
-                <Animatable.View
-                    animation="bounceIn"
-                >
-                    <Feather 
-                        name="check-circle"
-                        color="green"
-                        size={20}
-                    />
-                </Animatable.View>
-                : null}
-            </View>
-          
-
-            <Text style={[styles.text_footer, {
-                color: colors.text,
-                marginTop: 35
-            }]}>Password</Text>
-            <View style={styles.action}>
-                <Feather 
-                    name="lock"
-                    color={colors.text}
-                    size={20}
-                />
-                <TextInput 
-                
-                    placeholder="Your Password"
-                    placeholderTextColor="#666666"
-                    secureTextEntry={data.secureTextEntry ? true : false}
-                    style={[styles.textInput, {
-                        color: colors.text
-                    }]}
-                    autoCapitalize="none"
-                    returnKeyType='go'
-                    value={data.password}
-              onSubmitEditing={loginForm}
-                    onChangeText={
-                        e => setData({...data,password:e})
-                      } 
-                />
-                <TouchableOpacity
-                    onPress={updateSecureTextEntry}
-                >
-                    {data.secureTextEntry ? 
-                    <Feather 
-                        name="eye-off"
-                        color="grey"
-                        size={20}
-                    />
-                    :
-                    <Feather 
-                        name="eye"
-                        color="grey"
-                        size={20}
-                    />
-                    }
-                </TouchableOpacity>
-            </View>
-            
-            {/* { data.isValidLength ? null : 
-            <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
-            </Animatable.View>
-            } */}
-            
-
-            <TouchableOpacity>
-                <Text style={{color: '#00415e', marginTop:15}} onPress={verify}  >Forgot password?</Text>
-            </TouchableOpacity>
-            <View style={styles.button}>
-            {
-      buttonClick === 1?
-        AfterLogin()
-        : null
+        params: {
+          userId: authid,
+        },
+      });
     }
-                <TouchableOpacity
-                    style={styles.signIn}
-                    onPress={loginForm}
+    if (status === 401) {
+      return Alert.alert('Invalid Password or Email!');
+    }
+    // else if(status === 401){
+    //   return(
+    //     <div className="alert alert-secondary">Incorrect email or password!</div>
+    //   )
+    // }
+  }
 
-                >
-            
-             
-                
-                    <Text style={[styles.textSign, {
-                        color:'#fff',
-                    
-                    }]}>Sign In</Text>
-         
-                </TouchableOpacity>
+  return (
+    <View style={styles.container}>
+      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+      <ImageBackground
+        source={require('../../assets/img/backheart.png')}
+        resizeMode="cover"
+        style={styles.image}>
+        <TouchableOpacity
+          style={{marginLeft: 20, color: '#fff'}}
+          backgroundColor="#fff"
+          onPress={() => navigation.navigate('MainTab')}>
+          <Text
+            style={{
+              color: '#fff',
+              position: 'absolute',
+              bottom: 140,
+              left: 300,
+              fontSize: 18,
+              fontFamily:'Raleway'
+            }}>
+            Skip
+          </Text>
+        </TouchableOpacity>
+        <Stack space={1}>
+          <View style={styles.header}>
+            <Text style={styles.text_header}>Sign In</Text>
+          </View>
 
-
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
-                    style={[styles.signUp,{
-                        borderColor: '#00415e',
-                        borderWidth: 1,
-                        marginTop: 15
-                    }]}
-                >
-                    <Text style={[styles.textSign, {
-                        color: '#00415e'
-                    }]}>Sign Up</Text>
-                </TouchableOpacity>
+          <VStack space={3}>
+            <View style={styles.action}>
+              <TextInput
+                placeholder="Enter your email"
+                placeholderTextColor="#fff"
+                style={[
+                  styles.textInput,
+                  {
+                    color: '#fff',
+                  },
+                ]}
+                autoCapitalize="none"
+                value={data.email}
+                returnKeyType="done"
+                onChangeText={e => setData({...data, email: e})}
+              />
+              {data.check_textInputChange ? (
+                <Animatable.View animation="bounceIn">
+                  <Feather name="check-circle" color="green" size={20} />
+                </Animatable.View>
+              ) : null}
             </View>
-        </Animatable.View>
-      </View>
-   
-    );
+
+            <View style={styles.action}>
+              <TextInput
+                placeholder="Enter your password"
+                placeholderTextColor="#fff"
+                secureTextEntry={data.secureTextEntry ? true : false}
+                style={[
+                  styles.textInput,
+                  {
+                    color: '#fff',
+                  },
+                ]}
+                autoCapitalize="none"
+                returnKeyType="go"
+                value={data.password}
+                onSubmitEditing={loginForm}
+                onChangeText={e => setData({...data, password: e})}
+              />
+              <TouchableOpacity onPress={updateSecureTextEntry}>
+                <View style={{position: 'relative', right: 20, top: 10}}>
+                  {data.secureTextEntry ? (
+                    <Feather name="eye-off" color="grey" size={20} />
+                  ) : (
+                    <Feather name="eye" color="grey" size={20} />
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          </VStack>
+          <View style={styles.button}>
+            {buttonClick === 1 ? AfterLogin() : null}
+            <TouchableOpacity style={styles.signIn} onPress={loginForm}>
+              <Text
+                style={[
+                  styles.textSign,
+                  {
+                    fontFamily:'Raleway-Bold',
+                    color: '#00415e',
+                  },
+                ]}>
+                Sign In
+              </Text>
+            </TouchableOpacity>
+            <VStack space={50}>
+              <TouchableOpacity>
+                <Text
+                  style={{color: '#fff', textAlign: 'center', marginTop: 5,  fontFamily:'Raleway'}}
+                  onPress={verify}>
+                  Forgot password?
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity>
+                <Text
+                  style={{color: '#fff', textAlign: 'center', marginTop: 25,  fontFamily:'Raleway'}}
+                  onPress={() => navigation.navigate('SignUpScreen')}>
+                  Don't have an account? Sign Up
+                </Text>
+              </TouchableOpacity>
+            </VStack>
+          </View>
+        </Stack>
+      </ImageBackground>
+    </View>
+  );
 };
 
 export default SignInScreen;
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1, 
-      backgroundColor: '#00415e'
-    },
-    header: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 20,
-        paddingBottom: 50
-    },
-    footer: {
-        flex: 3,
-        backgroundColor: '#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingHorizontal: 20,
-        paddingVertical: 30
-    },
-    text_header: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    text_footer: {
-        color: '#05375a',
-        fontSize: 18
-    },
-    action: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f2f2f2',
-        paddingBottom: 5
-    },
-    actionError: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#FF0000',
-        paddingBottom: 5
-    },
-    textInput: {
-        flex: 1,
-        marginTop: Platform.OS === 'ios' ? 0 : -12,
-        paddingLeft: 10,
-        color: '#05375a',
-    },
-    errorMsg: {
-        color: '#FF0000',
-        fontSize: 14,
-    },
-    button: {
-        alignItems: 'center',
-        marginTop: 50
-    },
-    signUp:{
-        width: '100%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
+  container: {
+    flex: 1,
+    backgroundColor: '#00415e',
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingBottom: 50,
+  },
 
-    },
-    signIn: {
-        width: '100%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        backgroundColor: '#00415e'
-    },
-    textSign: {
-        fontSize: 18,
-        fontWeight: 'bold'
-    }
-  });
+  text_header: {
+      fontFamily:'Raleway-Bold',
+    color: '#fff',
+   
+    fontSize: 30,
+
+
+    textAlign: 'center',
+  },
+  text_footer: {
+    color: '#05375a',
+    fontSize: 18,
+  },
+  action: {
+    flexDirection: 'row',
+
+    borderWidth: 1,
+    borderRadius: 15,
+    borderColor: '#f2f2f2',
+    paddingBottom: 5,
+  },
+  actionError: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FF0000',
+    paddingBottom: 5,
+  },
+  textInput: {
+    flex: 1,
+    padding: 6,
+    paddingHorizontal: 15,
+    color: '#05375a',
+    fontFamily:'Raleway'
+  },
+  errorMsg: {
+    color: '#FF0000',
+    fontSize: 14,
+  },
+  button: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
+ 
+  signIn: {
+    width: '100%',
+    height: hp('6%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+  },
+  textSign: {
+    fontSize: 18,
+    textAlign:'center'
+   
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 15,
+  },
+});

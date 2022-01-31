@@ -1,7 +1,10 @@
 import React from 'react';
 import { FlatList,Text } from 'react-native';
 import { View} from 'react-native';
-
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+  } from 'react-native-responsive-screen';
 import { Image } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { color } from 'react-native-reanimated';
@@ -18,8 +21,9 @@ const CenterWell = ({content, type, text, title, message, source, embed, caption
                                     </View>                        
                             ,
                     'paragraph': <View>    
-                         
-                                 <Paragraph>{text}</Paragraph>                          
+                          
+                                 <Text style={{color:"#fff", width:wp('50%'),fontFamily:'Raleway-Regular',position:'relative',top:45}}>{text}</Text>  
+                                              
                                 </View>,
                 
                     

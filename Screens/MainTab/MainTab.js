@@ -25,7 +25,7 @@ const MainTabScreen = () =>
         try{
          AsyncStorage.getItem('author')
        .then((value1)=>{
-     console.log('hello',value1)
+  
            if(value1!=null)
            {
              setRegId(value1)
@@ -46,7 +46,8 @@ const MainTabScreen = () =>
 
      return(
     <Tab.Navigator
-     tabBarActiveTintColor='#00415e'
+
+  
       initialRouteName="Home"
    
     >

@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MainTabScreen from "./MainTab/MainTab";
 import SignInScreen from "./login/SignIn";
 import SplashScreen from "./MainTab/SplashScreen";
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import CreateScreen from "./MainTab/Create";
 import SearchArt from "./search/SearchArticle";
@@ -12,6 +11,8 @@ import SearchDoc from "./search/SearchDoctor";
 import SearchBar from "./search/SearchBar";
 import CreateScreenHome from "./MainTab/CreateHome";
 import Disease from "./Disease/Disease";
+import Verify from "./login/Verify";
+import ProfileScreen from "./MainTab/Profile";
 const Stack = createStackNavigator();
 
 const RootStack=()=> {
@@ -40,8 +41,11 @@ const RootStack=()=> {
         <Stack.Screen name="searchArt" component={SearchArt} options={{headerShown:false}} />
         <Stack.Screen name="searchDoc" component={SearchDoc} options={{headerShown:false}} />
         <Stack.Screen name="SearchBar" component={SearchBar} options={{headerShown:false}} />
-        <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerStyle:{backgroundColor:'#00415e'},headerTitleStyle:{color:'#fff'}, headerTitle:'',
-          headerLeft: ()=> <Icon name="close-outline" size={40}  style={{marginLeft:20,color:'#fff'} } backgroundColor="#fff" onPress={()=>navigation.navigate('HomeTab',{Screen:'Home'})}></Icon> }}/>
+        <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown:false }}/>
+        <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown:false }}/>
+        <Stack.Screen name="Verify" component={Verify} options={{ headerShown:false }}/>
+     
+ 
 
      
 
