@@ -72,7 +72,7 @@ const ProfileScreen = () => {
   };
  const remove=async ()=>{
 try{
-await AsyncStorage.multiRemove(['author','rateType','firstName','lastName'])
+await AsyncStorage.multiRemove(['author','rateType','firstName','lastName','email'])
   .then(()=>{
   logout()
   })

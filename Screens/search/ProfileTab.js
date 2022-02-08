@@ -1,92 +1,150 @@
-import React,{useState,useEffect} from 'react';
-import { View,Text,StyleSheet } from 'react-native';
-import { Paragraph } from 'react-native-paper';
-import axios from 'axios';
-import { backendHost } from '../../components/apiConfig';
-const ProfileTab = ({ setModalShow, rowno, name, pSpl, hospital, state, country, acPerm, url, reload}) => {
-  const[showValue,setShowValue]=useState([])
- console.log(rowno)
-  const getRating = () => {
+import React, {useState, useEffect} from 'react';
+import {Dimensions, ImageBackground} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  Button,
+  FlatList,
+  StyleSheet,
+  StatusBar,
+  BackHandler,
+  Alert,
+  TouchableOpacity,
+  TouchableHighlight,
+  Image,
+} from 'react-native';
+import {
+  Card,
+  Checkbox,
+  Modal,
+  Paragraph,
+  Portal,
+  Provider,
+} from 'react-native-paper';
+import AllPost from '../search/AllPost';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import PhoneInput from 'react-native-phone-number-input';
+import {
+  HStack,
+  Stack,
+  Center,
+  Heading,
+  NativeBaseProvider,
+  Container,
+  Box,
+} from 'native-base';
+import {backendHost} from '../../components/apiConfig';
 
-    axios.get(`${backendHost}/rating/target/${rowno}/targettype/1/avg`)
-  
-    .then(res => {
-     
-      console.log('helo:',res.data)
-      setShowValue(res.data.toFixed(1))
-    })
-    .catch(err => console.log(err))
-  }
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { useNavigation
+ } from '@react-navigation/native';
 
-useEffect(()=>{
-  getRating()
-},[])  
-return(
+const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated, state, country_code}) => {
+   const [imageExists, setImageExists] = useState(false)
+   
+   const checkIfImageExits = (imageUrl) => {
+      fetch(imageUrl, { method: 'HEAD', mode: 'no-cors' })
+      .then(res => {
+         if (res.ok) {
+               setImageExists(true)
+         } else {
+            setImageExists(false)
+         }
+      }).catch(err => null);
+   }
+   const onError = (e) => {
+    <Icon name="user-md" color={'#00415e'} size={26} />
+ }
+ const navigation=useNavigation();
+
+   useEffect(() => {
+      checkIfImageExits(`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`)
+   }, [])
+    return(
+      
+         <View>
+             <HStack>
     <View>
-   
-            <View>
-                  <View >
-                  <Text style={styles.t2}>{showValue}</Text>
-                  </View>
-                  <View >
-                  <Text>{name}</Text>
-                  <Text>{pSpl}</Text>          
-                  <Text>{hospital} {state} {country}</Text>
-                   <View><Paragraph style={{fontSize:10}}>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sodales dolor in ante fermentum, vitae varius turpis imperdiet.”</Paragraph></View>
-                  </View>
-               
-                </View>
-   
-         
+    
+   < Card
+                          
+                          style={{
+                            width: wp('30%'),
+                            height: hp('15%'),
+                            backgroundColor: '#fff',
+                            borderRadius: 200,
+                            marginRight:8,
+                            justifyContent:'center',
+                          
+                          
+                            paddingHorizontal:5,
+                            alignItems:'center'
+                          }}>
+                            { 
+      <ImageBackground source={{uri:`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+       
+    onError={(e) => onError(e)}  />
+  
+                            }
+        </Card>
     </View>
-)
-};
+    <View>
+       <View style={{zIndex:999,width:wp('60%')}}>
+         <TouchableOpacity
+         style={{}}
+         onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
+         >
+
+     
+          <Text  style={{
+            color: '#00415e',
+            marginTop: 5,
+            fontFamily:'Raleway-Medium',
+            fontSize: 14,
+            position: 'relative',
+            bottom: 0,
+         
+          }}>Dr. {firstName} {lastName}</Text>
+              </TouchableOpacity>
+          <Text  style={{
+            color: '#00415e',
+            marginTop: 5,
+            fontFamily:'Raleway-Regular',
+            fontSize: 12,
+            position: 'relative',
+            bottom: 0,
+         
+          }}>{primary_spl}</Text>
+          <Text style={{
+            color: '#00415e',
+            marginTop: 5,
+            fontFamily:'Raleway-Regular',
+            fontSize: 12,
+            position: 'relative',
+            bottom: 0,
+         
+          }}>{hospital_affliated} </Text>
+            <Text style={{
+            color: '#00415e',
+            marginTop: 5,
+            fontFamily:'Raleway-Regular',
+            fontSize: 12,
+            position: 'relative',
+            bottom: 0,
+             right: 4
+          }}> {state} {country_code}</Text>
+          
+       </View>
+     
+    </View>
+    </HStack>
+ </View>
+   
+    )
+}
 
 export default ProfileTab;
-const styles = StyleSheet.create({
-    
-  contain:{
-    padding:0,
-    margin:0,
-   
-
-
-    
-  },
-  title: {
-   fontSize:13,
-   fontWeight:'bold',
-
-    position: 'relative',
-    bottom: 3,
-   left: 0,
-    zIndex:999,
-    // color: 'blue',
-    padding : 5,
-    margin: 0
-  },
-  t1:{
-    fontSize:10,
-      position: 'relative',
-      bottom: 10,
-      right:5,
-      padding : 10,
-      margin: 0,
-      zIndex:999
-    
-  
-  },
-  t2:{
-    fontSize:12,
-    fontWeight:'bold',
-      position: 'relative',
-      bottom: 8,
-      left:18,
-      padding : 10,
-      margin: 0,
-      zIndex:999
-    
-  
-  }
-
-})

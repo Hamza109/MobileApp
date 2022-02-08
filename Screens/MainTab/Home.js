@@ -23,7 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import PhoneInput from 'react-native-phone-number-input';
+
 import {
   HStack,
   Stack,
@@ -50,8 +50,8 @@ const HomeScreen = ({navigation, route}) => {
   const {colors} = useTheme();
   const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
-  const [backPressed, setBack] = React.useState(1);
-  const [visible, setVisible] = React.useState(false);
+  const [backPressed, setBack] = useState(1);
+  const [visible, setVisible] = useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -143,38 +143,7 @@ navigation.goBack()
   const [value, setValue] = useState('');
   const [items, setItems] = useState([]);
   const [formattedValue, setFormattedValue] = useState('');
-  const DATA = [
-    {
-      name: 'Arthritis',
-      source: require('../../assets/img/arthritis.png'),
-      color: 'pink',
-    },
-    {
-      name: 'Thyroid',
-      source: require('../../assets/img/thyroid.png'),
-      color: 'lightblue',
-    },
-    {
-      name: 'Diabetes',
-      source: require('../../assets/img/slider-2.png'),
-      color: 'orange',
-    },
-    {
-      name: 'Insomnia',
-      source: require('../../assets/img/insomnia.png'),
-      color: 'purple',
-    },
-    {
-      name: 'Skin Care',
-      source: require('../../assets/img/slider-5.png'),
-      color: 'pink',
-    },
-    {
-      name: 'Hyper Tension',
-      source: require('../../assets/img/bloodpressure.png'),
-      color: 'lightblue',
-    },
-  ];
+ 
   const DATA1 = [
     {name: 'Ayurveda', source: require('../../assets/img/ayurvedic.jpg')},
 
@@ -197,7 +166,7 @@ navigation.goBack()
     return JSON.parse(str).blocks;
   }
   
-  const carouselRef = React.useRef(null);
+  
   
   // function renderItem({item, index}) {
   //   const {name, source, color} = item;
@@ -297,14 +266,14 @@ navigation.goBack()
             onPress={() => {
               navigation.navigate('searchArt');
             }}>
-            <Card style={styles.card}>
+            <View style={styles.card}>
               <HStack ml="2" space={110} alignItems="center">
-                <Text style={{fontSize: 18, color: '#E5E5E5'}}>
-                  search cures
+                <Text style={{fontSize: 18, color: '#00415e',fontFamily:'Raleway-Regular'}}>
+                  Search cures
                 </Text>
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
-            </Card>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('CreateScreenHome')}>
@@ -539,7 +508,7 @@ navigation.goBack()
             }}
             source={require('../../assets/img/bloodpressure.png')}
           />
-          <TouchableOpacity onPress={()=>{navigation.navigate('Result',{ texts: 'HYper Tension',})}}>
+          <TouchableOpacity onPress={()=>{navigation.navigate('Result',{ texts: 'Blood Pressure',})}}>
           <Text
             style={{
               color: '#fff',
@@ -599,19 +568,12 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: 'grey',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
     width: wp('72%'),
     height: 50,
     fontSize: 20,
-    fontWeight: 'bold',
+  
     borderRadius: 15,
-    position: 'relative',
-
-    borderWidth: 1,
-    shadowRadius: 35,
-    shadowOffset: 50,
-    elevation: 10,
-    shadowColor: 'grey',
     padding: 10,
   },
   inCard: {
@@ -630,7 +592,7 @@ const styles = StyleSheet.create({
   icon: {
     padding: 3,
 
-    color: '#E5E5E5',
+    color: '#00415e',
   },
 
   b2: {

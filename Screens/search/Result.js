@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SearchArt from './SearchArticle';
 import ArticleHeader from './ArticleHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import StarRating from 'react-native-star-rating';
 import {
   HStack,
@@ -73,15 +74,14 @@ console.log(json)
     })
   }
   
-
   const isearch=()=>{
  
    
     fetch(`${backendHost}/isearch/${text}`)
-  
+      
       .then((res) => res.json())
     .then((json) => {
-     
+     setResult(text)
       setItems(json)
       console.log(json)
     })
@@ -131,7 +131,7 @@ useEffect(()=> {
 
             >
          
-             {
+         {
                     items.length !== 0?
                     items.filter((i, idx) => idx < 9).map((i) => {
                     var content = []
@@ -159,7 +159,7 @@ useEffect(()=> {
                           style={{
                             width: wp('97%'),
                             height: hp('25%'),
-                            backgroundColor: '#00415e',
+                            backgroundColor: 'lightgrey',
                             borderRadius: 0,
                            marginBottom:5,
                             justifyContent:'center',
@@ -169,10 +169,9 @@ useEffect(()=> {
                             alignItems:'center'
                           }}>
                             <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("45%"),height:hp("25%"),marginTop:0}}/>
+        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:hp('25%'),marginTop:0}}/>
                         <View>
-                          
-                           
+                            
                             <AllPost
                              
                              id = {i.article_id}
@@ -184,14 +183,14 @@ useEffect(()=> {
                             <View style={{flex:1}}>
                 
             <Box>
-                                <Text>
+                                <Text style={{marginTop:28}}>
                                     {
                                         content?
                                             content.map((j, idx) => idx<1 && (
                                                 <CenterWell
                                                     content = {j.data.content}
                                                     type = {j.type}
-                                                    text = {j.data.text.substr(0, 150) + '....'}
+                                                    text = {j.data.text.substr(0, 300) + '....'}
                                                     title = {j.data.title}
                                                     message = {j.data.message}
                                                     source = {j.data.source}
@@ -208,21 +207,19 @@ useEffect(()=> {
                                 </Text>
                                 </Box>
                                 <Text  style={{
-            color: '#fff',
-           
-            fontFamily:'Raleway-Bold',
-            fontSize: 13,
+            color: '#00415e',
             position:'absolute',
             bottom:15,
-            
+            fontFamily:'Raleway-Bold',
+            fontSize: 10,
           
-            
+         
           }}>{i.authors_name} </Text>
           <Text style={{
-            color: '#fff',
+            color: '#00415e',
           
             fontFamily:'Raleway-Bold',
-            fontSize: 13,
+            fontSize: 10,
             position:'absolute',
             bottom:3,
             
@@ -240,7 +237,7 @@ useEffect(()=> {
                 // : null
                 
                 ): 
-               <Image Source={require('../../assets/img/heart.png')} style={{width:wp('10%'),height:hp('10%')}} />
+                <Text>We do not have any cures for this condition yet but our editorial team is working on it. In the meantime, if you have a cure, Please Click Here to add the cure to our site.</Text>
             }
          
           </ScrollView>

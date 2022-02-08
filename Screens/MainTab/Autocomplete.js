@@ -126,7 +126,7 @@ const Autocomplete = () => {
       <View>
         <Input
         placeholder="search cures"
-        placeholderTextColor="#E5E5E5"
+        placeholderTextColor="#00415e"
       
         bg="#fff"
         onChangeText={onSearch}
@@ -134,11 +134,11 @@ const Autocomplete = () => {
         value={text}
         width="62%"
         height="95%"
-        color="#E5E5E5"
+        fontFamily="Raleway-Regular"
+        color="rgba(0, 65, 94, 0.2)"
         borderRadius="15"
-        _focus={{borderColor:'grey'}}
-        backgroundColor="grey"
-        borderColor="lightgrey"
+        _focus={{borderColor:'rgba(0, 65, 94, 0.2)'}}
+        backgroundColor="rgba(0, 65, 94, 0.2)"
         py="3"
         px="1"
         fontSize="18"
@@ -150,7 +150,7 @@ const Autocomplete = () => {
           <Icon
           m="2"
           ml="3"
-          color="#E5E5E5"
+          color="#00415e"
             name="search"
           onPress={(() => setText(text), result)}
             size={20}

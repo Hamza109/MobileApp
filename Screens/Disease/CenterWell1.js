@@ -9,7 +9,7 @@ import { Image } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { color } from 'react-native-reanimated';
 import { Paragraph } from 'react-native-paper';
-const CenterWell = ({content, type, text, title, message, source, embed, caption, alignment, imageUrl, item}) =>{
+const CenterWell1 = ({content, type, text, title, message, source, embed, caption, alignment, imageUrl, item}) =>{
   
     return(
         <View>
@@ -17,12 +17,12 @@ const CenterWell = ({content, type, text, title, message, source, embed, caption
                 {
                     'header':                           
                                     <View>
-                                        <Text style={{fontSize: 10,fontWeight:'bold'}}>{title}</Text>
+                                        <Text style={{fontSize: 16,fontWeight:'bold' ,color:'#00415e'}}>{title}</Text>
                                     </View>                        
                             ,
                     'paragraph': <View>    
                           
-                                 <Text style={{color:"#00415e", width:wp('51%'),fontFamily:'Raleway-Regular',position:'relative',fontSize:10}}>{text}</Text>  
+                                 <Text style={{color:"#00415e",fontFamily:'Raleway-Regular',fontSize:17}}>{text}</Text>  
                                               
                                 </View>,
                 
@@ -60,4 +60,4 @@ const CenterWell = ({content, type, text, title, message, source, embed, caption
     )
 } 
 
-export default CenterWell; 
+export default CenterWell1; 

@@ -22,7 +22,7 @@ import {useNavigation} from '@react-navigation/core';
 import { backendHost } from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-const SearchBar = ref => {
+const SearchBarCity = ref => {
   //   const [dataSource,setDataSource] = useState([])
 
   //   const [colors] = useState(['#84DCC6', '#FEC8C8', '#F7E4CF', "#E8DEF3",])
@@ -49,7 +49,7 @@ const SearchBar = ref => {
 
   const docresult = () => {
     if (name)
-      return navigation.push('docResult', {
+      return navigation.push('docResultCity', {
         names: `${name}`,
       });
     else {
@@ -66,16 +66,26 @@ const SearchBar = ref => {
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`${backendHost}/IntegratedActionController`)
-      .then(res => res.data)
-      .then(doctordata => {
-        console.log(doctordata.map.Doctorname.myArrayList);
-        setItems(doctordata.map.Doctorname.myArrayList);
-      })
-
-      .catch(res => console.log(res));
+cityAll();
   }, []);
+  const cityAll=()=>{
+    axios
+    .get(`${backendHost}/city/all`)
+    .then(res => res.data)
+    .then(citydata => {
+  console.log(citydata)
+    var temp = []
+    citydata.forEach(i => {
+      temp.push(i.Cityname, i.Pincode)
+    });
+console.log(temp)
+            setItems(temp)
+        ;
+ 
+    })
+
+    .catch(res => console.log(res));
+  }
 
   const searchFilterFunction = text => {
     setName(null);
@@ -123,7 +133,7 @@ const SearchBar = ref => {
       <View>
    
           <Input
-        placeholder="Search by name"
+        placeholder="Search by city or pincode"
         placeholderTextColor="#00415e"
        fontFamily="Raleway-Regular"
         bg="#fff"
@@ -175,7 +185,7 @@ const SearchBar = ref => {
     </View>
   );
 };
-export default SearchBar;
+export default SearchBarCity;
 const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({

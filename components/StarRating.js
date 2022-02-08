@@ -124,7 +124,7 @@ const onStarRatingPress=(rating)=> {
 
 
   return (
-    <View>
+    <View style={{}}>
       
      
       <StarRating
@@ -133,7 +133,7 @@ const onStarRatingPress=(rating)=> {
         starSize={25}
         maxStars={5}
         rating={showValue}
-       emptyStarColor={'lightgrey'}
+       emptyStarColor={'#00415e'}
         selectedStar={(newValue) => onStarRatingPress(newValue)}
         fullStarColor={'orange'}
       />

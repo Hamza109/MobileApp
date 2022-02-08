@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/core';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import axios from 'axios';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-
+import { useIsFocused } from '@react-navigation/native';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const { s, c } = bootstrapStyleSheet;
 
@@ -29,12 +29,12 @@ const AllPost = ({ id, title, f_title, w_title}) => {
 useEffect(()=>{
   getRating()
 },[])  
-
+const isFocus=useIsFocused()
  const navigation=useNavigation()
         return (
           <View style={styles.contain}>
             <View style={{width:widthPercentageToDP('54%')}}>
-           <Text onPress={()=> navigation.navigate(`Disease`, {ids:`${id}`})} style={[styles.title]}>{title}</Text>
+           <Text onPress={()=>{if(isFocus){ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>
@@ -66,11 +66,11 @@ useEffect(()=>{
     },
     title: {
      
-        color: '#fff',
+        color: '#00415e',
         position:'absolute',
         top:0,
         fontFamily:'Raleway-Bold',
-        fontSize: 13,
+        fontSize: 10,
      
       
         

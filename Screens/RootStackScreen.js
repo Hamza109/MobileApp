@@ -7,12 +7,19 @@ import { useNavigation } from "@react-navigation/native";
 import CreateScreen from "./MainTab/Create";
 import SearchArt from "./search/SearchArticle";
 import Result from "./search/Result";
-import SearchDoc from "./search/SearchDoctor";
+
 import SearchBar from "./search/SearchBar";
 import CreateScreenHome from "./MainTab/CreateHome";
 import Disease from "./Disease/Disease";
 import Verify from "./login/Verify";
 import ProfileScreen from "./MainTab/Profile";
+import DocTab from "./MainTab/DocTab";
+import DocResult from "./search/DocResult";
+import SearchDoc from "./search/SearchDoc";
+import SearchBarCity from "./search/SearchBarCity";
+import SearchDocCity from "./search/SearchDocCity";
+import DocResultCity from "./search/DocResultCity";
+import DocProfile from "./MainTab/DocProfile";
 const Stack = createStackNavigator();
 
 const RootStack=()=> {
@@ -39,11 +46,16 @@ const RootStack=()=> {
         <Stack.Screen name="Result" component={Result} options={{headerShown:null,headerLeft:null}} />
         <Stack.Screen name="Disease" component={Disease} options={{headerShown:null,headerLeft:null}} />
         <Stack.Screen name="searchArt" component={SearchArt} options={{headerShown:false}} />
-        <Stack.Screen name="searchDoc" component={SearchDoc} options={{headerShown:false}} />
+        <Stack.Screen name="docResult" component={DocResult} options={{headerShown:false}} />
+        <Stack.Screen name="docResultCity" component={DocResultCity} options={{headerShown:false}} />
         <Stack.Screen name="SearchBar" component={SearchBar} options={{headerShown:false}} />
+        <Stack.Screen name="SearchDocCity" component={SearchDocCity} options={{headerShown:false}} />
         <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown:false }}/>
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown:false }}/>
         <Stack.Screen name="Verify" component={Verify} options={{ headerShown:false }}/>
+        <Stack.Screen name="DocTab" component={DocTab} options={{ headerShown:false }}/>
+        <Stack.Screen name="DocProfile" component={DocProfile} options={{headerTitle:'Doctor Finder' }}/>
+        <Stack.Screen name="SearchDoc" component={SearchDoc} options={{ headerShown:false }}/>
      
  
 

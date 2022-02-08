@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { View, Text, Button, StyleSheet, StatusBar,BackHandler,Alert,TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, StatusBar,BackHandler,Alert,TouchableOpacity,ImageBackground} from 'react-native';
 import { useTheme,Link } from '@react-navigation/native';
 import axios from 'axios';
 
@@ -10,8 +10,26 @@ import { ScrollView } from 'react-native';
 import { backendHost } from '../../components/apiConfig';
 import ProfileTab from './ProfileTab';
 import SearchBar from './SearchBar';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {
+  Container,
+  Modal,
+  Button,
+  Input,
+  VStack,
+  FormControl,
+  Center,
+  Stack,
+  HStack,
+  Box,
+  NativeBaseProvider,
+} from 'native-base';
+import SearchBarCity from './SearchBarCity';
 
-const SearchDoc = ({navigation,route}) => {
+const DocResultCity = ({navigation,route}) => {
 
  
  
@@ -40,7 +58,7 @@ const [text,setText]=useState(names)
   const isearch=()=>{
  
    
-    fetch(`${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}&Latitude=32.7266&Longitude=74.8570`)
+    fetch(`${backendHost}/SearchActionController?cmd=getResults&city=${text}=&doctors=&Latitude=32.7266&Longitude=74.8570`)
       .then(res => res.json())
       .then(json => {
     setItems(json.map.DoctorDetails.myArrayList) 
@@ -65,14 +83,14 @@ console.log(items)
     return (
    
       <View style={styles.container}>
-  <SearchBar/>
+  <SearchBarCity/>
 
 
-  <ScrollView style={{marginTop:60}}>
+  <ScrollView style={{marginTop:10}}>
   {items.map((i) => (
                 
             
-                  <Card style={{padding: 5,margin:5,height:200,width:350,backgroundColor:'aliceblue'}}> 
+                  <Card style={{padding: 5,margin:5,height:hp('17%'),width:wp('96%'),backgroundColor:'lightgrey',padding:9}}> 
                    {/* <StarRating
         disabled={false}
       
@@ -89,13 +107,13 @@ console.log(items)
       /> */}
                   <View>
                         <ProfileTab
-                             rowno= {i.map.rowno}
-                            name = {i.map.name}
-                            pSpl = {i.map.primary_spl}
-                            hospital = {i.map.hospital_affliated}
-                            state = {i.map.state}
-                            country = {i.map.country_code}
-                      
+                               rowno = {i.map.rowno}
+                               firstName= {i.map.docname_first}
+                               lastName= {i.map.docname_last}
+                               primary_spl = {i.map.primary_spl}
+                               hospital_affliated = {i.map.hospital_affliated}
+                               state = {i.map.state}
+                               country_code = {i.map.country_code}
                         />
                         </View>
                         <View style={{position:'relative',bottom:0,left:4}}>
@@ -117,7 +135,7 @@ console.log(items)
 };
 
 
-export default SearchDoc;
+export default DocResultCity;
 
 const styles = StyleSheet.create({
   container: {

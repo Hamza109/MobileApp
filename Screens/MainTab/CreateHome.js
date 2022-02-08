@@ -19,6 +19,12 @@ import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {backendHost} from '../../components/apiConfig';
+import { set } from 'react-native-reanimated';
+import { VStack,Stack,Container,HStack,Checkbox } from 'native-base';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 const CreateScreenHome = () => {
   const navigation=useNavigation()
   const [comment, setComment] = useState('');
@@ -42,7 +48,10 @@ const CreateScreenHome = () => {
       Promise.all(AsyncStorage.getItem('author').then(value1 => {
         console.log(value1);
         if (value1 != null) {
-          setRegId(value1);
+           setRegId(value1)
+        }
+        else{
+          navigation.navigate('SignIn')
         }
       }));
     } catch (error) {
@@ -79,10 +88,10 @@ const isFocus= useIsFocused();
    
     if(isFocus){
       
-      
+     
     getType();
     }
-     check()
+ 
     getId();
   },[regId]);
 
@@ -129,8 +138,8 @@ const isFocus= useIsFocused();
       
       <View style={styles.action}>
         <TextInput
-          placeholder="Title"
-          placeholderTextColor="#666666"
+          placeholder="Enter Title"
+          placeholderTextColor="#00415e"
           style={[
             styles.textInputTitle,
             {
@@ -155,8 +164,8 @@ const isFocus= useIsFocused();
     return (
       <View style={styles.action}>
         <TextInput
-          placeholder="Remarks"
-          placeholderTextColor="#666666"
+          placeholder="Leave comments here"
+          placeholderTextColor="#00415e"
           secureTextEntry={data.secureTextEntry ? true : false}
           style={[
             styles.textInput,
@@ -177,7 +186,8 @@ const isFocus= useIsFocused();
     return (
       <View style={styles.article}>
         <TextInput
-          placeholderTextColor="#666666"
+        placeholder='Write cure description here'
+          placeholderTextColor="#00415e"
           secureTextEntry={data.secureTextEntry ? true : false}
           style={[
             styles.textInputArticle,
@@ -190,6 +200,7 @@ const isFocus= useIsFocused();
           returnKeyType="go"
           value={article}
           onChangeText={e => setArticle(e)}
+          multiline={true}
         />
       </View>
     );
@@ -205,71 +216,43 @@ const isFocus= useIsFocused();
   };
 
   return (
-    <View style={{flex:1,backgroundColor:'#8cd4eb'}}>
+    <View style={{flex:1,backgroundColor:'#fff',padding:10}}>
     <ScrollView>
-    <View style={styles.container}>
-
-        <View style={styles.body}>
-        <Card style={{marginBottom:5}}>
-              <Text style={styles.textBody} >
-                Cure
-              </Text>
-            </Card>
-            <Collapsible
-            collapsed={isCollapsed}
-            style={{backgroundColor: '#fff'}}>
-      <View>
-        <View style={styles.card}>
-          <TouchableOpacity>
-            <Card>
-              <Text style={styles.textCard} onPress={toggleDetails}>
-                Cure Details
-              </Text>
-            </Card>
-          </TouchableOpacity>
-          <Collapsible
-            collapsed={isCollapsedDetails}
-            style={{backgroundColor: '#fff'}}>
-            <View>
-              <View style={{marginTop: 5}}>
-                <Text style={styles.text}>Title</Text>
-              </View>
-
-              {showTitle ? titleValue() : null}
-              <View style={{marginTop: 5}}>
-                <Text style={styles.text}>Remarks</Text>
-              </View>
-              {showRemarks ? remarks() : null}
-            </View>
-          </Collapsible>
-        </View>
-
-        <View style={styles.card}>
-          <TouchableOpacity>
-            <Card>
-              <Text style={styles.textCard} onPress={toggleCure}>
-                Write Cure Here
-              </Text>
-            </Card>
-          </TouchableOpacity>
-          <Collapsible
-            collapsed={isCollapsedCure}
-            title="Cure Details"
-            style={styles.box}>
-            <View>{showArticle ? articles() : null}</View>
-          </Collapsible>
-        </View>
-      
-      </View>
-      <TouchableOpacity style={styles.btn} onPress={e => submitArticleForm(e)}>
+<Stack space={4}>
+     <VStack space={2}>
+       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Title</Text>
+       {titleValue()}
+     </VStack>
+     <VStack space={2}>
+       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Remarks</Text>
+       {remarks()}
+     </VStack>
+     <VStack space={2}>
+       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Write cure here</Text>
+       {articles()}
+     </VStack>
+     <VStack space={2}>
+       
+     <Checkbox shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
+     I certify that i am at least 13years old and I have read and
+      </Checkbox>
+      <Checkbox shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
+      Accept Terms & Conditions
+      </Checkbox>
+      <Checkbox shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" defaultIsChecked isReadOnly >
+        Privacy Policy
+      </Checkbox>
+     </VStack>
+     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
+     <TouchableOpacity style={styles.btn} onPress={e => submitArticleForm(e)}>
         <Text style={styles.textBtn}>Submit</Text>
       </TouchableOpacity>
+      </View>
       
-      
-      </Collapsible>
-    </View>
-   
-    </View>
+
+     </Stack>
+
+       
     </ScrollView>
     </View>
   );
@@ -358,44 +341,44 @@ textAlign:'center',
     paddingBottom: 5,
   },
   textInput: {
-    borderRadius: 25,
+    borderRadius: 15,
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-
+    fontFamily:'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
-    fontSize: 20,
+    fontSize: 16,
     marginBottom: 10,
     marginVertical: 0,
 
-    backgroundColor: '#fff',
+    backgroundColor:'rgba(0, 65, 94, 0.2)',
   },
   textInputTitle: {
-    borderRadius: 25,
+    borderRadius: 15,
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-
+fontFamily:'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
-    fontSize: 20,
-    marginBottom: -10,
+    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    fontSize: 16,
+      marginBottom: -10,
     marginVertical: 0,
 
-    backgroundColor: '#fff',
   },
   textInputArticle: {
     flex: 1,
-
+    borderRadius: 15,
     color: 'grey',
     fontSize: 20,
-    paddingBottom: 150,
-    marginVertical: 20,
-
-    backgroundColor: '#fff',
+    textAlignVertical:'top',
+    paddingHorizontal:10,
+    fontFamily:'Raleway-Regular',
+    backgroundColor:'rgba(0, 65, 94, 0.2)',
   },
   errorMsg: {
     color: '#FF0000',
@@ -415,21 +398,23 @@ textAlign:'center',
     marginBottom: 8,
   },
   textBtn: {
-    color: '#fff',
+    color: '#00415e',
     textAlign: 'center',
+    fontSize:20
   },
 
   btn: {
     justifyContent: 'center',
+    alignItems:'center',
     borderWidth: 0,
-    borderColor: '#343a40',
-    backgroundColor: '#343a40',
+    borderRadius:15,
+    borderColor: 'rgba(0, 65, 94, 0.2)',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
     marginTop:5,
     marginBottom:5,
-    width: 100,
-    height: 40,
-    position:'relative',
-    left:10
+    width: wp('60%'),
+    height: hp('6%'),
+  
   
   },
 });

@@ -94,7 +94,7 @@ const DocPreview = () => {
   }
 
   useEffect((lat,lon,city) => {
-    fetch(`${backendHost}/SearchActionController?cmd=getResults&city=jammu&doctors=manoj&Latitude=${lat}&Longitude=${lon}`)
+    fetch(`${backendHost}/SearchActionController?cmd=getResults&city=jammu&doctors=manoj&Latitude=32.7266&Longitude=74.8570`)
     .then(res => res.json())
     .then(json => {
         setItems(json.map.DoctorDetails.myArrayList)          
@@ -133,43 +133,7 @@ const DocPreview = () => {
       </View>
     );
   }
-  function renderItem() {
-    const {authors_name, source, color} = items;
-    return (
-      <View style={{marginRight: 13}}>
-        <Card
-          style={{
-            width: wp('90%'),
-            height: hp('25%'),
-            backgroundColor: '#00415e',
-            borderRadius: 20,
-          }}>
-          <Image
-            style={{
-              alignContent: 'center',
-              width: wp('24%'),
-              height: hp('15%'),
-              position: 'relative',
-              top: 42,
-              left: 11,
-            }}
-            source={source}
-          />
-          <Text
-            style={{
-              color: '#fff',
-              fontWeight: '500',
-              position: 'relative',
-              bottom: 10,
-              left: 9,
-            }}>
-            {authors_name}
-          </Text>
-        </Card>
-      </View>
-    );
-  }
-
+  
   return (
     <>
       <View style={{flex:1}}>

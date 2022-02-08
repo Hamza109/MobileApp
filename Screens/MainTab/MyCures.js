@@ -100,8 +100,7 @@ const MyCures = () => {
     {
     getId()
     getType()
-    console.log('auth: ',regId)
-    console.log('auth: ',regType)
+  
     receivedData()
     }
   

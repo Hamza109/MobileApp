@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
-import {useIsFocused, useTheme} from '@react-navigation/native';
+import {NavigationContainer, useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import Autocomplete from './Autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,7 +41,7 @@ import {
   Box,
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
-
+import { useNavigation } from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -60,12 +60,14 @@ const DoctorsCard = ({rowno, firstName, lastName, primary_spl, hospital_affliate
          }
       }).catch(err => null);
    }
-   const onError = (e) => {
-    <Icon name="user-md" color={'#00415e'} size={26} />
- }
 
+const navigation =useNavigation();
+
+const isfocus=useIsFocused();
    useEffect(() => {
+
       checkIfImageExits(`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`)
+    
    }, [])
     return(
       
@@ -76,7 +78,7 @@ const DoctorsCard = ({rowno, firstName, lastName, primary_spl, hospital_affliate
                           style={{
                             width: wp('30%'),
                             height: hp('15%'),
-                            backgroundColor: '#00415e',
+                            backgroundColor: 'grey',
                             borderRadius: 200,
                             marginRight:8,
                             justifyContent:'center',
@@ -85,12 +87,20 @@ const DoctorsCard = ({rowno, firstName, lastName, primary_spl, hospital_affliate
                             paddingHorizontal:5,
                             alignItems:'center'
                           }}>
-      <ImageBackground source={{uri:`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}} 
-    onError={(e) => onError(e)}  />
+     { 
+
+      <ImageBackground source={{uri:`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+         />
+
+                            }
         </Card>
     </View>
     <View>
        <View style={{zIndex:999,width:wp('31%')}}>
+          <TouchableOpacity
+   
+          onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
+          >
           <Text  style={{
             color: '#00415e',
             marginTop: 5,
@@ -100,6 +110,7 @@ const DoctorsCard = ({rowno, firstName, lastName, primary_spl, hospital_affliate
             bottom: 0,
             textAlign: 'center',
           }}>Dr. {firstName} {lastName}</Text>
+          </TouchableOpacity>
           <Text  style={{
             color: '#00415e',
             marginTop: 5,

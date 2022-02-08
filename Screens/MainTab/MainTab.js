@@ -11,6 +11,7 @@ import Autocomplete from './Autocomplete';
 import { useState } from 'react';
 import searchArt from '../search/SearchArticle';
 import CreateScreenHome from './CreateHome';
+import DocTab from './DocTab';
 
 const HomeStack = createStackNavigator();
 const MyCuresStack = createStackNavigator();
@@ -71,7 +72,7 @@ const MainTabScreen = () =>
         options={{
           headerShown:false,
           tabBarActiveTintColor:'#00415e',
-          tabBarLabel: 'Article',
+          tabBarLabel: 'Doctor',
           tabBarColor: '#fff',
           tabBarIcon: ({ color }) => (
             <Icon name="user-md" color={'#00415e'} size={26} />
@@ -179,7 +180,7 @@ const ArticleStackScreen = ({navigation}) =>(
           fontWeight: 'bold'
           }
       }}>
-          <ArticleStack.Screen name="Create Article" component={CreateScreen} options={{
+          <ArticleStack.Screen name="Doctor" component={DocTab} options={{
           headerLeft: () => (
             <Icon name="user-md" size={30}  style={{marginLeft:20,color:'#00415e'}} backgroundColor="#fff" ></Icon>
          )

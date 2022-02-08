@@ -68,7 +68,7 @@ const ArticlePreview = () => {
 
   function allPosts() {
     // For all available blogs "/blogs"
-    fetch(`${backendHost}/article/allkv?limit=6`)
+    fetch(`${backendHost}/article/allkv?limit=15`)
       .then(res => res.json())
       .then(json => {
         var temp = [];
@@ -102,7 +102,7 @@ const ArticlePreview = () => {
 
     return (
       <View>
-        <View style={{marginRight: 13,width:wp('100%'),height:hp('20%')}}>
+        <View style={{marginRight: 25,width:wp('100%'),height:hp('20%')}}>
           {/* {items
             .filter((i, idx) => idx < 9)
             .map(
@@ -197,23 +197,21 @@ const ArticlePreview = () => {
                     title = title.replace(regex, '-');
                     return(
                     <View >
-                    <View>
+                    <View style={{marginRight:10}}>
                     <Card
                           
                           style={{
                             width: wp('97%'),
                             height: hp('25%'),
-                            backgroundColor: '#00415e',
+                            backgroundColor: 'lightgrey',
                             borderRadius: 0,
-                            marginRight:15,
+                           marginBottom:5,
                             justifyContent:'center',
-                    
-                  
                             paddingHorizontal:5,
                             alignItems:'center'
                           }}>
                             <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("45%"),height:hp("25%"),marginTop:0}}/>
+        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:hp('25%'),marginTop:0}}/>
                         <View>
                             
                             <AllPost
@@ -227,14 +225,14 @@ const ArticlePreview = () => {
                             <View style={{flex:1}}>
                 
             <Box>
-                                <Text>
+                                <Text style={{marginTop:28}}>
                                     {
                                         content?
                                             content.map((j, idx) => idx<1 && (
                                                 <CenterWell
                                                     content = {j.data.content}
                                                     type = {j.type}
-                                                    text = {j.data.text.substr(0, 150) + '....'}
+                                                    text = {j.data.text.substr(0, 300) + '....'}
                                                     title = {j.data.title}
                                                     message = {j.data.message}
                                                     source = {j.data.source}
@@ -251,19 +249,19 @@ const ArticlePreview = () => {
                                 </Text>
                                 </Box>
                                 <Text  style={{
-            color: '#fff',
+            color: '#00415e',
             position:'absolute',
             bottom:15,
             fontFamily:'Raleway-Bold',
-            fontSize: 13,
+            fontSize: 10,
           
          
           }}>{i.authors_name} </Text>
           <Text style={{
-            color: '#fff',
+            color: '#00415e',
           
             fontFamily:'Raleway-Bold',
-            fontSize: 13,
+            fontSize: 10,
             position:'absolute',
             bottom:3,
             

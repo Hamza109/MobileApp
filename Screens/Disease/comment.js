@@ -104,12 +104,12 @@ const Comment = (props) => {
                     <TextInput 
                       style={[styles.textInput, {
                           height: hp('7%'),
-                        
+                         paddingHorizontal:10,
                           width:wp('80%'),
                           backgroundColor:'lightgrey',
                           fontSize: 15
                       }]}
-                    
+                    autoFocus
                     value={cmtText}
                     placeholderTextColor='darkgrey'
                     placeholder='comment'
