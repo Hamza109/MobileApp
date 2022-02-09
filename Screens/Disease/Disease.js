@@ -146,7 +146,7 @@ const Disease = ({navigation, route}) => {
     if(isFocus)
     {
     getResult();
-  }})
+  }}, [data])
   function IsJsonValid(str) {
     try {
       JSON.parse(str);
@@ -250,24 +250,9 @@ const Disease = ({navigation, route}) => {
                 </View>
               ))}
             </VStack>
-            <View>
+            <View style={{marginTop:5}}>
               <VStack space={2}>
-                <Text style={{color: '#00415e', marginTop: 20, fontSize: 15}}>
-                  Rate this cure
-                </Text>
-                <View style={{marginRight: 200}}>
-                  <Rating article_id={id} />
-                </View>
-
-                <View>
-                  <TouchableOpacity activeOpacity={0.5} style={styles.btn}>
-                    <Text
-                      style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}
-                      onPress={() => setSubModalVisible(!subModalVisible)}>
-                      Subscribe
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+               
                 {
                   data.reg_type == 1 ?
                 <Card

@@ -40,14 +40,14 @@ return(
             onPress={() => {
               navigation.navigate('searchArt');
             }}>
-            <Card style={styles.card}>
+            <View style={styles.card}>
               <HStack ml="2" space={160} alignItems="center">
-                <Text style={{fontSize: 18, color: '#E5E5E5'}}>
-                  search cures
+                <Text style={{fontSize: 18, color: '#00415e',fontFamily:'Raleway-Regular'}}>
+                  Search cures
                 </Text>
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
-            </Card>
+            </View>
           </TouchableOpacity>
 </HStack>
 </Card>
@@ -70,20 +70,16 @@ const styles = StyleSheet.create({
     //     width: '100%',
     //   },
 card: {
-  flexDirection: 'row',
-  backgroundColor: 'grey',
+
+  backgroundColor: 'rgba(0, 65, 94, 0.2)',
   width: wp('85%'),
   height: 50,
   fontSize: 20,
-  fontWeight: 'bold',
+
   borderRadius: 15,
   position: 'relative',
 
-  borderWidth: 1,
-  shadowRadius: 35,
-  shadowOffset: 50,
-  elevation: 10,
-  shadowColor: 'grey',
+
   padding: 10,
   },
   inCard: {
@@ -105,12 +101,12 @@ borderWidth: 0.1,
 alignItems: 'center',
 width: wp('100%'),
 height: 85,
-elevation: 3,
+
 },
 icon: {
   padding: 3,
 
-  color: '#E5E5E5',
+  color: '#00415e',
 },
 
 })

@@ -10,7 +10,10 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 import { color } from 'react-native-reanimated';
 import { Paragraph } from 'react-native-paper';
 const CenterWell1 = ({content, type, text, title, message, source, embed, caption, alignment, imageUrl, item}) =>{
-  
+    var textContent;
+    if(typeof(text) == "string"){
+        textContent = text.replace(/&nbsp;/g, ' ');;
+    }
     return(
         <View>
             {
@@ -22,7 +25,7 @@ const CenterWell1 = ({content, type, text, title, message, source, embed, captio
                             ,
                     'paragraph': <View>    
                           
-                                 <Text style={{color:"#00415e",fontFamily:'Raleway-Regular',fontSize:17}}>{text}</Text>  
+                                 <Text style={{color:"#00415e",fontFamily:'Raleway-Regular',fontSize:17,textAlign:'justify'}}>{textContent}</Text>  
                                               
                                 </View>,
                 

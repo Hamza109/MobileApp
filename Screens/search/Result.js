@@ -74,6 +74,7 @@ console.log(json)
     })
   }
   
+  
   const isearch=()=>{
  
    
@@ -81,7 +82,7 @@ console.log(json)
       
       .then((res) => res.json())
     .then((json) => {
-     setResult(text)
+
       setItems(json)
       console.log(json)
     })

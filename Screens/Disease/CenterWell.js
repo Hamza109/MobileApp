@@ -10,19 +10,22 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 import { color } from 'react-native-reanimated';
 import { Paragraph } from 'react-native-paper';
 const CenterWell = ({content, type, text, title, message, source, embed, caption, alignment, imageUrl, item}) =>{
-  
+  var textContent;
+    if(typeof(text) == "string"){
+        textContent = text.replace(/&nbsp;/g, ' ');;
+    }
     return(
         <View>
             {
                 {
                     'header':                           
                                     <View>
-                                        <Text style={{fontSize: 10,fontWeight:'bold'}}>{title}</Text>
+                                        <Text style={{fontSize: 10,fontWeight:'bold',textAlign:'justify'}}>{title}</Text>
                                     </View>                        
                             ,
                     'paragraph': <View>    
                           
-                                 <Text style={{color:"#00415e", width:wp('51%'),fontFamily:'Raleway-Regular',position:'relative',fontSize:10}}>{text}</Text>  
+                                 <Text style={{color:"#00415e", width:wp('51%'),fontFamily:'Raleway-Regular',position:'relative',fontSize:10,textAlign:'justify'}}>{textContent}</Text>  
                                               
                                 </View>,
                 
