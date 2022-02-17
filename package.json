@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.5",
+    "@gorhom/bottom-sheet": "^4.1.5",
     "@react-native-async-storage/async-storage": "^1.15.14",
     "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-navigation/bottom-tabs": "^6.0.9",
@@ -29,11 +30,13 @@
     "react-native-collapsible": "^1.6.0",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^2.1.0",
+    "react-native-image-crop-picker": "^0.37.2",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-pager-view": "^5.4.9",
     "react-native-pages": "^0.9.0",
     "react-native-paper": "^4.11.1",
     "react-native-phone-number-input": "^2.1.0",
+    "react-native-raw-bottom-sheet": "^2.2.0",
     "react-native-reanimated": "^2.2.4",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^3.3.2",
@@ -42,7 +45,9 @@
     "react-native-star-rating": "^1.1.0",
     "react-native-svg": "^12.1.1",
     "react-native-tab-view": "^3.1.1",
-    "react-native-vector-icons": "^9.0.0"
+    "react-native-toast-message": "^2.1.1",
+    "react-native-vector-icons": "^9.0.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
   },
   "devDependencies": {
     "@babel/core": "7.16.7",

@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect ,useRef} from 'react';
 import { 
+  Animated,
     View, 
     Text, 
     TouchableOpacity, 
@@ -20,11 +21,22 @@ import { useIsFocused, useTheme } from '@react-navigation/native';
 import { max } from 'react-native-reanimated';
 
 const SplashScreen = ({navigation}) => {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const pulse = () => {
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 1.2,useNativeDriver:true }),
+      Animated.timing(scale, { toValue: 0.2 ,useNativeDriver:true}),
+    ]).start(() => pulse());
+  };
+
+  
     const { colors } = useTheme();
     const isFocus=useIsFocused();
     useEffect(()=>{
       if(isFocus)
       {
+        pulse();
         setTimeout(()=>{
             navigation.navigate('SignIn')
         },2000)
@@ -36,9 +48,10 @@ const SplashScreen = ({navigation}) => {
           <StatusBar backgroundColor='#00415e' barStyle="light-content"/>
         <View style={styles.header}>
        
-            <Animatable.Image 
+            <Animated.Image 
                 animation="bounceIn"
                 duraton="1500"
+              
             source={require('../../assets/img/whitelogo.png')}
             style={styles.logo}
             resizeMode="stretch"
@@ -75,6 +88,7 @@ const styles = StyleSheet.create({
   logo: {
       width: wp('30%'),
       height: hp('15%'),
+      transform:[{scale:1}]
   
   },
  

@@ -1,0 +1,1 @@
+export const regId = AsyncStorage.getItem('author')

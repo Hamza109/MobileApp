@@ -25,7 +25,7 @@ import {ScrollView, ImageBackground} from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import axios from 'axios';
 import ArticleHeader from '../search/ArticleHeader';
 import {
   widthPercentageToDP as wp,
@@ -37,16 +37,18 @@ import {
   Modal,
   Button,
   Input,
+  Heading,
   VStack,
   FormControl,
   Center,
   Stack,
   HStack,
   Box,
+  Spinner,
   NativeBaseProvider,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 const Disease = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
@@ -59,11 +61,28 @@ const Disease = ({navigation, route}) => {
   const [id, setId] = useState(ids);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
-
+  const [formattedValue, setFormattedValue] = useState('');
   const containerStyle = {
     backgroundColor: 'white',
     padding: 20,
     height: hp('100%'),
+  };
+  const getId = () => {
+    try {
+      Promise.all(AsyncStorage.getItem('author').then(value1 => {
+        console.log(value1);
+        if (value1 != null) {
+          setModalVisible(!modalVisible);
+         
+         
+        }
+        else{
+          navigation.navigate('SignIn')
+        }
+      }));
+    } catch (error) {
+      console.log(error);
+    }
   };
   const postSubscription = val => {
     var phoneNumber = val.split('+')[1];
@@ -106,47 +125,43 @@ const Disease = ({navigation, route}) => {
       })
       .catch(err => null);
   };
-  const isFocus=useIsFocused();
+  const isFocus = useIsFocused();
   const onError = e => {
     <Icon name="user-md" color={'#00415e'} size={26} />;
   };
   useEffect(() => {
-   
-    if(isFocus)
-    {
-    comments();
-   
-    
-    fetch(`${backendHost}/article/${id}`)
-      // .then(res => JSON.parse(res))
-      .then(res => res.json())
-      .then(json => {
-        console.log(json);
-        setData(json);
-        setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
-        let a = JSON.parse(decodeURIComponent(json.content));
-        console.log('127',a.blocks[0].data);
-        // a.blocks.forEach(i => {
-        //   setArticleContent([...articleContent ,i.data.text])
-        //   console.log(i.data.caption)
-        // });
-      });
-   
-    if (data.reg_doc_pat_id !== null) {
-      checkIfImageExits(
-        `https://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
-      );
-   
+    if (isFocus) {
 
+      comments();
+
+      fetch(`${backendHost}/article/${id}`)
+        // .then(res => JSON.parse(res))
+        .then(res => res.json())
+        .then(json => {
+          console.log(json);
+          setIsLoaded(true)
+          setData(json);
+          setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
+          let a = JSON.parse(decodeURIComponent(json.content));
+          // a.blocks.forEach(i => {
+          //   setArticleContent([...articleContent ,i.data.text])
+          //   console.log(i.data.caption)
+          // });
+        });
+
+      if (data.reg_doc_pat_id !== null) {
+        checkIfImageExits(
+          `http://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
+        );
+      }
     }
-  }
-  }, []);
+  },[]);
 
-  useEffect (()=>{
-    if(isFocus)
-    {
-    getResult();
-  }}, [data])
+  useEffect(() => {
+    if (isFocus) {
+      getResult();
+    }
+  }, [data]);
   function IsJsonValid(str) {
     try {
       JSON.parse(str);
@@ -165,27 +180,44 @@ const Disease = ({navigation, route}) => {
         setCommentItems(json);
       });
   }
-  const [sItems,setSItems]=useState([])
-  const [result,setResult]=useState()
+  const [sItems, setSItems] = useState([]);
+  const [result, setResult] = useState();
   const getResult = () => {
     fetch(`${backendHost}/isearch/${data.dc_name}`)
-    
-    .then((res) => res.json())
-  .then((json) => {
-   
-    setSItems(json)
-    console.log(json)
-  })
+      .then(res => res.json())
+      .then(json => {
+        setIsLoaded(true)
+        setSItems(json);
+        console.log(json);
+      });
   };
 
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [imageExists, setImageExists] = useState(false);
+  const [isLoaded,setIsLoaded]=useState(false)
   // useEffect(() => {
   //   console.log('AR: ', items[0].data.file.url)
   // }, [items])
   const b = 'http://all-cures.com/cures/uitest/99.png';
   console.log(data.authors_name);
+
+  if(!isLoaded)
+  {
+    return(
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+    <HStack space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
+        <Heading color="#00415e" fontSize="lg">
+          Loading
+        </Heading>
+      </HStack>
+      </View>
+    );
+    
+  }
+
+else{
   return (
     <View style={styles.container}>
       <View>
@@ -250,198 +282,244 @@ const Disease = ({navigation, route}) => {
                 </View>
               ))}
             </VStack>
-            <View style={{marginTop:5}}>
+            <View style={{marginTop: 5}}>
               <VStack space={2}>
-               
-                {
-                  data.reg_type == 1 ?
-                <Card
-                  style={{
-                    width: wp('94%'),
-                    height: hp('17%'),
-                    backgroundColor: '#E5E5E5',
-                    padding: 15,
-                    marginTop: 10,
-                    marginBottom: 5,
-                  }}>
-                  <Text
+                {data.reg_type == 1 ? (
+                  <Card
                     style={{
-                      color: '#00415e',
-                      fontFamily: 'Raleway-Medium',
-                      position: 'relative',
-                      left: 9,
-                      bottom: 5,
+                      width: wp('94%'),
+                      height: hp('17%'),
+                      backgroundColor: '#E5E5E5',
+                      padding: 15,
+                      marginTop: 10,
+                      marginBottom: 5,
                     }}>
-                    AUTHOR
-                  </Text>
-                  <HStack>
-                    
-                    <Card
+                    <Text
                       style={{
-                        width: wp('20%'),
-                        height: hp('10%'),
-                        borderRadius: 200,
+                        color: '#00415e',
+                        fontFamily: 'Raleway-Medium',
+                        position: 'relative',
+                        left: 9,
+                        bottom: 5,
                       }}>
-                      <ImageBackground
-                        source={{
-                          uri: `https://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
-                        }}
+                      AUTHOR
+                    </Text>
+                    <HStack>
+                      <Card
                         style={{
                           width: wp('20%'),
                           height: hp('10%'),
                           borderRadius: 200,
-                          overflow: 'hidden',
-                        }}
-                      />
-                    </Card>
-                    <Text
-                      style={{color: '#00415e', fontFamily: 'Raleway-Light'}}>
-                      {data.authors_name}
-                    </Text>
-                  </HStack>
-                </Card> : data.reg_type == 2 || data.reg_type == 3?
-                  <Card
-                  style={{
-                    width: wp('94%'),
-                    height: hp('17%'),
-                    backgroundColor: '#E5E5E5',
-                    padding: 15,
-                    marginTop: 10,
-                    marginBottom: 5,
-                  }}>
-                  <Text
-                    style={{
-                      color: '#00415e',
-                      fontFamily: 'Raleway-Medium',
-                      position: 'relative',
-                      left: 9,
-                      bottom: 5,
-                    }}>
-                    AUTHOR
-                  </Text>
-                  <HStack space={2}>
-                    
-                    <Card
-                      style={{
-                        width: wp('20%'),
-                        height: hp('10%'),
-                        borderRadius: 200,
-                        alignItems:'center'
-                      }}>
-              <Icon name="user" size={74} style={{opacity:0.5}}/>
-                    </Card>
-                    <Text
-                      style={{color: '#00415e', fontFamily: 'Raleway-Light',position:'relative',top:25}}>
-                      {data.authors_name}
-                    </Text>
-                  </HStack>
-                </Card>: null
-}
-<View style={{backgroundColor:'lightgrey',padding:10}}>
-  <Text style={{fontFamily:'Raleway-Medium',color:'#00415e'}}>Recommended Articles</Text>
-</View>
-
-{
-                    sItems.length !== 0?
-                    sItems.filter((i, idx) => idx < 9).map((i) => {
-                    var content = []
-                    var imgLocation = i.content_location
-                    var imageLoc = '';
-                    if(i.content){
-                        content = IsJsonValid(decodeURIComponent(i.content))
-                    }
-                    if(imgLocation && imgLocation.includes('cures_articleimages')){
-                        imageLoc = 'https://all-cures.com:444/'
-                    } else {
-                        imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
-                    }
-
-                    var title = i.title
-                    var regex = new RegExp(' ', 'g');
-
-                    //replace via regex
-                    title = title.replace(regex, '-');
-                    return(
-                    <View >
-                    <View>
-                    <Card
-                          
+                        }}>
+                        <ImageBackground
+                          source={{
+                            uri: `http://all-cures.com:8080/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
+                          }}
                           style={{
-                            width: wp('97%'),
-                            height: hp('12.4%'),
-                            backgroundColor: 'lightgrey',
-                            borderRadius: 0,
-                           marginBottom:2,
-                            justifyContent:'center',
-                    
-                  
-                            paddingHorizontal:5,
-                            alignItems:'center'
+                            width: wp('20%'),
+                            height: hp('10%'),
+                            borderRadius: 200,
+                            overflow: 'hidden',
+                          }}
+                        />
+                      </Card>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.push('DocProfile', {
+                            ids: `${data.reg_doc_pat_id}`,
+                          });
+                        }}>
+                        <Text
+                          style={{
+                            color: '#00415e',
+                            fontFamily: 'Raleway-Regular',
+                            position: 'relative',
+                            top: 20,
+                            left: 15,
+                            fontSize: 18,
                           }}>
-                            <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:100,marginTop:0}}/>
-                        <View>
-                          
-                           
-                            <AllPost
-                             
-                             id = {i.article_id}
-                             title = {i.title}
-                             f_title = {i.friendly_name}
-                             w_title = {i.window_title}
-                             allPostsContent={() => receivedData()}
-                         />
-                            <View style={{flex:1}}>
-                
-            <Box>
-                                <Text style={{marginTop:28}}>
-                                    {
-                                        content?
-                                            content.map((j, idx) => idx<1 && (
-                                                <CenterWell
-                                                    content = {j.data.content}
-                                                    type = {j.type}
-                                                    text = {j.data.text.substr(0, 80) + '....'}
-                                                    title = {j.data.title}
-                                                    message = {j.data.message}
-                                                    source = {j.data.source}
-                                                    embed = {j.data.embed}
-                                                    caption = {j.data.caption}
-                                                    alignment = {j.data.alignment}
-                                                    imageUrl = {j.data.file? j.data.file.url: null}
-                                                    url = {j.data.url}
-                                                />
-                                            ))
-                                            : null
-                                    }
-                                 
-                                </Text>
-                                </Box>
-                                <Text  style={{
-            color: '#00415e',
-           
-            fontFamily:'Raleway-Medium',
-            fontSize: 10,
-            position:'absolute',
-            bottom:3,
-            
-          
-            
-          }}>{i.authors_name}   {i.published_date}</Text>
-        
-                            </View>
-                        </View>
-                        </HStack>
-                        </Card>
-                    </View>
+                          {data.authors_name}
+                        </Text>
+                      </TouchableOpacity>
+                    </HStack>
+                  </Card>
+                ) : data.reg_type == 2 || data.reg_type == 3 ? (
+                  <Card
+                    style={{
+                      width: wp('94%'),
+                      height: hp('17%'),
+                      backgroundColor: '#E5E5E5',
+                      padding: 15,
+                      marginTop: 10,
+                      marginBottom: 5,
+                    }}>
+                    <Text
+                      style={{
+                        color: '#00415e',
+                        fontFamily: 'Raleway-Medium',
+                        position: 'relative',
+                        left: 9,
+                        bottom: 5,
+                      }}>
+                      AUTHOR
+                    </Text>
+                    <HStack space={2}>
+                      <Card
+                        style={{
+                          width: wp('20%'),
+                          height: hp('10%'),
+                          borderRadius: 200,
+                          alignItems: 'center',
+                        }}>
+                        <Icon name="user" size={74} style={{opacity: 0.5}} />
+                      </Card>
+                      <Text
+                        style={{
+                          color: '#00415e',
+                          fontFamily: 'Raleway-Light',
+                          position: 'relative',
+                          top: 25,
+                        }}>
+                        {data.authors_name}
+                      </Text>
+                    </HStack>
+                  </Card>
+                ) : null}
+                <View style={{backgroundColor: 'lightgrey', padding: 10}}>
+                  <Text
+                    style={{fontFamily: 'Raleway-Medium', color: '#00415e'}}>
+                    Recommended Articles
+                  </Text>
                 </View>
+
+                {sItems.length !== 0 ? (
+                  sItems
+                    .filter((i, idx) => idx < 9)
+                    .map(
+                      i => {
+                        var content = [];
+                        var imgLocation = i.content_location;
+                        var imageLoc = '';
+                        if (i.content) {
+                          content = IsJsonValid(decodeURIComponent(i.content));
+                        }
+                        if (
+                          imgLocation &&
+                          imgLocation.includes('cures_articleimages')
+                        ) {
+                          imageLoc = 'http://all-cures.com:8080/';
+                        } else {
+                          imageLoc =
+                            'https://all-cures.com:444/cures_articleimages//299/default.png';
+                        }
+
+                        var title = i.title;
+                        var regex = new RegExp(' ', 'g');
+
+                        //replace via regex
+                        title = title.replace(regex, '-');
+                        return (
+                          <View>
+                            <View>
+                              <Card
+                                style={{
+                                  width: wp('97%'),
+                                  height: hp('12.4%'),
+                                  backgroundColor: 'lightgrey',
+                                  borderRadius: 0,
+                                  marginBottom: 2,
+                                  justifyContent: 'center',
+
+                                  paddingHorizontal: 5,
+                                  alignItems: 'center',
+                                }}>
+                                <HStack space={1}>
+                                  <Image
+                                    source={{
+                                      uri:
+                                        imageLoc +
+                                        imgLocation
+                                          .replace('json', 'png')
+                                          .split('/webapps/')[1],
+                                    }}
+                                    style={{
+                                      width: wp('42%'),
+                                      height: 100,
+                                      marginTop: 0,
+                                    }}
+                                  />
+                                  <View>
+                                    <AllPost
+                                      id={i.article_id}
+                                      title={i.title}
+                                      f_title={i.friendly_name}
+                                      w_title={i.window_title}
+                                      allPostsContent={() => receivedData()}
+                                    />
+                                    <View style={{flex: 1}}>
+                                      <Box>
+                                        <Text style={{marginTop: 28}}>
+                                          {content
+                                            ? content.map(
+                                                (j, idx) =>
+                                                  idx < 1 && (
+                                                    <CenterWell
+                                                      content={j.data.content}
+                                                      type={j.type}
+                                                      text={
+                                                        j.data.text.substr(
+                                                          0,
+                                                          80,
+                                                        ) + '....'
+                                                      }
+                                                      title={j.data.title}
+                                                      message={j.data.message}
+                                                      source={j.data.source}
+                                                      embed={j.data.embed}
+                                                      caption={j.data.caption}
+                                                      alignment={
+                                                        j.data.alignment
+                                                      }
+                                                      imageUrl={
+                                                        j.data.file
+                                                          ? j.data.file.url
+                                                          : null
+                                                      }
+                                                      url={j.data.url}
+                                                    />
+                                                  ),
+                                              )
+                                            : null}
+                                        </Text>
+                                      </Box>
+                                      <Text
+                                        style={{
+                                          color: '#00415e',
+
+                                          fontFamily: 'Raleway-Medium',
+                                          fontSize: 10,
+                                          position: 'absolute',
+                                          bottom: 3,
+                                        }}>
+                                        {i.authors_name} {i.published_date}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                </HStack>
+                              </Card>
+                            </View>
+                          </View>
+                        );
+                      },
+
+                      // : null
+                    )
+                ) : (
+                  <Image
+                    Source={require('../../assets/img/heart.png')}
+                    style={{width: wp('10%'), height: hp('10%')}}
+                  />
                 )}
-                
-                // : null
-                
-                ): 
-               <Image Source={require('../../assets/img/heart.png')} style={{width:wp('10%'),height:hp('10%')}} />
-            }
               </VStack>
             </View>
           </ScrollView>
@@ -456,11 +534,12 @@ const Disease = ({navigation, route}) => {
             width={wp('100%')}
             height={hp('9%')}
             shadow={6}>
-           <Center flex={2}>
-            
-           <Rating article_id={id} />
-           <Text style={{fontFamily:'Raleway',color:'#00415e'}}>Rate this cure </Text>
-           </Center>
+            <Center flex={2}>
+              <Rating article_id={id} />
+              <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
+                Rate this cure{' '}
+              </Text>
+            </Center>
             <Pressable
               cursor="pointer"
               py="3"
@@ -473,12 +552,14 @@ const Disease = ({navigation, route}) => {
                   color="#00415e"
                   size={30}
                   onPress={() => {
-                    setModalVisible(!modalVisible);
+                   getId()
                   }}
                 />
-                           <Text style={{fontFamily:'Raleway',color:'#00415e'}}> Comment </Text>
+                <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
+                  {' '}
+                  Comment{' '}
+                </Text>
               </Center>
-              
             </Pressable>
             <Pressable
               cursor="pointer"
@@ -486,10 +567,18 @@ const Disease = ({navigation, route}) => {
               flex={1}
               onPress={() => setSelected(0)}>
               <Center>
-                <Icon mb="1" name="bell" color="#00415e" size={30}     onPress={() => {
+                <Icon
+                  mb="1"
+                  name="bell"
+                  color="#00415e"
+                  size={30}
+                  onPress={() => {
                     setSubModalVisible(!subModalVisible);
-                  }}/>
-                <Text style={{fontFamily:'Raleway',color:'#00415e'}}>Subscribe</Text>
+                  }}
+                />
+                <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
+                  Subscribe
+                </Text>
               </Center>
             </Pressable>
             <Pressable
@@ -499,10 +588,11 @@ const Disease = ({navigation, route}) => {
               onPress={() => setSelected(0)}>
               <Center>
                 <Icon mb="1" name="share-alt" color="#00415e" size={30} />
-                <Text style={{fontFamily:'Raleway',color:'#00415e'}}>Share </Text>
+                <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
+                  Share{' '}
+                </Text>
               </Center>
             </Pressable>
-       
           </HStack>
         </Box>
       </View>
@@ -519,24 +609,25 @@ const Disease = ({navigation, route}) => {
           <Modal.Header>comments</Modal.Header>
           <Modal.Body>
             <ScrollView>
-              {commentItems.length !== 0 ? (
-                commentItems.map(i => (
-                  <View style={{marginBottom: 10}}>
-                    <View
-                      style={{
-                        padding: 10,
-                        marginVertical: 0,
-                        marginBottom: 0,
-                        Width: wp('80%'),
-                        height: hp('10%'),
-                        borderBottomWidth: 0.2,
-                      }}>
-                      <Text>{i.comments}</Text>
-                    </View>
-                  </View>
-                ))
-              ) : (
-                <View
+              {
+                commentItems.reviewd==1?(
+                       commentItems.map(i => (
+                      <View style={{marginBottom: 10}}>
+                        <View
+                          style={{
+                            padding: 10,
+                            marginVertical: 0,
+                            marginBottom: 0,
+                            Width: wp('80%'),
+                            height: hp('10%'),
+                            borderBottomWidth: 0.2,
+                          }}>
+                          <Text>{i.comments}</Text>
+                        </View>
+                      </View>
+                    ))
+                  
+                ):( <View
                   style={{
                     flex: 1,
                     justifyContent: 'center',
@@ -545,11 +636,17 @@ const Disease = ({navigation, route}) => {
                   <Icon name="comments" style={{opacity: 0.3}} size={150} />
                   <Text style={{color: 'grey'}}>No comments yet</Text>
                   <Text style={{color: 'grey'}}>Be the first to comment.</Text>
-                </View>
-              )}
+                </View>)
+
+              }
+
+
+
+              
             </ScrollView>
           </Modal.Body>
           <Modal.Footer>
+
             <Comment article_id={id} />
           </Modal.Footer>
         </Modal.Content>
@@ -687,7 +784,7 @@ const Disease = ({navigation, route}) => {
         </View>
       </Card> */}
     </View>
-  );
+  )}
 };
 
 export default Disease;

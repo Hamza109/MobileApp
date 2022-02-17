@@ -135,7 +135,7 @@ const Autocomplete = () => {
         width="62%"
         height="95%"
         fontFamily="Raleway-Regular"
-        color="rgba(0, 65, 94, 0.2)"
+        color="#00415e"
         borderRadius="15"
         _focus={{borderColor:'rgba(0, 65, 94, 0.2)'}}
         backgroundColor="rgba(0, 65, 94, 0.2)"

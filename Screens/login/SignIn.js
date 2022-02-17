@@ -38,6 +38,7 @@ const SignInScreen = ({navigation,props}) => {
   const [status, setStatus] = useState('');
   const [buttonClick, setClicked] = useState('');
   const [isSignedIn,setIsSignedIn]= useState(props)
+  const [loginSuccess, setLoginSuccess] = useState(true)
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -68,17 +69,40 @@ const SignInScreen = ({navigation,props}) => {
         `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
       )
 
-      .then(res => {
-     
-        setStatus(res.status);
-        setId(res.data.registration_id);
-        setType(res.data.registration_type);
-        setFirst(res.data.first_name);
-        setLast(res.data.last_name);
-        setEmail(res.data.email_address);
+  
+      .then(res=>{
+        console.log(res)
+        if(res.data.registration_id)
+        {
+          navigation.navigate('MainTab', {
+    
+            params: {
+              userId: authid,
+            },
+
+          });
+          setStatus(res.status);
+          setId(res.data.registration_id);
+          setType(res.data.registration_type);
+          setFirst(res.data.first_name);
+          setLast(res.data.last_name);
+          setEmail(res.data.email_address);
+        }
       })
 
-      .catch(err => err);
+      .catch(err => {
+        setLoginSuccess(false)
+        if(err.response){
+        if(err.response.data.includes('Incorrect email')){
+          Alert.alert("Incorrect email or password!")
+        } else {
+         Alert.alert("Some error occured!")
+        }
+      }else{
+        return
+      }
+      })
+  
   };
   const setCheck = async value =>{
       try{
@@ -123,26 +147,7 @@ const SignInScreen = ({navigation,props}) => {
       console.log(error);
     }
   };
-  function AfterLogin() {
-    if (status === 200) {
-      console.log(status);
-      
-      navigation.navigate('MainTab', {
-    
-        params: {
-          userId: authid,
-        },
-      });
-    }
-    if (status === 401) {
-      return Alert.alert('Invalid Password or Email!');
-    }
-    // else if(status === 401){
-    //   return(
-    //     <div className="alert alert-secondary">Incorrect email or password!</div>
-    //   )
-    // }
-  }
+  
 
   return (
     <View style={styles.container}>
@@ -224,7 +229,7 @@ const SignInScreen = ({navigation,props}) => {
             </View>
           </VStack>
           <View style={styles.button}>
-            {buttonClick === 1 ? AfterLogin() : null}
+  
             <TouchableOpacity style={styles.signIn} onPress={loginForm}>
               <Text
                 style={[
@@ -249,7 +254,7 @@ const SignInScreen = ({navigation,props}) => {
               <TouchableOpacity>
                 <Text
                   style={{color: '#fff', textAlign: 'center', marginTop: 25,  fontFamily:'Raleway'}}
-                  onPress={() => navigation.navigate('SignUpScreen')}>
+                  onPress={() => navigation.navigate('SignUp')}>
                   Don't have an account? Sign Up
                 </Text>
               </TouchableOpacity>

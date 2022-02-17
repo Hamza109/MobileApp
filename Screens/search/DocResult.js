@@ -22,6 +22,8 @@ import {
   VStack,
   FormControl,
   Center,
+  Spinner,
+  Heading,
   Stack,
   HStack,
   Box,
@@ -60,6 +62,7 @@ const [text,setText]=useState(names)
     fetch(`${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}&Latitude=32.7266&Longitude=74.8570`)
       .then(res => res.json())
       .then(json => {
+        setIsLoaded(true)
     setItems(json.map.DoctorDetails.myArrayList) 
 
   })
@@ -77,8 +80,22 @@ console.log(items)
   
 }, [])
   
+if(!isLoaded)
+  {
+    return(
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+    <HStack space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
+        <Heading color="#00415e" fontSize="lg">
+          Loading
+        </Heading>
+      </HStack>
+      </View>
+    );
+    
+  }
 
-  
+  else{
     return (
    
       <View style={styles.container}>
@@ -130,7 +147,7 @@ console.log(items)
 
       </View>
      
-    );
+    )}
 };
 
 

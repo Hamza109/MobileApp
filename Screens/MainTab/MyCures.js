@@ -27,9 +27,15 @@ import CenterWell from '../Disease/CenterWell';
 import { useIsFocused } from '@react-navigation/native';
 import { backendHost } from '../../components/apiConfig';
 import { useNavigation } from '@react-navigation/native';
+import Review from '../mycures/Review';
+import Published from '../mycures/Publish';
+import Overview from '../mycures/Overview';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import All from '../mycures/All';
+
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const { s, c } = bootstrapStyleSheet;
-
+const Tab=createMaterialTopTabNavigator()
 const MyCures = () => {
   const navigation=useNavigation();
  
@@ -101,17 +107,7 @@ const MyCures = () => {
              navigation.navigate('CreateScreenHome')
           }
       }
-  useEffect(()=>
-  {
-    if(isFocus)
-    {
-    getId()
-    getType()
   
-    receivedData()
-    }
-  
-  },[items])
   function IsJsonValid(str) {
     try {
       JSON.parse(str);
@@ -131,236 +127,77 @@ const MyCures = () => {
  
   
     return (
+    <>
+    <Tab.Navigator
+
+  
+initialRouteName="All"
+screenOptions={{
+tabBarStyle:{padding:0},
+tabBarInactiveTintColor:'grey',
+tabBarLabelStyle:{fontFamily:'Raleway-Bold',fontSize:10}
+
+}}
+
+>
+<Tab.Screen
+  name="All"
+  component={All}
+  options={{
+    headerShown:false,
+    tabBarActiveTintColor:'#00415e',
+    tabBarLabel: 'All',
+    tabBarColor: '#fff',
+  
+   
+  }}
+/>
+<Tab.Screen
+  name="Overview"
+  component={Overview}
+  options={{
+    headerShown:false,
+    tabBarActiveTintColor:'#00415e',
+    activeColor:'red',
+
+    tabBarLabel: 'Overview',
+    tabBarColor: '#fff',
     
-      <View style={styles.container}>
-
-    
-     <ScrollView style={{flex:1,marginTop:5}}>
-       
-     {
-                    items.map((i) => {
-                    var content = []
-                    var imgLocation = i.content_location
-                    var imageLoc = '';
-                    if(i.content){
-                        content = IsJsonValid(decodeURIComponent(i.content))
-                    }
-                    if(imgLocation && imgLocation.includes('cures_articleimages')){
-                        imageLoc = 'https://all-cures.com:444/'
-                    } else {
-                        imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
-                    }
-
-                    var title = i.title
-                    var regex = new RegExp(' ', 'g');
-
-                    //replace via regex
-                    title = title.replace(regex, '-');
-                    
-                    return(
-                     
-                      i.pubstatus_id === 3 && i.edited_by ==  regId ?
-                    <View >
-                    <View>
-                    <Card
-                          
-                          style={{
-                            width: wp('97%'),
-                            height: hp('10.4%'),
-                            backgroundColor: 'lightgrey',
-                            borderRadius: 0,
-                           marginBottom:5,
-                            justifyContent:'center',
-                    
-                  
-                            paddingHorizontal:5,
-                            alignItems:'center'
-                          }}>
-                            <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:hp('10.4%'),marginTop:0}}/>
-                        <View>
-                            
-                            <AllPost
-                             
-                             id = {i.article_id}
-                             title = {i.title}
-                             f_title = {i.friendly_name}
-                             w_title = {i.window_title}
-                             allPostsContent={() => receivedData()}
-                         />
-                            <View style={{flex:1}}>
-                
-           <HStack>
-                                <Text  style={{
-            color: '#00415e',
-            position:'absolute',
-            bottom:18,
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-          
-         
-          }}>{i.authors_name} </Text>
-          <Text style={{
-            color: '#00415e',
-          
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-            position:'absolute',
-            bottom:6,
-            
-          
-            
-          }}>{i.published_date}</Text>
-               <Card style={[styles.publish,styles.opacity]}>
-                   
-                   <Text style={{textAlign:'center',color:'white',fontSize:10}}>Published</Text>
-                  
-                   </Card>  
-          </HStack>
-                            </View>
-                        </View>
-                        </HStack>
-                        </Card>
-                    </View>
-                </View>: i.pubstatus_id === 2 && i.edited_by ==  regId ?
-                    <View >
-                    <View>
-                    <Card
-                          
-                          style={{
-                            width: wp('97%'),
-                            height: hp('12.4%'),
-                            backgroundColor: 'lightgrey',
-                            borderRadius: 0,
-                           marginBottom:5,
-                            justifyContent:'center',
-                    
-                  
-                            paddingHorizontal:5,
-                            alignItems:'center'
-                          }}>
-                            <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:100,marginTop:0}}/>
-                        <View>
-                            
-                            <AllPost
-                             
-                             id = {i.article_id}
-                             title = {i.title}
-                             f_title = {i.friendly_name}
-                             w_title = {i.window_title}
-                             allPostsContent={() => receivedData()}
-                         />
-                            <View style={{flex:1}}>
-                
-           <HStack>
-                                <Text  style={{
-            color: '#00415e',
-            position:'absolute',
-            bottom:18,
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-          
-         
-          }}>{i.authors_name} </Text>
-          <Text style={{
-            color: '#00415e',
-          
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-            position:'absolute',
-            bottom:6,
-            
-          
-            
-          }}>{i.create_date}</Text>
-               <Card style={[styles.review,styles.opacity]}>
-                   
-                   <Text style={{textAlign:'center',color:'white',fontSize:10}}>Review</Text>
-                  
-                   </Card>  
-          </HStack>
-                            </View>
-                        </View>
-                        </HStack>
-                        </Card>
-                    </View>
-                </View>: i.pubstatus_id === 1 && i.edited_by ==  regId ?
-                    <View >
-                    <View>
-                    <Card
-                          
-                          style={{
-                            width: wp('97%'),
-                            height: hp('12.4%'),
-                            backgroundColor: 'lightgrey',
-                            borderRadius: 0,
-                           marginBottom:5,
-                            justifyContent:'center',
-                    
-                  
-                            paddingHorizontal:5,
-                            alignItems:'center'
-                          }}>
-                            <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:100,marginTop:0}}/>
-                        <View>
-                            
-                            <AllPost
-                             
-                             id = {i.article_id}
-                             title = {i.title}
-                             f_title = {i.friendly_name}
-                             w_title = {i.window_title}
-                             allPostsContent={() => receivedData()}
-                         />
-                            <View style={{flex:1}}>
-                
-           <HStack>
-                                <Text  style={{
-            color: '#00415e',
-            position:'absolute',
-            bottom:18,
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-          
-         
-          }}>{i.authors_name} </Text>
-          <Text style={{
-            color: '#00415e',
-          
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-            position:'absolute',
-            bottom:6,
-            
-          
-            
-          }}>{i.create_date}</Text>
-               <Card style={[styles.work,styles.opacity]}>
-                   
-                   <Text style={{textAlign:'center',color:'white',fontSize:10}}>Overview</Text>
-                  
-                   </Card>  
-          </HStack>
-                            </View>
-                        </View>
-                        </HStack>
-                        </Card>
-                    </View>
-                </View>:null
-                )}
-                
-                // : null
-                
-                )
-            }
-
-              </ScrollView>  
+  }}
+/>
 
 
-        
-      </View>
+
+ <Tab.Screen
+  name="Review"
+  component={Review}
+  options={{
+    headerShown:false,
+    tabBarActiveTintColor:'#00415e',
+    tabBarLabel: 'Review',
+    tabBarColor: '#fff',
+  
+  }}
+/>
+<Tab.Screen
+  name="Published"
+  component={Published}
+  options={{
+    headerShown:false,
+    tabBarActiveTintColor:'#00415e',
+    tabBarLabel: 'Published',
+    tabBarColor: '#fff',
+   
+  }}
+/>
+
+
+
+
+</Tab.Navigator>
+
+     
+      </>
     );
 };
 

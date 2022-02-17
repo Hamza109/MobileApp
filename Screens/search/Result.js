@@ -20,6 +20,7 @@ import {
   NativeBaseProvider,
   Container,
   Box,
+  Spinner
 } from 'native-base';
 
 import {
@@ -82,7 +83,7 @@ console.log(json)
       
       .then((res) => res.json())
     .then((json) => {
-
+      setIsLoaded(true)
       setItems(json)
       console.log(json)
     })
@@ -120,8 +121,22 @@ useEffect(()=> {
   
 }, [])
   
+if(!isLoaded)
+  {
+    return(
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+    <HStack space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
+        <Heading color="#00415e" fontSize="lg">
+          Loading
+        </Heading>
+      </HStack>
+      </View>
+    );
+    
+  }
 
-  
+  else{
     return (
       <>
       <View style={{flex:1}}>
@@ -142,7 +157,7 @@ useEffect(()=> {
                         content = IsJsonValid(decodeURIComponent(i.content))
                     }
                     if(imgLocation && imgLocation.includes('cures_articleimages')){
-                        imageLoc = 'https://all-cures.com:444/'
+                        imageLoc = 'http://all-cures.com:8080/'
                     } else {
                         imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
                     }
@@ -248,7 +263,7 @@ useEffect(()=> {
       </View>
     </>
      
-    );
+    )}
 };
 
 

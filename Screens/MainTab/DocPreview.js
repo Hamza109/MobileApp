@@ -39,6 +39,7 @@ import {
   NativeBaseProvider,
   Container,
   Box,
+  Spinner
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
 
@@ -51,7 +52,7 @@ import DoctorsCard from './DoctorsCard';
 
 const DocPreview = () => {
   const [items, setItems] = useState([]);
-  const [isLoaded, setLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   function diseasePosts(type) {
     // For specific blogs like "/blogs/diabetes"
@@ -97,6 +98,7 @@ const DocPreview = () => {
     fetch(`${backendHost}/SearchActionController?cmd=getResults&city=jammu&doctors=manoj&Latitude=32.7266&Longitude=74.8570`)
     .then(res => res.json())
     .then(json => {
+      setIsLoaded(true)
         setItems(json.map.DoctorDetails.myArrayList)          
     })
     .catch(err => null )
@@ -133,7 +135,21 @@ const DocPreview = () => {
       </View>
     );
   }
-  
+  if(!isLoaded)
+  {
+    return(
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+    <HStack space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
+        <Heading color="#00415e" fontSize="lg">
+          Loading
+        </Heading>
+      </HStack>
+      </View>
+    );
+    
+  }
+  else{  
   return (
     <>
       <View style={{flex:1}}>
@@ -172,7 +188,7 @@ const DocPreview = () => {
         </View>
       </View>
     </>
-  );
+  )}
 };
 
 export default DocPreview;

@@ -28,6 +28,7 @@ import {
   HStack,
   Stack,
   Center,
+  Spinner,
   Heading,
   NativeBaseProvider,
   Container,
@@ -52,6 +53,7 @@ const HomeScreen = ({navigation, route}) => {
   const [regType, setRegType] = useState();
   const [backPressed, setBack] = useState(1);
   const [visible, setVisible] = useState(false);
+  const [isloaded,setIsLoaded]=useState(false)
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -138,7 +140,7 @@ const HomeScreen = ({navigation, route}) => {
   }, []);
   const [value, setValue] = useState('');
   const [items, setItems] = useState([]);
-  const [formattedValue, setFormattedValue] = useState('');
+
 
   const DATA1 = [
     {name: 'Ayurveda', source: require('../../assets/img/ayurvedic.jpg')},

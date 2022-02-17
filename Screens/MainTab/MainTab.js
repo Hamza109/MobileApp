@@ -50,6 +50,12 @@ const MainTabScreen = () =>
 
   
       initialRouteName="Home"
+      screenOptions={{
+      tabBarStyle:{padding:5},
+      tabBarInactiveTintColor:'grey',
+      tabBarLabelStyle:{fontFamily:'Raleway-Medium'}
+
+      }}
    
     >
       <Tab.Screen
@@ -59,7 +65,8 @@ const MainTabScreen = () =>
           headerShown:false,
           tabBarActiveTintColor:'#00415e',
           activeColor:'red',
-          tabBarLabel: 'home',
+    
+          tabBarLabel: 'Home',
           tabBarColor: '#fff',
           tabBarIcon: ({ color }) => (
             <Icon name="home" color={'#00415e'} size={26} />
@@ -135,9 +142,7 @@ const HomeStackScreen = () =>(
         <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerLeft: null,headerShown:false
 
         }} />
-         <HomeStack.Screen name="CreateScreenHome" component={CreateScreenHome} options={{
-       
-      }} />
+        
      
 </HomeStack.Navigator>
 )

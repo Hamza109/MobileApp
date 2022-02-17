@@ -16,7 +16,11 @@ import {
 } from 'react-native';
 import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
-import {NavigationContainer, useIsFocused, useTheme} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useIsFocused,
+  useTheme,
+} from '@react-navigation/native';
 import axios from 'axios';
 import Autocomplete from './Autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,92 +45,102 @@ import {
   Box,
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-const DoctorsCard = ({rowno, firstName, lastName, primary_spl, hospital_affliated, state, country_code}) => {
-   const [imageExists, setImageExists] = useState(false)
-   
-   const checkIfImageExits = (imageUrl) => {
-      fetch(imageUrl, { method: 'HEAD', mode: 'no-cors' })
+const DoctorsCard = ({
+  rowno,
+  firstName,
+  lastName,
+  primary_spl,
+  hospital_affliated,
+  state,
+  country_code,
+}) => {
+  const [imageExists, setImageExists] = useState(false);
+
+  const checkIfImageExits = imageUrl => {
+    fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
       .then(res => {
-         if (res.ok) {
-               setImageExists(true)
-         } else {
-            setImageExists(false)
-         }
-      }).catch(err => null);
-   }
+        if (res.ok) {
+          setImageExists(true);
+        } else {
+          setImageExists(false);
+        }
+      })
+      .catch(err => null);
+  };
 
-const navigation =useNavigation();
+  const navigation = useNavigation();
 
-const isfocus=useIsFocused();
-   useEffect(() => {
-
-      checkIfImageExits(`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`)
-    
-   }, [])
-    return(
-      
-         <View>
+  const isfocus = useIsFocused();
+  useEffect(() => {
+    checkIfImageExits(
+      `http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`,
+    );
+  }, []);
+  return (
     <View>
-   < Card
-                          
-                          style={{
-                            width: wp('30%'),
-                            height: hp('15%'),
-                            backgroundColor: 'grey',
-                            borderRadius: 200,
-                            marginRight:8,
-                            justifyContent:'center',
-                          
-                          
-                            paddingHorizontal:5,
-                            alignItems:'center'
-                          }}>
-     { 
+      <View>
+        <Card
+          style={{
+            width: wp('30%'),
+            height: hp('15%'),
+            backgroundColor: 'grey',
+            borderRadius: 200,
+            marginRight: 8,
+            justifyContent: 'center',
 
-      <ImageBackground source={{uri:`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
-         />
-
-                            }
+            paddingHorizontal: 5,
+            alignItems: 'center',
+          }}>
+          {
+          <ImageBackground source={{uri:`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+       
+          />
+          }
         </Card>
-    </View>
-    <View>
-       <View style={{zIndex:999,width:wp('31%')}}>
+      </View>
+      <View>
+        <View style={{zIndex: 999, width: wp('31%')}}>
           <TouchableOpacity
-   
-          onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
-          >
-          <Text  style={{
-            color: '#00415e',
-            marginTop: 5,
-            fontFamily:'Raleway-Medium',
-            fontSize: 13,
-            position: 'relative',
-            bottom: 0,
-            textAlign: 'center',
-          }}>Dr. {firstName} {lastName}</Text>
+            onPress={() => {
+              navigation.push('DocProfile', {ids:`${rowno}`});
+            }}>
+            <Text
+              style={{
+                color: '#00415e',
+                marginTop: 5,
+                fontFamily: 'Raleway-Medium',
+                fontSize: 13,
+                position: 'relative',
+                bottom: 0,
+                textAlign: 'center',
+              }}>
+              Dr. {firstName} {lastName}
+            </Text>
           </TouchableOpacity>
-          <Text  style={{
-            color: '#00415e',
-            marginTop: 5,
-            fontFamily:'Raleway-Medium',
-            fontSize: 13,
-            position: 'relative',
-            bottom: 0,
-            textAlign: 'center',
-          }}>{primary_spl}</Text>
+          <Text
+            style={{
+              color: '#00415e',
+              marginTop: 5,
+              fontFamily: 'Raleway-Medium',
+              fontSize: 13,
+              position: 'relative',
+              bottom: 0,
+              textAlign: 'center',
+            }}>
+            {primary_spl}
+          </Text>
           {/* <Text>{hospital_affliated} {state} {country_code}</Text> */}
-       </View>
-       {/* <Link to={ `/profile/${rowno}` } className="appointmentBtn allBtn" id="visitDoc">Visit Profile</Link> */}
+        </View>
+        {/* <Link to={ `/profile/${rowno}` } className="appointmentBtn allBtn" id="visitDoc">Visit Profile</Link> */}
+      </View>
     </View>
- </View>
-   
-    )
-}
+  );
+};
 
 export default DoctorsCard;
