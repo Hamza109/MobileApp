@@ -73,8 +73,6 @@ const Disease = ({navigation, route}) => {
         console.log(value1);
         if (value1 != null) {
           setModalVisible(!modalVisible);
-         
-         
         }
         else{
           navigation.navigate('SignIn')
@@ -407,7 +405,7 @@ else{
                           imgLocation &&
                           imgLocation.includes('cures_articleimages')
                         ) {
-                          imageLoc = 'http://all-cures.com:8080/';
+                          imageLoc = 'http://all-cures.com:8280/';
                         } else {
                           imageLoc =
                             'https://all-cures.com:444/cures_articleimages//299/default.png';

@@ -87,6 +87,7 @@ const SignInScreen = ({navigation,props}) => {
           setFirst(res.data.first_name);
           setLast(res.data.last_name);
           setEmail(res.data.email_address);
+          setRow(res.data.rowno)
         }
       })
 
@@ -129,6 +130,13 @@ const SignInScreen = ({navigation,props}) => {
   const setFirst = async first => {
     try {
       await AsyncStorage.setItem('firstName', first);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const setRow = async row => {
+    try {
+      await AsyncStorage.setItem('rowno', JSON.stringify(row));
     } catch (error) {
       console.log(error);
     }

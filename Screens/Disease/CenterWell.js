@@ -41,7 +41,7 @@ const CenterWell = ({content, type, text, title, message, source, embed, caption
 
                 'quote': <View style={{textAlign: {alignment}}}>
                             
-                                 <Text style={{fontStyle: 'italic', fontSize: '1.2rem'}}>"{text}"</Text>
+                                 <Text style={{fontStyle: 'italic', fontSize: 1.2}}>"{text}"</Text>
                              <View style={{textAlign:'center'}}>
                                  <Text style={{fontStyle:'italic'}}>- {caption}</Text>    
                              </View>

@@ -27,14 +27,18 @@ const AllPost = ({ id, title, f_title, w_title}) => {
   }
 
 useEffect(()=>{
+  let isMounted = true
+  if(isMounted)
+  {
   getRating()
+  }
 },[])  
 const isFocus=useIsFocused()
  const navigation=useNavigation()
         return (
           <View style={styles.contain}>
             <View style={{width:widthPercentageToDP('54%')}}>
-           <Text onPress={()=>{if(isFocus){ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
+           <Text  onPress={()=>{if(isFocus){ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>

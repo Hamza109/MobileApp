@@ -124,7 +124,7 @@ const onStarRatingPress=(rating)=> {
 
 
   return (
-    <View style={{}}>
+    <View>
       
      
       <StarRating

@@ -1,4 +1,4 @@
-import React, { useEffect ,useRef} from 'react';
+import React, { useEffect ,useRef, useState} from 'react';
 import { 
   Animated,
     View, 
@@ -19,9 +19,31 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useIsFocused, useTheme } from '@react-navigation/native';
 import { max } from 'react-native-reanimated';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({navigation}) => {
   const scale = useRef(new Animated.Value(1)).current;
+  const [regId,setRegId]=useState()
+  const getId = () => {
+    try {
+      Promise.all(AsyncStorage.getItem('author').then(value1 => {
+        console.log(value1);
+        if (value1 != null) {
+           setTimeout(()=>{
+             console.log(value1)
+            navigation.navigate('MainTab')
+        },2000)
+        }
+        else{
+          setTimeout(()=>{
+            navigation.navigate('SignIn')
+        },2000)
+        }
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const pulse = () => {
     Animated.sequence([
@@ -36,10 +58,8 @@ const SplashScreen = ({navigation}) => {
     useEffect(()=>{
       if(isFocus)
       {
-        pulse();
-        setTimeout(()=>{
-            navigation.navigate('SignIn')
-        },2000)
+       getId()
+       
       }
     })
 

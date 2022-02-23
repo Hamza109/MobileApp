@@ -149,7 +149,8 @@ if(!isLoaded)
          
          {
                     items.length !== 0?
-                    items.filter((i, idx) => idx < 9).map((i) => {
+                    items.filter((i, idx) => idx < 9).map((i,key) => {
+                      
                     var content = []
                     var imgLocation = i.content_location
                     var imageLoc = '';
@@ -189,7 +190,7 @@ if(!isLoaded)
                         <View>
                             
                             <AllPost
-                             
+                             key={key}
                              id = {i.article_id}
                              title = {i.title}
                              f_title = {i.friendly_name}
@@ -204,6 +205,7 @@ if(!isLoaded)
                                         content?
                                             content.map((j, idx) => idx<1 && (
                                                 <CenterWell
+                                                key={j}
                                                     content = {j.data.content}
                                                     type = {j.type}
                                                     text = {j.data.text.substr(0, 300) + '....'}

@@ -98,7 +98,7 @@ const DoctorsCard = ({
             alignItems: 'center',
           }}>
           {
-          <ImageBackground source={{uri:`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+          <ImageBackground source={{uri:`http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
        
           />
           }

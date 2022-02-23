@@ -348,7 +348,7 @@ const All = () => {
                 </View>:null
                 )}
                 
-                // : null
+               
                 
                 )
             }
