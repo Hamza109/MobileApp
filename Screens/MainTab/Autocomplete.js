@@ -9,17 +9,29 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Alert,
+  FlatList
 } from 'react-native';
-import { HStack, Stack, Center, Heading, NativeBaseProvider, Container ,Input,Box} from "native-base"
+import {
+  HStack,
+  Stack,
+  Center,
+  Heading,
+  NativeBaseProvider,
+  Container,
+  Input,
+  Box,
+} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {backendHost} from '../../components/apiConfig';
 import {Searchbar, ToggleButton} from 'react-native-paper';
 import axios from 'axios';
-import { Dimensions } from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
+import {Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {Card} from 'react-native-paper';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 const Autocomplete = () => {
   const [dataSource, setDataSource] = useState([]);
 
@@ -34,24 +46,9 @@ const Autocomplete = () => {
         .then(res => res.data),
     ])
       .then(diseaseData => {
-       
         setDataSource(diseaseData);
-
-        // axios.get(`http://192.168.29.160:8080/cures/isearch/combo/${param.type}`)
-        // .then((res) => res.json())
-        // .then((json) => {
-        //   console.log(json);
-
-        //     setisLoaded(true)
-        //     setItem(json)
-
-        // });
       })
-      // .then(() => {
-      //   speciality.map((i) => {
-      //     spec1.push(i[3])
-      //   })
-      // })
+
       .catch(res => {
         console.error(res);
       });
@@ -66,14 +63,12 @@ const Autocomplete = () => {
   const navigation = useNavigation();
 
   const result = () => {
-    
-    if (text){
+    if (text) {
       navigation.navigate('Result', {
         texts: `${text}`,
       });
-      setText(null)
-    }
-    else {
+      setText(null);
+    } else {
       navigation.navigate('Home', {
         texts: `${text}`,
       });
@@ -84,40 +79,31 @@ const Autocomplete = () => {
   const onSearch = texts => {
     setText(null);
     if (texts) {
-      console.log('if' + texts);
       isearch(texts);
 
       setSearching(true);
     } else {
-      console.log('else');
     }
   };
 
   const getItem = ([item]) => {
     return (
       <Container>
-       <View style={{marginTop:9,marginLeft:-36}}>
-      <FlatList
-        data={item}
-        indicatorStyle={'#00415e'}
-        renderItem={({item}) => (
-        
-           
+        <View style={{marginTop: 9, marginLeft: -36}}>
+          <FlatList
+            data={item}
+            indicatorStyle={'#00415e'}
+            renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() => setText(item) & setSearching(false)}>
                 <View style={styles.itemView}>
-                  <Text  style={styles.itemText}>{item}</Text>
+                  <Text style={styles.itemText}>{item}</Text>
                 </View>
               </TouchableOpacity>
-          
-       
-        )}
-      />
- </View>
+            )}
+          />
+        </View>
       </Container>
-      // {/*
-      //             <Text style={styles.itemText}>{item}</Text>
-      //             */}
     );
   };
 
@@ -125,38 +111,35 @@ const Autocomplete = () => {
     <View style={styles.containers}>
       <View>
         <Input
-        placeholder="search cures"
-        placeholderTextColor="#00415e"
-      
-        bg="#fff"
-        onChangeText={onSearch}
-        onSubmitEditing={(() => setText(text), result)}
-        value={text}
-        width="62%"
-        height="95%"
-        fontFamily="Raleway-Regular"
-        color="#00415e"
-        borderRadius="15"
-        _focus={{borderColor:'rgba(0, 65, 94, 0.2)'}}
-        backgroundColor="rgba(0, 65, 94, 0.2)"
-        py="3"
-        px="1"
-        fontSize="18"
-        autoFocus
-      
- 
-        InputRightElement={
-    <View style={{position:'relative',right:20}}>
-          <Icon
-          m="2"
-          ml="3"
+          placeholder="search cures"
+          placeholderTextColor="#00415e"
+          bg="#fff"
+          onChangeText={onSearch}
+          onSubmitEditing={(() => setText(text), result)}
+          value={text}
+          width="62%"
+          height="95%"
+          fontFamily="Raleway-Regular"
           color="#00415e"
-            name="search"
-          onPress={(() => setText(text), result)}
-            size={20}
-          />
-          </View>
-        }
+          borderRadius="15"
+          _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
+          backgroundColor="rgba(0, 65, 94, 0.2)"
+          py="3"
+          px="1"
+          fontSize="18"
+          autoFocus
+          InputRightElement={
+            <View style={{position: 'relative', right: 20}}>
+              <Icon
+                m="2"
+                ml="3"
+                color="#00415e"
+                name="search"
+                onPress={(() => setText(text), result)}
+                size={20}
+              />
+            </View>
+          }
         />
         {/* <Searchbar
           style={styles.textInput}
@@ -175,36 +158,29 @@ const Autocomplete = () => {
       </View>
 
       {searching && (
-      <View style={{flex:1}}>
-          <Box style={{height:height}}>
-    
+        <View style={{flex: 1}}>
+          <Box style={{height: height}}>
             {dataSource.length ? (
               getItem(dataSource)
             ) : (
-              <View style={{marginTop:9,marginLeft:-36}}>
-              <View style={styles.noResultView}>
-                <Text style={styles.noResultText}>No search items matched</Text>
-              </View>
+              <View style={{marginTop: 9, marginLeft: -36}}>
+                <View >
+                  <Text>
+                   
+                  </Text>
+                </View>
               </View>
             )}
-            </Box>
-            
-          </View>
-          
-       
+          </Box>
+        </View>
       )}
     </View>
   );
 };
 export default Autocomplete;
-const width=Dimensions.get('screen').width
-const height=Dimensions.get('window').height
+const width = Dimensions.get('screen').width;
+const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
-  // container: {
-  //   alignItems: 'center',
-
-  //   flex: 1,
-  // },
   containers: {
     zIndex: 999,
   },
@@ -216,9 +192,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#00415e',
     padding: 40,
   },
-  
-  textInput: {
 
+  textInput: {
     backgroundColor: 'grey',
     width: wp('87%'),
     height: 50,
@@ -226,30 +201,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     paddingHorizontal: 10,
-    borderRadius:15,
-    
+    borderRadius: 15,
+
     marginTop: 0,
   },
-body:{
-marginTop:20,
+  body: {
+    marginTop: 20,
+  },
 
-
-},
-// card:{
-//   marginTop:20,
-//   backgroundColor:'#fff',
-// height:600,
-// width:width,
-// position:'relative',
-// right:
-// },
   itemView: {
-    borderBottomWidth:.8,
-    borderBottomColor:'#00415e',
+    borderBottomWidth: 0.8,
+    borderBottomColor: '#00415e',
 
     backgroundColor: '#fff',
-    height:hp('10%'),
-  width:wp('100%'),
+    height: hp('10%'),
+    width: wp('100%'),
     justifyContent: 'center',
 
     padding: 10,
@@ -258,22 +224,21 @@ marginTop:20,
   itemText: {
     color: '#00415e',
     paddingHorizontal: 10,
-    fontSize: 17,
-    marginLeft:-5,
-    marginRight:3,
+    fontSize: wp('4%'),
+    marginLeft: -5,
+   
     zIndex: 999,
   },
   noResultView: {
-    borderBottomWidth:.5,
-  
-  
-      backgroundColor: '#fff',
-      height:65,
-    
-      justifyContent: 'center',
-  
-      padding: 10,
-      zIndex: 999,
+    borderBottomWidth: 0.5,
+
+    backgroundColor: '#fff',
+    height: 65,
+
+    justifyContent: 'center',
+
+    padding: 10,
+    zIndex: 999,
   },
   noResultText: {
     color: 'black',

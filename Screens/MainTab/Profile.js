@@ -15,15 +15,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/routers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Alert} from 'react-native';
-import {Avatar} from 'react-native-paper';
+import Svg,{Path,Circle} from 'react-native-svg';
 import {useState, useEffect} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
 import {Card} from 'react-native-paper';
 import {backendHost} from '../../components/apiConfig';
-import RBSheet from 'react-native-raw-bottom-sheet';
+
 import ImagePicker from 'react-native-image-crop-picker';
-import RNPickerSelect from 'react-native-picker-select';
+
 import {
   HStack,
   Stack,
@@ -68,9 +68,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
 
   const [countryList, setCountryList] = useState([]);
   const [hospitalList, setHospitalList] = useState([]);
-  const[states,setStates]=useState();
-  const[city,setCity]=useState();
-  const[countries,setCountries]=useState();
+  const [states, setStates] = useState();
+  const [city, setCity] = useState();
+  const [countries, setCountries] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState('');
@@ -104,42 +104,12 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     ]);
     return true;
   };
-  const [img,setImg]=useState()
+  const [img, setImg] = useState();
   const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
         if (value1 != null) {
-          fetch(
-            `${backendHost}/DoctorsActionController?docid=${value1}&cmd=getProfilebydocid`,
-          )
-            .then(res => res.json())
-            .then(json => {
-              if (json == null) {
-                setIsLoaded(true);
-                setnamLoad(true);
-                setModalVisible(true);
-              } else {
-                console.log(json);
-            
-                setIsLoaded(true);
-                setItems(json);
-                setFirst(json.docname_first);
-                setLast(json.docname_last);
-                setPrimary(json.primary_spl_code)
-                setHospital(json.hospital_affliated_code)
-                setAbout(json.about)
-                setGender(json.gender)
-                setEducation(json.edu_training)
-                setWebsite(json.website_url)
-                setNum(json.telephone_nos)
-                setStates(json.state_code)
-                setCountries(json.countries_code)
-                setCity(json.city_code)
-                setInsurance(json.insurance_accept)
-                setImg(`http://all-cures.com:8280/cures_articleimages/doctors/${json.rowno}.png?d=${parseInt(Math.random()*1000)}`)
-              
-              }
-            });
+          setRegId(value1);
         } else {
           navigation.navigate('SignIn');
         }
@@ -177,7 +147,42 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       AsyncStorage.getItem('rowno').then(value2 => {
         console.log('row:', value2);
         if (value2 != null) {
-          setRowno(Number(value2));
+          fetch(
+            `${backendHost}/DoctorsActionController?rowno=${Number(
+              value2,
+            )}&cmd=getProfile`,
+          )
+            .then(res => res.json())
+            .then(json => {
+              if (json == null) {
+                setIsLoaded(true);
+                setnamLoad(true);
+                setModalVisible(true);
+              } else {
+                console.log(json);
+                setRowno(Number(value2));
+                setIsLoaded(true);
+                setItems(json);
+                setFirst(json.docname_first);
+                setLast(json.docname_last);
+                setPrimary(json.primary_spl_code);
+                setHospital(json.hospital_affliated_code);
+                setAbout(json.about);
+                setGender(json.gender);
+                setEducation(json.edu_training);
+                setWebsite(json.website_url);
+                setNum(json.telephone_nos);
+                setStates(json.state_code);
+                setCountries(json.countries_code);
+                setCity(json.city_code);
+                setInsurance(json.insurance_accept);
+                setImg(
+                  `http://all-cures.com:8280/cures_articleimages/doctors/${
+                    json.rowno
+                  }.png?d=${parseInt(Math.random() * 1000)}`,
+                );
+              }
+            });
         }
       });
     } catch (error) {
@@ -216,44 +221,64 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         'firstName',
         'lastName',
         'email',
-        'row'
+        'row',
       ]);
     } catch (error) {
       console.log(error);
     }
   };
+  function User() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={wp('30%')}
+        height={hp('15%')}
+        fill="none"
+        viewBox="0 0 43 43"
+      >
+        <Path
+          fill="#00415E"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"
+        ></Path>
+      </Svg>
+    );
+  }
   const formSubmit = e => {
     setafterSubmitLoad(true);
-  
+
     axios
-      .post(`${backendHost}/doctors/updateprofile?d=${parseInt(Math.random()*1000)}`, {
-        "docid": items.docid,
-        "rowno": rowno,
-        "docname_first" : firstName,
-        "docname_last" : lastName,
-        "primary_spl" : primarySpl,
-        "sub_spls": secondarySpl,
-        "other_spls": otherSpl,
-        "edu_training": education,
-        "telephone_nos": num,
-        "hospital_affliated": hospital,
-        "insurance_accept": acceptInsurance,
-        "gender": gender,
-        "about": about,
-        "awards": awards,
-        "city":city,
-        "state":states,
-        "country_code":countries,
-        "website_url":website
-      })
+      .post(
+        `${backendHost}/doctors/updateprofile?d=${parseInt(
+          Math.random() * 1000,
+        )}`,
+        {
+          docid: items.docid,
+          rowno: rowno,
+          docname_first: firstName,
+          docname_last: lastName,
+          primary_spl: primarySpl,
+          sub_spls: secondarySpl,
+          other_spls: otherSpl,
+          edu_training: education,
+          telephone_nos: num,
+          hospital_affliated: hospital,
+          insurance_accept: acceptInsurance,
+          gender: gender,
+          about: about,
+          awards: awards,
+          city: city,
+          state: states,
+          country_code: countries,
+          website_url: website,
+        },
+      )
       .then(res => {
-console.log("gender:->",gender)
+        console.log('gender:->', gender);
         if (res.data === 1) {
           Alert.alert('Updated your profile successfully.');
         } else {
           Alert.alert('Some error occured. Try again later');
         }
-      
       })
       .catch(res => {
         setafterSubmitLoad(false);
@@ -268,23 +293,19 @@ console.log("gender:->",gender)
       fetch(`${backendHost}/article/all/table/hospital`).then(res =>
         res.json(),
       ),
-      fetch(`${backendHost}/article/all/table/states`).then(res =>
-        res.json(),
-      ),
-      fetch(`${backendHost}/article/all/table/city`).then(res =>
-        res.json(),
-      ),
+      fetch(`${backendHost}/article/all/table/states`).then(res => res.json()),
+      fetch(`${backendHost}/article/all/table/city`).then(res => res.json()),
       fetch(`${backendHost}/article/all/table/countries`).then(res =>
         res.json(),
       ),
-      // fetch('/article/all/table/countries').then(res => res.json()),
+
     ])
-      .then(([diseaseData, hospitalData,stateData,cityData,countryData]) => {
+      .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
         setDiseaseList(diseaseData);
         setHospitalList(hospitalData);
         setStateList(stateData);
         setCityList(cityData);
-setCountryList(countryData)   ;     
+        setCountryList(countryData);
       })
       .catch(err => {
         return;
@@ -292,23 +313,17 @@ setCountryList(countryData)   ;
   };
   const isFocus = useIsFocused();
   useEffect(() => {
-  
-      getFirstName();
-  
-    
-  },[]);
+    getFirstName();
+  }, []);
   useEffect(() => {
-    if(isFocus)
-    {
-    getId();
-
+    if (isFocus) {
+      getId();
     }
   }, [regId]);
   useEffect(() => {
-    if(isFocus)
-    {
-    getRow();
-    console.log('row', rowno);
+    if (isFocus) {
+      getRow();
+      console.log('row', rowno);
     }
   }, [rowno]);
   useEffect(() => {
@@ -317,9 +332,7 @@ setCountryList(countryData)   ;
     }
   }, [regType]);
   useEffect(() => {
-    
-      getLastName();
-    
+    getLastName();
   }, []);
   useEffect(() => {
     if (isFocus) {
@@ -336,64 +349,61 @@ setCountryList(countryData)   ;
       cropping: true,
       compressImageQuality: 0.7,
     }).then(image => {
-      const a =image.path.split('/')
-      const b = a[a.length-1]
+      const a = image.path.split('/');
+      const b = a[a.length - 1];
       console.log(image);
       regType == 1
-        ? (setImage(image),setSelectedFile(b), bs.current.snapTo(1))
+        ? (setImage(image), setSelectedFile(b), bs.current.snapTo(1))
         : setImageUser(image.path);
       bs.current.snapTo(1);
     });
   };
-  const changeHandler = (event) => {
-    if(photo.name.size > 1048576){
-      Alert.alert('Image should be less than 1MB!')
-      return
+  const changeHandler = event => {
+    if (photo.name.size > 1048576) {
+      Alert.alert('Image should be less than 1MB!');
+      return;
     }
- 
-    handleImageSubmission(event)
-	}
-  const [selectedFile,setSelectedFile]=useState('')
-  const [isFilePicked,setIsFilePicked]=useState(false)
-  const[imageUploadLoading,setImageUploadLoading]=useState(false)
-  var a = `file:///storage/emulated/0/Android/data/com.allcures/files/Pictures/e30c312e-403a-4096-a0eb-555c14403190.jpg`
-    
-  var b= a.split('/')
-  var c= b[b.length-1]
-  var photo ={
+
+    handleImageSubmission(event);
+  };
+  const [selectedFile, setSelectedFile] = useState('');
+  const [isFilePicked, setIsFilePicked] = useState(false);
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
+  var a = `file:///storage/emulated/0/Android/data/com.allcures/files/Pictures/e30c312e-403a-4096-a0eb-555c14403190.jpg`;
+
+  var b = a.split('/');
+  var c = b[b.length - 1];
+  var photo = {
     uri: image.path,
     name: selectedFile,
-    type: "image/jpeg"
-  }
- const handleImageSubmission = (e) => {
+    type: 'image/jpeg',
+  };
+  const handleImageSubmission = e => {
     // e.preventDefault()
-    setImageUploadLoading(true)
-  console.log("file:->",selectedFile)
+    setImageUploadLoading(true);
+    console.log('file:->', selectedFile);
 
     const formData = new FormData();
     formData.append('File', photo);
-    fetch(`${backendHost}/dashboard/imageupload/doctor/${rowno}`,
-      {
- 
-        method: 'POST',  
-        body: formData,
-       
-      }
-    )
-    .then((response) => { response.json(),console.log(response)})
-    .then((result) => {
-      setTimeout(() => {
-        setIsFilePicked(true)
-        setImageUploadLoading(true)
-   
-      }, 3000);
-      
-      Alert.alert('Image uploaded successfully.')
+    fetch(`${backendHost}/dashboard/imageupload/doctor/${rowno}`, {
+      method: 'POST',
+      body: formData,
     })
-    .catch((error) => {
-        return
-    });
-    }
+      .then(response => {
+        response.json(), console.log(response);
+      })
+      .then(result => {
+        setTimeout(() => {
+          setIsFilePicked(true);
+          setImageUploadLoading(true);
+        }, 3000);
+
+        Alert.alert('Image uploaded successfully.');
+      })
+      .catch(error => {
+        return;
+      });
+  };
 
   if (!isLoaded) {
     return (
@@ -431,7 +441,7 @@ setCountryList(countryData)   ;
                       alignItems: 'center',
                     }}>
                     <ImageBackground
-                      source={{uri:  img,}}
+                      source={{uri: img}}
                       style={{
                         width: wp('30%'),
                         height: hp('15%'),
@@ -463,13 +473,18 @@ setCountryList(countryData)   ;
                             {firstName} {lastName}
                           </Text>
                         ) : null}
+                        <TouchableOpacity style={{position:'absolute',right:0}} >
                         <Icon
-                          name="create-outline"
+                          name="create"
                           size={25}
                           color="#00415e"
-                          style={{position: 'absolute', right: 10}}
                           onPress={() => setModalVisible(!modalVisible)}
+                         
                         />
+                     
+                        <Text style={{color:'#00415e',fontSize:wp('2.5%')}}>Edit</Text>
+                    
+                        </TouchableOpacity>
                       </HStack>
                       <HStack space={1}>
                         <Icon name="ribbon" size={20} color="grey" />
@@ -509,7 +524,6 @@ setCountryList(countryData)   ;
                           bottom: 0,
                           right: 4,
                         }}>
-                     
                         {items.state} {items.country_code}
                       </Text>
                       <HStack space={1}>
@@ -610,7 +624,7 @@ setCountryList(countryData)   ;
                       }}>
                       <TouchableOpacity onPress={choosePhotoFromLibrary}>
                         <ImageBackground
-                          source={{uri: img,}}
+                          source={{uri: img}}
                           style={{
                             width: wp('30%'),
                             height: hp('15%'),
@@ -662,11 +676,10 @@ setCountryList(countryData)   ;
                           <Radio.Group
                             defaultValue={gender}
                             value={gender}
-                            onChange={val=>setGender(val)}
-                            name="myRadioGroup"
-              >
+                            onChange={val => setGender(val)}
+                            name="myRadioGroup">
                             <HStack space={1}>
-                              <Radio value={1} my={0} >
+                              <Radio value={1} my={0}>
                                 Female
                               </Radio>
                               <Radio value={2} mx={1}>
@@ -679,67 +692,62 @@ setCountryList(countryData)   ;
                           </Radio.Group>
                           <HStack space={2}>
                             <VStack space={1}>
-                             
-                              <FormControl w="3/4" maxW="300" isRequired >
-        <FormControl.Label>City</FormControl.Label>
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setCity(value)}
-                                selectedValue={city}
-                                
-                                isRequired
-                                
-                             
-                                placeholder="Select city">
-                                {cityList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                              <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
+                              <FormControl w="3/4" maxW="300" isRequired>
+                                <FormControl.Label>City</FormControl.Label>
+                                <Select
+                                  width={wp('46%')}
+                                  onValueChange={value => setCity(value)}
+                                  selectedValue={city}
+                                  isRequired
+                                  placeholder="Select city">
+                                  {cityList.map(i => (
+                                    <Select.Item
+                                      value={i[0]}
+                                      label={i[1]}></Select.Item>
+                                  ))}
+                                </Select>
+                                <FormControl.ErrorMessage>
+                                  Please make a selection!
+                                </FormControl.ErrorMessage>
+                              </FormControl>
                             </VStack>
                             <VStack space={1}>
-                             
-                            <FormControl w="3/4" maxW="300" isRequired >
-        <FormControl.Label>State</FormControl.Label>
+                              <FormControl w="3/4" maxW="300" isRequired>
+                                <FormControl.Label>State</FormControl.Label>
 
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setStates(value)}
-                                selectedValue={states}
-                                placeholder="Select State">
-                                {stateList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                              <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
+                                <Select
+                                  width={wp('46%')}
+                                  onValueChange={value => setStates(value)}
+                                  selectedValue={states}
+                                  placeholder="Select State">
+                                  {stateList.map(i => (
+                                    <Select.Item
+                                      value={i[0]}
+                                      label={i[1]}></Select.Item>
+                                  ))}
+                                </Select>
+                                <FormControl.ErrorMessage>
+                                  Please make a selection!
+                                </FormControl.ErrorMessage>
+                              </FormControl>
                             </VStack>
                           </HStack>
-                          <FormControl w="3/4" maxW="300" isRequired >
-        <FormControl.Label>Country</FormControl.Label>
-                          <Select
-                            onValueChange={value => setCountries(value)}
-                            selectedValue={countries}
-                            placeholder="Select country">
-                            {countryList.map(i => (
-                              <Select.Item
-                                value={i[0]}
-                                label={i[1]}></Select.Item>
-                            ))}
-                          </Select>
-                          <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
+                          <FormControl w="3/4" maxW="300" isRequired>
+                            <FormControl.Label>Country</FormControl.Label>
+                            <Select
+                              onValueChange={value => setCountries(value)}
+                              selectedValue={countries}
+                              placeholder="Select country">
+                              {countryList.map(i => (
+                                <Select.Item
+                                  value={i[0]}
+                                  label={i[1]}></Select.Item>
+                              ))}
+                            </Select>
+                            <FormControl.ErrorMessage>
+                              Please make a selection!
+                            </FormControl.ErrorMessage>
+                          </FormControl>
                           <HStack space={2}>
                             <VStack space={1}>
                               <Text style={styles.text}>
@@ -749,7 +757,6 @@ setCountryList(countryData)   ;
                                 width={wp('46%')}
                                 onValueChange={value => setPrimary(value)}
                                 selectedValue={primarySpl}
-                             
                                 placeholder="Select primary speciality">
                                 {diseaseList.map(i => (
                                   <Select.Item
@@ -814,27 +821,31 @@ setCountryList(countryData)   ;
                               keyboardType="numeric"
                             />
                           </FormControl>
-                          <FormControl  isRequired >
-        <FormControl.Label>hospital_affliated</FormControl.Label>
-                          <Select
-                            onValueChange={value => setHospital(value)}
-                            selectedValue={hospital}
-                            placeholder="select hospital affiliated">
-                            {hospitalList.map(i => (
-                              <Select.Item
-                                value={i[0]}
-                                label={i[1]}></Select.Item>
-                            ))}
-                          </Select>
-                          <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
-                          <Text style={styles.text}>Do you accept insurance?</Text>
+                          <FormControl isRequired>
+                            <FormControl.Label>
+                              hospital_affliated
+                            </FormControl.Label>
+                            <Select
+                              onValueChange={value => setHospital(value)}
+                              selectedValue={hospital}
+                              placeholder="select hospital affiliated">
+                              {hospitalList.map(i => (
+                                <Select.Item
+                                  value={i[0]}
+                                  label={i[1]}></Select.Item>
+                              ))}
+                            </Select>
+                            <FormControl.ErrorMessage>
+                              Please make a selection!
+                            </FormControl.ErrorMessage>
+                          </FormControl>
+                          <Text style={styles.text}>
+                            Do you accept insurance?
+                          </Text>
                           <Radio.Group
                             defaultValue={acceptInsurance}
                             value={acceptInsurance}
-                            onChange={val=>setInsurance(val)}
+                            onChange={val => setInsurance(val)}
                             name="myRadioGroup"
                             accessibilityLabel="Pick your favorite number">
                             <HStack space={1}>
@@ -853,7 +864,7 @@ setCountryList(countryData)   ;
                             h={20}
                             placeholder="Text Area Placeholder"
                             w="100%"
-                           onChangeText={(text)=>setAbout(text)}
+                            onChangeText={text => setAbout(text)}
                           />
                           <Text style={{fontSize: 10, color: 'black'}}>
                             We never share your details without your consent.
@@ -862,7 +873,6 @@ setCountryList(countryData)   ;
                       </View>
                     ) : (
                       <View>
-                       
                         <FormControl mb="5">
                           <FormControl.Label>First Name</FormControl.Label>
                           <Input
@@ -873,19 +883,18 @@ setCountryList(countryData)   ;
                         <FormControl mb="5">
                           <FormControl.Label>Last Name</FormControl.Label>
                           <Input
-                            value={items.docname_last}
+                            value={last}
                             onChangeText={text => setLast(text)}
                           />
                         </FormControl>
                         <VStack space={2}>
-                        <Radio.Group
+                          <Radio.Group
                             defaultValue={gender}
                             value={gender}
-                            onChange={val=>setGender(val)}
-                            name="myRadioGroup"
-              >
+                            onChange={val => setGender(val)}
+                            name="myRadioGroup">
                             <HStack space={1}>
-                              <Radio value={1} my={0} >
+                              <Radio value={1} my={0}>
                                 Female
                               </Radio>
                               <Radio value={2} mx={1}>
@@ -898,67 +907,62 @@ setCountryList(countryData)   ;
                           </Radio.Group>
                           <HStack space={2}>
                             <VStack space={1}>
-                               
-                            <FormControl w="3/4" maxW="300" isRequired >
-        <FormControl.Label>City</FormControl.Label>
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setCity(value)}
-                                selectedValue={city}
-                                
-                                isRequired
-                                
-                             
-                                placeholder="Select city">
-                                {cityList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                              <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
+                              <FormControl w="3/4" maxW="300" isRequired>
+                                <FormControl.Label>City</FormControl.Label>
+                                <Select
+                                  width={wp('46%')}
+                                  onValueChange={value => setCity(value)}
+                                  selectedValue={city}
+                                  isRequired
+                                  placeholder="Select city">
+                                  {cityList.map(i => (
+                                    <Select.Item
+                                      value={i[0]}
+                                      label={i[1]}></Select.Item>
+                                  ))}
+                                </Select>
+                                <FormControl.ErrorMessage>
+                                  Please make a selection!
+                                </FormControl.ErrorMessage>
+                              </FormControl>
                             </VStack>
                             <VStack space={1}>
-                             
-                            <FormControl w="3/4" maxW="300" isRequired >
-        <FormControl.Label>State</FormControl.Label>
+                              <FormControl w="3/4" maxW="300" isRequired>
+                                <FormControl.Label>State</FormControl.Label>
 
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setStates(value)}
-                                selectedValue={states}
-                                placeholder="Select State">
-                                {stateList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                              <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
+                                <Select
+                                  width={wp('46%')}
+                                  onValueChange={value => setStates(value)}
+                                  selectedValue={states}
+                                  placeholder="Select State">
+                                  {stateList.map(i => (
+                                    <Select.Item
+                                      value={i[0]}
+                                      label={i[1]}></Select.Item>
+                                  ))}
+                                </Select>
+                                <FormControl.ErrorMessage>
+                                  Please make a selection!
+                                </FormControl.ErrorMessage>
+                              </FormControl>
                             </VStack>
                           </HStack>
-                          <FormControl  isRequired >
-        <FormControl.Label>Country</FormControl.Label>
-                          <Select
-                            onValueChange={value => setCountries(value)}
-                            selectedValue={countries}
-                            placeholder="Select country">
-                            {countryList.map(i => (
-                              <Select.Item
-                                value={i[0]}
-                                label={i[1]}></Select.Item>
-                            ))}
-                          </Select>
-                          <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
+                          <FormControl isRequired>
+                            <FormControl.Label>Country</FormControl.Label>
+                            <Select
+                              onValueChange={value => setCountries(value)}
+                              selectedValue={countries}
+                              placeholder="Select country">
+                              {countryList.map(i => (
+                                <Select.Item
+                                  value={i[0]}
+                                  label={i[1]}></Select.Item>
+                              ))}
+                            </Select>
+                            <FormControl.ErrorMessage>
+                              Please make a selection!
+                            </FormControl.ErrorMessage>
+                          </FormControl>
                           <HStack space={2}>
                             <VStack space={1}>
                               <Text style={styles.text}>
@@ -968,7 +972,6 @@ setCountryList(countryData)   ;
                                 width={wp('46%')}
                                 onValueChange={value => setPrimary(value)}
                                 selectedValue={primarySpl}
-                             
                                 placeholder="select primary speciality">
                                 {diseaseList.map(i => (
                                   <Select.Item
@@ -1033,28 +1036,31 @@ setCountryList(countryData)   ;
                               keyboardType="numeric"
                             />
                           </FormControl>
-                          <FormControl  isRequired >
-        <FormControl.Label>hospital_affliated</FormControl.Label>
-                          <Select
-                            onValueChange={value => setHospital(value)}
-                            selectedValue={hospital}
-                         
-                            placeholder="select hospital affiliated">
-                            {hospitalList.map(i => (
-                              <Select.Item
-                                value={i[0]}
-                                label={i[1]}></Select.Item>
-                            ))}
-                          </Select>
-                          <FormControl.ErrorMessage >
-          Please make a selection!
-        </FormControl.ErrorMessage>
-        </FormControl>
-                          <Text style={styles.text}>Do you accept insurance?</Text>
+                          <FormControl isRequired>
+                            <FormControl.Label>
+                              hospital_affliated
+                            </FormControl.Label>
+                            <Select
+                              onValueChange={value => setHospital(value)}
+                              selectedValue={hospital}
+                              placeholder="select hospital affiliated">
+                              {hospitalList.map(i => (
+                                <Select.Item
+                                  value={i[0]}
+                                  label={i[1]}></Select.Item>
+                              ))}
+                            </Select>
+                            <FormControl.ErrorMessage>
+                              Please make a selection!
+                            </FormControl.ErrorMessage>
+                          </FormControl>
+                          <Text style={styles.text}>
+                            Do you accept insurance?
+                          </Text>
                           <Radio.Group
                             defaultValue={acceptInsurance}
                             value={acceptInsurance}
-                            onChange={val=>setInsurance(val)}
+                            onChange={val => setInsurance(val)}
                             name="myRadioGroup"
                             accessibilityLabel="Pick your favorite number">
                             <HStack space={1}>
@@ -1074,7 +1080,7 @@ setCountryList(countryData)   ;
                             placeholder="Text Area Placeholder"
                             w="100%"
                             defaultValue={about ? about : ''}
-                            onChangeText={(text)=>setAbout(text)}
+                            onChangeText={text => setAbout(text)}
                           />
                           <Text style={{fontSize: 10, color: 'black'}}>
                             We never share your details without your consent.
@@ -1085,8 +1091,12 @@ setCountryList(countryData)   ;
                   </ScrollView>
                 </Modal.Body>
                 <Modal.Footer>
-                  <TouchableOpacity style={styles.btn} onPress={()=>{formSubmit()
-                  changeHandler()}}>
+                  <TouchableOpacity
+                    style={styles.btn}
+                    onPress={() => {
+                      formSubmit();
+                      changeHandler();
+                    }}>
                     <Text style={{color: 'white', fontWeight: 'bold'}}>
                       Submit
                     </Text>
@@ -1100,50 +1110,18 @@ setCountryList(countryData)   ;
             <View>
               <VStack space={2} ml="5" mt="5">
                 <HStack>
-                  <Card
-                    style={{
-                      width: wp('30%'),
-                      height: hp('15%'),
-                      backgroundColor: 'grey',
-                      borderRadius: 200,
-                      position: 'relative',
-                      justifyContent: 'center',
-                      paddingHorizontal: 5,
-                      alignItems: 'center',
-                    }}>
-                    <TouchableOpacity onPress={choosePhotoFromLibrary}>
-                      <ImageBackground
-                        source={{uri: imageUser}}
+                 
+                        <User
+                        
+                     
+                       
                         style={{
-                          width: wp('30%'),
-                          height: hp('15%'),
-                          borderRadius: 200,
-                          overflow: 'hidden',
-                        }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <Icon
-                            name="camera"
-                            size={35}
-                            color="#fff"
-                            style={{
-                              opacity: 0.7,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderWidth: 1,
-                              borderColor: '#fff',
-                              borderRadius: 10,
-                            }}
-                          />
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  </Card>
-
+                      
+                     
+                          borderRadius: 10,
+                        }}
+                      />
+                             
                   <View style={{marginLeft: 12}}>
                     <View>
                       <HStack space={1}>
@@ -1183,18 +1161,20 @@ setCountryList(countryData)   ;
             position: 'absolute',
             bottom: 0,
             width: wp('100%'),
+            height:hp('7%'),
             padding: 10,
+            backgroundColor:'#00415e'
           }}>
           <TouchableOpacity
-            style={{padding: 7, borderColor: '#00415e', margin: 5}}
+            
             onPress={() => logout()}>
             <HStack space={5}>
-              <Icon name="log-out" size={25} color="#00415e" />
+              <Icon name="log-out" size={30} color="#fff" />
               <Text
                 style={{
-                  color: '#00415e',
+                  color: '#fff',
                   fontFamily: 'Raleway-Medium',
-                  fontSize: 16,
+                  fontSize: wp('5%'),
                 }}>
                 Logout
               </Text>

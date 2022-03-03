@@ -1,66 +1,111 @@
 import React from 'react';
-import { FlatList,Text } from 'react-native';
-import { View} from 'react-native';
+import {FlatList, Text} from 'react-native';
+import {View} from 'react-native';
 import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-  } from 'react-native-responsive-screen';
-import { Image } from 'react-native';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
-import { color } from 'react-native-reanimated';
-import { Paragraph } from 'react-native-paper';
-const CenterWell1 = ({content, type, text, title, message, source, embed, caption, alignment, imageUrl, item}) =>{
-    var textContent;
-    if(typeof(text) == "string"){
-        textContent = text.replace(/&nbsp;/g, ' ');;
-    }
-    return(
-        <View>
-            {
-                {
-                    'header':                           
-                                    <View>
-                                        <Text style={{fontSize: 16,fontWeight:'bold' ,color:'#00415e'}}>{title}</Text>
-                                    </View>                        
-                            ,
-                    'paragraph': <View>    
-                          
-                                 <Text style={{color:"#00415e",fontFamily:'Raleway-Regular',fontSize:17,textAlign:'justify'}}>{textContent}</Text>  
-                                              
-                                </View>,
-                
-                    
-               
-                    'image': <View>
-                                       <Image source={{uri:imageUrl}} style={{width: 350,height: 120}} />      
-                                        <Text>
-                                            {caption}
-                                        </Text>
-                            </View>,
-                             'delimiter': <Text style={{textAlign: 'center'}}>* * *</Text>,
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {Image} from 'react-native';
+import {
+  Table,
+  TableWrapper,
+  Row,
+  Rows,
+  Col,
+  Cols,
+  Cell,
+} from 'react-native-table-component';
+import RenderHTML from 'react-native-render-html';
+import { color } from 'native-base/lib/typescript/theme/styled-system';
+const CenterWell1 = ({
+  content,
+  type,
+  text,
+  title,
+  message,
+  source,
+  embed,
+  caption,
+  alignment,
+  imageUrl,
+  item,
+}) => {
+  var textContent;
 
-                'quote': <View style={{textAlign: {alignment}}}>
-                            
-                                 <Text style={{fontStyle: 'italic', fontSize: 1.2}}>"{text}"</Text>
-                             <View style={{textAlign:'center'}}>
-                                 <Text style={{fontStyle:'italic'}}>- {caption}</Text>    
-                             </View>
-                             </View>,
+  if(typeof(text) == "string"){
+      textContent = text.replace(/&nbsp;/g, ' ');;
+  }
+const tex ={
+  html: text
+}
+  return (
+    <View>
+      {
+        {
+          header: (
+            <View>
+              <Text
+                adjustsFontSizeToFit
+                style={{fontSize: 17, fontWeight: 'bold', color: '#00415e'}}>
+                {title}
+              </Text>
+            </View>
+          ),
+          paragraph: (
+            <View style={{color:'#00415e'}}>
+             <RenderHTML source={tex} contentWidth={wp('100%')}  defaultTextProps={true}   tagsStyles = {{ adjustsFontSizeToFit:true,
+       span:  {fontSize: 16}, 
+       b:     {fontSize: 16, color: '#00415e'},
+       body:{color:'#00415e',fontSize:wp('4.5%')}
+    }} />
+             
+            </View>
+          ),
 
-'warning': <View>
-<View  style={{marginBottom:220,borderWidth: 1, borderRadius: 3, backgroundColor: '#f5f09f',width:320}}>
+          image: (
+            <View>
+              <Image
+                source={{uri: imageUrl}}
+                style={{width: 350, height: 120}}
+              />
+              <Text>{caption}</Text>
+            </View>
+          ),
+          delimiter: <Text style={{textAlign: 'center'}}>* * *</Text>,
 
-<Text style={{fontWeight: 'bold' ,color:'red',fontSize:20}}> ⚠ </Text><Text style={{fontWeight: 'bold'}}>{title}:</Text>
+          quote: (
+            <View style={{textAlign: {alignment}}}>
+              <Text style={{fontStyle: 'italic', fontSize: 1.2}}>"{text}"</Text>
+              <View style={{textAlign: 'center'}}>
+                <Text style={{fontStyle: 'italic'}}>- {caption}</Text>
+              </View>
+            </View>
+          ),
 
-<Text>{message}</Text>
-</View>
-</View>,
+          warning: (
+            <View>
+              <View
+                style={{
+                  marginBottom: 220,
+                  borderWidth: 1,
+                  borderRadius: 3,
+                  backgroundColor: '#f5f09f',
+                  width: 320,
+                }}>
+                <Text style={{fontWeight: 'bold', color: 'red', fontSize: 20}}>
+                  {' '}
+                  ⚠{' '}
+                </Text>
+                <Text style={{fontWeight: 'bold'}}>{title}:</Text>
 
-                          
-                }[type]
-            }
-        </View>
-    )
-} 
+                <Text>{message}</Text>
+              </View>
+            </View>
+          ),
+        }[type]
+      }
+    </View>
+  );
+};
 
-export default CenterWell1; 
+export default CenterWell1;

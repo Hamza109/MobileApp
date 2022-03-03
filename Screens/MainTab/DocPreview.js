@@ -39,7 +39,7 @@ import {
   NativeBaseProvider,
   Container,
   Box,
-  Spinner
+  Spinner,
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
 
@@ -54,141 +54,63 @@ const DocPreview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  function diseasePosts(type) {
-    // For specific blogs like "/blogs/diabetes"
-    // if(type){
-    fetch(`${backendHost}/isearch/${type}`)
+
+  useEffect((lat, lon, city) => {
+    fetch(
+      `${backendHost}/SearchActionController?cmd=getResults&city=jammu&doctors=manoj&Latitude=32.7266&Longitude=74.8570`,
+    )
       .then(res => res.json())
       .then(json => {
-        setLoaded(true);
-        setItems(json);
+        setIsLoaded(true);
+        setItems(json.map.DoctorDetails.myArrayList);
       })
       .catch(err => null);
-  }
-
-  function allPosts() {
-    // For all available blogs "/blogs"
-    fetch(`${backendHost}/article/allkv?limit=50`)
-      .then(res => res.json())
-      .then(json => {
-        var temp = [];
-
-        json.forEach(i => {
-          if (i.pubstatus_id === 3 && i.type.includes(2)) {
-            temp.push(i);
-          }
-        });
-        setItems(temp);
-
-        setLoaded(true);
-      })
-      .catch(err => null);
-  }
-
-  function IsJsonValid(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return [];
-    }
-    return JSON.parse(str).blocks;
-  }
-
-  useEffect((lat,lon,city) => {
-    fetch(`${backendHost}/SearchActionController?cmd=getResults&city=jammu&doctors=manoj&Latitude=32.7266&Longitude=74.8570`)
-    .then(res => res.json())
-    .then(json => {
-      setIsLoaded(true)
-        setItems(json.map.DoctorDetails.myArrayList)          
-    })
-    .catch(err => null )
   }, []);
-  function renderItemArt({item, index}) {
-    const {friendly_name, source, content} = item;
-
+  
+  if (!isLoaded) {
     return (
-      <View>
-        <View style={{marginRight: 13,width:wp('100%'),height:hp('20%')}}>
-          {/* {items
-            .filter((i, idx) => idx < 9)
-            .map(
-              i => {
-                <View><Text>kjasnkjnaks</Text></View>
-              },
-
-              // : null
-            )} */}
- <View>
-                          <Paragraph>
-                            <Card
-                              style={{
-                                width: wp('90%'),
-                                height: hp('25%'),
-                                backgroundColor: '#00415e',
-                                borderRadius: 20,
-                              }}>
-                            
-                            </Card>
-                          </Paragraph>
-                        </View>
-        </View>
-      </View>
-    );
-  }
-  if(!isLoaded)
-  {
-    return(
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-    <HStack space={2} justifyContent="center">
-        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
-        <Heading color="#00415e" fontSize="lg">
-          Loading
-        </Heading>
-      </HStack>
-      </View>
-    );
-    
-  }
-  else{  
-  return (
-    <>
-      <View style={{flex:1}}>
-        <View style={{flexDirection:'row'}}>
-          <ScrollView
-             style={{width: wp('100%')}}
-             horizontal 
-             showsHorizontalScrollIndicator={false}>
-
-     {items.map((i) => (
-
-
-
-
-          <DoctorsCard 
-            rowno = {i.map.rowno}
-            firstName= {i.map.docname_first}
-            lastName= {i.map.docname_last}
-            primary_spl = {i.map.primary_spl}
-            hospital_affliated = {i.map.hospital_affliated}
-            state = {i.map.state}
-            country_code = {i.map.country_code}
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <HStack space={2} justifyContent="center">
+          <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="lg"
           />
-            
-         ))}
-                            
-                           
-          
-            
-                          
-          </ScrollView>
-      
-        </View>
-        <View>
-          <View></View>
-        </View>
+          <Heading color="#00415e" fontSize="lg">
+            Loading
+          </Heading>
+        </HStack>
       </View>
-    </>
-  )}
+    );
+  } else {
+    return (
+      <>
+        <View style={{flex: 1}}>
+          <View style={{flexDirection: 'row'}}>
+            <ScrollView
+              style={{width: wp('100%')}}
+              horizontal
+              showsHorizontalScrollIndicator={false}>
+              {items.map(i => (
+                <DoctorsCard
+                  rowno={i.map.rowno}
+                  firstName={i.map.docname_first}
+                  lastName={i.map.docname_last}
+                  primary_spl={i.map.primary_spl}
+                  hospital_affliated={i.map.hospital_affliated}
+                  state={i.map.state}
+                  country_code={i.map.country_code}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          <View>
+            <View></View>
+          </View>
+        </View>
+      </>
+    );
+  }
 };
 
 export default DocPreview;

@@ -75,6 +75,7 @@ alignItems: 'center',
 width: wp('100%'),
 height: 85,
 elevation: 5,
+backgroundColor:'#fff'
 
 }
 })

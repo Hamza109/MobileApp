@@ -11,15 +11,26 @@ import {
   Alert,
   Button,
   Dimensions,
+  FlatList
 } from 'react-native';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { HStack, Stack, Center, Heading, NativeBaseProvider, Container,Input } from "native-base"
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {
+  HStack,
+  Stack,
+  Center,
+  Heading,
+  NativeBaseProvider,
+  Container,
+  Input,
+} from 'native-base';
 import {Searchbar, ToggleButton} from 'react-native-paper';
 import axios from 'axios';
-import {max, set} from 'react-native-reanimated';
-import {FlatList} from 'react-native-gesture-handler';
+
 import {useNavigation} from '@react-navigation/core';
-import { backendHost } from '../../components/apiConfig';
+import {backendHost} from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 const SearchBar = ref => {
@@ -116,53 +127,56 @@ const SearchBar = ref => {
   return (
     <View style={styles.container}>
       <View>
-      <View styles={styles.flex}>
+        <View styles={styles.flex}>
           <Card style={styles.header}>
-          <HStack mt="5" ml="10" space={1}alignItems="center">
-        <Icon name="arrow-back-outline" style={{marginTop:4,marginLeft:11}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
-      <View>
-   
-          <Input
-        placeholder="Search by name"
-        placeholderTextColor="#00415e"
-       fontFamily="Raleway-Regular"
-        bg="#fff"
-        onChangeText={text => searchFilterFunction(text)}
-        onClear={text => searchFilterFunction('')}
-        onSubmitEditing={(() => setName(name), docresult)}
-        value={name}
-        width="62%"
-        height="95%"
-        color="#00415e"
-        borderRadius="15"
-        _focus={{borderColor:'rgba(0, 65, 94, 0.2)'}}
-        backgroundColor="rgba(0, 65, 94, 0.2)"
-        borderColor="lightgrey"
-        py="3"
-        px="1"
-        fontSize="18"
-        autoFocus
-      
- 
-        InputRightElement={
-    <View style={{position:'relative',right:20}}>
-          <Icon
-          m="2"
-          ml="3"
-          color="#00415e"
-            name="search"
-          onPress={(() => setName(name), docresult)}
-            size={20}
-          />
-          </View>
-        }
-        />
+            <HStack mt="5" ml="10" space={1} alignItems="center">
+              <Icon
+                name="arrow-back-outline"
+                style={{marginTop: 4, marginLeft: 11}}
+                color={'#00415e'}
+                size={35}
+                onPress={() => {
+                  navigation.navigate('MainTab');
+                }}
+              />
+              <View>
+                <Input
+                  placeholder="Search by name"
+                  placeholderTextColor="#00415e"
+                  fontFamily="Raleway-Regular"
+                  bg="#fff"
+                  onChangeText={text => searchFilterFunction(text)}
+                  onClear={text => searchFilterFunction('')}
+                  onSubmitEditing={(() => setName(name), docresult)}
+                  value={name}
+                  width="62%"
+                  height="95%"
+                  color="#00415e"
+                  borderRadius="15"
+                  _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
+                  backgroundColor="rgba(0, 65, 94, 0.2)"
+                  borderColor="lightgrey"
+                  py="3"
+                  px="1"
+                  fontSize="18"
+                  autoFocus
+                  InputRightElement={
+                    <View style={{position: 'relative', right: 20}}>
+                      <Icon
+                        m="2"
+                        ml="3"
+                        color="#00415e"
+                        name="search"
+                        onPress={(() => setName(name), docresult)}
+                        size={20}
+                      />
+                    </View>
+                  }
+                />
+              </View>
+            </HStack>
+          </Card>
         </View>
-        </HStack>
-        </Card>
-
-        </View>
-       
       </View>
       {searching && (
         <FlatList
@@ -179,39 +193,33 @@ export default SearchBar;
 const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-
   container: {
     backgroundColor: '#fff',
-  
+
     alignItems: 'center',
-
   },
-flex:{
-flex:1
-},
-header:{
-  padding: 0,
-  marginTop: Platform.OS === 'ios' ? 0 : -7,
-  marginLeft:0,
-  borderColor: '#fff',
-  borderWidth: 0.1,
-  alignItems: 'center',
-  width: wp('100%'),
-  height: 85,
-  elevation: 5,
-
-},
-
-
-
+  flex: {
+    flex: 1,
+  },
+  header: {
+    padding: 0,
+    marginTop: Platform.OS === 'ios' ? 0 : -7,
+    marginLeft: 0,
+    borderColor: '#fff',
+    borderWidth: 0.1,
+    alignItems: 'center',
+    width: wp('100%'),
+    height: 85,
+    elevation: 5,
+  },
 
   itemView: {
-    borderBottomWidth:.8,
-    borderBottomColor:'#00415e',
+    borderBottomWidth: 0.8,
+    borderBottomColor: '#00415e',
 
     backgroundColor: '#fff',
-    height:hp('7%'),
-  width:wp('100%'),
+    height: hp('7%'),
+    width: wp('100%'),
     justifyContent: 'center',
 
     padding: 15,
@@ -221,21 +229,20 @@ header:{
     color: '#00415e',
     paddingHorizontal: 10,
     fontSize: 17,
-    marginLeft:-5,
-    marginRight:3,
+    marginLeft: -5,
+    marginRight: 3,
     zIndex: 999,
   },
   noResultView: {
-    borderBottomWidth:.5,
-  
-  
-      backgroundColor: '#fff',
-      height:65,
-    
-      justifyContent: 'center',
-  
-      padding: 10,
-      zIndex: 999,
+    borderBottomWidth: 0.5,
+
+    backgroundColor: '#fff',
+    height: 65,
+
+    justifyContent: 'center',
+
+    padding: 10,
+    zIndex: 999,
   },
   noResultText: {
     color: 'black',

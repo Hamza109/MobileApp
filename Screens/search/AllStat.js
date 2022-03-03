@@ -33,8 +33,8 @@ const isFocus=useIsFocused()
  const navigation=useNavigation()
         return (
           <View style={styles.contain}>
-            <View style={{width:widthPercentageToDP('54%')}}>
-           <Text onPress={()=>{if(isFocus){ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
+            <View>
+           <Text  adjustsFontSizeToFit numberOfLines={2} onPress={()=>{if(isFocus){ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>

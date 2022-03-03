@@ -31,6 +31,7 @@ import {
 import AllPost from '../search/AllPost';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PhoneInput from 'react-native-phone-number-input';
+import { useResponsiveFontSize } from 'react-native-responsive-dimensions';
 import {
   HStack,
   Stack,
@@ -39,7 +40,8 @@ import {
   NativeBaseProvider,
   Container,
   Box,
-  Spinner
+  Spinner,
+  VStack,
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
 
@@ -56,8 +58,7 @@ const ArticlePreview = () => {
   const [isLoaded, setLoaded] = useState(false);
 
   function diseasePosts(type) {
-    // For specific blogs like "/blogs/diabetes"
-    // if(type){
+   
     fetch(`${backendHost}/isearch/${type}`)
       .then(res => res.json())
       .then(json => {
@@ -68,7 +69,6 @@ const ArticlePreview = () => {
   }
 
   function allPosts() {
-    // For all available blogs "/blogs"
     fetch(`${backendHost}/article/allkv?limit=15`)
       .then(res => res.json())
       .then(json => {
@@ -103,30 +103,20 @@ const ArticlePreview = () => {
 
     return (
       <View>
-        <View style={{marginRight: 25,width:wp('100%'),height:hp('20%')}}>
-          {/* {items
-            .filter((i, idx) => idx < 9)
-            .map(
-              i => {
-                <View><Text>kjasnkjnaks</Text></View>
-              },
-
-              // : null
-            )} */}
- <View>
-                          <Paragraph>
-                            <Card
-                              style={{
-                                width: wp('90%'),
-                                height: hp('25%'),
-                                backgroundColor: '#00415e',
-                                borderRadius: 20,
-                                marginRight:5
-                              }}>
-                            
-                            </Card>
-                          </Paragraph>
-                        </View>
+        <View style={{marginRight: 25, width: wp('100%'), height: hp('20%')}}>
+       
+          <View>
+            <Paragraph>
+              <Card
+                style={{
+                  width: wp('90%'),
+                  height: hp('25%'),
+                  backgroundColor: '#00415e',
+                  borderRadius: 20,
+                  marginRight: 5,
+                }}></Card>
+            </Paragraph>
+          </View>
         </View>
       </View>
     );
@@ -167,145 +157,160 @@ const ArticlePreview = () => {
       </View>
     );
   }
-if(!isLoaded)
-{
-  return(
-  <HStack space={2} justifyContent="center">
-      <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
-      <Heading color="#00415e" fontSize="lg">
-        Loading
-      </Heading>
-    </HStack>
-  );
-  
-}
-else{
+  if (!isLoaded) {
+    return (
+      <HStack space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
+        <Heading color="#00415e" fontSize="lg">
+          Loading
+        </Heading>
+      </HStack>
+    );
+  } else {
+    return (
+      <>
+        <View style={{flex: 1}}>
+          <View style={{flexDirection: 'row'}}>
+            <ScrollView style={{width: wp('100%')}} horizontal  showsHorizontalScrollIndicator={false}>
+              {items.length !== 0 ? (
+                items
+                  .filter((i, idx) => idx < 9)
+                  .map(
+                    i => {
+                      var content = [];
+                      var imgLocation = i.content_location;
+                      var imageLoc = '';
+                      if (i.content) {
+                        content = IsJsonValid(decodeURIComponent(i.content));
+                      }
+                      if (
+                        imgLocation &&
+                        imgLocation.includes('cures_articleimages')
+                      ) {
+                        imageLoc = 'http://all-cures.com:8080/';
+                      } else {
+                        imageLoc =
+                          'https://all-cures.com:444/cures_articleimages//299/default.png';
+                      }
 
-  return (
-    <>
-      <View style={{flex:1}}>
-        <View style={{flexDirection:'row'}}>
-          <ScrollView
-             style={{width: wp('100%')}}
-             horizontal >
-         
-             {
-                    items.length !== 0?
-                    items.filter((i, idx) => idx < 9).map((i) => {
-                    var content = []
-                    var imgLocation = i.content_location
-                    var imageLoc = '';
-                    if(i.content){
-                        content = IsJsonValid(decodeURIComponent(i.content))
-                    }
-                    if(imgLocation && imgLocation.includes('cures_articleimages')){
-                      imageLoc = 'http://all-cures.com:8080/'
-                    } else {
-                        imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
-                    }
+                      var title = i.title;
+                      var regex = new RegExp(' ', 'g');
 
-                    var title = i.title
-                    var regex = new RegExp(' ', 'g');
-
-                    //replace via regex
-                    title = title.replace(regex, '-');
-                    return(
-                    <View >
-                    <View style={{marginRight:10}}>
-                    <Card
-                          
-                          style={{
-                            width: wp('97%'),
-                            height: hp('25%'),
-                            backgroundColor: 'lightgrey',
-                            borderRadius: 0,
-                           marginBottom:5,
-                            justifyContent:'center',
-                            paddingHorizontal:5,
-                            alignItems:'center'
-                          }}>
-                            <HStack space={1}>
-        <Image source={{uri:imageLoc +imgLocation.replace('json', 'png').split('/webapps/')[1]}} style={{width:wp("42%"),height:hp('25%'),marginTop:0}}/>
+                      title = title.replace(regex, '-');
+                      return (
                         <View>
-                            
-                            <AllPost
-                             
-                             id = {i.article_id}
-                             title = {i.title}
-                             f_title = {i.friendly_name}
-                             w_title = {i.window_title}
-                             allPostsContent={() => receivedData()}
-                         />
-                            <View style={{flex:1}}>
-                
-            <Box>
-                                <Text style={{marginTop:28}}>
-                                    {
-                                        content?
-                                            content.map((j, idx) => idx<1 && (
-                                                <CenterWell
-                                                    content = {j.data.content}
-                                                    type = {j.type}
-                                                    text = {j.data.text.substr(0, 300) + '....'}
-                                                    title = {j.data.title}
-                                                    message = {j.data.message}
-                                                    source = {j.data.source}
-                                                    embed = {j.data.embed}
-                                                    caption = {j.data.caption}
-                                                    alignment = {j.data.alignment}
-                                                    imageUrl = {j.data.file? j.data.file.url: null}
-                                                    url = {j.data.url}
-                                                />
-                                            ))
-                                            : null
-                                    }
-                                 
-                                </Text>
-                                </Box>
-                                <Text  style={{
-            color: '#00415e',
-            position:'absolute',
-            bottom:15,
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-          
-         
-          }}>{i.authors_name} </Text>
-          <Text style={{
-            color: '#00415e',
-          
-            fontFamily:'Raleway-Bold',
-            fontSize: 10,
-            position:'absolute',
-            bottom:3,
-            
-          
-            
-          }}>{i.published_date}</Text>
-                            </View>
+                          <View style={{marginRight: 10}}>
+                            <Card
+                              style={{
+                                width: wp('97%'),
+                                height: hp('21%'),
+                                backgroundColor: 'lightgrey',
+                                justifyContent: 'center',
+                                paddingHorizontal: 5,
+                                borderRadius:15,
+                                alignItems: 'center',
+                              }}>
+                              <HStack space={1}>
+                                <Image
+                                  source={{
+                                    uri:
+                                      imageLoc +
+                                      imgLocation
+                                        .replace('json', 'png')
+                                        .split('/webapps/')[1],
+                                  }}
+                                  style={{
+                                    position:'relative',
+                                    right:3,
+                                    width: wp('45%'),
+                                    height: hp('21%'),
+                                    marginTop: 0,
+                                    borderRadius:15
+                                  }}
+                                />
+                                <View style={{width:wp('50%')}}>
+                                  <VStack py='2' space={10}>
+                                  <AllPost
+                                    id={i.article_id}
+                                    title={i.title}
+                                    f_title={i.friendly_name}
+                                    w_title={i.window_title}
+                                    allPostsContent={() => receivedData()}
+                                  />
+                                  <View style={{width:wp('50%')}}>
+                                   
+                                      <Text style={{position:'absolute',top:0}}>
+                                        {content
+                                          ? content.map(
+                                              (j, idx) =>
+                                                idx < 1 && (
+                                                  <CenterWell
+                                                    content={j.data.content}
+                                                    type={j.type}
+                                                    text={
+                                                      j.data.text.substr(
+                                                        0,
+                                                        150,
+                                                      ) + '....'
+                                                    }
+                                                    title={j.data.title}
+                                                    message={j.data.message}
+                                                    source={j.data.source}
+                                                    embed={j.data.embed}
+                                                    caption={j.data.caption}
+                                                    alignment={j.data.alignment}
+                                                    imageUrl={
+                                                      j.data.file
+                                                        ? j.data.file.url
+                                                        : null
+                                                    }
+                                                    url={j.data.url}
+                                                  />
+                                                ),
+                                            )
+                                          : null}
+                                      </Text>
+                               
+                                  
+                                  </View>
+                                    
+                               
+                                  </VStack>
+                                  <Text
+                                      style={{
+                                        color: '#00415e',
+                                        position: 'absolute',
+                                        bottom:0,
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: wp('2.5%'),
+                                      }}>
+                                    {i.authors_name}▪️{i.published_date}
+                                    </Text>
+                                </View>
+                              </HStack>
+                            </Card>
+                          </View>
                         </View>
-                        </HStack>
-                        </Card>
-                    </View>
-                </View>
-                )}
-                
-                // : null
-                
-                ): 
-                <Text>We do not have any cures for this condition yet but our editorial team is working on it. In the meantime, if you have a cure, Please Click Here to add the cure to our site.</Text>
-            }
-         
-          </ScrollView>
-      
+                      );
+                    },
+
+                  )
+              ) : (
+                <Text>
+                  We do not have any cures for this condition yet but our
+                  editorial team is working on it. In the meantime, if you have
+                  a cure, Please Click Here to add the cure to our site.
+                </Text>
+              )}
+            </ScrollView>
+          </View>
+          <View>
+            <View></View>
+          </View>
         </View>
-        <View>
-          <View></View>
-        </View>
-      </View>
-    </>
-  )
-          }
+      </>
+    );
+  }
 };
 
 export default ArticlePreview;

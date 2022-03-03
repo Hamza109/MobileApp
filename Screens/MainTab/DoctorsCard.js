@@ -85,31 +85,41 @@ const DoctorsCard = ({
   return (
     <View>
       <View>
+      <TouchableOpacity
+            onPress={() => {
+              navigation.push('DocProfile', {ids: `${rowno}`});
+            }}>
         <Card
           style={{
             width: wp('30%'),
             height: hp('15%'),
             backgroundColor: 'grey',
             borderRadius: 200,
-            marginRight: 8,
+            marginRight: 10,
             justifyContent: 'center',
 
             paddingHorizontal: 5,
             alignItems: 'center',
           }}>
           {
-          <ImageBackground source={{uri:`http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
-       
-          />
+            <ImageBackground
+              source={{
+                uri: `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
+              }}
+              style={{
+                width: wp('30%'),
+                height: hp('15%'),
+                borderRadius: 200,
+                overflow: 'hidden',
+              }}
+            />
           }
         </Card>
+        </TouchableOpacity>
       </View>
       <View>
         <View style={{zIndex: 999, width: wp('31%')}}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push('DocProfile', {ids:`${rowno}`});
-            }}>
+        
             <Text
               style={{
                 color: '#00415e',
@@ -122,7 +132,7 @@ const DoctorsCard = ({
               }}>
               Dr. {firstName} {lastName}
             </Text>
-          </TouchableOpacity>
+        
           <Text
             style={{
               color: '#00415e',
@@ -135,9 +145,7 @@ const DoctorsCard = ({
             }}>
             {primary_spl}
           </Text>
-          {/* <Text>{hospital_affliated} {state} {country_code}</Text> */}
         </View>
-        {/* <Link to={ `/profile/${rowno}` } className="appointmentBtn allBtn" id="visitDoc">Visit Profile</Link> */}
       </View>
     </View>
   );

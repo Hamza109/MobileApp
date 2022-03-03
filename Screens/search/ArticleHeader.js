@@ -101,6 +101,7 @@ borderWidth: 0.1,
 alignItems: 'center',
 width: wp('100%'),
 height: 85,
+backgroundColor:'#fff'
 
 },
 icon: {

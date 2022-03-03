@@ -49,6 +49,7 @@ import {
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {useIsFocused} from '@react-navigation/native';
+import Svg, {Path, Circle} from 'react-native-svg';
 const Disease = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
@@ -69,23 +70,34 @@ const Disease = ({navigation, route}) => {
   };
   const getId = () => {
     try {
-      Promise.all(AsyncStorage.getItem('author').then(value1 => {
-        console.log(value1);
-        if (value1 != null) {
-          setModalVisible(!modalVisible);
-        }
-        else{
-          navigation.navigate('SignIn')
-        }
-      }));
-    } catch (error) {
-      console.log(error);
-    }
+      Promise.all(
+        AsyncStorage.getItem('author').then(value1 => {
+          if (value1 != null) {
+            setModalVisible(!modalVisible);
+          } else {
+            navigation.navigate('SignIn');
+          }
+        }),
+      );
+    } catch (error) {}
   };
+  function User() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={wp('20%')}
+        height={hp('10%')}
+        fill="none"
+        viewBox="0 0 43 43">
+        <Path
+          fill="#00415E"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
+      </Svg>
+    );
+  }
   const postSubscription = val => {
     var phoneNumber = val.split('+')[1];
-    console.log(phoneNumber);
-    console.log(phoneNumber.length);
+
     var countryCodeLength = phoneNumber.length % 10;
     var countryCode = phoneNumber.slice(0, countryCodeLength);
     var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
@@ -124,27 +136,18 @@ const Disease = ({navigation, route}) => {
       .catch(err => null);
   };
   const isFocus = useIsFocused();
-  const onError = e => {
-    <Icon name="user-md" color={'#00415e'} size={26} />;
-  };
+
   useEffect(() => {
     if (isFocus) {
-
       comments();
 
       fetch(`${backendHost}/article/${id}`)
-        // .then(res => JSON.parse(res))
         .then(res => res.json())
         .then(json => {
-          console.log(json);
-          setIsLoaded(true)
+          setIsLoaded(true);
           setData(json);
           setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
           let a = JSON.parse(decodeURIComponent(json.content));
-          // a.blocks.forEach(i => {
-          //   setArticleContent([...articleContent ,i.data.text])
-          //   console.log(i.data.caption)
-          // });
         });
 
       if (data.reg_doc_pat_id !== null) {
@@ -153,7 +156,7 @@ const Disease = ({navigation, route}) => {
         );
       }
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (isFocus) {
@@ -174,7 +177,6 @@ const Disease = ({navigation, route}) => {
     fetch(`${backendHost}/rating/target/${id}/targettype/2`)
       .then(res => res.json())
       .then(json => {
-        console.log(json);
         setCommentItems(json);
       });
   }
@@ -184,605 +186,573 @@ const Disease = ({navigation, route}) => {
     fetch(`${backendHost}/isearch/${data.dc_name}`)
       .then(res => res.json())
       .then(json => {
-        setIsLoaded(true)
+        setIsLoaded(true);
         setSItems(json);
-        console.log(json);
       });
   };
 
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [imageExists, setImageExists] = useState(false);
-  const [isLoaded,setIsLoaded]=useState(false)
-  // useEffect(() => {
-  //   console.log('AR: ', items[0].data.file.url)
-  // }, [items])
-  const b = 'http://all-cures.com/cures/uitest/99.png';
-  console.log(data.authors_name);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  if(!isLoaded)
-  {
-    return(
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-    <HStack space={2} justifyContent="center">
-        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
-        <Heading color="#00415e" fontSize="lg">
-          Loading
-        </Heading>
-      </HStack>
+  const b = 'http://all-cures.com/cures/uitest/99.png';
+
+  if (!isLoaded) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <HStack space={2} justifyContent="center">
+          <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="lg"
+          />
+          <Heading color="#00415e" fontSize="lg">
+            Loading
+          </Heading>
+        </HStack>
       </View>
     );
-    
-  }
+  } else {
+    return (
+      <View style={styles.container}>
+        <View>
+          <View style={{flex: 1}}>
+            <ScrollView
+              style={{
+                width: wp('100%'),
+                height: hp('100%'),
+                marginTop:5,
+                paddingLeft: 10,
+                paddingRight: 10,
+           
+              }}>
+              <VStack space={3}>
+                <HStack>
+                  <Text
+                    style={{
+                      color: '#00415e',
 
-else{
-  return (
-    <View style={styles.container}>
-      <View>
-        <View style={{flex: 1, margin: 10}}>
-          <ScrollView
-            style={{
-              width: wp('100%'),
-              height: hp('100%'),
-              margin: 10,
-              paddingLeft: 10,
-              paddingRight: 10,
-              paddingBottom: 12,
-            }}>
-            <VStack space={3}>
-              <HStack>
+                      fontFamily: 'Raleway-Light',
+                      fontSize: 16,
+                      textAlign: 'left',
+                    }}>
+                    {data.authors_name} ▪️ {data.published_date}
+                  </Text>
+                  <Icon
+                    name="times-circle"
+                    size={30}
+                    color={'#00415e'}
+                    style={{position: 'absolute', right: 10}}
+                    onPress={() => {
+                      navigation.navigate('MainTab', {Screen: 'Home'});
+                    }}
+                  />
+                </HStack>
                 <Text
                   style={{
                     color: '#00415e',
 
-                    fontFamily: 'Raleway-Light',
-                    fontSize: 16,
+                    fontFamily: 'Raleway-Medium',
+                    fontSize: 22,
                     textAlign: 'left',
                   }}>
-                  {data.authors_name} ▪️ {data.published_date}
+                  {data.title}
                 </Text>
-                <Icon
-                  name="times-circle"
-                  size={30}
-                  color={'#00415e'}
-                  style={{position: 'absolute', right: 10}}
-                  onPress={() => {
-                    navigation.navigate('MainTab', {Screen: 'Home'});
-                  }}
-                />
-              </HStack>
-              <Text
-                style={{
-                  color: '#00415e',
 
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: 22,
-                  textAlign: 'left',
-                }}>
-                {data.title}
-              </Text>
-
-              {items.map(i => (
-                <View>
-                  <CenterWell1
-                    pageTitle={i.title}
-                    content={i.data.content}
-                    type={i.type}
-                    text={i.data.text}
-                    title={i.data.title}
-                    message={i.data.message}
-                    source={i.data.source}
-                    embed={i.data.embed}
-                    caption={i.data.caption}
-                    alignment={i.data.alignment}
-                    imageUrl={i.data.file ? i.data.file.url : null}
-                  />
-                </View>
-              ))}
-            </VStack>
-            <View style={{marginTop: 5}}>
-              <VStack space={2}>
-                {data.reg_type == 1 ? (
-                  <Card
-                    style={{
-                      width: wp('94%'),
-                      height: hp('17%'),
-                      backgroundColor: '#E5E5E5',
-                      padding: 15,
-                      marginTop: 10,
-                      marginBottom: 5,
-                    }}>
-                    <Text
+                {items.map((i, key) => (
+                  <View>
+                    <CenterWell1
+                      key={key}
+                      pageTitle={i.title}
+                      content={i.data.content}
+                      type={i.type}
+                      text={i.data.text}
+                      title={i.data.title}
+                      message={i.data.message}
+                      source={i.data.source}
+                      embed={i.data.embed}
+                      caption={i.data.caption}
+                      alignment={i.data.alignment}
+                      imageUrl={i.data.file ? i.data.file.url : null}
+                    />
+                  </View>
+                ))}
+              </VStack>
+              <View style={{marginTop: 5}}>
+                <VStack space={2}>
+                  {data.reg_type == 1 ? (
+                    <Card
                       style={{
-                        color: '#00415e',
-                        fontFamily: 'Raleway-Medium',
-                        position: 'relative',
-                        left: 9,
-                        bottom: 5,
+                        width: wp('94%'),
+                        height: hp('12%'),
+                        backgroundColor: '#E5E5E5',
+                        padding: 10,
+                        marginTop: 10,
+                        marginBottom: 5,
                       }}>
-                      AUTHOR
-                    </Text>
-                    <HStack>
-                      <Card
-                        style={{
-                          width: wp('20%'),
-                          height: hp('10%'),
-                          borderRadius: 200,
-                        }}>
-                        <ImageBackground
-                          source={{
-                            uri: `http://all-cures.com:8080/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
-                          }}
+                      <HStack space={2}>
+                        <Card
                           style={{
                             width: wp('20%'),
                             height: hp('10%'),
                             borderRadius: 200,
-                            overflow: 'hidden',
-                          }}
-                        />
-                      </Card>
-                      <TouchableOpacity
-                        onPress={() => {
-                          navigation.push('DocProfile', {
-                            ids: `${data.reg_doc_pat_id}`,
-                          });
-                        }}>
-                        <Text
-                          style={{
-                            color: '#00415e',
-                            fontFamily: 'Raleway-Regular',
-                            position: 'relative',
-                            top: 20,
-                            left: 15,
-                            fontSize: 18,
+                            backgroundColor: '#fff',
                           }}>
-                          {data.authors_name}
-                        </Text>
-                      </TouchableOpacity>
-                    </HStack>
-                  </Card>
-                ) : data.reg_type == 2 || data.reg_type == 3 ? (
-                  <Card
-                    style={{
-                      width: wp('94%'),
-                      height: hp('17%'),
-                      backgroundColor: '#E5E5E5',
-                      padding: 15,
-                      marginTop: 10,
-                      marginBottom: 5,
-                    }}>
-                    <Text
-                      style={{
-                        color: '#00415e',
-                        fontFamily: 'Raleway-Medium',
-                        position: 'relative',
-                        left: 9,
-                        bottom: 5,
-                      }}>
-                      AUTHOR
-                    </Text>
-                    <HStack space={2}>
+                          <ImageBackground
+                            source={{
+                              uri: `http://all-cures.com:8080/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
+                            }}
+                            style={{
+                              width: wp('20%'),
+                              height: hp('10%'),
+                              borderRadius: 200,
+                              overflow: 'hidden',
+                            }}
+                          />
+                        </Card>
+                        <VStack py="5">
+                          <Text
+                            style={{
+                              color: '#00415e',
+                              fontFamily: 'Raleway-Medium',
+                              fontSize: wp('4%'),
+                            }}>
+                            AUTHOR
+                          </Text>
+                          <HStack space={4}>
+                            <Text
+                              style={{
+                                color: '#00415e',
+                                fontFamily: 'Raleway-Light',
+                                fontSize: wp('3%'),
+                              }}>
+                              {data.authors_name}
+                            </Text>
+
+                            <TouchableOpacity
+                              onPress={() => {
+                                navigation.push('DocProfile', {
+                                  ids: `${data.reg_doc_pat_id}`,
+                                });
+                              }}>
+                              <View
+                                style={{
+                                  width: wp('15%'),
+                                  backgroundColor: '#00415e',
+                                  borderRadius: 20,
+                                  alignItems: 'center',
+                                  flex:1,
+                                  height: hp('2.5%'),
+                                }}>
+                                <Text
+                                  style={{
+                                    color: '#fff',
+                                    fontFamily: 'Raleway-Light',
+                                    fontSize: wp('2%'),
+                                    textDecorationLine: 'underline',
+                                  }}>
+                                  View Profile
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          </HStack>
+                        </VStack>
+                      </HStack>
+                    </Card>
+                  ) : data.reg_type == 2 || data.reg_type == 3 ? (
+                    <VStack>
                       <Card
                         style={{
-                          width: wp('20%'),
-                          height: hp('10%'),
-                          borderRadius: 200,
-                          alignItems: 'center',
+                          width: wp('94%'),
+                          height: hp('12%'),
+                          backgroundColor: '#E5E5E5',
+                          padding: 10,
+                          marginTop: 10,
+                          marginBottom: 5,
                         }}>
-                        <Icon name="user" size={74} style={{opacity: 0.5}} />
+                        <HStack space={2}>
+                          <User />
+                          <VStack py="5">
+                            <Text
+                              adjustsFontSizeToFit
+                              numberOfLines={1}
+                              style={{
+                                color: '#00415e',
+                                fontFamily: 'Raleway-Medium',
+                                fontSize: wp('4%'),
+                              }}>
+                              AUTHOR
+                            </Text>
+                            <Text
+                              style={{
+                                color: '#00415e',
+                                fontFamily: 'Raleway-Light',
+                              }}>
+                              {data.authors_name}
+                            </Text>
+                          </VStack>
+                        </HStack>
                       </Card>
-                      <Text
-                        style={{
-                          color: '#00415e',
-                          fontFamily: 'Raleway-Light',
-                          position: 'relative',
-                          top: 25,
-                        }}>
-                        {data.authors_name}
-                      </Text>
-                    </HStack>
-                  </Card>
-                ) : null}
-                <View style={{backgroundColor: 'lightgrey', padding: 10}}>
-                  <Text
-                    style={{fontFamily: 'Raleway-Medium', color: '#00415e'}}>
-                    Recommended Articles
-                  </Text>
-                </View>
+                    </VStack>
+                  ) : null}
+                  <View style={{backgroundColor: 'lightgrey', padding: 10}}>
+                    <Text
+                      style={{fontFamily: 'Raleway-Medium', color: '#00415e'}}>
+                      Recommended Articles
+                    </Text>
+                  </View>
 
-                {sItems.length !== 0 ? (
-                  sItems
-                    .filter((i, idx) => idx < 9)
-                    .map(
-                      i => {
-                        var content = [];
-                        var imgLocation = i.content_location;
-                        var imageLoc = '';
-                        if (i.content) {
-                          content = IsJsonValid(decodeURIComponent(i.content));
-                        }
-                        if (
-                          imgLocation &&
-                          imgLocation.includes('cures_articleimages')
-                        ) {
-                          imageLoc = 'http://all-cures.com:8280/';
-                        } else {
-                          imageLoc =
-                            'https://all-cures.com:444/cures_articleimages//299/default.png';
-                        }
+                  {sItems.length !== 0 ? (
+                    sItems
+                      .filter((i, idx) => idx < 9)
+                      .map(
+                        i => {
+                          var content = [];
+                          var imgLocation = i.content_location;
+                          var imageLoc = '';
+                          if (i.content) {
+                            content = IsJsonValid(
+                              decodeURIComponent(i.content),
+                            );
+                          }
+                          if (
+                            imgLocation &&
+                            imgLocation.includes('cures_articleimages')
+                          ) {
+                            imageLoc = 'http://all-cures.com:8280/';
+                          } else {
+                            imageLoc =
+                              'https://all-cures.com:444/cures_articleimages//299/default.png';
+                          }
 
-                        var title = i.title;
-                        var regex = new RegExp(' ', 'g');
+                          var title = i.title;
+                          var regex = new RegExp(' ', 'g');
 
-                        //replace via regex
-                        title = title.replace(regex, '-');
-                        return (
-                          <View>
+                          title = title.replace(regex, '-');
+                          return (
                             <View>
-                              <Card
-                                style={{
-                                  width: wp('97%'),
-                                  height: hp('12.4%'),
-                                  backgroundColor: 'lightgrey',
-                                  borderRadius: 0,
-                                  marginBottom: 2,
-                                  justifyContent: 'center',
-
-                                  paddingHorizontal: 5,
-                                  alignItems: 'center',
-                                }}>
-                                <HStack space={1}>
-                                  <Image
-                                    source={{
-                                      uri:
-                                        imageLoc +
-                                        imgLocation
-                                          .replace('json', 'png')
-                                          .split('/webapps/')[1],
-                                    }}
-                                    style={{
-                                      width: wp('42%'),
-                                      height: 100,
-                                      marginTop: 0,
-                                    }}
-                                  />
-                                  <View>
-                                    <AllPost
-                                      id={i.article_id}
-                                      title={i.title}
-                                      f_title={i.friendly_name}
-                                      w_title={i.window_title}
-                                      allPostsContent={() => receivedData()}
+                              <View>
+                                <Card
+                                  style={{
+                                    width: wp('95%'),
+                                    height: hp('21.6%'),
+                                    backgroundColor: 'lightgrey',
+                                    borderRadius: 0,
+                                    marginBottom: 5,
+                                    justifyContent: 'center',
+                                    borderRadius: 15,
+                                    
+                                    alignItems: 'center',
+                                  }}>
+                                  <HStack space={1}>
+                                    <Image
+                                      source={{
+                                        uri:
+                                          imageLoc +
+                                          imgLocation
+                                            .replace('json', 'png')
+                                            .split('/webapps/')[1],
+                                      }}
+                                      style={{
+                                        position: 'relative',
+                                        right: 5,
+                                        width: wp('45%'),
+                                        height: hp('21.6%'),
+                                        borderRadius: 15,
+                                        marginTop: 0,
+                                      }}
                                     />
-                                    <View style={{flex: 1}}>
-                                      <Box>
-                                        <Text style={{marginTop: 28}}>
-                                          {content
-                                            ? content.map(
-                                                (j, idx) =>
-                                                  idx < 1 && (
-                                                    <CenterWell
-                                                      content={j.data.content}
-                                                      type={j.type}
-                                                      text={
-                                                        j.data.text.substr(
-                                                          0,
-                                                          80,
-                                                        ) + '....'
-                                                      }
-                                                      title={j.data.title}
-                                                      message={j.data.message}
-                                                      source={j.data.source}
-                                                      embed={j.data.embed}
-                                                      caption={j.data.caption}
-                                                      alignment={
-                                                        j.data.alignment
-                                                      }
-                                                      imageUrl={
-                                                        j.data.file
-                                                          ? j.data.file.url
-                                                          : null
-                                                      }
-                                                      url={j.data.url}
-                                                    />
-                                                  ),
-                                              )
-                                            : null}
-                                        </Text>
-                                      </Box>
+                                    <View
+                                      style={{
+                                        width: wp('49%'),
+                                        height: hp('20%'),
+                                        position: 'relative',
+                                        right: 5,
+                                      }}>
+                                      <VStack py="2" space={10}>
+                                        <AllPost
+                                          id={i.article_id}
+                                          title={i.title}
+                                          f_title={i.friendly_name}
+                                          w_title={i.window_title}
+                                          allPostsContent={() => receivedData()}
+                                        />
+                                        <View style={{width: wp('50%')}}>
+                                          <Text
+                                            style={{
+                                              position: 'absolute',
+                                              top: 0,
+                                            }}>
+                                            {content
+                                              ? content.map(
+                                                  (j, idx) =>
+                                                    idx < 1 && (
+                                                      <CenterWell
+                                                        content={j.data.content}
+                                                        type={j.type}
+                                                        text={
+                                                          j.data.text.substr(
+                                                            0,
+                                                            150,
+                                                          ) + '....'
+                                                        }
+                                                        title={j.data.title}
+                                                        message={j.data.message}
+                                                        source={j.data.source}
+                                                        embed={j.data.embed}
+                                                        caption={j.data.caption}
+                                                        alignment={
+                                                          j.data.alignment
+                                                        }
+                                                        imageUrl={
+                                                          j.data.file
+                                                            ? j.data.file.url
+                                                            : null
+                                                        }
+                                                        url={j.data.url}
+                                                      />
+                                                    ),
+                                                )
+                                              : null}
+                                          </Text>
+                                        </View>
+                                      </VStack>
                                       <Text
                                         style={{
                                           color: '#00415e',
-
-                                          fontFamily: 'Raleway-Medium',
-                                          fontSize: 10,
                                           position: 'absolute',
-                                          bottom: 3,
+                                          bottom: 0,
+                                          fontFamily: 'Raleway-Medium',
+                                          fontSize: wp('2.5%'),
                                         }}>
-                                        {i.authors_name} {i.published_date}
+                                        {i.authors_name}▪️{i.published_date}
                                       </Text>
                                     </View>
-                                  </View>
-                                </HStack>
-                              </Card>
+                                  </HStack>
+                                </Card>
+                              </View>
                             </View>
-                          </View>
-                        );
-                      },
+                          );
+                        },
 
-                      // : null
-                    )
-                ) : (
-                  <Image
-                    Source={require('../../assets/img/heart.png')}
-                    style={{width: wp('10%'), height: hp('10%')}}
-                  />
-                )}
-              </VStack>
-            </View>
-          </ScrollView>
-        </View>
-
-        <Box bg="#00415e" safeAreaTop width={wp('100%')} alignSelf="center">
-          <Center flex={1}></Center>
-          <HStack
-            bg="#fff"
-            alignItems="center"
-            safeAreaBottom
-            width={wp('100%')}
-            height={hp('9%')}
-            shadow={6}>
-            <Center flex={2}>
-              <Rating article_id={id} />
-              <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
-                Rate this cure{' '}
-              </Text>
-            </Center>
-            <Pressable
-              cursor="pointer"
-              py="3"
-              flex={1}
-              onPress={() => setSelected(0)}>
-              <Center>
-                <Icon
-                  mb="1"
-                  name="comment"
-                  color="#00415e"
-                  size={30}
-                  onPress={() => {
-                   getId()
-                  }}
-                />
-                <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
-                  {' '}
-                  Comment{' '}
-                </Text>
-              </Center>
-            </Pressable>
-            <Pressable
-              cursor="pointer"
-              py="3"
-              flex={1}
-              onPress={() => setSelected(0)}>
-              <Center>
-                <Icon
-                  mb="1"
-                  name="bell"
-                  color="#00415e"
-                  size={30}
-                  onPress={() => {
-                    setSubModalVisible(!subModalVisible);
-                  }}
-                />
-                <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
-                  Subscribe
-                </Text>
-              </Center>
-            </Pressable>
-            <Pressable
-              cursor="pointer"
-              py="3"
-              flex={1}
-              onPress={() => setSelected(0)}>
-              <Center>
-                <Icon mb="1" name="share-alt" color="#00415e" size={30} />
-                <Text style={{fontFamily: 'Raleway', color: '#00415e'}}>
-                  Share{' '}
-                </Text>
-              </Center>
-            </Pressable>
-          </HStack>
-        </Box>
-      </View>
-
-      <Modal
-        isOpen={modalVisible}
-        onClose={() => setModalVisible(false)}
-        avoidKeyboard
-        justifyContent="flex-end"
-        bottom="0"
-        size="full">
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Header>comments</Modal.Header>
-          <Modal.Body>
-            <ScrollView>
-              {
-                commentItems.reviewd==1?(
-                       commentItems.map(i => (
-                      <View style={{marginBottom: 10}}>
-                        <View
-                          style={{
-                            padding: 10,
-                            marginVertical: 0,
-                            marginBottom: 0,
-                            Width: wp('80%'),
-                            height: hp('10%'),
-                            borderBottomWidth: 0.2,
-                          }}>
-                          <Text>{i.comments}</Text>
-                        </View>
-                      </View>
-                    ))
-                  
-                ):( <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon name="comments" style={{opacity: 0.3}} size={150} />
-                  <Text style={{color: 'grey'}}>No comments yet</Text>
-                  <Text style={{color: 'grey'}}>Be the first to comment.</Text>
-                </View>)
-
-              }
-
-
-
-              
+                        // : null
+                      )
+                  ) : (
+                    <Image
+                      Source={require('../../assets/img/heart.png')}
+                      style={{width: wp('10%'), height: hp('10%')}}
+                    />
+                  )}
+                </VStack>
+              </View>
             </ScrollView>
-          </Modal.Body>
-          <Modal.Footer>
+          </View>
 
-            <Comment article_id={id} />
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-
-      <Modal
-        isOpen={subModalVisible}
-        onClose={() => setSubModalVisible(false)}
-        avoidKeyboard
-        justifyContent="flex-end"
-        bottom="50"
-        size="full">
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Header>Subscribe</Modal.Header>
-          <Modal.Body>
-            <View style={{flex: 1}}>
-              <View style={{flexDirection: 'row'}}>
-                <Image
-                  source={require('../../assets/img/heart.png')}
-                  style={styles.imageModal}></Image>
+          <Box bg="#00415e" safeAreaTop width={wp('100%')} alignSelf="center">
+            <Center flex={1}></Center>
+            <HStack
+              bg="#fff"
+              alignItems="center"
+              safeAreaBottom
+              width={wp('100%')}
+              height={hp('8.9%')}
+              shadow={6}>
+              <Center flex={2}>
+                <Rating article_id={id} />
                 <Text
                   style={{
-                    marginTop: 20,
-                    marginRight: 15,
-                    fontSize: 30,
+                    fontFamily: 'Raleway',
                     color: '#00415e',
+                    fontSize: wp('3%'),
                   }}>
-                  All Cures
+                  Rate this cure{' '}
                 </Text>
-              </View>
-              <Text style={{marginTop: 20, fontSize: 20}}>
-                Sign up for our free
-                <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily
-                Newsletter
-              </Text>
-              <Text style={{marginTop: 20, fontSize: 20}}>
-                Get <Text style={{color: '#1e7ca8'}}>doctor-approved</Text>{' '}
-                health tips, news, and more
-              </Text>
-              <PhoneInput
-                defaultValue={value}
-                defaultCode="IN"
-                layout="first"
-                onChangeText={text => {
-                  setValue(text);
-                }}
-                onChangeFormattedText={text => {
-                  setFormattedValue(text);
-                }}
-                withDarkTheme
-                withShadow
-                autoFocus
-              />
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => postSubscription(formattedValue)}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+              </Center>
+              <Pressable
+                cursor="pointer"
+                py="3"
+                flex={1}
+                onPress={() => setSelected(0)}>
+                <Center>
+                  <Icon
+                    mb="1"
+                    name="comment"
+                    color="#00415e"
+                    size={30}
+                    onPress={() => {
+                      getId();
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Raleway',
+                      color: '#00415e',
+                      fontSize: wp('3%'),
+                    }}>
+                    Comment
+                  </Text>
+                </Center>
+              </Pressable>
+              <Pressable
+                cursor="pointer"
+                py="3"
+                flex={1}
+                onPress={() => setSelected(0)}>
+                <Center>
+                  <Icon
+                    mb="1"
+                    name="bell"
+                    color="#00415e"
+                    size={30}
+                    onPress={() => {
+                      setSubModalVisible(!subModalVisible);
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Raleway',
+                      color: '#00415e',
+                      fontSize: wp('3%'),
+                    }}>
+                    Subscribe
+                  </Text>
+                </Center>
+              </Pressable>
+              <Pressable
+                cursor="pointer"
+                py="3"
+                flex={1}
+                onPress={() => setSelected(0)}>
+                <Center>
+                  <Icon mb="1" name="share-alt" color="#00415e" size={30} />
+                  <Text
+                    style={{
+                      fontFamily: 'Raleway',
+                      color: '#00415e',
+                      fontSize: wp('3%'),
+                    }}>
+                    Share{' '}
+                  </Text>
+                </Center>
+              </Pressable>
+            </HStack>
+          </Box>
+        </View>
 
-      {/* <Portal>
-                <Modal
-                  visible={visible}
-                  onDismiss={hideModal}
-                  contentContainerStyle={containerStyle}>
-
-<View style={styles.centeredView}>
-<View style={{position:'relative',top:670,alignItems:'center',zIndex:99}}> 
-        <Comment   article_id={id}/>
-        </View> 
-           <View style={styles.modalView}>
-        
-           
-        <ScrollView >
-          <Card style={{height:hp('900%'),backgroundColor:'#fff',width:wp('100%'),flex:1,padding:10}}>
-        {
-          
-          commentItems?
-          commentItems.map((i) => (
-                <View style={{marginBottom:20}}>
-                    <Card style={{backgroundColor:'lightgrey',padding:15,marginVertical:0,marginBottom:0,maxWidth:wp('80%'),height:50}}>
-                      <Text>{i.comments}</Text>
-                      </Card>
+        <Modal
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          avoidKeyboard
+          justifyContent="flex-end"
+          bottom="0"
+          size="full">
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>comments</Modal.Header>
+            <Modal.Body>
+              <ScrollView>
+                {commentItems.reviewd == 1 ? (
+                  commentItems.map(i => (
+                    <View style={{marginBottom: 10}}>
+                      <View
+                        style={{
+                          padding: 10,
+                          marginVertical: 0,
+                          marginBottom: 0,
+                          Width: wp('80%'),
+                          height: hp('10%'),
+                          borderBottomWidth: 0.2,
+                        }}>
+                        <Text>{i.comments}</Text>
                       </View>
-               
-              ))
-          : null
-        }
-        </Card>
-           </ScrollView>
-       
-      
-        </View>
-        </View>
-               
-                </Modal>
-              </Portal> */}
-      {/* <Card
-        style={{
-          width: wp('100%'),
-          height: hp('5%'),
-          position: 'relative',
-          bottom: 88,
-          borderWidth: 1,
-          borderColor: 'grey',
-          backgroundColor: '#00415e',
-        }}>
-        <View style={{flex: 1}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{marginLeft: 30}}>
-              <Rating article_id={id} />
-            </View>
-            <View style={{marginRight: 50, marginTop: 5}}>
-              <TouchableOpacity activeOpacity={0.5} style={styles.btn}>
-                <Icon
-                  name="chatbox"
-                  style={{color: 'lightgrey'}}
-                  size={25}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
+                    </View>
+                  ))
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon name="comments" style={{opacity: 0.3}} size={150} />
+                    <Text style={{color: 'grey'}}>No comments yet</Text>
+                    <Text style={{color: 'grey'}}>
+                      Be the first to comment.
+                    </Text>
+                  </View>
+                )}
+              </ScrollView>
+            </Modal.Body>
+            <Modal.Footer>
+              <Comment article_id={id} />
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+
+        <Modal
+          isOpen={subModalVisible}
+          onClose={() => setSubModalVisible(false)}
+          avoidKeyboard
+          justifyContent="flex-end"
+          bottom="50"
+          size="full">
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>Subscribe</Modal.Header>
+            <Modal.Body>
+              <View style={{flex: 1}}>
+                <View style={{flexDirection: 'row'}}>
+                  <Image
+                    source={require('../../assets/img/heart.png')}
+                    style={styles.imageModal}></Image>
+                  <Text
+                    style={{
+                      marginTop: 20,
+                      marginRight: 15,
+                      fontSize: 30,
+                      color: '#00415e',
+                    }}>
+                    All Cures
+                  </Text>
+                </View>
+                <Text style={{marginTop: 20, fontSize: 20}}>
+                  Sign up for our free
+                  <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily
+                  Newsletter
+                </Text>
+                <Text style={{marginTop: 20, fontSize: 20}}>
+                  Get <Text style={{color: '#1e7ca8'}}>doctor-approved</Text>{' '}
+                  health tips, news, and more
+                </Text>
+                <PhoneInput
+                  defaultValue={value}
+                  defaultCode="IN"
+                  layout="first"
+                  onChangeText={text => {
+                    setValue(text);
                   }}
+                  onChangeFormattedText={text => {
+                    setFormattedValue(text);
+                  }}
+                  withDarkTheme
+                  withShadow
+                  autoFocus
                 />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Card> */}
-    </View>
-  )}
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => postSubscription(formattedValue)}>
+                  <Text style={{color: 'white', fontWeight: 'bold'}}>
+                    Submit
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      </View>
+    );
+  }
 };
 
 export default Disease;

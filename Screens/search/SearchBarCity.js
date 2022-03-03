@@ -11,13 +11,14 @@ import {
   Alert,
   Button,
   Dimensions,
+  FlatList
 } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { HStack, Stack, Center, Heading, NativeBaseProvider, Container,Input } from "native-base"
 import {Searchbar, ToggleButton} from 'react-native-paper';
 import axios from 'axios';
-import {max, set} from 'react-native-reanimated';
-import {FlatList} from 'react-native-gesture-handler';
+
+
 import {useNavigation} from '@react-navigation/core';
 import { backendHost } from '../../components/apiConfig';
 import {Card} from 'react-native-paper';

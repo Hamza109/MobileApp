@@ -1,87 +1,65 @@
-import React,{useEffect} from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, {useEffect} from 'react';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeScreen from './Home';
 import MyCures from './MyCures';
-import CreateScreen from './Create';
-import Profile from './Profile';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Autocomplete from './Autocomplete';
-import { useState } from 'react';
-import searchArt from '../search/SearchArticle';
-import CreateScreenHome from './CreateHome';
+import {useState} from 'react';
+
 import DocTab from './DocTab';
 
 const HomeStack = createStackNavigator();
 const MyCuresStack = createStackNavigator();
-const ArticleStack=createStackNavigator()
+const ArticleStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
-const MainTabScreen = () => 
-{
+const MainTabScreen = () => {
   const [regId, setRegId] = useState([]);
-    const getId= ()=>{
-        try{
-         AsyncStorage.getItem('author')
-       .then((value1)=>{
-  
-           if(value1!=null)
-           {
-             setRegId(value1)
-         
-           }
-     
-         
-     
-       
-       })
-      
-       } 
-       catch(error)
-       {
-         console.log(error)
-       }
-     }
+  const getId = () => {
+    try {
+      AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(value1);
+        }
+      });
+    } catch (error) {}
+  };
 
-     return(
+  return (
     <Tab.Navigator
-
-  
       initialRouteName="Home"
       screenOptions={{
-      tabBarStyle:{padding:5},
-      tabBarInactiveTintColor:'grey',
-      tabBarLabelStyle:{fontFamily:'Raleway-Medium'}
-
-      }}
-   
-    >
+        tabBarStyle: {padding: 5},
+        tabBarInactiveTintColor: 'grey',
+        tabBarLabelStyle: {fontFamily: 'Raleway-Medium'},
+      }}>
       <Tab.Screen
         name="HomeTab"
         component={HomeStackScreen}
         options={{
-          headerShown:false,
-          tabBarActiveTintColor:'#00415e',
-          activeColor:'red',
-    
+          headerShown: false,
+          tabBarActiveTintColor: '#00415e',
+          activeColor: 'red',
+
           tabBarLabel: 'Home',
           tabBarColor: '#fff',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({color}) => (
             <Icon name="home" color={'#00415e'} size={26} />
           ),
         }}
       />
-       <Tab.Screen
+      <Tab.Screen
         name="ArticleTab"
         component={ArticleStackScreen}
         options={{
-          headerShown:false,
-          tabBarActiveTintColor:'#00415e',
+          headerShown: false,
+          tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Doctor',
           tabBarColor: '#fff',
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({color}) => (
             <Icon name="user-md" color={'#00415e'} size={26} />
           ),
         }}
@@ -90,18 +68,17 @@ const MainTabScreen = () =>
         name="Cures"
         component={MyCuresStackScreen}
         options={{
-          headerShown:false,
-          tabBarActiveTintColor:'#00415e',
+          headerShown: false,
+          tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'My Cures',
           tabBarColor: '#fff',
-          tabBarIcon: ({ color }) => (
-            <Icon name="heartbeat" color={'#00415e'} size={26}  />
+          tabBarIcon: ({color}) => (
+            <Icon name="heartbeat" color={'#00415e'} size={26} />
           ),
         }}
       />
-     
-     
-       {/* <Tab.Screen
+
+      {/* <Tab.Screen
         name="ProfileTab"
         component={Profile}
         options={{
@@ -112,83 +89,82 @@ const MainTabScreen = () =>
           ),
         }}
       /> */}
-
     </Tab.Navigator>
-  
-
-     )
-      }
-    
-      
+  );
+};
 
 export default MainTabScreen;
 
-
-
-
-const HomeStackScreen = () =>(
-<HomeStack.Navigator screenOptions={{
-        headerStyle: {
+const HomeStackScreen = () => (
+  <HomeStack.Navigator
+    screenOptions={{
+      headerStyle: {
         backgroundColor: '#fff',
-      
-        },
+      },
 
-        headerTintColor: '#00415e',
-        headerTitle:'All Cures',
-        headerTitleStyle: {
-        fontWeight: 'bold'
-        }
+      headerTintColor: '#00415e',
+      headerTitle: 'All Cures',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
     }}>
-        <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerLeft: null,headerShown:false
-
-        }} />
-        
-     
-</HomeStack.Navigator>
-)
-      ;
-
+    <HomeStack.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{headerLeft: null, headerShown: false}}
+    />
+  </HomeStack.Navigator>
+);
 const MyCuresStackScreen = () => (
-  
-    
-  
-
-<MyCuresStack.Navigator screenOptions={{
-        headerStyle: {
+  <MyCuresStack.Navigator
+    screenOptions={{
+      headerStyle: {
         backgroundColor: '#fff',
-        },
-        headerTintColor: '#00415e',
-        headerTitleStyle: {
-        fontWeight: 'bold'
-        }
+      },
+      headerTintColor: '#00415e',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
     }}>
-      
-        <MyCuresStack.Screen name="MyCures" component={MyCures} options={{
-          
-        
+    <MyCuresStack.Screen
+      name="MyCures"
+      component={MyCures}
+      options={{
         headerLeft: () => (
-            <Icon name="heartbeat" size={30}  style={{marginLeft:20,color:'#00415e'}} backgroundColor="#fff" ></Icon>
-         )
-        }} />
-</MyCuresStack.Navigator>
-  
+          <Icon
+            name="heartbeat"
+            size={30}
+            style={{marginLeft: 20, color: '#00415e'}}
+            backgroundColor="#fff"></Icon>
+        ),
+      }}
+    />
+  </MyCuresStack.Navigator>
 );
 
-const ArticleStackScreen = ({navigation}) =>(
-  
-  <ArticleStack.Navigator screenOptions={{
-          headerStyle: {
-          backgroundColor: '#fff',
-          },
-          headerTintColor: '#00415e',
-          headerTitleStyle: {
-          fontWeight: 'bold'
-          }
-      }}>
-          <ArticleStack.Screen name="Doctor" component={DocTab} options={{
-          headerLeft: () => (
-            <Icon name="user-md" size={30}  style={{marginLeft:20,color:'#00415e'}} backgroundColor="#fff" ></Icon>
-         )
-          }} />
+const ArticleStackScreen = ({navigation}) => (
+  <ArticleStack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: '#fff',
+      },
+      headerTintColor: '#00415e',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    }}>
+    <ArticleStack.Screen
+      name="Doctor"
+      component={DocTab}
+      options={{
+        headerLeft: () => (
+          <Icon
+            name="user-md"
+            size={30}
+            style={{marginLeft: 20, color: '#00415e'}}
+            backgroundColor="#fff"></Icon>
+        ),
+      }}
+    />
   </ArticleStack.Navigator>
-)
+);

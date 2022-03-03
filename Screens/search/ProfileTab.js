@@ -85,7 +85,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
                             alignItems:'center'
                           }}>
                             { 
-      <ImageBackground source={{uri:`https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+      <ImageBackground source={{uri:`http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
        
     onError={(e) => onError(e)}  />
   
@@ -104,7 +104,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
             color: '#00415e',
             marginTop: 5,
             fontFamily:'Raleway-Medium',
-            fontSize: 14,
+            fontSize: wp('4%'),
             position: 'relative',
             bottom: 0,
          
@@ -114,7 +114,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
             color: '#00415e',
             marginTop: 5,
             fontFamily:'Raleway-Regular',
-            fontSize: 12,
+            fontSize: wp('2.5%'),
             position: 'relative',
             bottom: 0,
          
@@ -123,7 +123,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
             color: '#00415e',
             marginTop: 5,
             fontFamily:'Raleway-Regular',
-            fontSize: 12,
+            fontSize: wp('2.5%'),
             position: 'relative',
             bottom: 0,
          
@@ -132,7 +132,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
             color: '#00415e',
             marginTop: 5,
             fontFamily:'Raleway-Regular',
-            fontSize: 12,
+            fontSize: wp('2.5%'),
             position: 'relative',
             bottom: 0,
              right: 4

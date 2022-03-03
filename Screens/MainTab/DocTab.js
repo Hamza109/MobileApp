@@ -40,26 +40,45 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
 import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 const DocTab = ({navigation, route}) => {
-
-
   return (
     <View style={styles.container}>
-        <View>
-      <Stack space={3} alignItems="center">
-          <ImageBackground source={require('../../assets/img/LandingMainImg.jpg')} style={{width:wp("100%"),height:hp('40%')}}><Text style={{color:'#00415e',fontFamily:'Raleway-Bold',fontSize:28,position:'absolute',bottom:65,left:30,width:wp('50%')}}>Find a doctor near you</Text></ImageBackground>
+      <View>
+        <Stack space={3} alignItems="center">
+          <ImageBackground
+            source={require('../../assets/img/LandingMainImg.jpg')}
+            style={{width: wp('100%'), height: hp('40%')}}>
+            <Text
+              style={{
+                color: '#00415e',
+                fontFamily: 'Raleway-Bold',
+                fontSize: 28,
+                position: 'absolute',
+                bottom: 65,
+                left: 30,
+                width: wp('50%'),
+              }}>
+              Find a doctor near you
+            </Text>
+          </ImageBackground>
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
               navigation.navigate('SearchDoc');
             }}>
-            <View style={styles.card}>
-              <HStack ml="2" space={120} alignItems="center">
-                <Text style={{fontSize: 18, color: '#00415e',fontFamily:'Raleway-Regular',}}>
-                  Search by name
+              <View style={styles.card}>
+              <HStack ml="2" space={110} alignItems="center">
+                <Text
+                  adjustsFontSizeToFit
+                  style={{
+                    fontSize: wp('4.5%'),
+                    color: '#00415e',
+                    fontFamily: 'Raleway-Regular',
+                  }}>
+                  Search by Name
                 </Text>
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
@@ -70,21 +89,23 @@ const DocTab = ({navigation, route}) => {
             activeOpacity={0.8}
             onPress={() => {
               navigation.navigate('SearchDocCity');
-            }}
-            >
+            }}>
             <View style={styles.card}>
-              <HStack ml="2" space={140} alignItems="center" >
-                <Text style={{fontSize: 18, color: '#00415e',fontFamily:'Raleway-Regular',}}>
+              <HStack ml="2" space={110} alignItems="center">
+                <Text
+                  style={{
+                    fontSize: wp('4.5%'),
+                    color: '#00415e',
+                    fontFamily: 'Raleway-Regular',
+                  }}>
                   Search by city
                 </Text>
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
             </View>
           </TouchableOpacity>
-        
-
-         </Stack>
-         </View>
+        </Stack>
+      </View>
     </View>
   );
 };
@@ -96,11 +117,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
     alignItems: 'center',
-
   },
   card: {
-
-    backgroundColor:'rgba(0, 65, 94, 0.2)',width:wp('86%'),height:hp('6%'),borderRadius:20,padding:10
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
+    width: wp('86%'),
+    height: 50,
+    borderRadius: 20,
+    padding: 10,
   },
   inCard: {
     flexDirection: 'row',
@@ -117,7 +140,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     padding: 3,
-
+   position:'absolute',
+   right:0,
     color: '#00415e',
   },
 

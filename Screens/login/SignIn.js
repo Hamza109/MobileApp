@@ -34,11 +34,11 @@ import {backendHost} from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import Icon from 'react-native-vector-icons/Ionicons';
-const SignInScreen = ({navigation,props}) => {
+const SignInScreen = ({navigation, props}) => {
   const [status, setStatus] = useState('');
   const [buttonClick, setClicked] = useState('');
-  const [isSignedIn,setIsSignedIn]= useState(props)
-  const [loginSuccess, setLoginSuccess] = useState(true)
+  const [isSignedIn, setIsSignedIn] = useState(props);
+  const [loginSuccess, setLoginSuccess] = useState(true);
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -69,17 +69,12 @@ const SignInScreen = ({navigation,props}) => {
         `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
       )
 
-  
-      .then(res=>{
-        console.log(res)
-        if(res.data.registration_id)
-        {
+      .then(res => {
+        if (res.data.registration_id) {
           navigation.navigate('MainTab', {
-    
             params: {
               userId: authid,
             },
-
           });
           setStatus(res.status);
           setId(res.data.registration_id);
@@ -87,75 +82,58 @@ const SignInScreen = ({navigation,props}) => {
           setFirst(res.data.first_name);
           setLast(res.data.last_name);
           setEmail(res.data.email_address);
-          setRow(res.data.rowno)
+          setRow(res.data.rowno);
         }
       })
 
       .catch(err => {
-        setLoginSuccess(false)
-        if(err.response){
-        if(err.response.data.includes('Incorrect email')){
-          Alert.alert("Incorrect email or password!")
+        setLoginSuccess(false);
+        if (err.response) {
+          if (err.response.data.includes('Incorrect email')) {
+            Alert.alert('Incorrect email or password!');
+          } else {
+            Alert.alert('Some error occured!');
+          }
         } else {
-         Alert.alert("Some error occured!")
+          return;
         }
-      }else{
-        return
-      }
-      })
-  
+      });
   };
-  const setCheck = async value =>{
-      try{
-          await AsyncStorage.setItem('check',JSON.stringify(value))
-      }catch(error){
-          console.log(error)
-      }
-  }
+  const setCheck = async value => {
+    try {
+      await AsyncStorage.setItem('check', JSON.stringify(value));
+    } catch (error) {}
+  };
   const setId = async id => {
     try {
-      console.log(JSON.stringify(id));
       await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const setType = async type => {
     try {
       await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const setFirst = async first => {
     try {
       await AsyncStorage.setItem('firstName', first);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const setRow = async row => {
     try {
       await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const setLast = async last => {
     try {
       await AsyncStorage.setItem('lastName', last);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const setEmail = async email => {
     try {
       await AsyncStorage.setItem('email', email);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
-  
 
   return (
     <View style={styles.container}>
@@ -164,7 +142,7 @@ const SignInScreen = ({navigation,props}) => {
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
-        <TouchableOpacity
+             <TouchableOpacity
           style={{marginLeft: 20, color: '#fff'}}
           backgroundColor="#fff"
           onPress={() => navigation.navigate('MainTab')}>
@@ -172,14 +150,16 @@ const SignInScreen = ({navigation,props}) => {
             style={{
               color: '#fff',
               position: 'absolute',
-              bottom: 140,
-              left: 300,
+            top:0,
+        right:0,
               fontSize: 18,
-              fontFamily:'Raleway'
+              fontFamily: 'Raleway-Medium',
             }}>
             Skip
           </Text>
         </TouchableOpacity>
+          <View style={{flex:1,justifyContent:'center'}}>
+     
         <Stack space={1}>
           <View style={styles.header}>
             <Text style={styles.text_header}>Sign In</Text>
@@ -237,13 +217,12 @@ const SignInScreen = ({navigation,props}) => {
             </View>
           </VStack>
           <View style={styles.button}>
-  
             <TouchableOpacity style={styles.signIn} onPress={loginForm}>
               <Text
                 style={[
                   styles.textSign,
                   {
-                    fontFamily:'Raleway-Bold',
+                    fontFamily: 'Raleway-Bold',
                     color: '#00415e',
                   },
                 ]}>
@@ -253,7 +232,12 @@ const SignInScreen = ({navigation,props}) => {
             <VStack space={50}>
               <TouchableOpacity>
                 <Text
-                  style={{color: '#fff', textAlign: 'center', marginTop: 5,  fontFamily:'Raleway'}}
+                  style={{
+                    color: '#fff',
+                    textAlign: 'center',
+                    marginTop: 5,
+                    fontFamily: 'Raleway',
+                  }}
                   onPress={verify}>
                   Forgot password?
                 </Text>
@@ -261,7 +245,12 @@ const SignInScreen = ({navigation,props}) => {
 
               <TouchableOpacity>
                 <Text
-                  style={{color: '#fff', textAlign: 'center', marginTop: 25,  fontFamily:'Raleway'}}
+                  style={{
+                    color: '#fff',
+                    textAlign: 'center',
+                    marginTop: 25,
+                    fontFamily: 'Raleway',
+                  }}
                   onPress={() => navigation.navigate('SignUp')}>
                   Don't have an account? Sign Up
                 </Text>
@@ -269,6 +258,7 @@ const SignInScreen = ({navigation,props}) => {
             </VStack>
           </View>
         </Stack>
+        </View>
       </ImageBackground>
     </View>
   );
@@ -287,11 +277,10 @@ const styles = StyleSheet.create({
   },
 
   text_header: {
-      fontFamily:'Raleway-Bold',
+    fontFamily: 'Raleway-Bold',
     color: '#fff',
-   
-    fontSize: 30,
 
+    fontSize: 30,
 
     textAlign: 'center',
   },
@@ -319,7 +308,7 @@ const styles = StyleSheet.create({
     padding: 6,
     paddingHorizontal: 15,
     color: '#05375a',
-    fontFamily:'Raleway'
+    fontFamily: 'Raleway',
   },
   errorMsg: {
     color: '#FF0000',
@@ -329,7 +318,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 50,
   },
- 
+
   signIn: {
     width: '100%',
     height: hp('6%'),
@@ -340,12 +329,11 @@ const styles = StyleSheet.create({
   },
   textSign: {
     fontSize: 18,
-    textAlign:'center'
-   
+    textAlign: 'center',
   },
   image: {
     flex: 1,
-    justifyContent: 'center',
+   
     padding: 15,
   },
 });

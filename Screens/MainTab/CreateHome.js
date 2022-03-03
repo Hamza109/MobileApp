@@ -19,7 +19,7 @@ import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {backendHost} from '../../components/apiConfig';
-import { set } from 'react-native-reanimated';
+
 import { VStack,Stack,Container,HStack,Checkbox } from 'native-base';
 import {
   widthPercentageToDP as wp,
@@ -46,7 +46,7 @@ const CreateScreenHome = () => {
   const getId = () => {
     try {
       Promise.all(AsyncStorage.getItem('author').then(value1 => {
-        console.log(value1);
+   
         if (value1 != null) {
            setRegId(value1)
         }
@@ -55,35 +55,24 @@ const CreateScreenHome = () => {
         }
       }));
     } catch (error) {
-      console.log(error);
+  
     }
   };
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType')
       .then(value2 => {
-        console.log(value2);
+
         if (value2 != null) {
           setRegType(value2);
         }
       });
     } catch (error) {
-      console.log(error);
+
     }
   };
 const isFocus= useIsFocused();
-  const check=()=>{
-   console.log('#########: ', regId)
-      if(regId.length === 0)
-      {
-         // navigation.navigate('Cures',{screen:'My Cures'})
-         navigation.navigate('SignIn')
-    
-      }
-      else{
-         navigation.navigate('CreateScreenHome')
-      }
-  }
+  
   useEffect(() => {
    
     if(isFocus){
@@ -100,9 +89,7 @@ const isFocus= useIsFocused();
 //   }, [regId])
   const submitArticleForm = async e => {
     e.preventDefault();
-    console.log(
-      'submit article formmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
-    );
+   
     axios.defaults.withCredentials = true
     axios.post(`${backendHost}/content?cmd=createArticle`, {
       headers: {
@@ -128,7 +115,7 @@ const isFocus= useIsFocused();
  
       })
       .catch(err => {
-        console.log(err);
+ 
 
       });
   };
