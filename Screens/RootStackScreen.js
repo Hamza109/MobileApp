@@ -21,11 +21,28 @@ import SearchDocCity from './search/SearchDocCity';
 import DocResultCity from './search/DocResultCity';
 import DocProfile from './MainTab/DocProfile';
 import SignUpScreen from './login/SignUp';
+import DrawerMenu from './MainTab/DrawerMenu';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Subscribe from '../components/Subscribe';
+import Feedback from '../components/FeedBack';
 
 const Stack = createStackNavigator();
 
 const RootStack = () => {
   const navigation = useNavigation();
+  const getId =async () => {
+    try {
+     await  AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(value1);
+        } else {
+          navigation.navigate('SignIn');
+        }
+      });
+    } catch (error) {
+      console.log('114', error);
+    }
+  };
   return (
     <Stack.Navigator
       initialRouteName="SplashScreen"
@@ -43,11 +60,7 @@ const RootStack = () => {
         component={SplashScreen}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="MainTab"
-        component={MainTabScreen}
-        options={{headerShown: false}}
-      />
+    
 
       <Stack.Screen
         name="CreateScreen"
@@ -64,10 +77,25 @@ const RootStack = () => {
         component={Result}
         options={{headerShown: null, headerLeft: null}}
       />
+       <Stack.Screen
+        name="MainTab"
+        component={DrawerMenu}
+        options={{headerShown: null, headerLeft: null}}
+      />
       <Stack.Screen
         name="Disease"
         component={Disease}
         options={{headerShown: null, headerLeft: null}}
+      />
+         <Stack.Screen
+        name="Subscribe"
+        component={Subscribe}
+      
+      />
+         <Stack.Screen
+        name="Feedback"
+        component={Feedback}
+      
       />
       <Stack.Screen
         name="searchArt"
@@ -107,7 +135,7 @@ const RootStack = () => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{headerShown: false}}
+        options={{headerShown: true,headerLeft:()=>(<Icon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('MainTab')}}/>)}}
       />
       <Stack.Screen
         name="Verify"

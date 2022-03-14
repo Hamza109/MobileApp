@@ -13,7 +13,7 @@ const { s, c } = bootstrapStyleSheet;
 
 const AllStat = ({ id, title, f_title, w_title}) => {
   const[showValue,setShowValue]=useState([])
-  console.log(id)
+
   const getRating = () => {
 
     axios.get(`${backendHost}/rating/target/${id}/targettype/2/avg`)

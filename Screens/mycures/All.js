@@ -31,7 +31,7 @@ import AllStat from '../search/AllStat';
 
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
-const Tab = createMaterialTopTabNavigator();
+
 const All = () => {
   const navigation = useNavigation();
 
@@ -141,7 +141,7 @@ const All = () => {
                 <Card
                   style={{
                     width: wp('97%'),
-                    height: hp('10.4%'),
+                    height: 83,
                     backgroundColor: 'lightgrey',
                     borderRadius: 15,
                     marginBottom: 5,
@@ -163,7 +163,7 @@ const All = () => {
                         position:'relative',
                         right:5,
                         width: wp('45%'),
-                        height: hp('10.4%'),
+                        height: 83,
                         marginTop: 0,
                         borderRadius:15
                       }}
@@ -201,7 +201,7 @@ const All = () => {
                           style={{
                             color: '#00415e',
                             fontFamily: 'Raleway-Medium',
-                            fontSize: 10,
+                            fontSize: wp('2.5%'),
                             position: 'absolute',
                             bottom: 0,
                           }}>
@@ -212,12 +212,21 @@ const All = () => {
                 </Card>
               </View>
             </View>   ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
-               <View>
-               <View>
+         <View
+            style={{
+              alignItems: 'center',
+              marginLeft: 0,
+              width: wp('100%'),
+              flex: 1,
+            }}>
+         <ScrollView
+              style={{width: wp('100%')}}
+              horizontal
+              showsHorizontalScrollIndicator={false}>
                  <Card
                    style={{
                      width: wp('97%'),
-                     height: hp('10.4%'),
+                     height: 83,
                      backgroundColor: 'lightgrey',
                      borderRadius: 15,
                      marginBottom: 5,
@@ -238,7 +247,7 @@ const All = () => {
                          position:'relative',
                          right:5,
                          width: wp('45%'),
-                         height: hp('10.4%'),
+                         height: 83,
                          marginTop: 0,
                          borderRadius:15
                        }}
@@ -277,16 +286,16 @@ const All = () => {
                              color: '#00415e',
 
                              fontFamily: 'Raleway-Medium',
-                             fontSize: 10,
+                             fontSize: wp('2.5%'),
                              position: 'absolute',
                              bottom: 0,
                            }}>
-                           {i.authors_name}▪️{i.published_date}
+                           {i.authors_name}▪️{i.create_date}
                          </Text>
                      </View>
                    </HStack>
                  </Card>
-               </View>
+               </ScrollView>
              </View>
             ) : i.pubstatus_id === 1 && i.edited_by == regId ? (
               <View>
@@ -294,7 +303,7 @@ const All = () => {
                 <Card
                   style={{
                     width: wp('97%'),
-                    height: hp('10.4%'),
+                    height: 83,
                     backgroundColor: 'lightgrey',
                     borderRadius: 15,
                     marginBottom: 5,
@@ -316,7 +325,7 @@ const All = () => {
                         position:'relative',
                         right:5,
                         width: wp('45%'),
-                        height: hp('10.4%'),
+                        height: 83,
                         marginTop: 0,
                         borderRadius:15
                       }}
@@ -355,7 +364,7 @@ const All = () => {
                             color: '#00415e',
 
                             fontFamily: 'Raleway-Medium',
-                            fontSize: 10,
+                            fontSize: wp('2.5%'),
                             position: 'absolute',
                             bottom: 0,
                           }}>

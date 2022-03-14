@@ -42,7 +42,7 @@ import {
   Spinner,
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
-
+import LottieView from 'lottie-react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -57,7 +57,7 @@ const DocPreview = () => {
 
   useEffect((lat, lon, city) => {
     fetch(
-      `${backendHost}/SearchActionController?cmd=getResults&city=jammu&doctors=manoj&Latitude=32.7266&Longitude=74.8570`,
+      `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=871,872,873,874,875,876,877,878,879,880,881,882`,
     )
       .then(res => res.json())
       .then(json => {
@@ -71,14 +71,7 @@ const DocPreview = () => {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
+        <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
         </HStack>
       </View>
     );

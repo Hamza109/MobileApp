@@ -11,6 +11,7 @@ import {
   Alert,
   FlatList
 } from 'react-native';
+import analytics from '@react-native-firebase/analytics' 
 import {
   HStack,
   Stack,
@@ -64,6 +65,9 @@ const Autocomplete = () => {
 
   const result = () => {
     if (text) {
+analytics().setUserProperty("search_term",text)
+analytics().logEvent("search",{"search_term":text})
+      analytics().logSearch({search_term:text})
       navigation.navigate('Result', {
         texts: `${text}`,
       });
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#00415e',
 
     backgroundColor: '#fff',
-    height: hp('10%'),
+    height: 80,
     width: wp('100%'),
     justifyContent: 'center',
 

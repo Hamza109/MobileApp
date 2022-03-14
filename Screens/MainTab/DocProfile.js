@@ -51,7 +51,7 @@ const DocProfile = ({navigation, route}) => {
     fetch(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
       .then(res => res.json())
       .then(json => {
-        console.log(json);
+     
         setItems(json);
       });
   };
@@ -85,16 +85,17 @@ const DocProfile = ({navigation, route}) => {
   useEffect(() => {
     getDoc();
     allpost();
-    console.log(articleItems);
+
   }, [id]);
   return (
     <>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <Stack space={5}>
-          <View style={{backgroundColor:'#00415e',height:hp('17.5%'),alignItems:'center'}}>
+          <View style={{backgroundColor:'#00415e',height:140,alignItems:'center'}}>
             <HStack space={3}>
               <VStack py='2'>
               <Card
+
                 style={{
                   width: wp('30%'),
                   height: hp('15%'),
@@ -107,7 +108,7 @@ const DocProfile = ({navigation, route}) => {
                 }}>
                 <ImageBackground
                   source={{
-                    uri: `http://all-cures.com:8280/cures_articleimages/doctors/${items.rowno}.png`,
+                    uri: `http://all-cures.com:8080/cures_articleimages/doctors/${items.rowno}.png`,
                   }}
                   style={{
                     width: wp('30%'),
@@ -119,7 +120,7 @@ const DocProfile = ({navigation, route}) => {
               </Card>
               </VStack>
               <View style={{width:wp('50%') }}>
-                <VStack space={1}>
+                <VStack space={1} py='2'>
 
                   <Text
                     style={{
@@ -256,7 +257,7 @@ const DocProfile = ({navigation, route}) => {
                         imgLocation &&
                         imgLocation.includes('cures_articleimages')
                       ) {
-                        imageLoc = 'http://all-cures.com:8080/';
+                        imageLoc = 'http://all-cures.com:8280/';
                       } else {
                         imageLoc =
                           'https://all-cures.com:444/cures_articleimages//299/default.png';

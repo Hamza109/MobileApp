@@ -44,19 +44,20 @@ import {
   VStack,
 } from 'native-base';
 import {backendHost} from '../../components/apiConfig';
-
+import LottieView from 'lottie-react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import CenterWell from '../Disease/CenterWell';
 import Heart from '../../assets/img/heart.png';
+import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-snap-carousel';
 
 const ArticlePreview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
-
+ const navigation=useNavigation();
   function diseasePosts(type) {
    
     fetch(`${backendHost}/isearch/${type}`)
@@ -121,49 +122,10 @@ const ArticlePreview = () => {
       </View>
     );
   }
-  function renderItem() {
-    const {authors_name, source, color} = items;
-    return (
-      <View style={{marginRight: 13}}>
-        <Card
-          style={{
-            width: wp('90%'),
-            height: hp('25%'),
-            backgroundColor: '#00415e',
-            borderRadius: 20,
-          }}>
-          <Image
-            style={{
-              alignContent: 'center',
-              width: wp('24%'),
-              height: hp('15%'),
-              position: 'relative',
-              top: 42,
-              left: 11,
-            }}
-            source={source}
-          />
-          <Text
-            style={{
-              color: '#fff',
-              fontWeight: '500',
-              position: 'relative',
-              bottom: 10,
-              left: 9,
-            }}>
-            {authors_name}
-          </Text>
-        </Card>
-      </View>
-    );
-  }
-  if (!isLoaded) {
+    if (!isLoaded) {
     return (
       <HStack space={2} justifyContent="center">
-        <Spinner accessibilityLabel="Loading posts" color="#00415e" size="lg" />
-        <Heading color="#00415e" fontSize="lg">
-          Loading
-        </Heading>
+        <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
       </HStack>
     );
   } else {
@@ -203,7 +165,7 @@ const ArticlePreview = () => {
                             <Card
                               style={{
                                 width: wp('97%'),
-                                height: hp('21%'),
+                                height: 168,
                                 backgroundColor: 'lightgrey',
                                 justifyContent: 'center',
                                 paddingHorizontal: 5,
@@ -211,6 +173,7 @@ const ArticlePreview = () => {
                                 alignItems: 'center',
                               }}>
                               <HStack space={1}>
+                                <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
                                   source={{
                                     uri:
@@ -223,11 +186,12 @@ const ArticlePreview = () => {
                                     position:'relative',
                                     right:3,
                                     width: wp('45%'),
-                                    height: hp('21%'),
+                                    height: 168,
                                     marginTop: 0,
                                     borderRadius:15
                                   }}
                                 />
+                                </TouchableOpacity>
                                 <View style={{width:wp('50%')}}>
                                   <VStack py='2' space={10}>
                                   <AllPost
@@ -277,6 +241,8 @@ const ArticlePreview = () => {
                                
                                   </VStack>
                                   <Text
+                                  adjustsFontSizeToFit
+                                  numberOfLines={1}
                                       style={{
                                         color: '#00415e',
                                         position: 'absolute',

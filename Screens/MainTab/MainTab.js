@@ -22,12 +22,15 @@ const MainTabScreen = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
         if (value1 != null) {
+          console.log('value:',value1)
           setRegId(value1);
         }
       });
     } catch (error) {}
   };
-
+useEffect(()=>{
+  getId();
+},[regId])
   return (
     <Tab.Navigator
       initialRouteName="Home"

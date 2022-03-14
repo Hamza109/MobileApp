@@ -64,7 +64,7 @@ const SearchBar = ref => {
         names: `${name}`,
       });
     else {
-      console.log(name);
+
       navigation.navigate('SearchBar', {
         names: `${name}`,
       });
@@ -115,11 +115,11 @@ const SearchBar = ref => {
     return (
       // Flat List Item
       <TouchableOpacity onPress={() => setName(item) & setSearching(false)}>
-        <View>
-          <Card style={styles.itemView}>
+    
+          <View style={styles.itemView}>
             <Text style={styles.itemText}>{item}</Text>
-          </Card>
-        </View>
+          </View>
+        
       </TouchableOpacity>
     );
   };
@@ -218,19 +218,19 @@ const styles = StyleSheet.create({
     borderBottomColor: '#00415e',
 
     backgroundColor: '#fff',
-    height: hp('7%'),
+    height: 80,
     width: wp('100%'),
     justifyContent: 'center',
 
-    padding: 15,
+    padding: 10,
     zIndex: 999,
   },
   itemText: {
     color: '#00415e',
     paddingHorizontal: 10,
-    fontSize: 17,
+    fontSize: wp('4%'),
     marginLeft: -5,
-    marginRight: 3,
+   
     zIndex: 999,
   },
   noResultView: {

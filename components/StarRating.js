@@ -51,7 +51,7 @@ const getId= ()=>{
    try{
     AsyncStorage.getItem('author')
   .then((value1)=>{
-console.log(value1)
+
       if(value1!=null)
       {
         setRegId(value1)
@@ -74,7 +74,7 @@ const getType= ()=>{
    AsyncStorage.getItem('rateType')
   
  .then((value2)=>{
-  console.log(value2)
+
      if(value2!=null)
      {
   
@@ -94,7 +94,7 @@ const getType= ()=>{
   const postRating = (rating) => {
 
     axios.post(`${backendHost}/DoctorRatingActionController?ratingVal=${rating}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`)
-    .then(res => console.log(res.data))
+    .then(res =>res)
     .catch(err => console.log(err))
   }
 
@@ -102,7 +102,7 @@ const getType= ()=>{
 
     axios.get(`${backendHost}/rating/target/${props.article_id}/targettype/2/avg`)
     .then(res => {
-      console.log('helo:',res.data)
+  
       setShowValue(res.data)
     })
     .catch(err => console.log(err))

@@ -52,10 +52,12 @@ const DocTab = ({navigation, route}) => {
             source={require('../../assets/img/LandingMainImg.jpg')}
             style={{width: wp('100%'), height: hp('40%')}}>
             <Text
+            adjustsFontSizeToFit
+            numberOfLines={2}
               style={{
                 color: '#00415e',
                 fontFamily: 'Raleway-Bold',
-                fontSize: 28,
+                fontSize: wp('7%'),
                 position: 'absolute',
                 bottom: 65,
                 left: 30,
@@ -77,6 +79,8 @@ const DocTab = ({navigation, route}) => {
                     fontSize: wp('4.5%'),
                     color: '#00415e',
                     fontFamily: 'Raleway-Regular',
+                    position:'absolute',
+                    top:10,
                   }}>
                   Search by Name
                 </Text>
@@ -96,6 +100,8 @@ const DocTab = ({navigation, route}) => {
                   style={{
                     fontSize: wp('4.5%'),
                     color: '#00415e',
+                    position:'absolute',
+                    top:10,
                     fontFamily: 'Raleway-Regular',
                   }}>
                   Search by city
@@ -123,7 +129,7 @@ const styles = StyleSheet.create({
     width: wp('86%'),
     height: 50,
     borderRadius: 20,
-    padding: 10,
+   
   },
   inCard: {
     flexDirection: 'row',
@@ -141,7 +147,8 @@ const styles = StyleSheet.create({
   icon: {
     padding: 3,
    position:'absolute',
-   right:0,
+   top:10,
+   right:20,
     color: '#00415e',
   },
 

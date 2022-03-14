@@ -9,6 +9,7 @@ import {
   StatusBar,
   Alert,
   ImageBackground,
+  ToastAndroid
 } from 'react-native';
 import {
   HStack,
@@ -18,11 +19,12 @@ import {
   NativeBaseProvider,
   Container,
   VStack,
+  Spinner
 } from 'native-base';
 import axios from 'axios';
 import Home from '../MainTab/Home';
 import * as Animatable from 'react-native-animatable';
-
+import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import {useTheme} from 'react-native-paper';
@@ -33,6 +35,7 @@ import {
 import {backendHost} from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
+import analytics from '@react-native-firebase/analytics' 
 import Icon from 'react-native-vector-icons/Ionicons';
 const SignInScreen = ({navigation, props}) => {
   const [status, setStatus] = useState('');
@@ -62,8 +65,24 @@ const SignInScreen = ({navigation, props}) => {
     });
   };
 
+  const loading=()=>{
+    return(
+      <View style={{ alignItems: 'center'}}>
+        <HStack space={2} justifyContent="center">
+          <LottieView source={require('../../assets/animation/pulse.json')} autoPlay loop style={{width:50,height:50}} />
+          {/* <Spinner
+            accessibilityLabel="Loading posts"
+            color="#fff"
+            size="lg"
+          /> */}
+        </HStack>
+      </View>
+    )
+  }
+
   const loginForm = () => {
     setClicked(1);
+
     axios
       .post(
         `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
@@ -71,11 +90,16 @@ const SignInScreen = ({navigation, props}) => {
 
       .then(res => {
         if (res.data.registration_id) {
+      
+          setTimeout(()=>{
           navigation.navigate('MainTab', {
             params: {
               userId: authid,
             },
           });
+          analytics().setUserProperty("Reg_Id",JSON.stringify(res.data.registration_id))
+          analytics().setUserId(JSON.stringify(res.data.registration_id))
+          analytics().logEvent('login',{"reg_id":res.data.registration_id})
           setStatus(res.status);
           setId(res.data.registration_id);
           setType(res.data.registration_type);
@@ -83,6 +107,8 @@ const SignInScreen = ({navigation, props}) => {
           setLast(res.data.last_name);
           setEmail(res.data.email_address);
           setRow(res.data.rowno);
+          setClicked(0)
+        },3000)
         }
       })
 
@@ -90,9 +116,27 @@ const SignInScreen = ({navigation, props}) => {
         setLoginSuccess(false);
         if (err.response) {
           if (err.response.data.includes('Incorrect email')) {
-            Alert.alert('Incorrect email or password!');
+            setTimeout(()=>{
+              setClicked(0)
+              ToastAndroid.showWithGravityAndOffset('Incorrect email or password!',
+               ToastAndroid.LONG,
+              ToastAndroid.BOTTOM,
+              25,
+              50)
+ 
+            },2000)
+           
+          
           } else {
-            Alert.alert('Some error occured!');
+            setTimeout(()=>{
+              setClicked(0)
+              ToastAndroid.showWithGravityAndOffset('Incorrect email or password!',
+               ToastAndroid.LONG,
+              ToastAndroid.BOTTOM,
+              25,
+              50)
+ 
+            },2000)
           }
         } else {
           return;
@@ -104,32 +148,32 @@ const SignInScreen = ({navigation, props}) => {
       await AsyncStorage.setItem('check', JSON.stringify(value));
     } catch (error) {}
   };
-  const setId = async id => {
+  const setId = async (id) => {
     try {
       await AsyncStorage.setItem('author', JSON.stringify(id));
     } catch (error) {}
   };
-  const setType = async type => {
+  const setType = async (type) => {
     try {
       await AsyncStorage.setItem('rateType', JSON.stringify(type));
     } catch (error) {}
   };
-  const setFirst = async first => {
+  const setFirst = async (first) => {
     try {
       await AsyncStorage.setItem('firstName', first);
     } catch (error) {}
   };
-  const setRow = async row => {
+  const setRow = async (row) => {
     try {
       await AsyncStorage.setItem('rowno', JSON.stringify(row));
     } catch (error) {}
   };
-  const setLast = async last => {
+  const setLast = async (last) => {
     try {
       await AsyncStorage.setItem('lastName', last);
     } catch (error) {}
   };
-  const setEmail = async email => {
+  const setEmail = async (email) => {
     try {
       await AsyncStorage.setItem('email', email);
     } catch (error) {}
@@ -229,6 +273,9 @@ const SignInScreen = ({navigation, props}) => {
                 Sign In
               </Text>
             </TouchableOpacity>
+         
+              
+            
             <VStack space={50}>
               <TouchableOpacity>
                 <Text
@@ -242,7 +289,13 @@ const SignInScreen = ({navigation, props}) => {
                   Forgot password?
                 </Text>
               </TouchableOpacity>
-
+              {
+              buttonClick?(
+                loading()
+              ):null
+              
+              
+            }
               <TouchableOpacity>
                 <Text
                   style={{

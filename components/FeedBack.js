@@ -17,9 +17,15 @@ import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Dimensions } from 'react-native';
-import {backendHost} from '../../components/apiConfig';
-const CreateScreen = () => {
+
+import { backendHost } from './apiConfig';
+
+import { VStack,Stack,Container,HStack,Checkbox } from 'native-base';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+const FeedBack = () => {
   const navigation=useNavigation()
   const [comment, setComment] = useState('');
 
@@ -29,6 +35,9 @@ const CreateScreen = () => {
   const [showArticle, setShowArticle] = useState(true);
   const [title, setTitle] = useState('');
   const [article, setArticle] = useState('');
+  const [lastName,setLastname]=useState('');
+  const [email,setEmail]=useState('');
+  const [num,setNum]=useState('');
   const [articleDisplay, setArticleDisplay] = useState('');
   const [content, setContent] = useState();
   const [contentType, setContentType] = useState('');
@@ -39,14 +48,17 @@ const CreateScreen = () => {
   const [regType, setRegType] = useState();
   const getId = () => {
     try {
-      AsyncStorage.getItem('author').then(value1 => {
-     
+      Promise.all(AsyncStorage.getItem('author').then(value1 => {
+   
         if (value1 != null) {
-          setRegId(value1);
+           setRegId(value1)
         }
-      });
+        else{
+          navigation.navigate('SignIn')
+        }
+      }));
     } catch (error) {
-      console.log(error);
+  
     }
   };
   const getType = () => {
@@ -59,69 +71,45 @@ const CreateScreen = () => {
         }
       });
     } catch (error) {
-      console.log(error);
+
     }
   };
 const isFocus= useIsFocused();
-  const check=()=>{
-
-      if(regId.length === 0)
-      {
-         // navigation.navigate('Cures',{screen:'My Cures'})
-         navigation.navigate('SignIn')
-    
-      }
-      else{
-         navigation.navigate('ArticleTab',{Screen:'Create Article'})
-      }
-  }
+  
   useEffect(() => {
-    if(isFocus){
-      getId();
-    getType();
-  
    
-    }
-  
-  });
-  // useEffect(()=> {
-  
-
-  //   check()
-
-
-  // }, [regId])
-  const submitArticleForm = async e => {
-    e.preventDefault();
-    console.log(
-      'submit article formmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
-    );
-    axios.defaults.withCredentials = true
-    axios.post(`${backendHost}/content?cmd=createArticle`, {
-      headers: {
-        'Access-Control-Allow-Credentials': true,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-     "title":title,
-     "comments":comment,
-     "authById":[regId],
-     "copyId":copyright,
-     "disclaimerId":1,
-     "articleStatus":2,
-     "articleContent":encodeURIComponent({"time":1631083559825,"blocks":[{"id":"ZvfhlKCqsp","type":"paragraph","data":{"text":article}}],"version":"2.21.0"}),
+    if(isFocus){
+      
      
+    getType();
+    }
+ 
+    getId();
+  },[regId]);
+
+
+  const submitFeedbackForm = async e => {
+
+   
+    axios.defaults.withCredentials = true
+    axios.post(`${backendHost}/admin/create/feedback  `, {
+        "firstname":title,
+        "lastname": lastName,
+        "email": email,
+        "phonenumber": Number(num),
+        "feedback": article,
     
     })
       .then(res => {
           if (res.data === 1) {
-            Alert.alert('Article Created Successfully!');
+            Alert.alert('Feedback Submitted Successfully!');
           } else {
             Alert.alert('Some error occured!');
           }
  
       })
       .catch(err => {
-        console.log(err);
+ 
 
       });
   };
@@ -131,8 +119,8 @@ const isFocus= useIsFocused();
       
       <View style={styles.action}>
         <TextInput
-          placeholder="Title"
-          placeholderTextColor="#666666"
+          placeholder="Enter first name"
+          placeholderTextColor="#00415e"
           style={[
             styles.textInputTitle,
             {
@@ -157,8 +145,8 @@ const isFocus= useIsFocused();
     return (
       <View style={styles.action}>
         <TextInput
-          placeholder="Remarks"
-          placeholderTextColor="#666666"
+          placeholder="Enter email"
+          placeholderTextColor="#00415e"
           secureTextEntry={data.secureTextEntry ? true : false}
           style={[
             styles.textInput,
@@ -168,8 +156,8 @@ const isFocus= useIsFocused();
           ]}
           autoCapitalize="none"
           returnKeyType="go"
-          value={comment}
-          onChangeText={e => setComment(e)}
+          value={email}
+          onChangeText={e => setEmail(e)}
         />
       </View>
     );
@@ -179,12 +167,14 @@ const isFocus= useIsFocused();
     return (
       <View style={styles.article}>
         <TextInput
-          placeholderTextColor="#666666"
+        placeholder='Enter your feedback'
+          placeholderTextColor="#00415e"
+          
           secureTextEntry={data.secureTextEntry ? true : false}
           style={[
             styles.textInputArticle,
             {
-              height: 200,
+              height: 120,
               fontSize: 15,
             },
           ]}
@@ -192,93 +182,89 @@ const isFocus= useIsFocused();
           returnKeyType="go"
           value={article}
           onChangeText={e => setArticle(e)}
+          multiline={true}
         />
       </View>
     );
   };
-  const [isCollapsedCure, setIsCollapsedCure] = useState(true);
-  const [isCollapsedDetails, setIsCollapsedDetails] = useState(true);
-  const [isCollapsed,setIsCollapsed]=useState(false)
-  const toggleCure = () => {
-    return setIsCollapsedCure(!isCollapsedCure);
-  };
-  const toggleDetails = () => {
-    return setIsCollapsedDetails(!isCollapsedDetails);
-  };
+
+ 
 
   return (
-    <View style={{flex:1,backgroundColor:'#8cd4eb'}}>
+    <View style={{flex:1,backgroundColor:'#fff',padding:10}}>
     <ScrollView>
-    <View style={styles.container}>
+<Stack space={4}>
+     <VStack space={2}>
+       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter first name (optional)</Text>
+       {titleValue()}
+     </VStack>
+     <VStack space={2}>
+     <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter last name (optional)</Text>
+     <View style={styles.action}>
+        <TextInput
+          placeholder="Enter last name"
+          placeholderTextColor="#00415e"
+          style={[
+            styles.textInputTitle,
+            {
+              padding: 10,
+            },
+          ]}
+          autoCapitalize="none"
+          value={lastName}
+          returnKeyType="done"
+          onChangeText={e => setLastname(e)}
+        />
 
-        <View style={styles.body}>
-        <Card style={{marginBottom:5}}>
-              <Text style={styles.textBody} >
-                Cure
-              </Text>
-            </Card>
-            <Collapsible
-            collapsed={isCollapsed}
-            style={{backgroundColor: '#fff'}}>
-      <View>
-        <View style={styles.card}>
-          <TouchableOpacity>
-            <Card>
-              <Text style={styles.textCard} onPress={toggleDetails}>
-                Cure Details
-              </Text>
-            </Card>
-          </TouchableOpacity>
-          <Collapsible
-            collapsed={isCollapsedDetails}
-            style={{backgroundColor: '#fff'}}>
-            <View>
-              <View style={{marginTop: 5}}>
-                <Text style={styles.text}>Title</Text>
-              </View>
-
-              {showTitle ? titleValue() : null}
-              <View style={{marginTop: 5}}>
-                <Text style={styles.text}>Remarks</Text>
-              </View>
-              {showRemarks ? remarks() : null}
-            </View>
-          </Collapsible>
-        </View>
-
-        <View style={styles.card}>
-          <TouchableOpacity>
-            <Card>
-              <Text style={styles.textCard} onPress={toggleCure}>
-                Write Cure Here
-              </Text>
-            </Card>
-          </TouchableOpacity>
-          <Collapsible
-            collapsed={isCollapsedCure}
-            title="Cure Details"
-            style={styles.box}>
-            <View>{showArticle ? articles() : null}</View>
-          </Collapsible>
-        </View>
-      
       </View>
-      <TouchableOpacity style={styles.btn} onPress={e => submitArticleForm(e)}>
+      </VStack>
+     <VStack space={2}>
+       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter email (optional)</Text>
+       {remarks()}
+     </VStack>
+     <VStack space={2}>
+     <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter phone number (optional)</Text>
+     <View style={styles.action}>
+        <TextInput
+          placeholder="Enter phone number"
+          placeholderTextColor="#00415e"
+          style={[
+            styles.textInputTitle,
+            {
+              padding: 10,
+            },
+          ]}
+          autoCapitalize="none"
+          value={num}
+          returnKeyType="done"
+          keyboardType='numeric'
+          onChangeText={e => setNum(e)}
+        />
+
+      </View>
+      </VStack>
+     <VStack space={0}>
+       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter your feedback</Text>
+       {articles()}
+     </VStack>
+  
+     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
+     <TouchableOpacity style={styles.btn} onPress={e =>{submitFeedbackForm(e)}}>
         <Text style={styles.textBtn}>Submit</Text>
       </TouchableOpacity>
+      </View>
       
-      
-      </Collapsible>
-    </View>
-   
-    </View>
+
+     </Stack>
+
+       
     </ScrollView>
     </View>
   );
 };
 
-export default CreateScreen;
- const width=Dimensions.get('window').width
+export default FeedBack;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -295,7 +281,7 @@ const styles = StyleSheet.create({
     Color: 'lightgrey',
     borderColor: 'lightgrey',
     marginTop: Platform.OS === 'ios' ? 0 : -35,
-    width: width,
+    width: 380,
    
 
   },
@@ -312,7 +298,6 @@ textAlign:'center',
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: 'lightgrey',
-    width:'100%'
   },
   card: {
     borderWidth: 1,
@@ -361,44 +346,44 @@ textAlign:'center',
     paddingBottom: 5,
   },
   textInput: {
-    borderRadius: 25,
+    borderRadius: 15,
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-
+    fontFamily:'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
-    fontSize: 20,
+    fontSize: 16,
     marginBottom: 10,
     marginVertical: 0,
 
-    backgroundColor: '#fff',
+    backgroundColor:'rgba(0, 65, 94, 0.2)',
   },
   textInputTitle: {
-    borderRadius: 25,
+    borderRadius: 15,
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-
+fontFamily:'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
-    fontSize: 20,
-    marginBottom: -10,
+    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    fontSize: 16,
+      marginBottom: -10,
     marginVertical: 0,
 
-    backgroundColor: '#fff',
   },
   textInputArticle: {
     flex: 1,
-
+    borderRadius: 15,
     color: 'grey',
     fontSize: 20,
-    paddingBottom: 150,
-    marginVertical: 20,
-
-    backgroundColor: '#fff',
+    textAlignVertical:'top',
+    paddingHorizontal:10,
+    fontFamily:'Raleway-Regular',
+    backgroundColor:'rgba(0, 65, 94, 0.2)',
   },
   errorMsg: {
     color: '#FF0000',
@@ -418,21 +403,23 @@ textAlign:'center',
     marginBottom: 8,
   },
   textBtn: {
-    color: '#fff',
+    color: '#00415e',
     textAlign: 'center',
+    fontSize:20
   },
 
   btn: {
     justifyContent: 'center',
+    alignItems:'center',
     borderWidth: 0,
-    borderColor: '#343a40',
-    backgroundColor: '#343a40',
+    borderRadius:15,
+    borderColor: 'rgba(0, 65, 94, 0.2)',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
     marginTop:5,
     marginBottom:5,
-    width: 100,
-    height: 40,
-    position:'relative',
-    left:10
+    width: wp('60%'),
+    height: hp('6%'),
+  
   
   },
 });

@@ -65,8 +65,9 @@ const tex ={
           image: (
             <View>
               <Image
+              resizeMode='stretch'
                 source={{uri: imageUrl}}
-                style={{width: 350, height: 120}}
+                style={{width: wp('90%'), height: 150}}
               />
               <Text>{caption}</Text>
             </View>

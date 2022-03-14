@@ -10,6 +10,7 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
+  ToastAndroid,
 } from 'react-native';
 
 import {Card} from 'react-native-paper';
@@ -23,7 +24,7 @@ import Comment from './comment';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {ScrollView, ImageBackground} from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import ArticleHeader from '../search/ArticleHeader';
@@ -50,6 +51,7 @@ import {
 import PhoneInput from 'react-native-phone-number-input';
 import {useIsFocused} from '@react-navigation/native';
 import Svg, {Path, Circle} from 'react-native-svg';
+import { block } from 'react-native-reanimated';
 const Disease = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
@@ -60,6 +62,7 @@ const Disease = ({navigation, route}) => {
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
   const [id, setId] = useState(ids);
+  const [regId,setRegId]=useState([])
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [formattedValue, setFormattedValue] = useState('');
@@ -68,15 +71,30 @@ const Disease = ({navigation, route}) => {
     padding: 20,
     height: hp('100%'),
   };
+const check=()=>{
+  if(regId.length == 0)
+  {
+    navigation.navigate('SignIn')
+  }
+  else{
+    setModalVisible(!modalVisible)
+  }
+}
+
+  useEffect(()=>{
+    stat();
+  getId();
+  })
   const getId = () => {
     try {
       Promise.all(
         AsyncStorage.getItem('author').then(value1 => {
           if (value1 != null) {
-            setModalVisible(!modalVisible);
-          } else {
-            navigation.navigate('SignIn');
-          }
+            setRegId(value1)
+           
+          } 
+          
+          
         }),
       );
     } catch (error) {}
@@ -139,6 +157,7 @@ const Disease = ({navigation, route}) => {
 
   useEffect(() => {
     if (isFocus) {
+  
       comments();
 
       fetch(`${backendHost}/article/${id}`)
@@ -190,13 +209,56 @@ const Disease = ({navigation, route}) => {
         setSItems(json);
       });
   };
-
+  const [like, setLike] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [imageExists, setImageExists] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const b = 'http://all-cures.com/cures/uitest/99.png';
+  const stat=()=>{
+  fetch(`${backendHost}/favourite/userid/${regId}/articleid/${id}/favouritearticle`)
+    .then(res=>
+      console.log(res))
+   
+  }
+
+const favorite=()=>{
+  setLike(like=== 0?1:0) 
+console.log(like)
+  if(like){
+  axios.post(`${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${like}/create`)
+  .then(res=>{
+    if(res.data === 1){
+      setTimeout(()=>{
+      
+        ToastAndroid.showWithGravityAndOffset('Added To Favourite',
+         ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50)
+
+      },1000)
+    }
+    
+  })
+}else{
+  axios.post(`${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${like}/create`)
+  .then(res=>{
+    if(res.data > 0){
+      setTimeout(()=>{
+      
+        ToastAndroid.showWithGravityAndOffset('Remove from Favourite',
+         ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50)
+
+      },1000)
+    }
+    
+  })
+}
+}
 
   if (!isLoaded) {
     return (
@@ -218,14 +280,54 @@ const Disease = ({navigation, route}) => {
       <View style={styles.container}>
         <View>
           <View style={{flex: 1}}>
+            <View style={styles.HeadCard}>
+              <HStack space={2} >
+              
+               
+                <Icon
+                  name="close-circle-outline"
+                  size={30}
+                  color={'#00415e'}
+                
+                  onPress={() => {
+                    navigation.navigate('MainTab', {Screen: 'Home'});
+                  }}
+                />
+                <View style={{width:wp('75%')}}>
+                 <Text
+                 numberOfLines={2}
+              
+                  style={{
+                    color: '#00415e',
+
+                    fontFamily: 'Raleway-Bold',
+                    fontSize: wp('4%'),
+                    textAlign: 'left',
+                  }}>
+                  {data.title}
+                </Text>
+                </View>
+                { 
+                regId.length!=0?
+                  <Icon
+                    name={like === 1 ? 'heart-outline' : 'heart'}
+                    size={30}
+                    color={like === 1 ? '#00415e' : 'red'}
+                     
+                    onPress={() => {
+                   favorite();
+                    }}
+                  />: null
+                }
+              </HStack>
+            </View>
             <ScrollView
               style={{
                 width: wp('100%'),
                 height: hp('100%'),
-                marginTop:5,
+                marginTop: 5,
                 paddingLeft: 10,
                 paddingRight: 10,
-           
               }}>
               <VStack space={3}>
                 <HStack>
@@ -239,26 +341,8 @@ const Disease = ({navigation, route}) => {
                     }}>
                     {data.authors_name} ▪️ {data.published_date}
                   </Text>
-                  <Icon
-                    name="times-circle"
-                    size={30}
-                    color={'#00415e'}
-                    style={{position: 'absolute', right: 10}}
-                    onPress={() => {
-                      navigation.navigate('MainTab', {Screen: 'Home'});
-                    }}
-                  />
                 </HStack>
-                <Text
-                  style={{
-                    color: '#00415e',
-
-                    fontFamily: 'Raleway-Medium',
-                    fontSize: 22,
-                    textAlign: 'left',
-                  }}>
-                  {data.title}
-                </Text>
+            
 
                 {items.map((i, key) => (
                   <View>
@@ -342,7 +426,7 @@ const Disease = ({navigation, route}) => {
                                   backgroundColor: '#00415e',
                                   borderRadius: 20,
                                   alignItems: 'center',
-                                  flex:1,
+                                  flex: 1,
                                   height: hp('2.5%'),
                                 }}>
                                 <Text
@@ -436,16 +520,17 @@ const Disease = ({navigation, route}) => {
                                 <Card
                                   style={{
                                     width: wp('95%'),
-                                    height: hp('21.6%'),
+                                    height: 168,
                                     backgroundColor: 'lightgrey',
                                     borderRadius: 0,
                                     marginBottom: 5,
                                     justifyContent: 'center',
                                     borderRadius: 15,
-                                    
+
                                     alignItems: 'center',
                                   }}>
                                   <HStack space={1}>
+                                  <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                     <Image
                                       source={{
                                         uri:
@@ -458,18 +543,13 @@ const Disease = ({navigation, route}) => {
                                         position: 'relative',
                                         right: 5,
                                         width: wp('45%'),
-                                        height: hp('21.6%'),
+                                        height: 168,
                                         borderRadius: 15,
                                         marginTop: 0,
                                       }}
                                     />
-                                    <View
-                                      style={{
-                                        width: wp('49%'),
-                                        height: hp('20%'),
-                                        position: 'relative',
-                                        right: 5,
-                                      }}>
+                                    </TouchableOpacity>
+                                    <View style={{width: wp('50%')}}>
                                       <VStack py="2" space={10}>
                                         <AllPost
                                           id={i.article_id}
@@ -577,11 +657,11 @@ const Disease = ({navigation, route}) => {
                 <Center>
                   <Icon
                     mb="1"
-                    name="comment"
+                    name="chatbubble-ellipses"
                     color="#00415e"
                     size={30}
                     onPress={() => {
-                      getId();
+                      check();
                     }}
                   />
                   <Text
@@ -602,10 +682,11 @@ const Disease = ({navigation, route}) => {
                 <Center>
                   <Icon
                     mb="1"
-                    name="bell"
+                    name="notifications"
                     color="#00415e"
                     size={30}
                     onPress={() => {
+
                       setSubModalVisible(!subModalVisible);
                     }}
                   />
@@ -625,7 +706,7 @@ const Disease = ({navigation, route}) => {
                 flex={1}
                 onPress={() => setSelected(0)}>
                 <Center>
-                  <Icon mb="1" name="share-alt" color="#00415e" size={30} />
+                  <Icon mb="1" name="share-social" color="#00415e" size={30} />
                   <Text
                     style={{
                       fontFamily: 'Raleway',
@@ -675,7 +756,7 @@ const Disease = ({navigation, route}) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Icon name="comments" style={{opacity: 0.3}} size={150} />
+                    <Icon name="chatbubbles" style={{opacity: 0.3}} size={150} />
                     <Text style={{color: 'grey'}}>No comments yet</Text>
                     <Text style={{color: 'grey'}}>
                       Be the first to comment.
@@ -773,6 +854,14 @@ const styles = StyleSheet.create({
     bottom: 90,
     borderRadius: 0,
     backgroundColor: '#00415e',
+  },
+  HeadCard: {
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: wp('100%'),
+    height: 60,
+    fontSize: 20,
+    padding: 10,
   },
 
   search: {

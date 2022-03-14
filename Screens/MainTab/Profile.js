@@ -8,14 +8,16 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
+  RefreshControl,
   Animated,
+  ToastAndroid
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/routers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Alert} from 'react-native';
-import Svg,{Path,Circle} from 'react-native-svg';
+import Svg, {Path, Circle} from 'react-native-svg';
 import {useState, useEffect} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
@@ -77,7 +79,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const [regType, setRegType] = useState();
   const [website, setWebsite] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
-  const [nameLoad, setnamLoad] = useState(false);
+  const [nameLoad, setNameLoad] = useState(false);
   const [items, setItems] = useState([]);
   const navigation = useNavigation();
   const [regId, setRegId] = useState([]);
@@ -104,14 +106,28 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     ]);
     return true;
   };
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    getRow();
+    
+    setRefreshing(true);
+    
+    wait(2000).then(() => setRefreshing(false));
+  };
   const [img, setImg] = useState();
-  const getId = () => {
+  const getId =async () => {
     try {
-      AsyncStorage.getItem('author').then(value1 => {
+     await  AsyncStorage.getItem('author').then(value1 => {
         if (value1 != null) {
           setRegId(value1);
         } else {
-          navigation.navigate('SignIn');
+          return(
+          navigation.navigate('SignIn')
+          )
         }
       });
     } catch (error) {
@@ -142,10 +158,10 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       console.log('128', error);
     }
   };
-  const getRow = () => {
+  const getRow = async () => {
     try {
-      AsyncStorage.getItem('rowno').then(value2 => {
-        console.log('row:', value2);
+    await  AsyncStorage.getItem('rowno').then(value2 => {
+      
         if (value2 != null) {
           fetch(
             `${backendHost}/DoctorsActionController?rowno=${Number(
@@ -156,7 +172,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
             .then(json => {
               if (json == null) {
                 setIsLoaded(true);
-                setnamLoad(true);
+                setNameLoad(true);
                 setModalVisible(true);
               } else {
                 console.log(json);
@@ -204,7 +220,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const getEmail = () => {
     try {
       AsyncStorage.getItem('email').then(value1 => {
-        console.log('email:', value1);
+      
         if (value1 != null) {
           setEmail(value1);
         }
@@ -221,7 +237,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         'firstName',
         'lastName',
         'email',
-        'row',
+        'rowno',
       ]);
     } catch (error) {
       console.log(error);
@@ -234,12 +250,10 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         width={wp('30%')}
         height={hp('15%')}
         fill="none"
-        viewBox="0 0 43 43"
-      >
+        viewBox="0 0 43 43">
         <Path
           fill="#00415E"
-          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"
-        ></Path>
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
       </Svg>
     );
   }
@@ -273,9 +287,17 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         },
       )
       .then(res => {
-        console.log('gender:->', gender);
+ 
         if (res.data === 1) {
-          Alert.alert('Updated your profile successfully.');
+          setTimeout(()=>{
+        
+            ToastAndroid.showWithGravityAndOffset('Profile Updated Successfully',
+             ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
+            25,
+            50)
+
+          },2000)
         } else {
           Alert.alert('Some error occured. Try again later');
         }
@@ -298,7 +320,6 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       fetch(`${backendHost}/article/all/table/countries`).then(res =>
         res.json(),
       ),
-
     ])
       .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
         setDiseaseList(diseaseData);
@@ -323,7 +344,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   useEffect(() => {
     if (isFocus) {
       getRow();
-      console.log('row', rowno);
+ 
     }
   }, [rowno]);
   useEffect(() => {
@@ -351,7 +372,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     }).then(image => {
       const a = image.path.split('/');
       const b = a[a.length - 1];
-      console.log(image);
+  
       regType == 1
         ? (setImage(image), setSelectedFile(b), bs.current.snapTo(1))
         : setImageUser(image.path);
@@ -397,8 +418,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
           setIsFilePicked(true);
           setImageUploadLoading(true);
         }, 3000);
-
-        Alert.alert('Image uploaded successfully.');
+    
       })
       .catch(error => {
         return;
@@ -406,7 +426,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   };
 
   if (!isLoaded) {
+
     return (
+      
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <HStack space={2} justifyContent="center">
           <Spinner
@@ -424,10 +446,16 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     return (
       <View style={styles.container}>
         {regType == 1 ? (
-          <View>
-            <Stack mt="5" space={5}>
-              <View>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+              
+            <Stack mt="0" space={5}>
+          
+              <View style={{backgroundColor:'#00415e',width:wp('100%'),height:140}}>
                 <HStack>
+                  <VStack py='2'>
                   <Card
                     style={{
                       width: wp('30%'),
@@ -449,65 +477,67 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                         overflow: 'hidden',
                       }}></ImageBackground>
                   </Card>
-
+              </VStack>
                   <View style={{position: 'relative', left: 30}}>
-                    <VStack space={1}>
+                    <VStack space={1} py='2'>
                       <HStack>
                         <Text
                           style={{
-                            color: '#00415e',
+                            color: '#fff',
 
                             fontFamily: 'Raleway-Bold',
-                            fontSize: 18,
+                            fontSize: wp('3.5%'),
                           }}>
                           Dr. {items.docname_first} {items.docname_last}
                         </Text>
                         {nameLoad ? (
                           <Text
                             style={{
-                              color: '#00415e',
+                              color: '#fff',
 
                               fontFamily: 'Raleway-Bold',
-                              fontSize: 18,
+                              fontSize: wp('4%'),
                             }}>
                             {firstName} {lastName}
                           </Text>
                         ) : null}
-                        <TouchableOpacity style={{position:'absolute',right:0}} >
-                        <Icon
-                          name="create"
-                          size={25}
-                          color="#00415e"
-                          onPress={() => setModalVisible(!modalVisible)}
-                         
-                        />
-                     
-                        <Text style={{color:'#00415e',fontSize:wp('2.5%')}}>Edit</Text>
-                    
+                        <TouchableOpacity
+                          style={{position: 'absolute', right: 0}}>
+                          <Icon
+                            name="create"
+                            size={25}
+                            color="#fff"
+                            onPress={() => setModalVisible(!modalVisible)}
+                          />
+
+                          <Text
+                            style={{color: '#00415e', fontSize: wp('2.5%')}}>
+                            Edit
+                          </Text>
                         </TouchableOpacity>
                       </HStack>
                       <HStack space={1}>
-                        <Icon name="ribbon" size={20} color="grey" />
+                        <Icon name="ribbon" size={20} color="#fff" />
 
                         <Text
                           style={{
-                            color: '#00415e',
+                            color: '#fff',
 
                             fontFamily: 'Raleway-Regular',
-                            fontSize: 12,
+                            fontSize: wp('2.5%'),
                             width: wp('55%'),
                           }}>
                           {items.primary_spl}
                         </Text>
                       </HStack>
                       <HStack space={1}>
-                        <Icon name="business" size={20} color="grey" />
+                        <Icon name="business" size={20} color="#fff" />
                         <Text
                           style={{
-                            color: '#00415e',
+                            color: '#fff',
 
                             fontFamily: 'Raleway-Regular',
-                            fontSize: 12,
+                            fontSize: wp('2.5%'),
                             position: 'relative',
                             bottom: 0,
                           }}>
@@ -516,10 +546,10 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       </HStack>
                       <Text
                         style={{
-                          color: '#00415e',
+                          color: '#fff',
 
                           fontFamily: 'Raleway-Regular',
-                          fontSize: 12,
+                          fontSize: wp('2.5%'),
                           position: 'relative',
                           bottom: 0,
                           right: 4,
@@ -527,20 +557,23 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                         {items.state} {items.country_code}
                       </Text>
                       <HStack space={1}>
-                        <Icon name="mail" size={20} color="grey" />
+                        <Icon name="mail" size={20} color="#fff" />
                         <Text
                           style={{
-                            color: '#00415e',
+                            color: '#fff',
                             fontFamily: 'Raleway-Regular',
-                            fontSize: 12,
+                            fontSize: wp('2.5%'),
                           }}>
                           {email}
                         </Text>
                       </HStack>
                     </VStack>
                   </View>
+                  
                 </HStack>
+                
               </View>
+              
               <View>
                 <VStack ml="2" space={1}>
                   <Text
@@ -1104,24 +1137,18 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 </Modal.Footer>
               </Modal.Content>
             </Modal>
-          </View>
+          </ScrollView>
         ) : (
           <View>
             <View>
               <VStack space={2} ml="5" mt="5">
                 <HStack>
-                 
-                        <User
-                        
-                     
-                       
-                        style={{
-                      
-                     
-                          borderRadius: 10,
-                        }}
-                      />
-                             
+                  <User
+                    style={{
+                      borderRadius: 10,
+                    }}
+                  />
+
                   <View style={{marginLeft: 12}}>
                     <View>
                       <HStack space={1}>
@@ -1156,31 +1183,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
           </View>
         )}
 
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            width: wp('100%'),
-            height:hp('7%'),
-            padding: 10,
-            backgroundColor:'#00415e'
-          }}>
-          <TouchableOpacity
-            
-            onPress={() => logout()}>
-            <HStack space={5}>
-              <Icon name="log-out" size={30} color="#fff" />
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: wp('5%'),
-                }}>
-                Logout
-              </Text>
-            </HStack>
-          </TouchableOpacity>
-        </View>
+       
       </View>
     );
   }

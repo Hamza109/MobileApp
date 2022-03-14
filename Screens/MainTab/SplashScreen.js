@@ -17,7 +17,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import LottieView from 'lottie-react-native';
 const SplashScreen = ({navigation}) => {
   const scale = useRef(new Animated.Value(1)).current;
   const [regId, setRegId] = useState();
@@ -28,11 +28,11 @@ const SplashScreen = ({navigation}) => {
           if (value1 != null) {
             setTimeout(() => {
               navigation.navigate('MainTab');
-            }, 2000);
+            }, 3000);
           } else {
             setTimeout(() => {
               navigation.navigate('SignIn');
-            }, 2000);
+            }, 3000);
           }
         }),
       );
@@ -47,10 +47,12 @@ const SplashScreen = ({navigation}) => {
   };
 
   const {colors} = useTheme();
+  const[visible,setVisible]=useState(false)
   const isFocus = useIsFocused();
   useEffect(() => {
     if (isFocus) {
       getId();
+      setTimeout(()=>{})
     }
   });
 
@@ -58,14 +60,8 @@ const SplashScreen = ({navigation}) => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
       <View style={styles.header}>
-        <Animated.Image
-          animation="bounceIn"
-          duraton="1500"
-          source={require('../../assets/img/whitelogo.png')}
-          style={styles.logo}
-          resizeMode="stretch"
-        />
-        <Animatable.Text duraton="1500" style={styles.head}>
+      <LottieView source={require('../../assets/animation/heart.json')} autoPlay loop style={{width:400,height:100}} />
+        <Animatable.Text duraton="6000" style={styles.head}>
           All Cures
         </Animatable.Text>
       </View>

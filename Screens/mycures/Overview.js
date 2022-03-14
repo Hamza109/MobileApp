@@ -149,7 +149,7 @@ const Overview = () => {
                   <Card
                     style={{
                       width: wp('97%'),
-                      height: hp('10.4%'),
+                      height: 83,
                       backgroundColor: 'lightgrey',
                       borderRadius: 15,
                       marginBottom: 5,
@@ -171,7 +171,7 @@ const Overview = () => {
                           position:'relative',
                           right:5,
                           width: wp('45%'),
-                          height: hp('10.4%'),
+                          height: 83,
                           marginTop: 0,
                           borderRadius:15
                         }}
@@ -210,7 +210,7 @@ const Overview = () => {
                               color: '#00415e',
 
                               fontFamily: 'Raleway-Medium',
-                              fontSize: 10,
+                              fontSize: wp('2.5%'),
                               position: 'absolute',
                               bottom: 0,
                             }}>

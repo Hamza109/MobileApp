@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Image,
+  RefreshControl,
 } from 'react-native';
 
 import {useIsFocused, useTheme} from '@react-navigation/native';
@@ -102,12 +103,18 @@ const HomeScreen = ({navigation, route}) => {
   };
   const [isSignedIn, setIsSignedIn] = useState();
 
-  const getId = () => {
+  const getId =  () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
+        if(value1 == null)
+    {
+       // navigation.navigate('Cures',{screen:'My Cures'})
+       navigation.navigate('SignIn')
+  
+    }
+    else{
+       navigation.navigate('CreateScreenHome')
+    }
       });
     } catch (error) {}
   };
@@ -122,18 +129,22 @@ const HomeScreen = ({navigation, route}) => {
     } catch (error) {}
   };
   const isFocuss = useIsFocused();
+  useEffect(()=>{
+  
+
+  })
   useEffect(() => {
+  
     if (isFocuss) {
-      getId();
+    
       getType();
 
       BackHandler.addEventListener('hardwareBackPress', backAction);
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', backAction);
     }
-  }, []);
-  const [value, setValue] = useState('');
-  const [items, setItems] = useState([]);
+  });
+
 
   const DATA1 = [
     {name: 'Ayurveda', source: require('../../assets/img/ayurvedic.jpg')},
@@ -163,22 +174,38 @@ const HomeScreen = ({navigation, route}) => {
   function User() {
     return (
       <Svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={wp('12%')}
-        height={hp('7%')}
-        fill="none"
-        viewBox="0 0 43 43">
-        <Path
-          fill="#00415E"
-          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
-      </Svg>
+      xmlns="http://www.w3.org/2000/svg"
+      width="42"
+      height="42"
+      fill="none"
+      viewBox="0 0 42 42"
+    >
+      <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
+      <Path
+        stroke="#fff"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="4"
+        d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"
+      ></Path>
+    </Svg>
     );
   }
   const [row, setRow] = useState();
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    navigation.push('MainTab');
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  };
   const getRow = () => {
     try {
       AsyncStorage.getItem('rowno').then(value2 => {
-        console.log('row:', value2);
+
         if (value2 != null) {
           setRow(Number(value2));
         }
@@ -191,10 +218,22 @@ const HomeScreen = ({navigation, route}) => {
   useEffect(() => {
     if (isFocus) {
       getRow();
-      console.log('row', row);
+
+  
     }
   }, [row]);
+  const check=()=>{
 
+    if(regId.length === 0)
+    {
+       // navigation.navigate('Cures',{screen:'My Cures'})
+       navigation.navigate('SignIn')
+  
+    }
+    else{
+       navigation.navigate('CreateScreenHome')
+    }
+}
   function renderItemTrend({item, index}) {
     const {name, source, color} = item;
     return (
@@ -206,19 +245,19 @@ const HomeScreen = ({navigation, route}) => {
           }}>
           <Card
             style={{
-              width: wp('30%'),
-              height: hp('15%'),
+              width: 115,
+              height: 120,
               backgroundColor: '#00415e',
 
-              borderRadius: 200,
+              borderRadius: 20,
               alignItems: 'center',
             }}
             key={index}>
             <ImageBackground
               style={{
-                width: wp('30%'),
-                height: hp('15%'),
-                borderRadius: 200,
+                width: 115,
+                height: 120,
+                borderRadius: 20,
                 overflow: 'hidden',
               }}
               source={source}
@@ -250,13 +289,9 @@ const HomeScreen = ({navigation, route}) => {
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
-                navigation.navigate('Profile');
+                navigation.openDrawer();
               }}>
-             {
-              <User/>
-               
-           
-}
+              {<User/>}
             </TouchableOpacity>
           </View>
 
@@ -281,25 +316,30 @@ const HomeScreen = ({navigation, route}) => {
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('CreateScreenHome')}>
-            <Create width />
+            onPress={() => getId()}>
+            <Create  />
           </TouchableOpacity>
         </HStack>
       </Stack>
       <ScrollView
         style={{width: wp('100%'), backgroundColor: '#fff'}}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <Stack mt="5" ml="2" space={4}>
+          <HStack space={1}>
           <Text
             adjustsFontSizeToFit
             style={{
-              fontSize: 20,
+              fontSize: wp('5%'),
               color: '#00415e',
               fontFamily: 'Raleway-Regular',
             }}>
-            Choose by Category
+            Cures By Category
           </Text>
-
+          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          </HStack>
           <View
             style={{
               alignItems: 'center',
@@ -317,22 +357,27 @@ const HomeScreen = ({navigation, route}) => {
                   navigation.navigate('Result', {texts: 'Arthritis'});
                 }}>
                 <Card
+                  resizeMode="stretch"
                   style={{
                     width: wp('30%'),
                     height: hp('20%'),
                     backgroundColor: '#f5b6ff',
                     borderRadius: 20,
                     marginRight: 10,
+                    overflow: 'hidden',
                   }}>
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('28%'),
-                      height: hp('15%'),
+                      width: '90%',
+                      height: '80%',
                       position: 'absolute',
                       bottom: 0,
-                      left: 4,
+                      left: 5,
+                      overflow: 'hidden',
                     }}
+                    resizeMode="stretch"
+                    resizeMethod="resize"
                     source={require('../../assets/img/arthritis.png')}
                   />
 
@@ -345,6 +390,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Arthritis
                   </Text>
@@ -367,12 +413,15 @@ const HomeScreen = ({navigation, route}) => {
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('27%'),
-                      height: hp('10%'),
+                      width: '90%',
+                      height: '50%',
                       position: 'absolute',
                       bottom: 0,
                       left: 5,
+                      overflow: 'hidden',
                     }}
+                    resizeMode="stretch"
+                    resizeMethod="resize"
                     source={require('../../assets/img/thyroid.png')}
                   />
 
@@ -385,6 +434,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Thyroid
                   </Text>
@@ -407,13 +457,15 @@ const HomeScreen = ({navigation, route}) => {
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('27%'),
-                      height: hp('10%'),
+                      width: '90%',
+                      height: '50%',
 
                       position: 'absolute',
                       bottom: 0,
                       left: 7,
                     }}
+                    resizeMode="cover"
+                    resizeMethod="resize"
                     source={require('../../assets/img/slider-2.png')}
                   />
 
@@ -426,11 +478,13 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Diabetes
                   </Text>
                 </Card>
               </TouchableOpacity>
+        
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
@@ -443,16 +497,20 @@ const HomeScreen = ({navigation, route}) => {
                     backgroundColor: '#cca4ff',
                     borderRadius: 20,
                     marginRight: 10,
+                    overflow: 'hidden',
                   }}>
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('24%'),
-                      height: hp('15%'),
+                      width: '90%',
+                      height: '80%',
                       position: 'absolute',
                       bottom: 0,
-                      left: 11,
+                      left: 5,
+                      overflow: 'hidden',
                     }}
+                    resizeMode="stretch"
+                    resizeMethod="auto"
                     source={require('../../assets/img/insomnia.png')}
                   />
 
@@ -465,6 +523,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Insomnia
                   </Text>
@@ -487,12 +546,13 @@ const HomeScreen = ({navigation, route}) => {
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('28%'),
-                      height: hp('15%'),
+                      width: '100%',
+                      height: '80%',
                       position: 'absolute',
                       bottom: 0,
                       left: 5,
                     }}
+                    resizeMode="stretch"
                     source={require('../../assets/img/slider-5.png')}
                   />
 
@@ -505,6 +565,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Skin Care
                   </Text>
@@ -522,16 +583,19 @@ const HomeScreen = ({navigation, route}) => {
                     backgroundColor: 'lightblue',
                     borderRadius: 20,
                     marginRight: 10,
+                    overflow: 'hidden',
                   }}>
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('24%'),
-                      height: hp('15%'),
+                      width: '90%',
+                      height: '80%',
                       position: 'absolute',
                       bottom: 0,
-                      left: 11,
+                      left: 5,
+                      overflow: 'hidden',
                     }}
+                    resizeMode="stretch"
                     source={require('../../assets/img/bloodpressure.png')}
                   />
 
@@ -544,6 +608,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Hyper Tension
                   </Text>
@@ -565,12 +630,13 @@ const HomeScreen = ({navigation, route}) => {
                   <Image
                     style={{
                       alignContent: 'center',
-                      width: wp('24%'),
-                      height: hp('15%'),
+                      width: '90%',
+                      height: '80%',
                       position: 'absolute',
                       bottom: 0,
-                      left: 11,
+                      left: 5,
                     }}
+                    resizeMode="center"
                     source={require('../../assets/img/psorasis.png')}
                   />
 
@@ -583,6 +649,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
+                      fontSize:wp('3%')
                     }}>
                     Psorasis
                   </Text>
@@ -590,17 +657,19 @@ const HomeScreen = ({navigation, route}) => {
               </TouchableOpacity>
             </ScrollView>
           </View>
+          <HStack space={1}>
           <Text
             adjustsFontSizeToFit
             style={{
-              fontSize: 20,
+              fontSize: wp('5%'),
               color: '#00415e',
               fontFamily: 'Raleway-Regular',
             }}>
-            Trending Cures
+           Traditional Medicine Category
           </Text>
-          <View
-            style={{alignItems: 'center', marginLeft: 0, width: wp('100%')}}>
+          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          </HStack>
+          <View style={{alignItems: 'center', width: wp('100%')}}>
             <FlatList
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -608,16 +677,20 @@ const HomeScreen = ({navigation, route}) => {
               renderItem={renderItemTrend}
             />
           </View>
+<HStack space={1}>
           <Text
             adjustsFontSizeToFit
             style={{
-              fontSize: 20,
+              fontSize: wp('5%'),
               color: '#00415e',
               fontFamily: 'Raleway-Regular',
             }}>
             Recent Cures
           </Text>
+          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          </HStack>
           <ArticlePreview />
+          <HStack space={1}>
           <Text
             adjustsFontSizeToFit
             style={{
@@ -627,6 +700,8 @@ const HomeScreen = ({navigation, route}) => {
             }}>
             Top Doctors
           </Text>
+          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          </HStack>
           <DocPreview />
         </Stack>
       </ScrollView>
@@ -667,7 +742,7 @@ const styles = StyleSheet.create({
   icon: {
     padding: 3,
     position: 'absolute',
-    right:10,
+    right: 10,
     color: '#00415e',
   },
 

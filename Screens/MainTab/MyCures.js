@@ -41,42 +41,22 @@ const MyCures = () => {
           options={{
             headerShown: false,
             tabBarActiveTintColor: '#00415e',
-            tabBarLabel: 'All',
+            tabBarLabel: 'Article',
 
             tabBarColor: '#fff',
           }}
         />
         <Tab.Screen
-          name="Overview"
-          component={Overview}
-          options={{
-            headerShown: false,
-            tabBarActiveTintColor: '#00415e',
-            tabBarLabel: 'In Progress',
-            tabBarColor: '#fff',
-          }}
-        />
-
-        <Tab.Screen
-          name="Review"
-          component={Review}
-          options={{
-            headerShown: false,
-            tabBarActiveTintColor: '#00415e',
-            tabBarLabel: 'Review',
-            tabBarColor: '#fff',
-          }}
-        />
-        <Tab.Screen
-          name="Publish"
+          name="Cures"
           component={Published}
           options={{
             headerShown: false,
             tabBarActiveTintColor: '#00415e',
-            tabBarLabel: 'Publish',
+            tabBarLabel: 'Cures',
             tabBarColor: '#fff',
           }}
         />
+
       </Tab.Navigator>
     </>
   );

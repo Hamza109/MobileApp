@@ -79,7 +79,7 @@ const DoctorsCard = ({
   const isfocus = useIsFocused();
   useEffect(() => {
     checkIfImageExits(
-      `http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`,
+      `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
     );
   }, []);
   return (
@@ -91,10 +91,10 @@ const DoctorsCard = ({
             }}>
         <Card
           style={{
-            width: wp('30%'),
-            height: hp('15%'),
+            width: 115,
+            height: 120,
             backgroundColor: 'grey',
-            borderRadius: 200,
+            borderRadius: 20,
             marginRight: 10,
             justifyContent: 'center',
 
@@ -103,13 +103,14 @@ const DoctorsCard = ({
           }}>
           {
             <ImageBackground
+            resizeMode='stretch'
               source={{
                 uri: `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
               }}
               style={{
-                width: wp('30%'),
-                height: hp('15%'),
-                borderRadius: 200,
+                width: 115,
+                height: 120,
+                borderRadius: 20,
                 overflow: 'hidden',
               }}
             />

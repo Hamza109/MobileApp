@@ -13,14 +13,14 @@ const { s, c } = bootstrapStyleSheet;
 
 const AllPost = ({ id, title, f_title, w_title}) => {
   const[showValue,setShowValue]=useState([])
-  console.log(id)
+
   const getRating = () => {
 
     axios.get(`${backendHost}/rating/target/${id}/targettype/2/avg`)
   
     .then(res => {
      
-      console.log('helo:',res.data)
+
       setShowValue(res.data.toFixed(1))
     })
     .catch(err => console.log(err))

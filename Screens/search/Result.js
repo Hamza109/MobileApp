@@ -154,16 +154,17 @@ const Result = ({navigation, route}) => {
                             <Card
                               style={{
                                 width: wp('97%'),
-                                height: hp('21.6%'),
+                                height: 173,
                                 backgroundColor: 'lightgrey',
                                 borderRadius: 0,
                                 marginBottom: 5,
                                 justifyContent: 'center',
-                              borderRadius:15,
+                                borderRadius: 15,
                                 paddingHorizontal: 5,
                                 alignItems: 'center',
                               }}>
                               <HStack space={1}>
+                              <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
                                   source={{
                                     uri:
@@ -173,27 +174,28 @@ const Result = ({navigation, route}) => {
                                         .split('/webapps/')[1],
                                   }}
                                   style={{
-                                    position:'relative',
-                                    right:5,
+                                    position: 'relative',
+                                    right: 5,
                                     width: wp('45%'),
-                                    height: hp('21.6%'),
-                                    borderRadius:15,
+                                    height: 173,
+                                    borderRadius: 15,
                                     marginTop: 0,
                                   }}
                                 />
-                                <View style={{width:wp('49%'),height:hp('20%'),position:'relative',right:5}}>
-                                  <VStack py='2' space={10}>
-                                  <AllPost
-                                    key={key}
-                                    id={i.article_id}
-                                    title={i.title}
-                                    f_title={i.friendly_name}
-                                    w_title={i.window_title}
-                                    allPostsContent={() => receivedData()}
-                                  />
-                                  <View style={{width:wp('50%')}}>
-                                  
-                                  <Text style={{position:'absolute',top:0}}>
+                                </TouchableOpacity>
+                                <View style={{width: wp('50%')}}>
+                                  <VStack py="2" space={10}>
+                                    <AllPost
+                                      key={key}
+                                      id={i.article_id}
+                                      title={i.title}
+                                      f_title={i.friendly_name}
+                                      w_title={i.window_title}
+                                      allPostsContent={() => receivedData()}
+                                    />
+                                    <View style={{width: wp('50%')}}>
+                                      <Text
+                                        style={{position: 'absolute', top: 0}}>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
@@ -225,22 +227,20 @@ const Result = ({navigation, route}) => {
                                             )
                                           : null}
                                       </Text>
-                                  
-                               
-                                  </View>
-                                  
+                                    </View>
                                   </VStack>
                                   <Text
-                                      style={{
-                                        color: '#00415e',
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        fontFamily: 'Raleway-Medium',
-                                        fontSize: wp('2.5%'),
-                                      }}>
-                                      {i.authors_name}▪️{i.published_date}
-                                    </Text>
-                                  
+                                     adjustsFontSizeToFit
+                                     numberOfLines={1}
+                                    style={{
+                                      color: '#00415e',
+                                      position: 'absolute',
+                                      bottom: 0,
+                                      fontFamily: 'Raleway-Medium',
+                                      fontSize: wp('2.5%'),
+                                    }}>
+                                    {i.authors_name}▪️{i.published_date}
+                                  </Text>
                                 </View>
                               </HStack>
                             </Card>
@@ -252,16 +252,22 @@ const Result = ({navigation, route}) => {
                     // : null
                   )
               ) : (
-                <View style={{alignItems: 'center',justifyContent:'center'}}>
-                    <Icon
-                      name="medical-outline"
-                      size={50}
-                      style={{opacity: 0.5,color:'#00415e'}}
-                    />
-                    <Text style={{textAlign: 'center', fontSize: 18,color:'#00415e',fontFamily:'Raleway-Medium'}}>
-                      No Cure Found
-                    </Text>
-                  </View>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Icon
+                    name="medical-outline"
+                    size={50}
+                    style={{opacity: 0.5, color: '#00415e'}}
+                  />
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 18,
+                      color: '#00415e',
+                      fontFamily: 'Raleway-Medium',
+                    }}>
+                    No Cure Found
+                  </Text>
+                </View>
               )}
             </ScrollView>
           </View>

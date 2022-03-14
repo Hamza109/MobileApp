@@ -9,6 +9,7 @@ import {
   StatusBar,
   Alert,
   ImageBackground,
+  ToastAndroid
 } from 'react-native';
 import {
   HStack,
@@ -79,6 +80,11 @@ const SignUpScreen = ({navigation, props}) => {
   const setSecond = event => {
     setPassword({...password, secondPassword: event});
   };
+  const setRow = async row => {
+    try {
+      await AsyncStorage.setItem('rowno', JSON.stringify(row));
+    } catch (error) {}
+  };
   const SignUpForm = () => {
     setClicked(1);
     setTimeout(() => {
@@ -97,15 +103,17 @@ const SignUpScreen = ({navigation, props}) => {
           if (response.data == 'Email Address already Exists in the System') {
             Alert.alert('Email already exists');
           } else if (response.data.registration_id) {
+            
             Alert.alert('Signup Successful');
-            setTimeout(() => {
-              navigation.navigate('MainTab', {}),
+     
+              navigation.navigate('MainTab'),
                 setId(response.data.registration_id),
                 setType(response.data.registration_type),
                 setFirst(response.data.first_name),
                 setLast(response.data.last_name),
+                setRow(response.data.rowno)
                 setEmail(response.data.email_address);
-            }, 1000);
+        
           }
         })
         .catch(res => {

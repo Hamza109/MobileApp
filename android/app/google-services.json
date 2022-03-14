@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "24954865850",
+    "project_id": "all-cures007",
+    "storage_bucket": "all-cures007.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24954865850:android:c649a2996b2d01daac9a83",
+        "android_client_info": {
+          "package_name": "com.allcures"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24954865850-4r0ars4opmaffqutq2sb6tgar3nrlqt8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.allcures",
+            "certificate_hash": "d6b17e8d9b1b23c5148bd9ae4066bb4c41cc7ced"
+          }
+        },
+        {
+          "client_id": "24954865850-gh5dfpu8s5drum9840h0gnbm418gb25i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm_Ea8_FftYRMZf4nSXs4-JGnINmR_nsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24954865850-gh5dfpu8s5drum9840h0gnbm418gb25i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

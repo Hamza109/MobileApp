@@ -102,7 +102,7 @@ const isFocus= useIsFocused();
      "copyId":copyright,
      "disclaimerId":1,
      "articleStatus":2,
-     "articleContent":encodeURIComponent({"time":1631083559825,"blocks":[{"id":"ZvfhlKCqsp","type":"paragraph","data":{"text":article}}],"version":"2.21.0"}),
+     "articleContent":encodeURIComponent(JSON.stringify({"time":1631083559825,"blocks":[{"id":"ZvfhlKCqsp","type":"paragraph","data":{"text":article}}],"version":"2.21.0"})),
      
     
     })

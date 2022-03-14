@@ -6,7 +6,8 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React ,{useState,useEffect}from 'react';
+import analytics from '@react-native-firebase/analytics' 
 import { NativeBaseProvider, Box } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import {
@@ -17,6 +18,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Linking,Alert
 } from 'react-native';
 import RootStack from './Screens/RootStackScreen';
 import {
@@ -38,15 +40,53 @@ const theme = {
 };
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  // const linking = {
+  //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
+  // };
+  const [url, setUrl] = useState(null);
+  const [processing, setProcessing] = useState(true);
+  useEffect(() => {
+    // Get the deep link used to open the app
+    const getUrl = async () => {
+      const initialUrl = await Linking.getInitialURL();
 
+      if (initialUrl === null) {
+        return;
+      }
+  
+    
+    };
+
+    getUrl();
+  });
+  const isDarkMode = useColorScheme() === 'dark';
+  const routeNameRef = React.useRef();
+  const navigationRef = React.useRef();
 
 
   return (
    
       <NativeBaseProvider>
          <PaperProvider>
-    <NavigationContainer>
+    <NavigationContainer
+// linking={linking}
+    ref={navigationRef}
+    onReady={() => {
+      routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+    }}
+    onStateChange={async () => {
+      const previousRouteName = routeNameRef.current;
+      const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+      if (previousRouteName !== currentRouteName) {
+        await analytics().logScreenView({
+          screen_name: currentRouteName,
+          screen_class: currentRouteName,
+        });
+      }
+      routeNameRef.current = currentRouteName;
+    }}
+    >
   <RootStack/>
     </NavigationContainer>
     </PaperProvider>

@@ -54,7 +54,7 @@ const SearchBarCity = ref => {
         names: `${name}`,
       });
     else {
-      console.log(name);
+
       navigation.navigate('SearchBar', {
         names: `${name}`,
       });
@@ -74,7 +74,7 @@ cityAll();
     .get(`${backendHost}/city/all`)
     .then(res => res.data)
     .then(citydata => {
-  console.log(citydata)
+
     var temp = []
     citydata.forEach(i => {
       temp.push(i.Cityname, i.Pincode)
@@ -115,11 +115,11 @@ console.log(temp)
     return (
       // Flat List Item
       <TouchableOpacity onPress={() => setName(item) & setSearching(false)}>
-        <View>
-          <Card style={styles.itemView}>
+      
+          <View style={styles.itemView}>
             <Text style={styles.itemText}>{item}</Text>
-          </Card>
-        </View>
+          </View>
+      
       </TouchableOpacity>
     );
   };
@@ -217,23 +217,23 @@ header:{
 
 
   itemView: {
-    borderBottomWidth:.8,
-    borderBottomColor:'#00415e',
+    borderBottomWidth: 0.8,
+    borderBottomColor: '#00415e',
 
     backgroundColor: '#fff',
-    height:hp('7%'),
-  width:wp('100%'),
+    height: 80,
+    width: wp('100%'),
     justifyContent: 'center',
 
-    padding: 15,
+    padding: 10,
     zIndex: 999,
   },
   itemText: {
     color: '#00415e',
     paddingHorizontal: 10,
-    fontSize: 17,
-    marginLeft:-5,
-    marginRight:3,
+    fontSize: wp('4%'),
+    marginLeft: -5,
+   
     zIndex: 999,
   },
   noResultView: {
