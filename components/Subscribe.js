@@ -7,39 +7,24 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {
-  HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Spinner,
-  VStack,
-  Divider,
-  Pressable,
-  Modal,
-  Box,
-} from 'native-base';
+import {VStack} from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 
 import axios from 'axios';
-import { backendHost } from './apiConfig';
+import {backendHost} from './apiConfig';
 
-const Subscribe=()=>{
-
-    const [value, setValue] = useState();
-    const [formattedValue, setFormattedValue] = useState('');
-    const postSubscription = val => {
-      var phoneNumber = val.split('+')[1];
-  
+const Subscribe = () => {
+  const [value, setValue] = useState();
+  const [formattedValue, setFormattedValue] = useState('');
+  const postSubscription = val => {
+    var phoneNumber = val.split('+')[1];
+    if (phoneNumber && phoneNumber.length) {
       var countryCodeLength = phoneNumber.length % 10;
       var countryCode = phoneNumber.slice(0, countryCodeLength);
       var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
@@ -64,20 +49,18 @@ const Subscribe=()=>{
       } else {
         Alert.alert('Please enter a valid number!');
       }
-    };
+    } else {
+      Alert.alert('Enter your number!');
+    }
+  };
 
-    return(
-        <View style={{flex: 1, alignItems:'center',backgroundColor:'#fff'}}>
-            <ImageBackground
-            source={require('../assets/img/LandingMainImg.jpg')}
-            style={{width: wp('100%'), height: hp('30%')}}>
-           
-          </ImageBackground>
-            <VStack ml='2'mt="5"  space={5}>
-          
-           
-        <View style={{flexDirection: 'row',marginLeft:2}}>
-   
+  return (
+    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#fff'}}>
+      <ImageBackground
+        source={require('../assets/img/LandingMainImg.jpg')}
+        style={{width: wp('100%'), height: hp('30%')}}></ImageBackground>
+      <VStack ml="2" mt="5" space={5}>
+        <View style={{flexDirection: 'row', marginLeft: 2}}>
           <Image
             source={require('../assets/img/heart.png')}
             style={styles.imageModal}></Image>
@@ -92,139 +75,136 @@ const Subscribe=()=>{
           </Text>
         </View>
         <VStack space={6} ml="2">
-        <Text style={{ fontSize: 20}}>
-          Sign up for our free
-          <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily
-          Newsletter
-        </Text>
-        <Text style={{ fontSize: 20}}>
-          Get <Text style={{color: '#1e7ca8'}}>doctor-approved</Text>{' '}
-          health tips, news, and more
-        </Text>
-        <PhoneInput
-          defaultValue={value}
-          defaultCode="IN"
-          layout="first"
-          onChangeText={text => {
-            setValue(text);
-          }}
-          onChangeFormattedText={text => {
-            setFormattedValue(text);
-          }}
-          withDarkTheme
-          withShadow
-          autoFocus
-        />
-        <View style={{alignItems:'center'}}>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => postSubscription(formattedValue)}>
-          <Text style={{color: 'white', fontWeight: 'bold'}}>
-            Submit
+          <Text style={{fontSize: 20, color: 'grey'}}>
+            Sign up for our free
+            <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily Newsletter
           </Text>
-        </TouchableOpacity>
-        </View>
+          <Text style={{fontSize: 20}}>
+            Get{' '}
+            <Text style={{color: '#1e7ca8', color: 'grey'}}>
+              doctor-approved
+            </Text>{' '}
+            health tips, news, and more
+          </Text>
+          <PhoneInput
+            defaultValue={value}
+            defaultCode="IN"
+            layout="first"
+            onChangeText={text => {
+              setValue(text);
+            }}
+            onChangeFormattedText={text => {
+              setFormattedValue(text);
+            }}
+            withDarkTheme
+            withShadow
+            autoFocus
+          />
+          <View style={{alignItems: 'center'}}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => postSubscription(formattedValue)}>
+              <Text style={{color: 'white', fontWeight: 'bold'}}>Submit</Text>
+            </TouchableOpacity>
+          </View>
         </VStack>
-        </VStack>
-      </View>
-    )
-  
-
-}
+      </VStack>
+    </View>
+  );
+};
 
 export default Subscribe;
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-  
-      alignItems: 'center',
-    },
-    card: {
-      padding: 10,
-      margin: 0,
-      height: hp('60%'),
-      width: wp('100%'),
-      position: 'relative',
-      bottom: 90,
-      borderRadius: 0,
-      backgroundColor: '#00415e',
-    },
-  
-    search: {
-      position: 'relative',
-      bottom: 282,
-      backgroundColor: '#fff',
-    },
-  
-    b1: {
-      backgroundColor: '#00415e',
-      padding: 40,
-    },
-  
-    text: {
-      backgroundColor: '#00415e',
-      color: '#fff',
-      textAlign: 'center',
-    },
-    h1: {
-      position: 'relative',
-      bottom: 450,
-      right: 0,
-      fontWeight: 'bold',
-      padding: 0,
-      margin: 0,
-    },
-    t2: {
-      position: 'relative',
-      bottom: 410,
-  
-      padding: 10,
-      margin: 0,
-      zIndex: 9999,
-    },
-    centeredView: {
-      flex: 1,
-  
-      marginTop: 25,
-    },
-    modalView: {
-      alignItems: 'center',
-    },
-  
-    textStyle: {
-      color: 'white',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
-    },
-    image: {
-      padding: 20,
-      marginTop: 5,
-      height: hp('5%'),
-      width: wp('5%'),
-    },
-    imageModal: {
-      padding: 0,
-      marginTop: 0,
-      height: hp('7%'),
-      width: wp('16%'),
-    },
-    btn: {
-      borderWidth: 1,
-      borderRadius: 15,
-      borderColor: '#00415e',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: wp('50%'),
-      height: 40,
-      backgroundColor: '#00415e',
-      color: 'white',
-  
-      marginTop: 10,
-    },
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+
+    alignItems: 'center',
+  },
+  card: {
+    padding: 10,
+    margin: 0,
+    height: hp('60%'),
+    width: wp('100%'),
+    position: 'relative',
+    bottom: 90,
+    borderRadius: 0,
+    backgroundColor: '#00415e',
+  },
+
+  search: {
+    position: 'relative',
+    bottom: 282,
+    backgroundColor: '#fff',
+  },
+
+  b1: {
+    backgroundColor: '#00415e',
+    padding: 40,
+  },
+
+  text: {
+    backgroundColor: '#00415e',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  h1: {
+    position: 'relative',
+    bottom: 450,
+    right: 0,
+    fontWeight: 'bold',
+    padding: 0,
+    margin: 0,
+  },
+  t2: {
+    position: 'relative',
+    bottom: 410,
+
+    padding: 10,
+    margin: 0,
+    zIndex: 9999,
+  },
+  centeredView: {
+    flex: 1,
+
+    marginTop: 25,
+  },
+  modalView: {
+    alignItems: 'center',
+  },
+
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  image: {
+    padding: 20,
+    marginTop: 5,
+    height: hp('5%'),
+    width: wp('5%'),
+  },
+  imageModal: {
+    padding: 0,
+    marginTop: 0,
+    height: hp('7%'),
+    width: wp('16%'),
+  },
+  btn: {
+    borderWidth: 1,
+    borderRadius: 15,
+    borderColor: '#00415e',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: wp('50%'),
+    height: 40,
+    backgroundColor: '#00415e',
+    color: 'white',
+
+    marginTop: 10,
+  },
+});

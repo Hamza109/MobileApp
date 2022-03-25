@@ -53,7 +53,7 @@ const tex ={
           ),
           paragraph: (
             <View style={{color:'#00415e'}}>
-             <RenderHTML source={tex} contentWidth={wp('100%')}  defaultTextProps={true}   tagsStyles = {{ adjustsFontSizeToFit:true,
+             <RenderHTML source={tex} contentWidth={wp('100%')}     tagsStyles = {{ adjustsFontSizeToFit:true,
        span:  {fontSize: 16}, 
        b:     {fontSize: 16, color: '#00415e'},
        body:{color:'#00415e',fontSize:wp('4.5%')}

@@ -15,7 +15,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 const SearchArt = ()=>{
    const navigation=useNavigation();
     return(
-<Container>
+<Container bg='#fff'>
   
       {/* <View styles={styles.flex}>
           <Card style={styles.header}>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
    
 flex:{
     flex:1,
-   
+   backgroundColor:'#fff'
 },
 header:{
 

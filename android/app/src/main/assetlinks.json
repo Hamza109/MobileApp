@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.all-cures",
+      "sha256_cert_fingerprints": [
+        "51:C9:D7:1D:FC:AA:A1:1A:4D:0C:89:2A:33:45:7A:7C:63:59:96:7C:40:2B:49:4C:84:E9:45:55:BB:C7:EA:75"
+      ]
+    }
+  }
+]

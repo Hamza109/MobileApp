@@ -25,6 +25,8 @@ import DrawerMenu from './MainTab/DrawerMenu';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Subscribe from '../components/Subscribe';
 import Feedback from '../components/FeedBack';
+import Forgetpass from './login/ForgetPass';
+import MyCures from './MainTab/MyCures';
 
 const Stack = createStackNavigator();
 
@@ -40,7 +42,7 @@ const RootStack = () => {
         }
       });
     } catch (error) {
-      console.log('114', error);
+      console.log('root', error);
     }
   };
   return (
@@ -60,7 +62,11 @@ const RootStack = () => {
         component={SplashScreen}
         options={{headerShown: false}}
       />
-    
+      <Stack.Screen
+        name="Forgetpass"
+        component={Forgetpass}
+        options={{headerShown: false}}
+      />
 
       <Stack.Screen
         name="CreateScreen"
@@ -81,6 +87,11 @@ const RootStack = () => {
         name="MainTab"
         component={DrawerMenu}
         options={{headerShown: null, headerLeft: null}}
+      />
+        <Stack.Screen
+        name="MyCures"
+        component={MyCures}
+        options={{headerTitle: 'MyCures'}}
       />
       <Stack.Screen
         name="Disease"

@@ -119,19 +119,19 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     wait(2000).then(() => setRefreshing(false));
   };
   const [img, setImg] = useState();
-  const getId =async () => {
+  const getId = () => {
     try {
-     await  AsyncStorage.getItem('author').then(value1 => {
+      AsyncStorage.getItem('author').then(value1 => {
+   
         if (value1 != null) {
-          setRegId(value1);
-        } else {
-          return(
+           setRegId(value1)
+        }
+        else{
           navigation.navigate('SignIn')
-          )
         }
       });
     } catch (error) {
-      console.log('114', error);
+    console.log('58',error)
     }
   };
   const getFirstName = () => {
@@ -158,9 +158,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       console.log('128', error);
     }
   };
-  const getRow = async () => {
+  const getRow =  () => {
     try {
-    await  AsyncStorage.getItem('rowno').then(value2 => {
+   AsyncStorage.getItem('rowno').then(value2 => {
       
         if (value2 != null) {
           fetch(

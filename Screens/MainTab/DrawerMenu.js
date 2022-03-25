@@ -110,7 +110,7 @@ const DrawerMenu = () => {
         'rowno',
       ]);
     } catch (error) {
-      console.log(error);
+      console.log('113',error);
     }
   };
   const logout = () => {
@@ -364,7 +364,6 @@ const styles = StyleSheet.create({
   },
   imageModal: {
     padding: 20,
-   color:'#00415e',
     height: 60,
     width: wp('15%'),
   },

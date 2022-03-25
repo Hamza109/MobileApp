@@ -45,7 +45,7 @@ const CreateScreenHome = () => {
   const [regType, setRegType] = useState();
   const getId = () => {
     try {
-      Promise.all(AsyncStorage.getItem('author').then(value1 => {
+      AsyncStorage.getItem('author').then(value1 => {
    
         if (value1 != null) {
            setRegId(value1)
@@ -53,9 +53,9 @@ const CreateScreenHome = () => {
         else{
           navigation.navigate('SignIn')
         }
-      }));
+      });
     } catch (error) {
-  
+    console.log('58',error)
     }
   };
   const getType = () => {
@@ -68,7 +68,7 @@ const CreateScreenHome = () => {
         }
       });
     } catch (error) {
-
+  console.log('71:',error)
     }
   };
 const isFocus= useIsFocused();
@@ -115,7 +115,7 @@ const isFocus= useIsFocused();
  
       })
       .catch(err => {
- 
+             console.log('118:',err)
 
       });
   };

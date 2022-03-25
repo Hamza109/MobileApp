@@ -9,9 +9,9 @@ import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
-import Review from '../mycures/Review';
+
 import Published from '../mycures/Publish';
-import Overview from '../mycures/Overview';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import All from '../mycures/All';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
@@ -31,6 +31,7 @@ const MyCures = () => {
       <Tab.Navigator
         initialRouteName="All"
         screenOptions={{
+      
           tabBarStyle: {padding: 0,width:widthPercentageToDP('100%')},
           tabBarInactiveTintColor: 'grey',
           tabBarLabelStyle: {fontFamily: 'Raleway-Bold', fontSize: widthPercentageToDP('3%')},
@@ -39,6 +40,7 @@ const MyCures = () => {
           name="All"
           component={All}
           options={{
+            unmountOnBlur:true,
             headerShown: false,
             tabBarActiveTintColor: '#00415e',
             tabBarLabel: 'Article',
@@ -50,6 +52,7 @@ const MyCures = () => {
           name="Cures"
           component={Published}
           options={{
+            unmountOnBlur:true,
             headerShown: false,
             tabBarActiveTintColor: '#00415e',
             tabBarLabel: 'Cures',

@@ -60,6 +60,16 @@ const HomeScreen = ({navigation, route}) => {
   const canGoBack = () => {
     navigation.goBack();
   };
+  const remove = async () => {
+    try {
+      await AsyncStorage.multiRemove([
+     
+        'mail1'
+      ]);
+    } catch (error) {
+      console.log('113',error);
+    }
+  };
   const backAction = () => {
     if (navigation.isFocused()) {
       Alert.alert('Hold on!', 'Are you sure you want to Exit?', [
@@ -68,7 +78,7 @@ const HomeScreen = ({navigation, route}) => {
           onPress: () => null,
           style: 'cancel',
         },
-        {text: 'YES', onPress: () => BackHandler.exitApp()},
+        {text: 'YES', onPress: () =>{ BackHandler.exitApp(),remove()} },
       ]);
       return true;
     }
@@ -237,7 +247,7 @@ const HomeScreen = ({navigation, route}) => {
   function renderItemTrend({item, index}) {
     const {name, source, color} = item;
     return (
-      <View style={{marginRight: 13}}>
+      <View style={{marginRight: 12}}>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
@@ -245,7 +255,7 @@ const HomeScreen = ({navigation, route}) => {
           }}>
           <Card
             style={{
-              width: 115,
+              width: wp('30%'),
               height: 120,
               backgroundColor: '#00415e',
 
@@ -255,7 +265,7 @@ const HomeScreen = ({navigation, route}) => {
             key={index}>
             <ImageBackground
               style={{
-                width: 115,
+                width: wp('30%'),
                 height: 120,
                 borderRadius: 20,
                 overflow: 'hidden',
@@ -265,6 +275,7 @@ const HomeScreen = ({navigation, route}) => {
           </Card>
         </TouchableOpacity>
         <Text
+      
           adjustsFontSizeToFit
           style={{
             color: '#00415e',
@@ -303,6 +314,8 @@ const HomeScreen = ({navigation, route}) => {
             <View style={styles.card}>
               <HStack ml="2" space={110} alignItems="center">
                 <Text
+                adjustsFontSizeToFit
+                numberOfLines={1}
                   style={{
                     fontSize: wp('4.5%'),
                     color: '#00415e',
@@ -327,10 +340,10 @@ const HomeScreen = ({navigation, route}) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <Stack mt="5" ml="2" space={4}>
+        <Stack mt="2" ml="2" space={3}>
           <HStack space={1}>
           <Text
-            adjustsFontSizeToFit
+          
             style={{
               fontSize: wp('5%'),
               color: '#00415e',
@@ -382,7 +395,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+            
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -426,7 +439,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+               
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -470,7 +483,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+            
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -515,7 +528,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+          
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -557,7 +570,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+              
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -600,7 +613,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+                  
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -641,7 +654,7 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                    adjustsFontSizeToFit
+           
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -659,7 +672,7 @@ const HomeScreen = ({navigation, route}) => {
           </View>
           <HStack space={1}>
           <Text
-            adjustsFontSizeToFit
+       
             style={{
               fontSize: wp('5%'),
               color: '#00415e',
@@ -679,7 +692,7 @@ const HomeScreen = ({navigation, route}) => {
           </View>
 <HStack space={1}>
           <Text
-            adjustsFontSizeToFit
+       
             style={{
               fontSize: wp('5%'),
               color: '#00415e',
@@ -692,7 +705,7 @@ const HomeScreen = ({navigation, route}) => {
           <ArticlePreview />
           <HStack space={1}>
           <Text
-            adjustsFontSizeToFit
+        
             style={{
               fontSize: 20,
               color: '#00415e',

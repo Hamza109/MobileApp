@@ -14,12 +14,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {KeyboardAvoidingView} from 'react-native';
-import {Card} from 'react-native-paper';
-const Comment = props => {
+import { useToast } from 'native-base';
+const DocComment = props => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
-
+const toast=useToast();
   const [cmtText, setCmtText] = useState();
   const [succAlert, setAlert] = useState('');
   const [regId, setRegId] = useState();
@@ -55,10 +54,10 @@ const Comment = props => {
     if (cmtText != '') {
       axios
         .post(
-          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
+          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.docid}&targetTypeid=1&cmd=rateAsset`,
         )
         .then(res => {
-          Alert.alert('comment Successful');
+          Alert.alert('comment Successful','Comment will be displayed once reviewed');
           setCmtText('');
         })
 
@@ -113,7 +112,7 @@ const Comment = props => {
   );
 };
 
-export default Comment;
+export default DocComment;
 
 const styles = StyleSheet.create({
   textInput: {

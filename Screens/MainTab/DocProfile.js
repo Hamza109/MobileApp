@@ -7,6 +7,7 @@ import {
   StyleSheet,
   StatusBar,
   BackHandler,
+
   Alert,
   TouchableOpacity,
   TouchableHighlight,
@@ -19,16 +20,25 @@ import {
   Center,
   Heading,
   NativeBaseProvider,
+  Modal,
   Container,
+  Box,
+  Pressable,
+  
   VStack,
 } from 'native-base';
-import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
+import DocComment from '../Disease/DocComment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {Card, Checkbox, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
 import ProfileTab from '../search/ProfileTab';
 import DoctorsCard from './DoctorsCard';
 import {backendHost} from '../../components/apiConfig';
+import DocRatings from '../../components/DocRating';
+import StarRating from 'react-native-star-rating';
 
 import {
   widthPercentageToDP as wp,
@@ -46,14 +56,75 @@ const DocProfile = ({navigation, route}) => {
   const [items, setItems] = useState([]);
   const [articleItems, setArticleItems] = useState([]);
   const [formattedValue, setFormattedValue] = useState('');
+  const [selected, setSelected] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
   const [regType, setRegType] = useState();
+  const [showValue, setShowValue] = useState();
+  const [regId, setRegId] = useState([]);
+  const [commentItems, setCommentItems] = useState([]);
+  const check = () => {
+    if (regId.length == 0) {
+      navigation.navigate('SignIn');
+    } else {
+      setModalVisible(!modalVisible);
+    }
+  };
+
+  useEffect(() => {
+    getId();
+    
+  },[regId]);
+
+  const getId = () => {
+    try {
+      AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(Number(value1));
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  
+  const getRating = () => {
+    axios
+      .get(`${backendHost}/rating/target/${id}/targettype/1/avg`)
+      .then(res => {
+        console.log(res.data)
+        setShowValue(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+  function comments() {
+    // For all available blogs "/blogs"
+    fetch(`${backendHost}/rating/target/${id}/targettype/1`)
+      .then(res => res.json())
+      .then(json => {
+        setCommentItems(json);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  }
+  useEffect(()=>{
+    comments();
+  },[id])
   const getDoc = () => {
     fetch(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
       .then(res => res.json())
       .then(json => {
      
         setItems(json);
-      });
+      })
+      .catch(err => {console.log(err)
+        throw err
+        })
   };
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
@@ -70,7 +141,7 @@ const DocProfile = ({navigation, route}) => {
         setArticleItems(temp);
       })
       .catch(err => {
-        return;
+       console.log('76:',err)
       });
   };
   function IsJsonValid(str) {
@@ -81,9 +152,15 @@ const DocProfile = ({navigation, route}) => {
     }
     return JSON.parse(str).blocks;
   }
+useEffect(()=>{
+  getDoc();
+},[id])
 
+useEffect(()=>{
+  getRating();
+})
   useEffect(() => {
-    getDoc();
+
     allpost();
 
   }, [id]);
@@ -174,11 +251,73 @@ const DocProfile = ({navigation, route}) => {
                     {items.state} {items.country_code}
                   </Text>
                   </HStack>
+                  <View
+                style={{
+                  width: wp('25%'),
+                           
+                }}>
+                <StarRating
+                  disabled={false}
+                  starSize={18}
+                  maxStars={5}
+                  rating={showValue}
+                  emptyStarColor={'#fff'}
+                  fullStarColor={'orange'}
+                />
+              </View>
                 </VStack>
               </View>
             </HStack>
           </View>
           <View>
+          <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:20}}>
+            <Center flex={1}></Center>
+            <HStack
+              bg="#fff"
+              alignItems="center"
+              safeAreaBottom
+              width={wp('100%')}
+              height={hp('8.9%')}
+              shadow={6}>
+              <Center mr='10' flex={2}>
+                <DocRatings  rowno={items.rowno} />
+                <Text
+                  style={{
+                    fontFamily: 'Raleway',
+                    color: '#00415e',
+                    fontSize: wp('3%'),
+                  }}>
+                  Rate this Doctor
+                </Text>
+              </Center>
+              <Pressable
+                cursor="pointer"
+                py="3"
+                flex={1}
+                onPress={() => setSelected(0)}>
+                <Center>
+                  <Icon
+                    mb="1"
+                    name="chatbubble-ellipses"
+                    color="#00415e"
+                    size={30}
+                    onPress={() => {
+                      check();
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: 'Raleway',
+                      color: '#00415e',
+                      fontSize: wp('3%'),
+                    }}>
+                    Comment
+                  </Text>
+                </Center>
+              </Pressable>
+             
+            </HStack>
+          </Box>
             <ScrollView   style={{width: wp('100%'), height: hp('100%')}}>
             <VStack ml="2" space={1}>
               <Text
@@ -246,7 +385,7 @@ const DocProfile = ({navigation, route}) => {
                 {articleItems.length !== 0 ? (
                   articleItems
                     .filter((i, idx) => idx < 9)
-                    .map(i => {
+                    .map((i,j) => {
                       var content = [];
                       var imgLocation = i.content_location;
                       var imageLoc = '';
@@ -270,16 +409,17 @@ const DocProfile = ({navigation, route}) => {
                       title = title.replace(regex, '-');
                       return (
                         <View>
-                          <View>
+                          <View key={j}>
                             <Card
                               style={{
                                 width: wp('97%'),
                                 height: hp('10.4%'),
                                 backgroundColor: 'lightgrey',
-                                borderRadius: 0,
+                                borderRadius: 15,
                                 marginBottom: 5,
                               }}>
                               <HStack space={1}>
+                              <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
                                   source={{
                                     uri:
@@ -292,8 +432,10 @@ const DocProfile = ({navigation, route}) => {
                                     width: wp('42%'),
                                     height: hp('10.4%'),
                                     marginTop: 0,
+                                    borderRadius:15
                                   }}
                                 />
+                                </TouchableOpacity>
                                 <View style={{width:wp('50%')}}>
                                   <AllPost
                                     id={i.article_id}
@@ -344,11 +486,70 @@ const DocProfile = ({navigation, route}) => {
                     </Text>
                   </View>
                 )}
+                
               </ScrollView>
             </View>
+            
             </ScrollView>
           </View>
+     
+     
+
         </Stack>
+        <Modal
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          avoidKeyboard
+          justifyContent="flex-end"
+          bottom="0"
+          size="full">
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>comments</Modal.Header>
+            <Modal.Body>
+              <ScrollView>
+                {commentItems.reviewd == 1 ? (
+                  commentItems.map(i => (
+                    <View style={{marginBottom: 10}}>
+                      <View
+                        style={{
+                          padding: 10,
+                          marginVertical: 0,
+                          marginBottom: 0,
+                          Width: wp('80%'),
+                          height: hp('10%'),
+                          borderBottomWidth: 0.2,
+                        }}>
+                        <Text>{i.comments}</Text>
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="chatbubbles"
+                      style={{opacity: 0.3,color:'grey'}}
+                      size={150}
+                    />
+                    <Text style={{color: 'grey'}}>No comments yet</Text>
+                    <Text style={{color: 'grey'}}>
+                      Be the first to comment.
+                    </Text>
+                  </View>
+                )}
+              </ScrollView>
+            </Modal.Body>
+            <Modal.Footer>
+              <DocComment docid={items.docid}/>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+
       </View>
     </>
   );

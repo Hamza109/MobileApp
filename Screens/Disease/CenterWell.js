@@ -62,11 +62,11 @@ const CenterWell = ({
           
             <View style={{width:wp('50%'),height:hp('15%')}}>
 
-          <RenderHTML source={tex} contentWidth={wp('40%')}    tagsStyles = {{
+          <RenderHTML source={tex} adjustsFontSizeToFit  contentWidth={wp('40%')}    tagsStyles = {{
        span:  {fontSize: 16}, 
        b:     {fontSize: 16, color: '#00415e'},
        p:{color:'#00415e'},
-          body:{color:'grey',fontSize:wp('3%')}
+          body:{color:'grey',fontSize:wp('2.5%')}
     }} />
             </View>
           ),

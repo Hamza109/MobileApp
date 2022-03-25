@@ -9,21 +9,19 @@ import {
   StatusBar,
   Alert,
   ImageBackground,
+  ToastAndroid
 } from 'react-native';
 import axios from 'axios';
 
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-
+import { backendHost } from '../../components/apiConfig';
 import {useTheme} from 'react-native-paper';
 
 const Verify = ({navigation}) => {
   const [email, setEmail] = useState('');
-  const [password, setPass] = useState('');
-  const [message, setMessage] = useState('');
-  const [isError, setError] = useState(false);
-  const [status, setStatus] = useState('');
+
   const [buttonClick, setClicked] = useState('');
   const [data, setData] = useState([]);
 
@@ -47,17 +45,24 @@ const Verify = ({navigation}) => {
   };
 
   const submitForm = async e => {
-    e.preventDefault();
+  
 
     setSubmitAlert(true);
     if (email) {
-      axios
-        .post(`${backendHost}/users/checkemail`, {
+      axios.post(`${backendHost}/users/checkemail`, {
           email: email,
         })
         .then(res => {
           if (res.data == 1) {
-            return (<Text>Check Your Email!</Text>), resetPass();
+            setTimeout(()=>{
+              setClicked(0)
+              ToastAndroid.showWithGravityAndOffset('Check Your Mail!',
+               ToastAndroid.LONG,
+              ToastAndroid.BOTTOM,
+              25,
+              50)
+ 
+            },2000)
           } else {
             noAlert(true);
             setTimeout(() => {
@@ -65,7 +70,7 @@ const Verify = ({navigation}) => {
             }, 2000);
           }
         })
-        .catch(err => {});
+        .catch(err => {err});
     }
   };
 
@@ -87,7 +92,7 @@ const Verify = ({navigation}) => {
             style={[
               styles.textInput,
               {
-                color: colors.text,
+                color: '#fff',
               },
             ]}
             autoCapitalize="none"

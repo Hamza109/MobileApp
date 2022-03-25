@@ -3,11 +3,10 @@ import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import {backendHost} from './apiConfig';
 import StarRating from 'react-native-star-rating';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ToastAndroid } from 'react-native';
 import { useToast } from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { widthPercentageToDP,heightPercentageToDP } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { widthPercentageToDP } from 'react-native-responsive-screen';
 // const firstExample = {
 //   size: 30,
 //   value: 2.5,
@@ -40,7 +39,7 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 //   }
 // };
 
-export default function Ratings(props) {
+export default function DocRatings(props) {
   const [ratingValue, setRatingValue] = useState([]);
   const [showValue, setShowValue] = useState([]);
   const [regId, setRegId] = useState([]);
@@ -77,19 +76,18 @@ export default function Ratings(props) {
     console.log('rate',rateId)
     axios
       .post(
-        `${backendHost}/DoctorRatingActionController?ratingVal=${rating}&ratedbyid=${rateId}&ratedbytype=0&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
+        `${backendHost}/DoctorRatingActionController?ratingVal=${rating}&ratedbyid=${rateId}&ratedbytype=0&targetid=${props.rowno}&targetTypeid=1&cmd=rateAsset`,
       )
       .then(res => 
         setTimeout(()=>{
-          toast.show({
-            title: "Article Rated Successfully",
-            status: "success",
-            placement:"bottom",
-            duration:2000,
-            style:{borderRadius:20,width:widthPercentageToDP('70%'),marginBottom:20}
-          })
-        },1000)
-        )
+            toast.show({
+              title: "Doctor Rated Successfully",
+              status: "success",
+              placement:"bottom",
+              duration:2000,
+              style:{borderRadius:20,width:widthPercentageToDP('70%'),marginBottom:20}
+            })
+          },1000))
       .catch(err => console.log(err));
   };
 

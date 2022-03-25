@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -37,7 +37,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {usePasswordValidation} from '../../components/usePasswordValidation';
-const SignUpScreen = ({navigation, props}) => {
+const Forgetpass = ({navigation, route}) => {
+  
+
+  
+
+   
+   
   const [emails, setEmails] = useState('');
 
   const [password, setPassword] = useState({
@@ -85,6 +91,31 @@ const SignUpScreen = ({navigation, props}) => {
       await AsyncStorage.setItem('rowno', JSON.stringify(row));
     } catch (error) {console.log(error)}
   };
+const [decMail,setDecMail]=useState('')
+  useEffect(() => {
+getMail()
+    // const params = new URLSearchParams(location.search);
+    // const getEmail= params.get('em');       
+  }, [])
+  const getMail = () => {
+    try {
+      AsyncStorage.getItem('mail1').then(value2 => {
+        if (value2 != null) {
+            console.log(value2)
+
+            axios.post(`${backendHost}/users/getemdecrypt`,
+            {
+                "email":value2
+            })
+            .then(res => {
+               setEmails(res.data)
+            })
+            // eslint-disable-next-line
+           
+        }
+      });
+    } catch (error) {}
+  };
   const SignUpForm = () => {
     setClicked(1);
     setTimeout(() => {
@@ -92,29 +123,24 @@ const SignUpScreen = ({navigation, props}) => {
     }, 3000);
     var res;
 
-    if (validEmail && upperCase && lowerCase && match) {
+    if (upperCase && lowerCase && match) {
       axios.defaults.withCredentials = true;
-      axios
-        .post(
-          `${backendHost}/RegistrationActionController?firstname=${firstName}&lastname=${lastName}&email=${emails}&psw=${password.firstPassword}&psw-repeat=${password.secondPassword}&rempwd=on&doc_patient=${userType}&acceptTnc=${terms}&number=${number}`,
-          {headers: {'Access-Control-Allow-Credentials': true}},
-        )
+      axios.put(`${backendHost}/users/updatepassword`, {
+        "updated_password": password.firstPassword,
+        "email": emails,
+        })
         .then(response => {
-          if (response.data == 'Email Address already Exists in the System') {
-            Alert.alert('Email already exists');
-          } else if (response.data.registration_id) {
-            
-            Alert.alert('Signup Successful');
-     
-              navigation.navigate('MainTab'),
-                setId(response.data.registration_id),
-                setType(response.data.registration_type),
-                setFirst(response.data.first_name),
-                setLast(response.data.last_name),
-                setRow(response.data.rowno)
-                setEmail(response.data.email_address);
-        
-          }
+          if (Number(response.data) === 1) {
+            Alert.alert('Password Reset Successfully')
+            setTimeout(()=>{
+                navigation.navigate('MainTab')
+            },2000);
+          }else if(res.data === "Sorry, the email address you entered does not exist in our database."){
+           
+            setTimeout(()=>{
+               Alert.alert('Email not Found')
+            },2000)
+        }
         })
         .catch(res => {
           Alert.alert('some error occured');
@@ -135,17 +161,7 @@ const SignUpScreen = ({navigation, props}) => {
     setUserType(event);
   };
 
-  const validate = text => {
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(text) === false) {
-      setEmails(text);
-      setValidEmail(false);
-      return false;
-    } else {
-      setEmails(text);
-      setValidEmail(true);
-    }
-  };
+ 
 
   const setCheck = async value => {
     try {
@@ -172,11 +188,7 @@ const SignUpScreen = ({navigation, props}) => {
       await AsyncStorage.setItem('lastName', last);
     } catch (error) {console.log(error)}
   };
-  const setEmail = async email => {
-    try {
-      await AsyncStorage.setItem('email', email);
-    } catch (error) {console.log(error)}
-  };
+
 
   const afterSignUp = () => {
     if (emailExists === true) {
@@ -230,44 +242,14 @@ const SignUpScreen = ({navigation, props}) => {
         </TouchableOpacity>
         <Stack space={1}>
           <View style={styles.header}>
-            <Text style={styles.text_header}>Sign Up</Text>
+            <Text style={styles.text_header}>Reset Password</Text>
           </View>
 
           <VStack space={3}>
+           
             <View style={styles.action}>
               <TextInput
-                placeholder="Enter first name"
-                placeholderTextColor="#fff"
-                style={[
-                  styles.textInput,
-                  {
-                    color: '#fff',
-                  },
-                ]}
-                autoCapitalize="none"
-                value={firstName}
-                returnKeyType="done"
-                onChangeText={e => setFname(e)}
-              />
-            </View>
-            <View style={styles.action}>
-              <TextInput
-                placeholder="Enter last name"
-                placeholderTextColor="#fff"
-                style={[
-                  styles.textInput,
-                  {
-                    color: '#fff',
-                  },
-                ]}
-                autoCapitalize="none"
-                value={lastName}
-                returnKeyType="done"
-                onChangeText={e => setLname(e)}
-              />
-            </View>
-            <View style={styles.action}>
-              <TextInput
+              editable={false}
                 placeholder="Enter your email"
                 placeholderTextColor="#fff"
                 value={emails}
@@ -279,26 +261,10 @@ const SignUpScreen = ({navigation, props}) => {
                 ]}
                 autoCapitalize="none"
                 returnKeyType="done"
-                onChangeText={e => validate(e)}
+               
               />
             </View>
-            <View style={styles.action}>
-              <TextInput
-                placeholder="Enter mobile number"
-                placeholderTextColor="#fff"
-                style={[
-                  styles.textInput,
-                  {
-                    color: '#fff',
-                  },
-                ]}
-                autoCapitalize="none"
-                value={number}
-                returnKeyType="done"
-                keyboardType="numeric"
-                onChangeText={e => setMname(e)}
-              />
-            </View>
+            
             <View>
               {data.check_textInputChange ? (
                 <Animatable.View animation="bounceIn">
@@ -309,7 +275,7 @@ const SignUpScreen = ({navigation, props}) => {
 
             <View style={styles.action}>
               <TextInput
-                placeholder="Enter your password"
+                placeholder="Enter new password"
                 placeholderTextColor="#fff"
                 secureTextEntry={data.secureTextEntry ? true : false}
                 style={[
@@ -326,7 +292,7 @@ const SignUpScreen = ({navigation, props}) => {
 
               {buttonClick === 1 ? (
                 <View>
-                  {!validEmail && Alert.alert('Enter Valid Email')}
+              
                   {!validLength &&
                     Alert.alert(
                       'Password should contain at least 8 characters!',
@@ -370,14 +336,7 @@ const SignUpScreen = ({navigation, props}) => {
                   )}
                 </View>
               </TouchableOpacity>
-              <HStack space={2}>
-                <Checkbox
-                  value={userType}
-                  onChange={() => setUserType('Doctor')}></Checkbox>
-                <Text style={{fontFamily: 'Raleway', color: '#fff'}}>
-                  Select , If you are Doctor.
-                </Text>
-              </HStack>
+            
             </View>
           </VStack>
           <View style={styles.button}>
@@ -397,23 +356,10 @@ const SignUpScreen = ({navigation, props}) => {
                     color: '#00415e',
                   },
                 ]}>
-                Sign Up
+               Submit
               </Text>
             </TouchableOpacity>
-            <VStack space={50}>
-              <TouchableOpacity>
-                <Text
-                  style={{
-                    color: '#fff',
-                    textAlign: 'center',
-                    marginTop: 25,
-                    fontFamily: 'Raleway',
-                  }}
-                  onPress={() => navigation.navigate('SignIn')}>
-                  Already have an account? Sign In
-                </Text>
-              </TouchableOpacity>
-            </VStack>
+           
           </View>
         </Stack>
       </ImageBackground>
@@ -421,7 +367,7 @@ const SignUpScreen = ({navigation, props}) => {
   );
 };
 
-export default SignUpScreen;
+export default Forgetpass;
 
 const styles = StyleSheet.create({
   container: {

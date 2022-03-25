@@ -21,23 +21,23 @@ import LottieView from 'lottie-react-native';
 const SplashScreen = ({navigation}) => {
   const scale = useRef(new Animated.Value(1)).current;
   const [regId, setRegId] = useState();
-  const getId = () => {
-    try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setTimeout(() => {
-              navigation.navigate('MainTab');
-            }, 3000);
-          } else {
-            setTimeout(() => {
-              navigation.navigate('SignIn');
-            }, 3000);
-          }
-        }),
-      );
-    } catch (error) {}
-  };
+  useEffect(()=>{
+    
+    setTimeout(() => {
+      navigation.navigate('MainTab');
+    },2000);
+  })
+  // const getId = () => {
+  //   try {
+  //     Promise.all(
+  //       AsyncStorage.getItem('author').then(value1 => {
+  //         if (value1 != null) {
+  //          setRegId(regId)
+  //         } 
+  //       }),
+  //     );
+  //   } catch (error) {}
+  // };
 
   const pulse = () => {
     Animated.sequence([
@@ -49,13 +49,7 @@ const SplashScreen = ({navigation}) => {
   const {colors} = useTheme();
   const[visible,setVisible]=useState(false)
   const isFocus = useIsFocused();
-  useEffect(() => {
-    if (isFocus) {
-      getId();
-      setTimeout(()=>{})
-    }
-  });
-
+  
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#00415e" barStyle="light-content" />

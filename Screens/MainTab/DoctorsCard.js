@@ -71,7 +71,7 @@ const DoctorsCard = ({
           setImageExists(false);
         }
       })
-      .catch(err => null);
+      .catch(err => console.log('74:',err));
   };
 
   const navigation = useNavigation();
@@ -91,11 +91,11 @@ const DoctorsCard = ({
             }}>
         <Card
           style={{
-            width: 115,
+            width: wp('30%'),
             height: 120,
             backgroundColor: 'grey',
             borderRadius: 20,
-            marginRight: 10,
+            marginRight: 12,
             justifyContent: 'center',
 
             paddingHorizontal: 5,
@@ -108,7 +108,7 @@ const DoctorsCard = ({
                 uri: `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
               }}
               style={{
-                width: 115,
+                width: wp('30%'),
                 height: 120,
                 borderRadius: 20,
                 overflow: 'hidden',

@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Image,
   ToastAndroid,
+  Share,
 } from 'react-native';
 
 import {Card} from 'react-native-paper';
@@ -27,7 +28,7 @@ import {KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import ArticleHeader from '../search/ArticleHeader';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -46,58 +47,91 @@ import {
   HStack,
   Box,
   Spinner,
+  Select,
   NativeBaseProvider,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {useIsFocused} from '@react-navigation/native';
 import Svg, {Path, Circle} from 'react-native-svg';
-import { block } from 'react-native-reanimated';
+import StarRating from 'react-native-star-rating';
+import {block} from 'react-native-reanimated';
 const Disease = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
-
+  const [option, setOption] = useState();
   const [commentItems, setCommentItems] = useState([]);
   const [selected, setSelected] = useState(1);
   const ids = route.params.ids;
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
   const [id, setId] = useState(ids);
-  const [regId,setRegId]=useState([])
+  const [regId, setRegId] = useState([]);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [formattedValue, setFormattedValue] = useState('');
-  const containerStyle = {
-    backgroundColor: 'white',
-    padding: 20,
-    height: hp('100%'),
+  const [disease, setDisease] = useState([]);
+  const [condition, setCondition] = useState();
+  const check = () => {
+    if (regId.length == 0) {
+      navigation.navigate('SignIn');
+    } else {
+      setModalVisible(!modalVisible);
+    }
   };
-const check=()=>{
-  if(regId.length == 0)
-  {
-    navigation.navigate('SignIn')
-  }
-  else{
-    setModalVisible(!modalVisible)
-  }
-}
 
-  useEffect(()=>{
-    stat();
-  getId();
-  })
+  useEffect(() => {
+    getId();
+  });
+
+  useEffect(() => {
+    getRating();
+  }, [id]);
+  const onShare = () => {
+    try {
+      const result = Share.share({
+        message: `https://all-cures.com/cure/${id}-${title}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const fetchTables = () => {
+    Promise.all([
+      fetch(`${backendHost}/article/all/table/disease_condition`).then(res =>
+        res.json(),
+      ),
+    ])
+      .then(([diseaseData]) => {
+        setDisease(diseaseData);
+      })
+      .catch(err => {
+        return;
+      });
+  };
+
+  useEffect(() => {
+    fetchTables();
+  }, []);
   const getId = () => {
     try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setRegId(value1)
-           
-          } 
-          
-          
-        }),
-      );
-    } catch (error) {}
+      AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(value1);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
   function User() {
     return (
@@ -114,32 +148,44 @@ const check=()=>{
     );
   }
   const postSubscription = val => {
+    
+    
     var phoneNumber = val.split('+')[1];
-
-    var countryCodeLength = phoneNumber.length % 10;
-    var countryCode = phoneNumber.slice(0, countryCodeLength);
-    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-    if (phoneNumber) {
-      axios
-        .post(`${backendHost}/users/subscribe/${StringValue}`, {
-          nl_subscription_disease_id: '0',
-          nl_sub_type: 1,
-          nl_subscription_cures_id: '0',
-          country_code: `'${countryCode}'`,
-        })
-        .then(res => {
-          if (res.data === 1) {
-            Alert.alert('You have successfully subscribed to our Newsletter');
-          } else {
-            Alert.alert('Some error occured! Please try again later.');
-          }
-        })
-        .catch(err => {
+console.log('number',phoneNumber)
+var countryCodeLength 
+if(phoneNumber && phoneNumber.length){
+  countryCodeLength = phoneNumber.length % 10;
+  var countryCode = phoneNumber.slice(0, countryCodeLength);
+  var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
+  if (phoneNumber) {
+    axios
+      .post(`${backendHost}/users/subscribe/${StringValue}`, {
+        nl_subscription_disease_id: option == 2 ? '1' : '0',
+        nl_sub_type: option == 1 ? 1 : 0,
+        nl_subscription_cures_id: option == 3 ? '1' : '0',
+        country_code: `'${countryCode}'`,
+      })
+      .then(res => {
+        if (res.data === 1) {
+          
+          Alert.alert('You have successfully subscribed to our Newsletter');
+  
+         
+        } else {
           Alert.alert('Some error occured! Please try again later.');
-        });
-    } else {
-      Alert.alert('Please enter a valid number!');
-    }
+        }
+      })
+      .catch(err => {
+        Alert.alert('Some error occured! Please try again later.');
+      });
+  } else {
+    Alert.alert('Please enter a valid number!');
+  }
+}
+else {
+  Alert.alert('Please enter your number!');
+}
+   
   };
 
   const checkIfImageExits = imageUrl => {
@@ -151,31 +197,46 @@ const check=()=>{
           setImageExists(false);
         }
       })
-      .catch(err => null);
+      .catch(err => console.log(err));
   };
   const isFocus = useIsFocused();
-
-  useEffect(() => {
-    if (isFocus) {
-  
-      comments();
-
+  useEffect(()=>{
+    const get=()=>{
+      
       fetch(`${backendHost}/article/${id}`)
         .then(res => res.json())
         .then(json => {
+          console.log('title', json.title);
           setIsLoaded(true);
           setData(json);
           setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
-          let a = JSON.parse(decodeURIComponent(json.content));
+          var articleTitle = json.title;
+          var regex = new RegExp(' ', 'g');
+          title = articleTitle.replace(regex, '-');
+          console.log(title);
+ 
+        })
+        .catch(err => {
+          console.log(err);
+          throw err;
         });
+
+    }
+    get();
+    return ()=>{ get()}
+  },[id]);
+
+  useEffect(() => {
+
+      comments();
 
       if (data.reg_doc_pat_id !== null) {
         checkIfImageExits(
           `http://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
         );
       }
-    }
-  }, []);
+  
+  },[]);
 
   useEffect(() => {
     if (isFocus) {
@@ -186,7 +247,7 @@ const check=()=>{
     try {
       JSON.parse(str);
     } catch (e) {
-      return [];
+      console.log(e);
     }
     return JSON.parse(str).blocks;
   }
@@ -197,6 +258,10 @@ const check=()=>{
       .then(res => res.json())
       .then(json => {
         setCommentItems(json);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
       });
   }
   const [sItems, setSItems] = useState([]);
@@ -207,58 +272,142 @@ const check=()=>{
       .then(json => {
         setIsLoaded(true);
         setSItems(json);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
       });
   };
-  const [like, setLike] = useState(1);
+  const [like, setLike] = useState(like);
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [imageExists, setImageExists] = useState(false);
+  const [showValue, setShowValue] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
-
-  const stat=()=>{
-  fetch(`${backendHost}/favourite/userid/${regId}/articleid/${id}/favouritearticle`)
-    .then(res=>
-      console.log(res))
-   
-  }
-
-const favorite=()=>{
-  setLike(like=== 0?1:0) 
-console.log(like)
-  if(like){
-  axios.post(`${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${like}/create`)
-  .then(res=>{
-    if(res.data === 1){
-      setTimeout(()=>{
-      
-        ToastAndroid.showWithGravityAndOffset('Added To Favourite',
-         ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50)
-
-      },1000)
+  const [response, setResponse] = useState([]);
+  const [stats, setStats] = useState();
+  const [cure, setCure] = useState();
+  const stat = async () => {
+    await axios
+      .get(`${backendHost}/favourite/userid/${regId}/articleid/${id}/favourite`)
+      .then(res => {
+        console.log(res.data);
+        setResponse(res.data);
+        console.log('276', stats);
+        if (res.data.length != 0) {
+          setStats(res.data[0].status);
+        } else {
+          return;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+  const getRating = () => {
+    axios
+      .get(`${backendHost}/rating/target/${id}/targettype/2/avg`)
+      .then(res => {
+        setShowValue(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+  const [rate, setRate] = useState([]);
+  const getRate = () => {
+    axios
+      .get(
+        `${backendHost}/rating/target/${id}/targettype/2?userid=${
+          regId ? regId : 0
+        }`,
+      )
+      .then(res => {
+        console.log('data', res.data[0].ratingVal);
+        setRate(res.data[0].ratingVal);
+      })
+      .catch(err => {
+        console.log(err);
+        throw err;
+      });
+  };
+  const handlePress = () => {
+    if (stats == 1) {
+      setStats(0);
+      favorite(0);
+    } else {
+      setStats(1);
+      favorite(1);
     }
-    
-  })
-}else{
-  axios.post(`${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${like}/create`)
-  .then(res=>{
-    if(res.data > 0){
-      setTimeout(()=>{
-      
-        ToastAndroid.showWithGravityAndOffset('Remove from Favourite',
-         ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50)
+  };
 
-      },1000)
+  const goto = () => {
+    Alert.alert('Added To Cures', 'Go to MyCures', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+          navigation.push('MyCures', {screen: 'Cures'});
+        },
+      },
+    ]);
+    return true;
+  };
+
+  const favorite = async status => {
+    console.log(status);
+    if (status != 0) {
+      setStats(1);
+
+      await axios
+        .post(
+          `${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${status}/create`,
+        )
+        .then(res => {
+          if (res.data > 0) {
+            goto();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          throw err;
+        });
+    } else {
+      setStats(0);
+      axios
+        .post(
+          `${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${status}/create`,
+        )
+        .then(res => {
+          if (res.data > 0) {
+            setTimeout(() => {
+              ToastAndroid.showWithGravityAndOffset(
+                'Remove from Favourite',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            }, 1000);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          throw err;
+        });
     }
-    
-  })
-}
-}
+  };
+  useEffect(() => {
+    if (isFocus) {
+      stat();
+    }
+  }, [regId, id]);
 
   if (!isLoaded) {
     return (
@@ -281,45 +430,78 @@ console.log(like)
         <View>
           <View style={{flex: 1}}>
             <View style={styles.HeadCard}>
-              <HStack space={2} >
-              
-               
+              <HStack ml="2" mt="2" space={2}>
                 <Icon
                   name="close-circle-outline"
                   size={30}
                   color={'#00415e'}
-                
                   onPress={() => {
-                    navigation.navigate('MainTab', {Screen: 'Home'});
+                    navigation.push('MainTab', {Screen: 'Home'});
                   }}
                 />
-                <View style={{width:wp('75%')}}>
-                 <Text
-                 numberOfLines={2}
-              
-                  style={{
-                    color: '#00415e',
+                <View style={{width: wp('75%'), height: 50}}>
+                  <Text
+                    adjustsFontSizeToFit
+                    numberOfLines={2}
+                    style={{
+                      color: '#00415e',
 
-                    fontFamily: 'Raleway-Bold',
-                    fontSize: wp('4%'),
-                    textAlign: 'left',
-                  }}>
-                  {data.title}
-                </Text>
+                      fontFamily: 'Raleway-Bold',
+                      fontSize: wp('4%'),
+                      textAlign: 'left',
+                    }}>
+                    {data.title}
+                  </Text>
                 </View>
-                { 
-                regId.length!=0?
-                  <Icon
-                    name={like === 1 ? 'heart-outline' : 'heart'}
-                    size={30}
-                    color={like === 1 ? '#00415e' : 'red'}
-                     
-                    onPress={() => {
-                   favorite();
-                    }}
-                  />: null
-                }
+                {regId.length != 0 ? (
+                  response.length != 0 ? (
+                    stats == 0 ? (
+                      <Icon
+                        name={'heart-outline'}
+                        size={30}
+                        color={'#00415e'}
+                        onPress={() => {
+                          handlePress();
+                        }}
+                      />
+                    ) : (
+                      <Icon
+                        name={'heart'}
+                        size={30}
+                        color={'red'}
+                        onPress={() => {
+                          handlePress();
+                        }}
+                      />
+                    )
+                  ) : (
+                    <Icon
+                      name={'heart-outline'}
+                      size={30}
+                      color={'#00415e'}
+                      onPress={() => {
+                        handlePress();
+                      }}
+                    />
+                  )
+                ) : null}
               </HStack>
+              <View
+                style={{
+                  width: wp('25%'),
+                  position: 'relative',
+                  left: 48,
+                  marginTop: 5,
+                }}>
+                <StarRating
+                  disabled={false}
+                  starSize={18}
+                  maxStars={5}
+                  rating={showValue}
+                  emptyStarColor={'#00415e'}
+                  fullStarColor={'orange'}
+                />
+              </View>
             </View>
             <ScrollView
               style={{
@@ -342,7 +524,6 @@ console.log(like)
                     {data.authors_name} ▪️ {data.published_date}
                   </Text>
                 </HStack>
-            
 
                 {items.map((i, key) => (
                   <View>
@@ -530,24 +711,32 @@ console.log(like)
                                     alignItems: 'center',
                                   }}>
                                   <HStack space={1}>
-                                  <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
-                                    <Image
-                                      source={{
-                                        uri:
-                                          imageLoc +
-                                          imgLocation
-                                            .replace('json', 'png')
-                                            .split('/webapps/')[1],
-                                      }}
-                                      style={{
-                                        position: 'relative',
-                                        right: 5,
-                                        width: wp('45%'),
-                                        height: 168,
-                                        borderRadius: 15,
-                                        marginTop: 0,
-                                      }}
-                                    />
+                                    <TouchableOpacity
+                                      activeOpacity={0.8}
+                                      onPress={() => {
+                                        {
+                                          navigation.push(`Disease`, {
+                                            ids: `${i.article_id}`,
+                                          });
+                                        }
+                                      }}>
+                                      <Image
+                                        source={{
+                                          uri:
+                                            imageLoc +
+                                            imgLocation
+                                              .replace('json', 'png')
+                                              .split('/webapps/')[1],
+                                        }}
+                                        style={{
+                                          position: 'relative',
+                                          right: 5,
+                                          width: wp('45%'),
+                                          height: 168,
+                                          borderRadius: 15,
+                                          marginTop: 0,
+                                        }}
+                                      />
                                     </TouchableOpacity>
                                     <View style={{width: wp('50%')}}>
                                       <VStack py="2" space={10}>
@@ -686,7 +875,6 @@ console.log(like)
                     color="#00415e"
                     size={30}
                     onPress={() => {
-
                       setSubModalVisible(!subModalVisible);
                     }}
                   />
@@ -706,14 +894,20 @@ console.log(like)
                 flex={1}
                 onPress={() => setSelected(0)}>
                 <Center>
-                  <Icon mb="1" name="share-social" color="#00415e" size={30} />
+                  <Icon
+                    mb="1"
+                    name="share-social"
+                    color="#00415e"
+                    size={30}
+                    onPress={onShare}
+                  />
                   <Text
                     style={{
                       fontFamily: 'Raleway',
                       color: '#00415e',
                       fontSize: wp('3%'),
                     }}>
-                    Share{' '}
+                    Share
                   </Text>
                 </Center>
               </Pressable>
@@ -756,7 +950,11 @@ console.log(like)
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Icon name="chatbubbles" style={{opacity: 0.3}} size={150} />
+                    <Icon
+                      name="chatbubbles"
+                      style={{opacity: 0.3,color:'grey'}}
+                      size={150}
+                    />
                     <Text style={{color: 'grey'}}>No comments yet</Text>
                     <Text style={{color: 'grey'}}>
                       Be the first to comment.
@@ -799,13 +997,80 @@ console.log(like)
                 </View>
                 <Text style={{marginTop: 20, fontSize: 20}}>
                   Sign up for our free
-                  <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily
-                  Newsletter
+                  <Text style={{color: '#1e7ca8', color: 'grey'}}>
+                    {' '}
+                    All Cures
+                  </Text>{' '}
+                  Daily Newsletter
                 </Text>
                 <Text style={{marginTop: 20, fontSize: 20}}>
-                  Get <Text style={{color: '#1e7ca8'}}>doctor-approved</Text>{' '}
+                  Get{' '}
+                  <Text style={{color: '#1e7ca8', color: 'grey'}}>
+                    doctor-approved
+                  </Text>{' '}
                   health tips, news, and more
                 </Text>
+                <VStack space={1} mt="2" mb="2">
+                  <FormControl w="3/4" maxW="300" isRequired>
+                    <FormControl.Label>
+                      Subscribe your Disease/Cure Type
+                    </FormControl.Label>
+                    <Select
+                      width={wp('90%')}
+                      onValueChange={value =>
+                        setOption(value) & console.log(value)
+                      }
+                      selectedValue={option}
+                      isRequired
+                      placeholder="Select Option">
+                      <Select.Item label="All" value="1" />
+                      <Select.Item label="Disease" value="2" />
+                      <Select.Item label="Cures" value="3" />
+                    </Select>
+                    <FormControl.ErrorMessage>
+                      Please make a selection!
+                    </FormControl.ErrorMessage>
+                  </FormControl>
+                </VStack>
+
+                <VStack space={1} mb="2">
+                  {option == 2 ? (
+                    <FormControl w="3/4" maxW="300" isRequired>
+                      <FormControl.Label>Disease</FormControl.Label>
+                      <Select
+                        width={wp('90%')}
+                        onValueChange={value => setCondition(value)}
+                        selectedValue={condition}
+                        isRequired
+                        placeholder="Select Disease">
+                        {disease.map(i => (
+                          <Select.Item value={i[0]} label={i[1]}></Select.Item>
+                        ))}
+                      </Select>
+                      <FormControl.ErrorMessage>
+                        Please make a selection!
+                      </FormControl.ErrorMessage>
+                    </FormControl>
+                  ) : option == 3 ? (
+                    <FormControl w="3/4" maxW="300" isRequired>
+                      <FormControl.Label>Cures</FormControl.Label>
+                      <Select
+                        width={wp('90%')}
+                        onValueChange={value => setCure(value)}
+                        selectedValue={cure}
+                        isRequired
+                        placeholder="Select Cure">
+                        {disease.map(i => (
+                          <Select.Item value={i[0]} label={i[1]}></Select.Item>
+                        ))}
+                      </Select>
+                      <FormControl.ErrorMessage>
+                        Please make a selection!
+                      </FormControl.ErrorMessage>
+                    </FormControl>
+                  ) : null}
+                </VStack>
+
                 <PhoneInput
                   defaultValue={value}
                   defaultCode="IN"
@@ -856,12 +1121,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#00415e',
   },
   HeadCard: {
-    justifyContent: 'center',
     backgroundColor: '#fff',
     width: wp('100%'),
-    height: 60,
+    height: 80,
     fontSize: 20,
-    padding: 10,
   },
 
   search: {

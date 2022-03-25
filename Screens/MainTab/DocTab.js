@@ -79,8 +79,7 @@ const DocTab = ({navigation, route}) => {
                     fontSize: wp('4.5%'),
                     color: '#00415e',
                     fontFamily: 'Raleway-Regular',
-                    position:'absolute',
-                    top:10,
+                  
                   }}>
                   Search by Name
                 </Text>
@@ -100,8 +99,7 @@ const DocTab = ({navigation, route}) => {
                   style={{
                     fontSize: wp('4.5%'),
                     color: '#00415e',
-                    position:'absolute',
-                    top:10,
+                  
                     fontFamily: 'Raleway-Regular',
                   }}>
                   Search by city
@@ -125,9 +123,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
+    justifyContent:'center',
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
     width: wp('86%'),
-    height: 50,
+    height: 58,
     borderRadius: 20,
    
   },
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
   icon: {
     padding: 3,
    position:'absolute',
-   top:10,
+ 
    right:20,
     color: '#00415e',
   },

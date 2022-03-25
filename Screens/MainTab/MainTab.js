@@ -43,6 +43,7 @@ useEffect(()=>{
         name="HomeTab"
         component={HomeStackScreen}
         options={{
+          unmountOnBlur:true,
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
           activeColor: 'red',
@@ -58,6 +59,7 @@ useEffect(()=>{
         name="ArticleTab"
         component={ArticleStackScreen}
         options={{
+          unmountOnBlur:true,
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Doctor',
@@ -71,6 +73,7 @@ useEffect(()=>{
         name="Cures"
         component={MyCuresStackScreen}
         options={{
+          unmountOnBlur:true,
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'My Cures',
@@ -133,6 +136,7 @@ const MyCuresStackScreen = () => (
       name="MyCures"
       component={MyCures}
       options={{
+        
         headerLeft: () => (
           <Icon
             name="heartbeat"
@@ -140,6 +144,7 @@ const MyCuresStackScreen = () => (
             style={{marginLeft: 20, color: '#00415e'}}
             backgroundColor="#fff"></Icon>
         ),
+        
       }}
     />
   </MyCuresStack.Navigator>

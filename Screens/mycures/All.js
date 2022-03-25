@@ -75,8 +75,14 @@ const All = () => {
   const isFocus = useIsFocused();
   
   useEffect(() => {
+ if(isFocus){  
+ 
+    getId();
+ }
+  },[regId]);
+  useEffect(() => {
     if (navigation.isFocused()) {
-      getId();
+     
       getType();
 
       receivedData();
@@ -91,11 +97,7 @@ const All = () => {
     return JSON.parse(str).blocks;
   }
 
-  useEffect(() => {
-    if (isFocus) {
-      // check()
-    }
-  }, [regId]);
+
 
   if (!isLoaded) {
     return (
@@ -147,7 +149,7 @@ const All = () => {
                     marginBottom: 5,
                     justifyContent: 'center',
 
-                    paddingHorizontal: 5,
+                    paddingHorizontal: 6,
                     alignItems: 'center',
                   }}>
                   <HStack space={1}>
@@ -212,17 +214,8 @@ const All = () => {
                 </Card>
               </View>
             </View>   ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
-         <View
-            style={{
-              alignItems: 'center',
-              marginLeft: 0,
-              width: wp('100%'),
-              flex: 1,
-            }}>
-         <ScrollView
-              style={{width: wp('100%')}}
-              horizontal
-              showsHorizontalScrollIndicator={false}>
+         <View>
+         <View>
                  <Card
                    style={{
                      width: wp('97%'),
@@ -295,7 +288,7 @@ const All = () => {
                      </View>
                    </HStack>
                  </Card>
-               </ScrollView>
+               </View>
              </View>
             ) : i.pubstatus_id === 1 && i.edited_by == regId ? (
               <View>

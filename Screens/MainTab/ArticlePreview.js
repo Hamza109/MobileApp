@@ -66,7 +66,9 @@ const ArticlePreview = () => {
         setLoaded(true);
         setItems(json);
       })
-      .catch(err => null);
+      .catch(err => {console.log('69',err)
+        throw err
+        })
   }
 
   function allPosts() {
@@ -84,7 +86,9 @@ const ArticlePreview = () => {
 
         setLoaded(true);
       })
-      .catch(err => null);
+      .catch(err => {console.log('89:',err)
+        throw err
+        })
   }
 
   function IsJsonValid(str) {
@@ -133,12 +137,12 @@ const ArticlePreview = () => {
       <>
         <View style={{flex: 1}}>
           <View style={{flexDirection: 'row'}}>
-            <ScrollView style={{width: wp('100%')}} horizontal  showsHorizontalScrollIndicator={false}>
+            <ScrollView style={{width: wp('100%')}}  horizontal  showsHorizontalScrollIndicator={false}>
               {items.length !== 0 ? (
                 items
                   .filter((i, idx) => idx < 9)
                   .map(
-                    i => {
+                    (i,j) => {
                       var content = [];
                       var imgLocation = i.content_location;
                       var imageLoc = '';
@@ -160,9 +164,10 @@ const ArticlePreview = () => {
 
                       title = title.replace(regex, '-');
                       return (
-                        <View>
-                          <View style={{marginRight: 10}}>
+                        <View >
+                          <View style={{marginRight: 10}}        >
                             <Card
+                            key={items}
                               style={{
                                 width: wp('97%'),
                                 height: 168,
@@ -195,6 +200,7 @@ const ArticlePreview = () => {
                                 <View style={{width:wp('50%')}}>
                                   <VStack py='2' space={10}>
                                   <AllPost
+                                  
                                     id={i.article_id}
                                     title={i.title}
                                     f_title={i.friendly_name}

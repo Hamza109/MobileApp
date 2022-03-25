@@ -41,9 +41,14 @@ return(
               navigation.navigate('searchArt');
             }}>
             <View style={styles.card}>
-              <HStack ml="2" space={160} alignItems="center">
-                <Text style={{fontSize: 18, color: '#00415e',fontFamily:'Raleway-Regular'}}>
-                  Search cures
+              <HStack ml="2" space={110} alignItems="center">
+                <Text
+                  style={{
+                    fontSize: wp('4.5%'),
+                    color: '#00415e',
+                    fontFamily: 'Raleway-Regular',
+                  }}>
+                  Search Cures
                 </Text>
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
@@ -106,7 +111,8 @@ backgroundColor:'#fff'
 },
 icon: {
   padding: 3,
-
+  position: 'absolute',
+  right: 10,
   color: '#00415e',
 },
 

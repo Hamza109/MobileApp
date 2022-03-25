@@ -48,15 +48,13 @@ const FeedBack = () => {
   const [regType, setRegType] = useState();
   const getId = () => {
     try {
-      Promise.all(AsyncStorage.getItem('author').then(value1 => {
+      AsyncStorage.getItem('author').then(value1 => {
    
         if (value1 != null) {
            setRegId(value1)
         }
-        else{
-          navigation.navigate('SignIn')
-        }
-      }));
+    
+      });
     } catch (error) {
   
     }
@@ -71,7 +69,7 @@ const FeedBack = () => {
         }
       });
     } catch (error) {
-
+console.log(error)
     }
   };
 const isFocus= useIsFocused();
@@ -96,7 +94,7 @@ const isFocus= useIsFocused();
         "firstname":title,
         "lastname": lastName,
         "email": email,
-        "phonenumber": Number(num),
+        "phonenumber": num,
         "feedback": article,
     
     })
@@ -108,10 +106,9 @@ const isFocus= useIsFocused();
           }
  
       })
-      .catch(err => {
- 
-
-      });
+      .catch(err => {console.log(err)
+        throw err
+        })
   };
 
   const titleValue = () => {

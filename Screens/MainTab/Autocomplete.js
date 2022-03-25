@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Alert,
-  FlatList
+  FlatList,
 } from 'react-native';
-import analytics from '@react-native-firebase/analytics' 
+import analytics from '@react-native-firebase/analytics';
 import {
   HStack,
   Stack,
@@ -27,6 +27,7 @@ import {backendHost} from '../../components/apiConfig';
 import {Searchbar, ToggleButton} from 'react-native-paper';
 import axios from 'axios';
 import {Dimensions} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/core';
 import {Card} from 'react-native-paper';
 import {
@@ -60,14 +61,51 @@ const Autocomplete = () => {
   const [filtered, setFiltered] = useState(dataSource);
 
   const [searching, setSearching] = useState(false);
-
+const [uniqueId,setUniqueId]=useState()
+const [regId,setRegId]=useState()
   const navigation = useNavigation();
+  const getId = () => {
+    try {
+      AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(Number(value1));
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getDeviceInfo = () => {
+    try {
+      AsyncStorage.getItem('device').then(value2 => {
+        if (value2 != null) {
+          setUniqueId(value2);
+        }
+      });
+    } catch (error) {}
+  };
+
+  useEffect(()=>{
+    getDeviceInfo()
+    getId()
+  })
+
+  const info=()=>{
+    axios.post(`${backendHost}/data/create`,{
+      'device_id': uniqueId,
+      'user_id':regId?regId:0,
+      'event_type':'search',
+      'event_value':text
+    })
+  }
 
   const result = () => {
+    info();
     if (text) {
-analytics().setUserProperty("search_term",text)
-analytics().logEvent("search",{"search_term":text})
-      analytics().logSearch({search_term:text})
+      analytics().setUserProperty('search_term', text);
+      analytics().logEvent('search', {search_term: text});
+      analytics().logSearch({search_term: text});
+
       navigation.navigate('Result', {
         texts: `${text}`,
       });
@@ -93,7 +131,7 @@ analytics().logEvent("search",{"search_term":text})
   const getItem = ([item]) => {
     return (
       <Container>
-        <View style={{marginTop: 9, marginLeft: -36}}>
+        <View style={{marginTop: 9, marginLeft: -38}}>
           <FlatList
             data={item}
             indicatorStyle={'#00415e'}
@@ -139,7 +177,7 @@ analytics().logEvent("search",{"search_term":text})
                 ml="3"
                 color="#00415e"
                 name="search"
-                onPress={(() => setText(text), result)}
+                onPress={(() => setText(text),result)}
                 size={20}
               />
             </View>
@@ -168,10 +206,8 @@ analytics().logEvent("search",{"search_term":text})
               getItem(dataSource)
             ) : (
               <View style={{marginTop: 9, marginLeft: -36}}>
-                <View >
-                  <Text>
-                   
-                  </Text>
+                <View>
+                  <Text></Text>
                 </View>
               </View>
             )}
@@ -230,7 +266,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: wp('4%'),
     marginLeft: -5,
-   
+
     zIndex: 999,
   },
   noResultView: {

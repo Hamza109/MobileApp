@@ -23,22 +23,22 @@ const AllPost = ({ id, title, f_title, w_title}) => {
 
       setShowValue(res.data.toFixed(1))
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log('26',err))
   }
 
 useEffect(()=>{
-  let isMounted = true
-  if(isMounted)
-  {
+
+
+
   getRating()
-  }
+
 },[])  
 const isFocus=useIsFocused()
  const navigation=useNavigation()
         return (
           <View style={styles.contain}>
             <View>
-           <Text  adjustsFontSizeToFit numberOfLines={2} onPress={()=>{if(isFocus){ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
+           <Text  adjustsFontSizeToFit numberOfLines={2} onPress={()=>{{ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>

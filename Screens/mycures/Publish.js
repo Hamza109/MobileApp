@@ -40,7 +40,8 @@ const Published = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
-  const [pubStatus, setPubStatus] = useState();
+  const [status, setStatus] = useState();
+  
   const getId = () => {
     try {
       Promise.all(
@@ -65,11 +66,12 @@ const Published = () => {
     } catch (error) {}
   };
   const receivedData = () => {
-    fetch(`${backendHost}/article/allkv`)
+    fetch(`${backendHost}/favourite/userid/${regId}/favouritearticle`)
       .then(res => res.json())
       .then(json => {
-        setPubStatus(json.pubstatus_id);
         setIsLoaded(true);
+        setStatus(json.status);
+        
         setItems(json);
       });
   };
@@ -82,12 +84,15 @@ const Published = () => {
       navigation.navigate('CreateScreenHome');
     }
   };
+  useEffect(()=>{
+    receivedData();
+  },[regId])
   useEffect(() => {
     if (isFocus) {
       getId();
       getType();
 
-      receivedData();
+     
     }
   });
   function IsJsonValid(str) {
@@ -99,11 +104,7 @@ const Published = () => {
     return JSON.parse(str).blocks;
   }
 
-  useEffect(() => {
-    if (isFocus) {
-      // check()
-    }
-  }, [regId]);
+
   if (!isLoaded) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -144,7 +145,7 @@ const Published = () => {
               //replace via regex
               title = title.replace(regex, '-');
 
-              return i.pubstatus_id === 3 && i.edited_by == regId ? (
+              return i.status === 1  ? (
                 <View>
                   <View>
                     <Card
@@ -159,7 +160,9 @@ const Published = () => {
                         paddingHorizontal: 5,
                         alignItems: 'center',
                       }}>
+
                       <HStack space={1}>
+                      <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                         <Image
                           source={{
                             uri:
@@ -177,17 +180,9 @@ const Published = () => {
                             borderRadius:15
                           }}
                         />
+                        </TouchableOpacity>
                         <View>
-                        <Card style={[styles.publish, styles.opacity]}>
-                              <Text
-                                style={{
-                                  textAlign: 'center',
-                                  color: 'white',
-                                  fontSize: wp('2.5%'),
-                                }}>
-                                Published
-                              </Text>
-                            </Card>
+                       
                             <View style={{width:wp('50%'),position:'relative',right:5}}>
                         <VStack py='2' space={10}>
 

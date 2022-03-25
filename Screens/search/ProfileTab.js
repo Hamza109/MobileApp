@@ -54,7 +54,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
          } else {
             setImageExists(false)
          }
-      }).catch(err => null);
+      }).catch(err => console.log('57:',err));
    }
    const onError = (e) => {
     <Icon name="user-md" color={'#00415e'} size={26} />

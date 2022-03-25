@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,8 @@ import {
   StatusBar,
   Alert,
   ImageBackground,
-  ToastAndroid
+  ToastAndroid,
+  BackHandler
 } from 'react-native';
 import {
   HStack,
@@ -19,11 +20,12 @@ import {
   NativeBaseProvider,
   Container,
   VStack,
-  Spinner
+  Spinner,
 } from 'native-base';
 import axios from 'axios';
 import Home from '../MainTab/Home';
 import * as Animatable from 'react-native-animatable';
+import { useToast } from 'native-base';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -35,7 +37,7 @@ import {
 import {backendHost} from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
-import analytics from '@react-native-firebase/analytics' 
+import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons';
 const SignInScreen = ({navigation, props}) => {
   const [status, setStatus] = useState('');
@@ -57,19 +59,34 @@ const SignInScreen = ({navigation, props}) => {
   const {s, c} = bootstrapStyleSheet;
 
   const {colors} = useTheme();
-
+ const toast=useToast()
   const updateSecureTextEntry = () => {
     setData({
       ...data,
       secureTextEntry: !data.secureTextEntry,
     });
   };
+  const backAction = () => {
+    if (navigation.isFocused()) {
+    navigation.push('MainTab')
+  };
+}
+  useEffect(()=>{
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+  })
 
-  const loading=()=>{
-    return(
-      <View style={{ alignItems: 'center'}}>
+  const loading = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
         <HStack space={2} justifyContent="center">
-          <LottieView source={require('../../assets/animation/pulse.json')} autoPlay loop style={{width:50,height:50}} />
+          <LottieView
+            source={require('../../assets/animation/pulse.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50}}
+          />
           {/* <Spinner
             accessibilityLabel="Loading posts"
             color="#fff"
@@ -77,8 +94,8 @@ const SignInScreen = ({navigation, props}) => {
           /> */}
         </HStack>
       </View>
-    )
-  }
+    );
+  };
 
   const loginForm = () => {
     setClicked(1);
@@ -90,25 +107,24 @@ const SignInScreen = ({navigation, props}) => {
 
       .then(res => {
         if (res.data.registration_id) {
-      
-          setTimeout(()=>{
-          navigation.navigate('MainTab', {
-            params: {
-              userId: authid,
-            },
-          });
-          analytics().setUserProperty("Reg_Id",JSON.stringify(res.data.registration_id))
-          analytics().setUserId(JSON.stringify(res.data.registration_id))
-          analytics().logEvent('login',{"reg_id":res.data.registration_id})
-          setStatus(res.status);
-          setId(res.data.registration_id);
-          setType(res.data.registration_type);
-          setFirst(res.data.first_name);
-          setLast(res.data.last_name);
-          setEmail(res.data.email_address);
-          setRow(res.data.rowno);
-          setClicked(0)
-        },3000)
+          setTimeout(() => {
+            navigation.push('MainTab', {
+              params: {
+                userId: authid,
+              },
+            });
+            analytics().setUserProperty('Reg_Id',JSON.stringify(res.data.registration_id));
+            analytics().setUserId(JSON.stringify(res.data.registration_id));
+            analytics().logEvent('login', {reg_id: res.data.registration_id});
+            setStatus(res.status);
+            setId(res.data.registration_id);
+            setType(res.data.registration_type);
+            setFirst(res.data.first_name);
+            setLast(res.data.last_name);
+            setEmail(res.data.email_address);
+            setRow(res.data.rowno);
+            setClicked(0);
+          }, 3000);
         }
       })
 
@@ -116,27 +132,29 @@ const SignInScreen = ({navigation, props}) => {
         setLoginSuccess(false);
         if (err.response) {
           if (err.response.data.includes('Incorrect email')) {
-            setTimeout(()=>{
-              setClicked(0)
-              ToastAndroid.showWithGravityAndOffset('Incorrect email or password!',
-               ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50)
- 
-            },2000)
-           
-          
+            setTimeout(() => {
+              setClicked(0);
+              toast.show({
+                
+                title: "Invalid email address",
+                status: "warning",
+                description: "Please enter a valid email address",
+                duration:2000,
+             
+                style:{borderRadius:20,width:widthPercentageToDP('70%'),marginBottom:20}
+              })
+            }, 2000);
           } else {
-            setTimeout(()=>{
-              setClicked(0)
-              ToastAndroid.showWithGravityAndOffset('Incorrect email or password!',
-               ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50)
- 
-            },2000)
+            setTimeout(() => {
+              setClicked(0);
+              ToastAndroid.showWithGravityAndOffset(
+                'Some Error Occured',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            }, 2000);
           }
         } else {
           return;
@@ -146,37 +164,51 @@ const SignInScreen = ({navigation, props}) => {
   const setCheck = async value => {
     try {
       await AsyncStorage.setItem('check', JSON.stringify(value));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setId = async (id) => {
+  const setId = async id => {
     try {
       await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setType = async (type) => {
+  const setType = async type => {
     try {
       await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setFirst = async (first) => {
+  const setFirst = async first => {
     try {
       await AsyncStorage.setItem('firstName', first);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setRow = async (row) => {
+  const setRow = async row => {
     try {
       await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setLast = async (last) => {
+  const setLast = async last => {
     try {
       await AsyncStorage.setItem('lastName', last);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const setEmail = async (email) => {
+  const setEmail = async email => {
     try {
       await AsyncStorage.setItem('email', email);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -186,131 +218,122 @@ const SignInScreen = ({navigation, props}) => {
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
-             <TouchableOpacity
+        <TouchableOpacity
           style={{marginLeft: 20, color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.navigate('MainTab')}>
+          onPress={() => navigation.push('MainTab')}>
           <Text
             style={{
               color: '#fff',
               position: 'absolute',
-            top:0,
-        right:0,
+              top: 0,
+              right: 0,
               fontSize: 18,
               fontFamily: 'Raleway-Medium',
             }}>
             Skip
           </Text>
         </TouchableOpacity>
-          <View style={{flex:1,justifyContent:'center'}}>
-     
-        <Stack space={1}>
-          <View style={styles.header}>
-            <Text style={styles.text_header}>Sign In</Text>
-          </View>
-
-          <VStack space={3}>
-            <View style={styles.action}>
-              <TextInput
-                placeholder="Enter your email"
-                placeholderTextColor="#fff"
-                style={[
-                  styles.textInput,
-                  {
-                    color: '#fff',
-                  },
-                ]}
-                autoCapitalize="none"
-                value={data.email}
-                returnKeyType="done"
-                onChangeText={e => setData({...data, email: e})}
-              />
-              {data.check_textInputChange ? (
-                <Animatable.View animation="bounceIn">
-                  <Feather name="check-circle" color="green" size={20} />
-                </Animatable.View>
-              ) : null}
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Stack space={1}>
+            <View style={styles.header}>
+              <Text style={styles.text_header}>Sign In</Text>
             </View>
 
-            <View style={styles.action}>
-              <TextInput
-                placeholder="Enter your password"
-                placeholderTextColor="#fff"
-                secureTextEntry={data.secureTextEntry ? true : false}
-                style={[
-                  styles.textInput,
-                  {
-                    color: '#fff',
-                  },
-                ]}
-                autoCapitalize="none"
-                returnKeyType="go"
-                value={data.password}
-                onSubmitEditing={loginForm}
-                onChangeText={e => setData({...data, password: e})}
-              />
-              <TouchableOpacity onPress={updateSecureTextEntry}>
-                <View style={{position: 'relative', right: 20, top: 10}}>
-                  {data.secureTextEntry ? (
-                    <Feather name="eye-off" color="grey" size={20} />
-                  ) : (
-                    <Feather name="eye" color="grey" size={20} />
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
-          </VStack>
-          <View style={styles.button}>
-            <TouchableOpacity style={styles.signIn} onPress={loginForm}>
-              <Text
-                style={[
-                  styles.textSign,
-                  {
-                    fontFamily: 'Raleway-Bold',
-                    color: '#00415e',
-                  },
-                ]}>
-                Sign In
-              </Text>
-            </TouchableOpacity>
-         
-              
-            
-            <VStack space={50}>
-              <TouchableOpacity>
-                <Text
-                  style={{
-                    color: '#fff',
-                    textAlign: 'center',
-                    marginTop: 5,
-                    fontFamily: 'Raleway',
-                  }}
-                  onPress={verify}>
-                  Forgot password?
-                </Text>
-              </TouchableOpacity>
-              {
-              buttonClick?(
-                loading()
-              ):null
-              
-              
-            }
-              <TouchableOpacity>
-                <Text
-                  style={{
-                    color: '#fff',
-                    textAlign: 'center',
-                    marginTop: 25,
-                    fontFamily: 'Raleway',
-                  }}
-                  onPress={() => navigation.navigate('SignUp')}>
-                  Don't have an account? Sign Up
-                </Text>
-              </TouchableOpacity>
+            <VStack space={3}>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter your email"
+                  placeholderTextColor="#fff"
+                  style={[
+                    styles.textInput,
+                    {
+                      color: '#fff',
+                    },
+                  ]}
+                  autoCapitalize="none"
+                  value={data.email}
+                  returnKeyType="done"
+                  onChangeText={e => setData({...data, email: e})}
+                />
+                {data.check_textInputChange ? (
+                  <Animatable.View animation="bounceIn">
+                    <Feather name="check-circle" color="green" size={20} />
+                  </Animatable.View>
+                ) : null}
+              </View>
+
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter your password"
+                  placeholderTextColor="#fff"
+                  secureTextEntry={data.secureTextEntry ? true : false}
+                  style={[
+                    styles.textInput,
+                    {
+                      color: '#fff',
+                    },
+                  ]}
+                  autoCapitalize="none"
+                  returnKeyType="go"
+                  value={data.password}
+                  onSubmitEditing={loginForm}
+                  onChangeText={e => setData({...data, password: e})}
+                />
+                <TouchableOpacity onPress={updateSecureTextEntry}>
+                  <View style={{position: 'relative', right: 20, top: 10}}>
+                    {data.secureTextEntry ? (
+                      <Feather name="eye-off" color="grey" size={20} />
+                    ) : (
+                      <Feather name="eye" color="grey" size={20} />
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </View>
             </VStack>
-          </View>
-        </Stack>
+            <View style={styles.button}>
+              <TouchableOpacity style={styles.signIn} onPress={loginForm}>
+                <Text
+                  style={[
+                    styles.textSign,
+                    {
+                      fontFamily: 'Raleway-Bold',
+                      color: '#00415e',
+                    },
+                  ]}>
+                  Sign In
+                </Text>
+              </TouchableOpacity>
+
+              <VStack space={50}>
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      textAlign: 'center',
+                      marginTop: 5,
+                      fontFamily: 'Raleway',
+                    }}
+                    onPress={verify}>
+                    Forgot password?
+                  </Text>
+                </TouchableOpacity>
+                {buttonClick ? loading() : null}
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      textAlign: 'center',
+                      marginTop: 25,
+                      fontFamily: 'Raleway',
+                    }}
+                    onPress={() => navigation.navigate('SignUp')}>
+                    Don't have an account? Sign Up
+                  </Text>
+                </TouchableOpacity>
+              </VStack>
+            </View>
+          </Stack>
         </View>
       </ImageBackground>
     </View>
@@ -357,6 +380,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   textInput: {
+    height:48,
     flex: 1,
     padding: 6,
     paddingHorizontal: 15,
@@ -386,7 +410,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-   
+
     padding: 15,
   },
 });
