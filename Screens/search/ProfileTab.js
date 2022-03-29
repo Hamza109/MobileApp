@@ -85,9 +85,14 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
                             alignItems:'center'
                           }}>
                             { 
-      <ImageBackground source={{uri:`http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+                             <TouchableOpacity
+                             style={{}}
+                             onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
+                             >
+      <ImageBackground source={{uri:`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
        
     onError={(e) => onError(e)}  />
+    </TouchableOpacity>
   
                             }
         </Card>

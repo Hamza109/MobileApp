@@ -396,7 +396,7 @@ useEffect(()=>{
                         imgLocation &&
                         imgLocation.includes('cures_articleimages')
                       ) {
-                        imageLoc = 'http://all-cures.com:8280/';
+                        imageLoc = 'http://all-cures.com:8080/';
                       } else {
                         imageLoc =
                           'https://all-cures.com:444/cures_articleimages//299/default.png';

@@ -19,6 +19,8 @@ import {
   NativeBaseProvider,
   Container,
   VStack,
+  useToast,
+  Spinner,
   Checkbox,
 } from 'native-base';
 import axios from 'axios';
@@ -59,7 +61,7 @@ const SignUpScreen = ({navigation, props}) => {
   const [buttonClick, setClicked] = useState('');
 
   const [number, setMname] = useState('');
-
+const toast =useToast();
   const [emailExists, setExists] = useState(false);
   const [promo, setPromo] = useState(null);
   const [validEmail, setValidEmail] = useState();
@@ -101,10 +103,23 @@ const SignUpScreen = ({navigation, props}) => {
         )
         .then(response => {
           if (response.data == 'Email Address already Exists in the System') {
-            Alert.alert('Email already exists');
+            toast.show({
+              title: "Email already exists!",
+        description:'Welcome To All Cures',
+              status: "warning",
+              placement:"bottom",
+              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+            })
+     
           } else if (response.data.registration_id) {
             
-            Alert.alert('Signup Successful');
+            toast.show({
+              title: "Signup Successful",
+        description:'Welcome To All Cures',
+              status: "success",
+              placement:"bottom",
+              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+            })
      
               navigation.navigate('MainTab'),
                 setId(response.data.registration_id),

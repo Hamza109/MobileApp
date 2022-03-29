@@ -159,7 +159,7 @@ const Published = () => {
                         marginBottom: 5,
                       }}>
 
-                      <HStack space={1}>
+                      <HStack space={3}>
                       <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                         <Image
                           source={{

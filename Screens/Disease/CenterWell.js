@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, TextInputComponent} from 'react-native';
+import {FlatList} from 'react-native';
 import {View} from 'react-native';
 import { Text } from 'native-base';
 import {
@@ -62,7 +62,12 @@ const CenterWell = ({
           
             <View style={{width:wp('50%'),height:hp('15%')}}>
 
-       <Text>{textContent}</Text>
+          <RenderHTML source={tex} contentWidth={wp('40%')}    tagsStyles = {{
+       span:  {fontSize: 16}, 
+       b:     {fontSize: 16, color: '#00415e'},
+       p:{color:'#00415e'},
+          body:{color:'grey',fontSize:wp('3.5%')}
+    }} />
             </View>
           ),
 

@@ -48,15 +48,15 @@ const SearchBarCity = ref => {
 
   const navigation = useNavigation();
 
-  const docresult = () => {
-    if (name)
+  const docresult = (text) => {
+    if (text)
       return navigation.push('docResultCity', {
-        names: `${name}`,
+        names: `${text}`,
       });
     else {
 
       navigation.navigate('SearchBar', {
-        names: `${name}`,
+        names: `${text}`,
       });
       Alert.alert('type something');
     }
@@ -114,7 +114,7 @@ console.log(temp)
   const ItemView = ({item}) => {
     return (
       // Flat List Item
-      <TouchableOpacity onPress={() => setName(item) & setSearching(false)}>
+      <TouchableOpacity onPress={() => setName(item) & docresult(item)}>
       
           <View style={styles.itemView}>
             <Text style={styles.itemText}>{item}</Text>
@@ -140,7 +140,7 @@ console.log(temp)
         bg="#fff"
         onChangeText={text => searchFilterFunction(text)}
         onClear={text => searchFilterFunction('')}
-        onSubmitEditing={(() => setName(name), docresult)}
+        onSubmitEditing={(() => setName(name)& docresult(name))}
         value={name}
         width="62%"
         height="95%"
@@ -162,7 +162,7 @@ console.log(temp)
           ml="3"
           color="#00415e"
             name="search"
-          onPress={(() => setName(name), docresult)}
+          onPress={(() => setName(name)& docresult(name))}
             size={20}
           />
           </View>

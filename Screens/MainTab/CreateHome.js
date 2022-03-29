@@ -10,6 +10,7 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
+import { Spinner,useToast } from 'native-base';
 import axios from 'axios';
 import Collapsible from 'react-native-collapsible';
 import {Card} from 'react-native-paper';
@@ -25,10 +26,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
 const CreateScreenHome = () => {
+  const toast=useToast()
   const navigation=useNavigation()
   const [comment, setComment] = useState('');
-
+  const [loading,setLoading]=useState(false)
   const [data, setData] = useState([]);
   const [showTitle, setShowTitle] = useState(true);
   const [showRemarks, setShowRemarks] = useState(true);
@@ -89,7 +92,10 @@ const isFocus= useIsFocused();
 //   }, [regId])
   const submitArticleForm = async e => {
     e.preventDefault();
-   
+    setLoading(true)
+    if(article!='')
+    {
+  
     axios.defaults.withCredentials = true
     axios.post(`${backendHost}/content?cmd=createArticle`, {
       headers: {
@@ -108,9 +114,27 @@ const isFocus= useIsFocused();
     })
       .then(res => {
           if (res.data === 1) {
-            Alert.alert('Article Created Successfully!');
-          } else {
-            Alert.alert('Some error occured!');
+            setLoading(false)
+            toast.show({
+              title: "Article created successfully!",
+        description:'Check MyCures Tab.',
+              status: "success",
+              placement:"bottom",
+              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+            })
+          } else if(res.data === -3) {
+            setLoading(false)
+            toast.show({
+              title: "Title Already Taken!",
+        description:'Please change the title',
+              status: "warning",
+              placement:"bottom",
+              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+            })
+          }
+          else 
+          {
+            Alert.alert('some error occured')
           }
  
       })
@@ -118,6 +142,11 @@ const isFocus= useIsFocused();
              console.log('118:',err)
 
       });
+    }else 
+    {
+      setLoading(false)
+      Alert.alert('Enter article details!')
+    }
   };
 
   const titleValue = () => {
@@ -220,19 +249,33 @@ const isFocus= useIsFocused();
      </VStack>
      <VStack space={2}>
        
-     <Checkbox shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
+     <Checkbox shadow={2} value="test" isDisabled accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
      I certify that i am at least 13years old and I have read and
       </Checkbox>
-      <Checkbox shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
+      <Checkbox shadow={2} value="test" isDisabled accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
       Accept Terms & Conditions
       </Checkbox>
-      <Checkbox shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" defaultIsChecked isReadOnly >
+      <Checkbox shadow={2} value="test" isDisabled  accessibilityLabel="This is a dummy checkbox" defaultIsChecked isReadOnly >
         Privacy Policy
       </Checkbox>
      </VStack>
      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
      <TouchableOpacity style={styles.btn} onPress={e => submitArticleForm(e)}>
+       <HStack space={1}>
         <Text style={styles.textBtn}>Submit</Text>
+        {loading ? (
+      <View>
+     
+     <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="lg"
+          />
+     
+      
+      </View>
+          ) : null}
+          </HStack>
       </TouchableOpacity>
       </View>
       

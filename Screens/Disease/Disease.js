@@ -345,7 +345,7 @@ else {
   };
 
   const goto = () => {
-    setTimeout(()=>{
+
       toast.show({
         title: "Added to cures",
   description:'Check MyCures Tab.',
@@ -354,7 +354,7 @@ else {
         duration:2000,
         style:{borderRadius:20,width:wp('70%'),marginBottom:20}
       })
-    },1000)
+
 
     return true;
   };

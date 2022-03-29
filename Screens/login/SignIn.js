@@ -141,7 +141,7 @@ const SignInScreen = ({navigation, props}) => {
                 description: "Please enter a valid email address",
                 duration:2000,
              
-                style:{borderRadius:20,width:widthPercentageToDP('70%'),marginBottom:20}
+                style:{borderRadius:20,width:wp('70%'),marginBottom:20}
               })
             }, 2000);
           } else {

@@ -13,22 +13,26 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {VStack} from 'native-base';
+import {HStack, VStack} from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
-
+import { useToast,Spinner } from 'native-base';
 import axios from 'axios';
 import {backendHost} from './apiConfig';
 
 const Subscribe = () => {
+  const toast=useToast();
+  const [loading,setLoading]=useState(false)
   const [value, setValue] = useState();
   const [formattedValue, setFormattedValue] = useState('');
   const postSubscription = val => {
+    setLoading(true)
     var phoneNumber = val.split('+')[1];
     if (phoneNumber && phoneNumber.length) {
       var countryCodeLength = phoneNumber.length % 10;
       var countryCode = phoneNumber.slice(0, countryCodeLength);
       var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
       if (phoneNumber) {
+      
         axios
           .post(`${backendHost}/users/subscribe/${StringValue}`, {
             nl_subscription_disease_id: '0',
@@ -38,9 +42,26 @@ const Subscribe = () => {
           })
           .then(res => {
             if (res.data === 1) {
-              Alert.alert('You have successfully subscribed to our Newsletter');
+              setLoading(false)
+            
+              toast.show({
+                title: "Subscribed",
+          description:'Thankyou for subscribing.',
+                status: "success",
+                placement:"bottom",
+                duration:2000,
+                style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+              })
             } else {
-              Alert.alert('Some error occured! Please try again later.');
+              setLoading(false)
+              toast.show({
+                title: "Number not valid",
+          description:'Please enter a valid number!',
+                status: "warning",
+                duration:2000,
+                placement:"bottom",
+                style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+              })
             }
           })
           .catch(err => {
@@ -104,7 +125,21 @@ const Subscribe = () => {
             <TouchableOpacity
               style={styles.btn}
               onPress={() => postSubscription(formattedValue)}>
+<HStack space={2}>
               <Text style={{color: 'white', fontWeight: 'bold'}}>Submit</Text>
+              {loading ? (
+      <View>
+     
+     <Spinner
+            accessibilityLabel="Loading posts"
+            color="#fff"
+            size="sm"
+          />
+     
+      
+      </View>
+          ) : null}
+          </HStack>
             </TouchableOpacity>
           </View>
         </VStack>

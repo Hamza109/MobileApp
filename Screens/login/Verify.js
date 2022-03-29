@@ -18,7 +18,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { backendHost } from '../../components/apiConfig';
 import {useTheme} from 'react-native-paper';
-
+import { HStack, Spinner,useToast } from 'native-base';
 const Verify = ({navigation}) => {
   const [email, setEmail] = useState('');
 
@@ -30,8 +30,9 @@ const Verify = ({navigation}) => {
   const [errAlert, erAlert] = useState(false);
 
   const [alert, setSubmitAlert] = useState(false);
+const toast=useToast()
+const [loading,setLoading]=useState(false)
 
-  const {colors} = useTheme();
 
   const resetPass = () => {
     navigation.navigate('ResetPass');
@@ -43,35 +44,48 @@ const Verify = ({navigation}) => {
       secureTextEntry: !data.secureTextEntry,
     });
   };
+  
+  const goto = () => {
+
+    toast.show({
+      title: "Added to cures",
+description:'Check MyCures Tab.',
+      status: "success",
+      placement:"bottom",
+      duration:2000,
+      style:{borderRadius:20,width:wp('70%'),marginBottom:20}
+    })
+
+
+  return true;
+};
 
   const submitForm = async e => {
-  
+  setLoading(true)
 
-    setSubmitAlert(true);
+  if(email != '')
+  {
     if (email) {
       axios.post(`${backendHost}/users/checkemail`, {
           email: email,
         })
         .then(res => {
-          if (res.data == 1) {
-            setTimeout(()=>{
-              setClicked(0)
-              ToastAndroid.showWithGravityAndOffset('Check Your Mail!',
-               ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50)
- 
-            },2000)
+          if (res.data === 1) {
+            setLoading(false)
+        Alert.alert('Mail Sent','Please check your email!')
+           
           } else {
-            noAlert(true);
-            setTimeout(() => {
-              noAlert(false);
-            }, 2000);
+            setLoading(false)
+            Alert.alert('Not a valid email!','please enter valid email!')
           }
         })
         .catch(err => {err});
     }
+  }
+  else {
+    setLoading(false)
+    Alert.alert('Please enter your email!')
+  }
   };
 
   return (
@@ -109,15 +123,11 @@ const Verify = ({navigation}) => {
         <View style={styles.button}>
           {buttonClick === 1 ? submitForm() : null}
           <TouchableOpacity style={styles.signIn} onPress={submitForm}>
-            {submitAlert ? (
-              <Text variant="success" className="h6 mx-3">
-                Check Your Email!
-              </Text>
-            ) : null}
+         
 
             {notAlert ? Alert.alert('Email not found!') : null}
             {errAlert ? Alert.alert('error in resetting') : null}
-
+<HStack space={2}>
             <Text
               style={[
                 styles.textSign,
@@ -127,6 +137,19 @@ const Verify = ({navigation}) => {
               ]}>
               Submit
             </Text>
+            {loading ? (
+      <View>
+     
+     <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="lg"
+          />
+     
+      
+      </View>
+          ) : null}
+          </HStack>
           </TouchableOpacity>
         </View>
       </ImageBackground>

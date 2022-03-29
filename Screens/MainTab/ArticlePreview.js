@@ -268,7 +268,7 @@ const ArticlePreview = () => {
                                       style={{
                                         color: '#00415e',
                                         position: 'absolute',
-                                        bottom:0,
+                                        bottom:7,
                                         fontFamily: 'Raleway-Medium',
                                         fontSize: wp('2.5%'),
                                       }}>

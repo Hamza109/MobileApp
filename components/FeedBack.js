@@ -11,8 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
-import Collapsible from 'react-native-collapsible';
-import {Card} from 'react-native-paper';
+
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useIsFocused } from '@react-navigation/native';
@@ -25,25 +24,20 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { Spinner,useToast } from 'native-base';
 const FeedBack = () => {
   const navigation=useNavigation()
-  const [comment, setComment] = useState('');
+  const toast=useToast()
+
 
   const [data, setData] = useState([]);
-  const [showTitle, setShowTitle] = useState(true);
-  const [showRemarks, setShowRemarks] = useState(true);
-  const [showArticle, setShowArticle] = useState(true);
+
   const [title, setTitle] = useState('');
   const [article, setArticle] = useState('');
   const [lastName,setLastname]=useState('');
   const [email,setEmail]=useState('');
   const [num,setNum]=useState('');
-  const [articleDisplay, setArticleDisplay] = useState('');
-  const [content, setContent] = useState();
-  const [contentType, setContentType] = useState('');
-  const [type, setType] = useState([]);
-  const [disclaimer, setDisclaimer] = useState(1);
-  const [copyright, setCopyright] = useState(11);
+
   const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
   const getId = () => {
@@ -85,10 +79,11 @@ const isFocus= useIsFocused();
     getId();
   },[regId]);
 
-
+const [loading,setLoading]=useState(false)
   const submitFeedbackForm = async e => {
-
-   
+if(article != '')
+{
+   setLoading(true)
     axios.defaults.withCredentials = true
     axios.post(`${backendHost}/admin/create/feedback  `, {
         "firstname":title,
@@ -100,15 +95,33 @@ const isFocus= useIsFocused();
     })
       .then(res => {
           if (res.data === 1) {
-            Alert.alert('Feedback Submitted Successfully!');
+            setLoading(false)
+            toast.show({
+              title: "Feedback submitted successfully!",
+        description:'Thankyou for your feedback.',
+              status: "success",
+              placement:"bottom",
+              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+            })
           } else {
-            Alert.alert('Some error occured!');
+            setLoading(false)
+            toast.show({
+              title: "Some error occured",
+        description:'Try again',
+              status: "warning",
+              placement:"bottom",
+              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
+            })
           }
  
       })
       .catch(err => {console.log(err)
         throw err
-        })
+        })}
+        else{
+          setLoading(false)
+          Alert.alert('Enter feedback')
+        }
   };
 
   const titleValue = () => {
@@ -247,7 +260,21 @@ const isFocus= useIsFocused();
   
      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
      <TouchableOpacity style={styles.btn} onPress={e =>{submitFeedbackForm(e)}}>
+       <HStack space={2}>
         <Text style={styles.textBtn}>Submit</Text>
+        {loading ? (
+      <View>
+     
+     <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="lg"
+          />
+     
+      
+      </View>
+          ) : null}
+          </HStack>
       </TouchableOpacity>
       </View>
       
