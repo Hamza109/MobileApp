@@ -29,9 +29,10 @@ const SearchArt = ()=>{
         </View> */}
         <View styles={styles.flex}>
     <Card style={styles.header}>
-      <HStack mt="5" ml="10" space={1}alignItems="center">
 
-<Icon name="arrow-back-outline" style={{marginLeft:9}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+      <HStack mt="5" ml="10" space={3}alignItems="center">
+
+<Icon name="arrow-back-outline" style={{position:'relative',left:10,alignItems:'center'}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
 
 <Autocomplete/>
 
@@ -72,6 +73,7 @@ marginLeft:0,
 borderColor: '#fff',
 borderWidth: 0.1,
 alignItems: 'center',
+justifyContent:'center',
 width: wp('100%'),
 height: 85,
 elevation: 5,

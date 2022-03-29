@@ -413,14 +413,17 @@ useEffect(()=>{
                             <Card
                               style={{
                                 width: wp('97%'),
-                                height: hp('10.4%'),
-                                backgroundColor: 'lightgrey',
+                                height: hp('10.7%'),
+                                backgroundColor: '#fff',
                                 borderRadius: 15,
+                                borderColor:'aliceblue',
+                                borderWidth:2,
                                 marginBottom: 5,
                               }}>
                               <HStack space={1}>
                               <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
+                                
                                   source={{
                                     uri:
                                       imageLoc +
@@ -429,10 +432,12 @@ useEffect(()=>{
                                         .split('/webapps/')[1],
                                   }}
                                   style={{
+                                    overflow:'hidden',
                                     width: wp('42%'),
-                                    height: hp('10.4%'),
+                                    height: hp('10.5%'),
                                     marginTop: 0,
-                                    borderRadius:15
+                                   borderTopLeftRadius:15,
+                                   borderBottomLeftRadius:15
                                   }}
                                 />
                                 </TouchableOpacity>

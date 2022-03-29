@@ -151,14 +151,12 @@ const Published = () => {
                     <Card
                       style={{
                         width: wp('97%'),
-                        height: 83,
-                        backgroundColor: 'lightgrey',
+                        height: hp('10.7%'),
+                        backgroundColor: '#fff',
                         borderRadius: 15,
+                        borderColor:'aliceblue',
+                        borderWidth:2,
                         marginBottom: 5,
-                        justifyContent: 'center',
-
-                        paddingHorizontal: 5,
-                        alignItems: 'center',
                       }}>
 
                       <HStack space={1}>
@@ -172,12 +170,12 @@ const Published = () => {
                                 .split('/webapps/')[1],
                           }}
                           style={{
-                            position:'relative',
-                            right:5,
-                            width: wp('45%'),
-                            height: 83,
+                            overflow:'hidden',
+                            width: wp('42%'),
+                            height: hp('10.5%'),
                             marginTop: 0,
-                            borderRadius:15
+                           borderTopLeftRadius:15,
+                           borderBottomLeftRadius:15
                           }}
                         />
                         </TouchableOpacity>

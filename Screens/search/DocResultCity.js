@@ -100,7 +100,9 @@ const DocResultCity = ({navigation, route}) => {
                 margin: 5,
                 height: hp('17%'),
                 width: wp('96%'),
-                backgroundColor: 'lightgrey',
+                backgroundColor: '#fff',
+                borderColor:'aliceblue',
+                borderWidth:2,
                 padding: 9,
               }}>
               {/* <StarRating

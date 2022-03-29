@@ -33,7 +33,7 @@ import {
   Spinner,
   VStack,
 } from 'native-base';
-
+import LottieView from 'lottie-react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -45,7 +45,7 @@ const Result = ({navigation, route}) => {
   const {s, c} = bootstrapStyleSheet;
 
   const texts = route.params.texts;
-
+  const types = route.params.types;
   const {colors} = useTheme();
 
   const theme = useTheme();
@@ -56,6 +56,7 @@ const Result = ({navigation, route}) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [text, setText] = useState(texts);
+  const [medtype, setMedType] = useState(types);
   function IsJsonValid(str) {
     try {
       JSON.parse(str);
@@ -64,6 +65,8 @@ const Result = ({navigation, route}) => {
     }
     return JSON.parse(str).blocks;
   }
+  const [initial, setInitial] = useState(9);
+  const [showMore, setShowMore] = useState(true);
 
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
@@ -71,33 +74,100 @@ const Result = ({navigation, route}) => {
       .then(json => {
         setIsLoaded(true);
         setItems(json);
+        
       });
   };
 
   const isearch = () => {
+    setLoading(true)
     fetch(`${backendHost}/isearch/${text}`)
       .then(res => res.json())
       .then(json => {
+        setInitial(initial+6)
+  
+    
         setIsLoaded(true);
         setItems(json);
+        setLoading(false)
+      });
+  };
+  const itype = () => {
+    setLoading(true)
+    fetch(`${backendHost}/isearch/medicinetype/${medtype}`)
+      .then(res => res.json())
+      .then(json => {
+    setInitial(initial+6)
+        setIsLoaded(true);
+        setItems(json);
+        setLoading(false)
       });
   };
 
-  const heading = () => {
-    // return(
-    // <Text style={styles.h1}>All Blogs</Text>
-    // )
-    // }
-    // else{
-    return <Text style={styles.h1}>Blog related to "{text}"</Text>;
+  const [loading,setLoading]=useState(false)
+  const footer = () => {
+    return(
+    <View>
+      <View style={{alignItems: 'center'}}>
+        {
+          items.length>=initial?
+        <TouchableOpacity onPress={()=>setLoading(true)&api()}>
+          <HStack>
+
+          <Text>Load More</Text>
+
+          {loading ? (
+      <View>
+     
+     <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="sm"
+          />
+     
+      
+      </View>
+          ) : null}
+          </HStack>
+        </TouchableOpacity>:null
+  }
+      </View>
+    </View>)
   };
+const api =()=>{
+  if (text) {
+    console.log('hello', text);
+    isearch();
+  } else if (medtype) {
+    setText(null);
+    console.log(medtype);
+    itype();
+  } else {
+    console.log('hi', text);
+    receivedData();
+  }
+}
+const load = () => {
+  return (
+    <View style={{alignItems: 'center'}}>
+      <HStack space={2} justifyContent="center">
+        <LottieView
+          source={require('../../assets/animation/pulse.json')}
+          autoPlay
+          loop
+          style={{width: 50, height: 50}}
+        />
+        {/* <Spinner
+          accessibilityLabel="Loading posts"
+          color="#fff"
+          size="lg"
+        /> */}
+      </HStack>
+    </View>
+  );
+};
 
   useEffect(() => {
-    if (text.length != 0) {
-      isearch();
-    } else {
-      receivedData();
-    }
+   api();
   }, []);
 
   if (!isLoaded) {
@@ -124,7 +194,7 @@ const Result = ({navigation, route}) => {
             <ScrollView style={{width: wp('100%'), height: hp('100%')}}>
               {items.length !== 0 ? (
                 items
-                  .filter((i, idx) => idx < 9)
+                  .filter((i, idx) => idx < initial)
                   .map(
                     (i, key) => {
                       var content = [];
@@ -150,38 +220,52 @@ const Result = ({navigation, route}) => {
                       title = title.replace(regex, '-');
                       return (
                         <View>
-                          <View>
+                          <View
+                            style={{
+                              marginRight: 10,
+                              height: 170,
+                              width: wp('100%'),
+                            }}>
                             <Card
                               style={{
                                 width: wp('97%'),
-                                height: 173,
-                                backgroundColor: 'lightgrey',
-                                borderRadius: 0,
-                                marginBottom: 5,
+                                height: 168,
+                                backgroundColor: '#fff',
+                                borderWidth: 2,
+                                borderColor: 'aliceblue',
                                 justifyContent: 'center',
-                                borderRadius: 15,
                                 paddingHorizontal: 5,
+                                borderRadius: 15,
                                 alignItems: 'center',
                               }}>
                               <HStack space={1}>
-                              <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
-                                <Image
-                                  source={{
-                                    uri:
-                                      imageLoc +
-                                      imgLocation
-                                        .replace('json', 'png')
-                                        .split('/webapps/')[1],
-                                  }}
-                                  style={{
-                                    position: 'relative',
-                                    right: 5,
-                                    width: wp('45%'),
-                                    height: 173,
-                                    borderRadius: 15,
-                                    marginTop: 0,
-                                  }}
-                                />
+                                <TouchableOpacity
+                                  activeOpacity={0.8}
+                                  onPress={() => {
+                                    {
+                                      navigation.push(`Disease`, {
+                                        ids: `${i.article_id}`,
+                                      });
+                                    }
+                                  }}>
+                                  <Image
+                                    source={{
+                                      uri:
+                                        imageLoc +
+                                        imgLocation
+                                          .replace('json', 'png')
+                                          .split('/webapps/')[1],
+                                    }}
+                                    style={{
+                                      position: 'relative',
+                                      right: 3,
+                                      width: wp('44%'),
+                                      height: 166,
+                                      marginTop: 0,
+                                      borderBottomLeftRadius: 15,
+                                      borderTopLeftRadius: 15,
+                                    }}
+                                  />
                                 </TouchableOpacity>
                                 <View style={{width: wp('50%')}}>
                                   <VStack py="2" space={10}>
@@ -230,8 +314,8 @@ const Result = ({navigation, route}) => {
                                     </View>
                                   </VStack>
                                   <Text
-                                     adjustsFontSizeToFit
-                                     numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
                                     style={{
                                       color: '#00415e',
                                       position: 'absolute',
@@ -269,6 +353,9 @@ const Result = ({navigation, route}) => {
                   </Text>
                 </View>
               )}
+              {
+                footer()
+              }
             </ScrollView>
           </View>
         </View>

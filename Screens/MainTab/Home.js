@@ -157,13 +157,13 @@ const HomeScreen = ({navigation, route}) => {
 
 
   const DATA1 = [
-    {name: 'Ayurveda', source: require('../../assets/img/ayurvedic.jpg')},
+    {name: 'Ayurveda',type:1, source: require('../../assets/img/ayurvedic.jpg')},
 
-    {name: 'Unani', source: require('../../assets/img/unani.jpg')},
-    {name: 'Chinese', source: require('../../assets/img/chinese.jpg')},
-    {name: 'Persian', source: require('../../assets/img/medicine.jpg')},
-    {name: 'Scandavian', source: require('../../assets/img/herbal.jpg')},
-    {name: 'Japanese', source: require('../../assets/img/homeopathy.jpg')},
+    {name: 'Unani',type:2, source: require('../../assets/img/unani.jpg')},
+    {name: 'Chinese',type:4, source: require('../../assets/img/chinese.jpg')},
+    {name: 'Persian', type:3,source: require('../../assets/img/medicine.jpg')},
+    {name: 'Scandavian',type:5, source: require('../../assets/img/herbal.jpg')},
+    {name: 'Japanese', type:6, source: require('../../assets/img/homeopathy.jpg')},
   ];
   const [cont, setCont] = useState([]);
   function Create() {
@@ -245,13 +245,13 @@ const HomeScreen = ({navigation, route}) => {
     }
 }
   function renderItemTrend({item, index}) {
-    const {name, source, color} = item;
+    const {name, source, color,type} = item;
     return (
       <View style={{marginRight: 12}}>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            navigation.navigate('Result', {texts: `${name}`});
+            navigation.navigate('Result', {types: `${type}`});
           }}>
           <Card
             style={{
@@ -320,6 +320,7 @@ const HomeScreen = ({navigation, route}) => {
                     fontSize: wp('4.5%'),
                     color: '#00415e',
                     fontFamily: 'Raleway-Regular',
+                    justifyContent:'center'
                   }}>
                   Search Cures
                 </Text>
@@ -678,7 +679,7 @@ const HomeScreen = ({navigation, route}) => {
               color: '#00415e',
               fontFamily: 'Raleway-Regular',
             }}>
-           Traditional Medicine Category
+          System Of Medicine
           </Text>
           <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
           </HStack>
@@ -734,10 +735,11 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
     width: wp('72%'),
-    height: 50,
+    height: 55,
     fontSize: 20,
     borderRadius: 15,
-    padding: 10,
+    
+    justifyContent:'center'
   },
   inCard: {
     flexDirection: 'row',

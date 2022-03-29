@@ -103,6 +103,13 @@ const ArticlePreview = () => {
   useEffect(() => {
     allPosts();
   }, []);
+  const swipe=()=>{
+    setTimeout(()=>{
+      <View style={{alignContent:'center',width:wp('100%'),height:50}}>
+      <Text style={{color:'#00415e'}}>swipe down to refresh</Text>
+      </View>
+    },1000)
+  }
   function renderItemArt({item, index}) {
     const {friendly_name, source, content} = item;
 
@@ -127,10 +134,16 @@ const ArticlePreview = () => {
     );
   }
     if (!isLoaded) {
+   
     return (
+      <View>
       <HStack space={2} justifyContent="center">
         <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
+  
       </HStack>
+     
+      
+      </View>
     );
   } else {
     return (
@@ -165,13 +178,15 @@ const ArticlePreview = () => {
                       title = title.replace(regex, '-');
                       return (
                         <View >
-                          <View style={{marginRight: 10}}        >
+                          <View style={{marginRight: 10,height:170,width:wp('100%')}} >
                             <Card
                             key={items}
                               style={{
                                 width: wp('97%'),
                                 height: 168,
-                                backgroundColor: 'lightgrey',
+                                backgroundColor: '#fff',
+                                borderWidth:2,
+                                borderColor:'aliceblue',
                                 justifyContent: 'center',
                                 paddingHorizontal: 5,
                                 borderRadius:15,
@@ -190,10 +205,11 @@ const ArticlePreview = () => {
                                   style={{
                                     position:'relative',
                                     right:3,
-                                    width: wp('45%'),
-                                    height: 168,
+                                    width: wp('44%'),
+                                    height: 166,
                                     marginTop: 0,
-                                    borderRadius:15
+                                    borderBottomLeftRadius:15,
+                                    borderTopLeftRadius:15
                                   }}
                                 />
                                 </TouchableOpacity>

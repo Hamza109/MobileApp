@@ -75,7 +75,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
                           style={{
                             width: wp('30%'),
                             height: hp('15%'),
-                            backgroundColor: '#fff',
+                            backgroundColor: 'lightgrey',
                             borderRadius: 200,
                             marginRight:8,
                             justifyContent:'center',

@@ -38,7 +38,7 @@ const Autocomplete = () => {
   const [dataSource, setDataSource] = useState([]);
 
   const [colors] = useState(['#84DCC6', '#FEC8C8', '#F7E4CF', '#E8DEF3']);
-  const [text, setText] = useState();
+  const [text, setText] = useState('');
   const isearch = texts => {
     setText(texts);
     Promise.all([
@@ -99,20 +99,24 @@ const [regId,setRegId]=useState()
     })
   }
 
-  const result = () => {
+  const result = (texts) => {
+    console.log('test',text)
+  
     info();
-    if (text) {
-      analytics().setUserProperty('search_term', text);
-      analytics().logEvent('search', {search_term: text});
-      analytics().logSearch({search_term: text});
+    
+    if (texts) {
+  
+      // analytics().setUserProperty('search_term', text);
+      // analytics().logEvent('search', {search_term: text});
+      // analytics().logSearch({search_term: text});
 
       navigation.navigate('Result', {
-        texts: `${text}`,
+        texts: `${texts}`,
       });
       setText(null);
     } else {
       navigation.navigate('Home', {
-        texts: `${text}`,
+              texts: `${texts}`,
       });
       Alert.alert('type something');
     }
@@ -137,7 +141,7 @@ const [regId,setRegId]=useState()
             indicatorStyle={'#00415e'}
             renderItem={({item}) => (
               <TouchableOpacity
-                onPress={() => setText(item) & setSearching(false)}>
+                onPress={() =>setText(item) & result(item)}>
                 <View style={styles.itemView}>
                   <Text style={styles.itemText}>{item}</Text>
                 </View>
@@ -157,7 +161,7 @@ const [regId,setRegId]=useState()
           placeholderTextColor="#00415e"
           bg="#fff"
           onChangeText={onSearch}
-          onSubmitEditing={(() => setText(text), result)}
+          onSubmitEditing={(() => setText(text)& result(text))}
           value={text}
           width="62%"
           height="95%"
@@ -177,7 +181,7 @@ const [regId,setRegId]=useState()
                 ml="3"
                 color="#00415e"
                 name="search"
-                onPress={(() => setText(text),result)}
+                onPress={(() => setText(text)&result(text))}
                 size={20}
               />
             </View>

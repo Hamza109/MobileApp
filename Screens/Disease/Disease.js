@@ -13,7 +13,7 @@ import {
   ToastAndroid,
   Share,
 } from 'react-native';
-
+import { useToast } from 'native-base';
 import {Card} from 'react-native-paper';
 import AllPost from '../search/AllPost';
 import CenterWell1 from './CenterWell1';
@@ -56,6 +56,7 @@ import Svg, {Path, Circle} from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 import {block} from 'react-native-reanimated';
 const Disease = ({navigation, route}) => {
+  const toast=useToast();
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
   const [option, setOption] = useState();
@@ -344,19 +345,17 @@ else {
   };
 
   const goto = () => {
-    Alert.alert('Added To Cures', 'Go to MyCures', [
-      {
-        text: 'Cancel',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {
-        text: 'YES',
-        onPress: () => {
-          navigation.push('MyCures', {screen: 'Cures'});
-        },
-      },
-    ]);
+    setTimeout(()=>{
+      toast.show({
+        title: "Added to cures",
+  description:'Check MyCures Tab.',
+        status: "success",
+        placement:"bottom",
+        duration:2000,
+        style:{borderRadius:20,width:wp('70%'),marginBottom:20}
+      })
+    },1000)
+
     return true;
   };
 
@@ -508,10 +507,12 @@ else {
                 width: wp('100%'),
                 height: hp('100%'),
                 marginTop: 5,
-                paddingLeft: 10,
-                paddingRight: 10,
+                marginLeft:5,
+                paddingLeft: 5,
+                marginRight:5,               
+                 paddingRight: 5,
               }}>
-              <VStack space={3}>
+              <VStack space={3} ml='1'>
                 <HStack>
                   <Text
                     style={{
@@ -554,6 +555,7 @@ else {
                         backgroundColor: '#E5E5E5',
                         padding: 10,
                         marginTop: 10,
+                        marginLeft:5,
                         marginBottom: 5,
                       }}>
                       <HStack space={2}>
@@ -562,6 +564,7 @@ else {
                             width: wp('20%'),
                             height: hp('10%'),
                             borderRadius: 200,
+                     
                             backgroundColor: '#fff',
                           }}>
                           <ImageBackground
@@ -633,6 +636,7 @@ else {
                           height: hp('12%'),
                           backgroundColor: '#E5E5E5',
                           padding: 10,
+                          marginLeft:5,
                           marginTop: 10,
                           marginBottom: 5,
                         }}>
@@ -697,18 +701,18 @@ else {
                           title = title.replace(regex, '-');
                           return (
                             <View>
-                              <View>
+                              <View style={{height:170,width:wp('100%')}} >
                                 <Card
                                   style={{
-                                    width: wp('95%'),
-                                    height: 168,
-                                    backgroundColor: 'lightgrey',
-                                    borderRadius: 0,
-                                    marginBottom: 5,
-                                    justifyContent: 'center',
-                                    borderRadius: 15,
-
-                                    alignItems: 'center',
+                                    width: wp('97%'),
+                                height: 168,
+                                backgroundColor: '#fff',
+                                borderWidth:2,
+                                borderColor:'aliceblue',
+                                justifyContent: 'center',
+                                paddingHorizontal: 5,
+                                borderRadius:15,
+                                alignItems: 'center',
                                   }}>
                                   <HStack space={1}>
                                     <TouchableOpacity
@@ -729,12 +733,13 @@ else {
                                               .split('/webapps/')[1],
                                         }}
                                         style={{
-                                          position: 'relative',
-                                          right: 5,
-                                          width: wp('45%'),
-                                          height: 168,
-                                          borderRadius: 15,
+                                          position:'relative',
+                                          right:3,
+                                          width: wp('44%'),
+                                          height: 166,
                                           marginTop: 0,
+                                          borderBottomLeftRadius:15,
+                                          borderTopLeftRadius:15
                                         }}
                                       />
                                     </TouchableOpacity>

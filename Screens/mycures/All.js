@@ -139,7 +139,7 @@ const All = () => {
 
             return i.pubstatus_id === 3 && i.edited_by == regId ? (
               <View>
-              <View>
+              <View style={{alignItems:'center'}}>
                 <Card
                   style={{
                     width: wp('97%'),
@@ -215,7 +215,7 @@ const All = () => {
               </View>
             </View>   ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
          <View>
-         <View>
+         <View style={{alignItems:'center'}}>
                  <Card
                    style={{
                      width: wp('97%'),
@@ -292,7 +292,7 @@ const All = () => {
              </View>
             ) : i.pubstatus_id === 1 && i.edited_by == regId ? (
               <View>
-              <View>
+              <View style={{alignItems:'center'}}>
                 <Card
                   style={{
                     width: wp('97%'),
