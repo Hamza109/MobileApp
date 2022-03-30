@@ -12,6 +12,7 @@ import {
   Image,
   ToastAndroid,
   Share,
+  Platform,
 } from 'react-native';
 import { useToast } from 'native-base';
 import {Card} from 'react-native-paper';
@@ -429,7 +430,7 @@ else {
         <View>
           <View style={{flex: 1}}>
             <View style={styles.HeadCard}>
-              <HStack ml="2" mt="2" space={2}>
+              <HStack ml="2" mt={Platform.OS ==='android'?'2':'9'} space={2}>
                 <Icon
                   name="close-circle-outline"
                   size={30}
@@ -823,12 +824,12 @@ else {
             </ScrollView>
           </View>
 
-          <Box bg="#00415e" safeAreaTop width={wp('100%')} alignSelf="center">
+          <Box width={wp('100%')}  alignSelf="center">
             <Center flex={1}></Center>
             <HStack
               bg="#fff"
               alignItems="center"
-              safeAreaBottom
+         
               width={wp('100%')}
               height={hp('8.9%')}
               shadow={6}>
@@ -1128,7 +1129,7 @@ const styles = StyleSheet.create({
   HeadCard: {
     backgroundColor: '#fff',
     width: wp('100%'),
-    height: 80,
+    height: Platform.OS==='android'?80:110,
     fontSize: 20,
   },
 

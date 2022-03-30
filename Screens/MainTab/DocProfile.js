@@ -275,7 +275,7 @@ useEffect(()=>{
             <HStack
               bg="#fff"
               alignItems="center"
-              safeAreaBottom
+        
               width={wp('100%')}
               height={hp('8.9%')}
               shadow={6}>

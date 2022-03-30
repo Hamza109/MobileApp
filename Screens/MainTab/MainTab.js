@@ -10,6 +10,7 @@ import Autocomplete from './Autocomplete';
 import {useState} from 'react';
 
 import DocTab from './DocTab';
+import { Platform } from 'react-native';
 
 const HomeStack = createStackNavigator();
 const MyCuresStack = createStackNavigator();
@@ -126,10 +127,11 @@ const MyCuresStackScreen = () => (
     screenOptions={{
       headerStyle: {
         backgroundColor: '#fff',
+        height:Platform.OS ==='android'?0:70
       },
       headerTintColor: '#00415e',
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
       },
     }}>
     <MyCuresStack.Screen
@@ -141,7 +143,7 @@ const MyCuresStackScreen = () => (
           <Icon
             name="heartbeat"
             size={30}
-            style={{marginLeft: 20, color: '#00415e'}}
+            style={{marginLeft: 20, color: '#00415e',marginTop:Platform.OS === 'android'?0:30}}
             backgroundColor="#fff"></Icon>
         ),
         
@@ -155,21 +157,25 @@ const ArticleStackScreen = ({navigation}) => (
     screenOptions={{
       headerStyle: {
         backgroundColor: '#fff',
+       height:Platform.OS ==='android'?0:70
       },
       headerTintColor: '#00415e',
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+        
       },
     }}>
     <ArticleStack.Screen
       name="Doctor"
       component={DocTab}
       options={{
+      
         headerLeft: () => (
+
           <Icon
             name="user-md"
             size={30}
-            style={{marginLeft: 20, color: '#00415e'}}
+            style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:30}}
             backgroundColor="#fff"></Icon>
         ),
       }}
