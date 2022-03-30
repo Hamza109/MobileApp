@@ -12,6 +12,7 @@ import {
   Image,
   ToastAndroid,
   Share,
+  Platform,
 } from 'react-native';
 import { useToast } from 'native-base';
 import {Card} from 'react-native-paper';
@@ -349,7 +350,7 @@ else {
       toast.show({
         title: "Added to cures",
   description:'Check MyCures Tab.',
-        status: "success",
+        status: "info",
         placement:"bottom",
         duration:2000,
         style:{borderRadius:20,width:wp('70%'),marginBottom:20}
@@ -385,15 +386,14 @@ else {
         )
         .then(res => {
           if (res.data > 0) {
-            setTimeout(() => {
-              ToastAndroid.showWithGravityAndOffset(
-                'Remove from Favourite',
-                ToastAndroid.LONG,
-                ToastAndroid.BOTTOM,
-                25,
-                50,
-              );
-            }, 1000);
+            toast.show({
+              title: "Remove from cures",
+        description:'Check MyCures Tab.',
+              status: "info",
+              placement:"bottom",
+              duration:2000,
+              style:{borderRadius:20,width:wp('70%'),marginBottom:20}
+            })
           }
         })
         .catch(err => {
@@ -429,7 +429,7 @@ else {
         <View>
           <View style={{flex: 1}}>
             <View style={styles.HeadCard}>
-              <HStack ml="2" mt="2" space={2}>
+              <HStack ml="2" mt={Platform.OS ==='android'?'2':'9'} space={2}>
                 <Icon
                   name="close-circle-outline"
                   size={30}
@@ -823,12 +823,12 @@ else {
             </ScrollView>
           </View>
 
-          <Box bg="#00415e" safeAreaTop width={wp('100%')} alignSelf="center">
+          <Box width={wp('100%')}  alignSelf="center">
             <Center flex={1}></Center>
             <HStack
               bg="#fff"
               alignItems="center"
-              safeAreaBottom
+         
               width={wp('100%')}
               height={hp('8.9%')}
               shadow={6}>
@@ -1128,7 +1128,7 @@ const styles = StyleSheet.create({
   HeadCard: {
     backgroundColor: '#fff',
     width: wp('100%'),
-    height: 80,
+    height: Platform.OS==='android'?80:110,
     fontSize: 20,
   },
 

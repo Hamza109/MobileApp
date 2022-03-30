@@ -10,8 +10,9 @@ import {
   ImageBackground,
   RefreshControl,
   Animated,
-  ToastAndroid
+  
 } from 'react-native';
+import { useToast } from 'native-base';
 import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/routers';
@@ -51,6 +52,7 @@ import {TouchableOpacity} from 'react-native';
 import axios from 'axios';
 
 const ProfileScreen = ({sheetRef, onFileSelected}) => {
+  const toast=useToast()
   const Navigation = useNavigation();
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
@@ -257,6 +259,21 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       </Svg>
     );
   }
+  const goto = () => {
+
+    toast.show({
+      title: "Profile Updated",
+description:'profile updated successfully.',
+      status: "success",
+      placement:"bottom",
+      duration:2000,
+      style:{borderRadius:20,width:wp('70%'),marginBottom:20}
+    })
+
+
+  return true;
+};
+
   const formSubmit = e => {
     setafterSubmitLoad(true);
 
@@ -289,15 +306,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       .then(res => {
  
         if (res.data === 1) {
-          setTimeout(()=>{
-        
-            ToastAndroid.showWithGravityAndOffset('Profile Updated Successfully',
-             ToastAndroid.LONG,
-            ToastAndroid.BOTTOM,
-            25,
-            50)
-
-          },2000)
+       goto();
         } else {
           Alert.alert('Some error occured. Try again later');
         }

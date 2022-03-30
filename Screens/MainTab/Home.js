@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Dimensions, ImageBackground} from 'react-native';
+import {Dimensions, ImageBackground, Platform} from 'react-native';
 import {
   View,
   ScrollView,
@@ -293,8 +293,11 @@ const HomeScreen = ({navigation, route}) => {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <Stack space={3} alignItems="center" bg="white">
+    
+    <View style={{flex: 1,backgroundColor:'#fff'}}>
+     <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+      <Stack space={3} alignItems="center" bg="white" style={{marginTop:Platform.OS === 'android'?0:20}} >
+        
         <HStack mt="4" mb="1" space={1} alignItems="center">
           <View style={{position: 'relative', top: 2, right: 0}}>
             <TouchableOpacity

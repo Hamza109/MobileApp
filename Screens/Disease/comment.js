@@ -14,12 +14,13 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { useToast } from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 import {Card} from 'react-native-paper';
 const Comment = props => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
-
+  const toast=useToast();
   const [cmtText, setCmtText] = useState();
   const [succAlert, setAlert] = useState('');
   const [regId, setRegId] = useState();
@@ -49,8 +50,22 @@ const Comment = props => {
     getType();
   }, []);
 
+  const goto = () => {
+
+    toast.show({
+      title: "Comment Successfull",
+description:'Comment will be displayed once reviewed.',
+      status: "info",
+      placement:"top",
+      duration:2000,
+      style:{borderRadius:20,width:wp('70%'),marginBottom:20}
+    })
+
+
+  return true;
+};
   const postComment = e => {
-    e.preventDefault();
+
 
     if (cmtText != '') {
       axios
@@ -58,7 +73,8 @@ const Comment = props => {
           `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
         )
         .then(res => {
-          Alert.alert('comment Successful');
+
+        goto();
           setCmtText('');
         })
 
@@ -95,11 +111,7 @@ const Comment = props => {
               }}
             />
 
-            {succAlert ? (
-              <Text style={[s.alertText, s.alertSuccText]}>
-                comment successfully!!
-              </Text>
-            ) : null}
+           
 
             <TouchableOpacity
               style={[s.btnTouchable, s.btn, s.btnSecondary, styles.button]}

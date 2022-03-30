@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useRef} from 'react';
 import {
   View,
   Text,
@@ -28,13 +28,14 @@ import {
   Box,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
-import {StackActions} from '@react-navigation/routers';
+import {StackActions,DrawerActions} from '@react-navigation/routers';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
+
   DrawerItem,
 } from '@react-navigation/drawer';
 import MainTabScreen from './MainTab';
@@ -229,7 +230,7 @@ const DrawerMenu = () => {
   };
 
   return (
-    <Box  flex={1}>
+    <Box flex={1}>
       <Drawer.Navigator
         drawerContent={props => <CustomDrawerContent {...props} />}>
         <Drawer.Screen
@@ -250,7 +251,17 @@ const DrawerMenu = () => {
         <Drawer.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{
+          options={{  headerStyle: {
+            backgroundColor: '#fff',
+            height:Platform.OS ==='android'?60:70
+          },
+          headerTintColor: '#00415e',
+          headerTitleStyle: {
+            fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+          },
+        headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:30,marginLeft:10}} />
+      </TouchableOpacity>),
             drawerLabel: 'Profile',
             drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium'},
             drawerIcon: ({focused, size}) => (
@@ -262,8 +273,19 @@ const DrawerMenu = () => {
           name="Subscribe"
           component={Subscribe}
           options={{
+            headerStyle: {
+              backgroundColor: '#fff',
+              height:Platform.OS ==='android'?60:70
+            },
+            headerTintColor: '#00415e',
+            headerTitleStyle: {
+              fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+            },
             drawerLabel: 'Subscribe',
             drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+            headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:30,marginLeft:10}} />
+          </TouchableOpacity>),
             drawerIcon: ({focused, size}) => (
               <Icon name="bell" color={'#00415e'} size={22} style={{marginLeft:-2}} />
             ),
@@ -273,8 +295,19 @@ const DrawerMenu = () => {
           name="Feedback"
           component={Feedback}
           options={{
+            headerStyle: {
+              backgroundColor: '#fff',
+              height:Platform.OS ==='android'?60:70
+            },
+            headerTintColor: '#00415e',
+            headerTitleStyle: {
+              fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+            },
             drawerLabel: 'Feedback',
             drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+            headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:30,marginLeft:10}} />
+          </TouchableOpacity>),
             drawerIcon: ({focused, size}) => (
               <Icon name="paper-plane" color={'#00415e'} size={22} style={{marginLeft:-2}} />
             ),
