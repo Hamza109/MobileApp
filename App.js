@@ -129,7 +129,7 @@ const App = () => {
             }
             routeNameRef.current = currentRouteName;
           }}>
-<StatusBar backgroundColor={'#00415e'}/>
+
           <RootStack />
         </NavigationContainer>
       </PaperProvider>
@@ -141,9 +141,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
-  }, statusBar: {
-    height: 20,
-  },
+  }, 
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',

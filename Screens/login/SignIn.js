@@ -226,9 +226,10 @@ const SignInScreen = ({navigation, props}) => {
             style={{
               color: '#fff',
               position: 'absolute',
-              top: 0,
-              right: 0,
+              top: Platform.OS ==='android'?0:50,
+              right:Platform.OS ==='android'?0:45 ,
               fontSize: 18,
+              zIndex:999,
               fontFamily: 'Raleway-Medium',
             }}>
             Skip

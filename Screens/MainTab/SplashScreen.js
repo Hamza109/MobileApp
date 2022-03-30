@@ -24,11 +24,11 @@ const SplashScreen = ({navigation}) => {
   useEffect(()=>{
     
     setTimeout(() => {
-      navigation.navigate('MainTab');
+      navigation.push('MainTab');
     },2000);
   })
   // const getId = () => {
-  //   try {
+  //   try {r
   //     Promise.all(
   //       AsyncStorage.getItem('author').then(value1 => {
   //         if (value1 != null) {

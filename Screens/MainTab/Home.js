@@ -355,7 +355,7 @@ const HomeScreen = ({navigation, route}) => {
             }}>
             Cures By Category
           </Text>
-          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
           </HStack>
           <View
             style={{
@@ -684,7 +684,7 @@ const HomeScreen = ({navigation, route}) => {
             }}>
           System Of Medicine
           </Text>
-          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
           </HStack>
           <View style={{alignItems: 'center', width: wp('100%')}}>
             <FlatList
@@ -704,7 +704,7 @@ const HomeScreen = ({navigation, route}) => {
             }}>
             Recent Cures
           </Text>
-          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
           </HStack>
           <ArticlePreview />
           <HStack space={1}>
@@ -717,7 +717,7 @@ const HomeScreen = ({navigation, route}) => {
             }}>
             Top Doctors
           </Text>
-          <Icon style={{marginTop:5}} name='caret-right' color={'#00415e'} size={25} />
+          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
           </HStack>
           <DocPreview />
         </Stack>
@@ -731,7 +731,7 @@ const width = Dimensions.get('screen').width;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    flex: 1,
+
     alignItems: 'center',
     justifyContent: 'center',
   },
