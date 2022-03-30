@@ -229,7 +229,7 @@ const DrawerMenu = () => {
   };
 
   return (
-    <Box safeArea flex={1}>
+    <Box  flex={1}>
       <Drawer.Navigator
         drawerContent={props => <CustomDrawerContent {...props} />}>
         <Drawer.Screen
