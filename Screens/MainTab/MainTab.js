@@ -127,7 +127,7 @@ const MyCuresStackScreen = () => (
     screenOptions={{
       headerStyle: {
         backgroundColor: '#fff',
-        height:Platform.OS ==='android'?0:70
+        height:Platform.OS ==='android'?60:70
       },
       headerTintColor: '#00415e',
       headerTitleStyle: {
@@ -157,7 +157,7 @@ const ArticleStackScreen = ({navigation}) => (
     screenOptions={{
       headerStyle: {
         backgroundColor: '#fff',
-       height:Platform.OS ==='android'?0:70
+       height:Platform.OS ==='android'?60:70
       },
       headerTintColor: '#00415e',
       headerTitleStyle: {

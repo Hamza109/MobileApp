@@ -350,7 +350,7 @@ else {
       toast.show({
         title: "Added to cures",
   description:'Check MyCures Tab.',
-        status: "success",
+        status: "info",
         placement:"bottom",
         duration:2000,
         style:{borderRadius:20,width:wp('70%'),marginBottom:20}
@@ -386,15 +386,14 @@ else {
         )
         .then(res => {
           if (res.data > 0) {
-            setTimeout(() => {
-              ToastAndroid.showWithGravityAndOffset(
-                'Remove from Favourite',
-                ToastAndroid.LONG,
-                ToastAndroid.BOTTOM,
-                25,
-                50,
-              );
-            }, 1000);
+            toast.show({
+              title: "Remove from cures",
+        description:'Check MyCures Tab.',
+              status: "info",
+              placement:"bottom",
+              duration:2000,
+              style:{borderRadius:20,width:wp('70%'),marginBottom:20}
+            })
           }
         })
         .catch(err => {
