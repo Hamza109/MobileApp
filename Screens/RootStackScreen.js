@@ -4,7 +4,7 @@ import MainTabScreen from './MainTab/MainTab';
 import SignInScreen from './login/SignIn';
 import SplashScreen from './MainTab/SplashScreen';
 import {useNavigation} from '@react-navigation/native';
-import CreateScreen from './MainTab/Create';
+
 import SearchArt from './search/SearchArticle';
 import Result from './search/Result';
 
@@ -42,7 +42,7 @@ const RootStack = () => {
         }
       });
     } catch (error) {
-      console.log('root', error);
+     error;
     }
   };
   return (
@@ -68,11 +68,7 @@ const RootStack = () => {
         options={{headerShown: false}}
       />
 
-      <Stack.Screen
-        name="CreateScreen"
-        component={CreateScreen}
-        options={{headerTitle: 'Create Article'}}
-      />
+     
       <Stack.Screen
         name="CreateScreenHome"
         component={CreateScreenHome}

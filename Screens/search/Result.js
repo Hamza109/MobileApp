@@ -113,7 +113,8 @@ const Result = ({navigation, route}) => {
         <TouchableOpacity onPress={()=>setLoading(true)&api()}>
           <HStack>
 
-          <Text>Load More</Text>
+          <Text style={{fontFamily:'Raleway-Medium',color:'#00415e'}}>Load More</Text>
+       
 
           {loading ? (
       <View>
@@ -128,6 +129,7 @@ const Result = ({navigation, route}) => {
       </View>
           ) : null}
           </HStack>
+          <Icon name='caret-down'style={{color:'#00415e',position:'relative',left:25,bottom:5}} size={20} />
         </TouchableOpacity>:null
   }
       </View>
@@ -135,14 +137,14 @@ const Result = ({navigation, route}) => {
   };
 const api =()=>{
   if (text) {
-    console.log('hello', text);
+ 
     isearch();
   } else if (medtype) {
     setText(null);
-    console.log(medtype);
+
     itype();
   } else {
-    console.log('hi', text);
+
     receivedData();
   }
 }

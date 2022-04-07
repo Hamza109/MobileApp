@@ -31,7 +31,7 @@ const toast=useToast();
         }
       });
     } catch (error) {
-      console.log(error)
+      error
     }
   };
   const getType = () => {
@@ -41,7 +41,7 @@ const toast=useToast();
           setRegType(value2);
         }
       });
-    } catch (error) { console.log(error)}
+    } catch (error) { error}
   };
   useEffect(() => {
     getId();
@@ -61,7 +61,7 @@ const toast=useToast();
           setCmtText('');
         })
 
-        .catch(err => {console.log(err)
+        .catch(err => {err;
           throw err
           })
     } else {

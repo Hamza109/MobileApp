@@ -35,6 +35,7 @@ const Subscribe = () => {
       
         axios
           .post(`${backendHost}/users/subscribe/${StringValue}`, {
+           
             nl_subscription_disease_id: '0',
             nl_sub_type: 1,
             nl_subscription_cures_id: '0',
@@ -65,12 +66,15 @@ const Subscribe = () => {
             }
           })
           .catch(err => {
+            setLoading(false)
             Alert.alert('Some error occured! Please try again later.');
           });
       } else {
+        setLoading(false)
         Alert.alert('Please enter a valid number!');
       }
     } else {
+      setLoading(false)
       Alert.alert('Enter your number!');
     }
   };

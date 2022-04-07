@@ -23,7 +23,7 @@ const MainTabScreen = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
         if (value1 != null) {
-          console.log('value:',value1)
+
           setRegId(value1);
         }
       });

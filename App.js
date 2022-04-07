@@ -31,6 +31,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 const theme = {
@@ -53,7 +54,7 @@ const App = () => {
     try {
       await AsyncStorage.setItem('mail1', mail);
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
 
@@ -61,12 +62,12 @@ const App = () => {
     try {
       await AsyncStorage.setItem('device', dev);
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
   useEffect(() => {
-    Text.defaultProps = Text.defaultProps || {}
-    Text.defaultProps.allowFontScaling = false
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
 
     let deviceId = DeviceInfo.getUniqueId();
     console.log('device:', deviceId);
@@ -82,14 +83,14 @@ const App = () => {
       if (initialUrl.includes('/cure')) {
         const url = initialUrl.split('/').pop();
         const id = url.split('-')[0];
-        console.log('article', id);
+
         setTimeout(() => {
           navigationRef.current?.navigate('Disease', {ids: `${id}`});
         }, 4000);
       }
       if (initialUrl.includes('/ResetPass')) {
         const url = initialUrl.split('em=')[1];
-        console.log(url);
+
         setMail(url);
         setTimeout(() => {
           navigationRef.current?.navigate('Forgetpass');
@@ -108,6 +109,7 @@ const App = () => {
   const navigationRef = React.useRef();
 
   return (
+
     <NativeBaseProvider>
       <PaperProvider>
         <NavigationContainer
@@ -129,11 +131,12 @@ const App = () => {
             }
             routeNameRef.current = currentRouteName;
           }}>
-
+      
           <RootStack />
         </NavigationContainer>
       </PaperProvider>
     </NativeBaseProvider>
+
   );
 };
 
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
-  }, 
+  },
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',

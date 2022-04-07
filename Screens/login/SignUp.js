@@ -9,7 +9,7 @@ import {
   StatusBar,
   Alert,
   ImageBackground,
-  ToastAndroid
+  ToastAndroid,
 } from 'react-native';
 import {
   HStack,
@@ -61,12 +61,12 @@ const SignUpScreen = ({navigation, props}) => {
   const [buttonClick, setClicked] = useState('');
 
   const [number, setMname] = useState('');
-const toast =useToast();
+  const toast = useToast();
   const [emailExists, setExists] = useState(false);
   const [promo, setPromo] = useState(null);
   const [validEmail, setValidEmail] = useState();
   const [success, setSuccess] = useState(false);
-
+  const [loading,setLoading]=useState(false)
   const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] =
     usePasswordValidation({
       firstPassword: password.firstPassword,
@@ -85,11 +85,15 @@ const toast =useToast();
   const setRow = async row => {
     try {
       await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
   const SignUpForm = () => {
+    setLoading(true)
     setClicked(1);
     setTimeout(() => {
+      setLoading(false)
       setClicked(0);
     }, 3000);
     var res;
@@ -103,35 +107,35 @@ const toast =useToast();
         )
         .then(response => {
           if (response.data == 'Email Address already Exists in the System') {
+            setLoading(false)
             toast.show({
-              title: "Email already exists!",
-        description:'Welcome To All Cures',
-              status: "warning",
-              placement:"bottom",
-              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
-            })
-     
+              title: 'Email already exists!',
+              description: 'Welcome To All Cures',
+              status: 'warning',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
           } else if (response.data.registration_id) {
-            
+            setLoading(false)
             toast.show({
-              title: "Signup Successful",
-        description:'Welcome To All Cures',
-              status: "success",
-              placement:"bottom",
-              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
-            })
-     
-              navigation.navigate('MainTab'),
-                setId(response.data.registration_id),
-                setType(response.data.registration_type),
-                setFirst(response.data.first_name),
-                setLast(response.data.last_name),
-                setRow(response.data.rowno)
-                setEmail(response.data.email_address);
-        
+              title: 'Signup Successful',
+              description: 'Welcome To All Cures',
+              status: 'success',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
+
+            navigation.navigate('MainTab'),
+              setId(response.data.registration_id),
+              setType(response.data.registration_type),
+              setFirst(response.data.first_name),
+              setLast(response.data.last_name),
+              setRow(response.data.rowno);
+            setEmail(response.data.email_address);
           }
         })
         .catch(res => {
+          setLoading(false)
           Alert.alert('some error occured');
         });
     } else {
@@ -165,35 +169,48 @@ const toast =useToast();
   const setCheck = async value => {
     try {
       await AsyncStorage.setItem('check', JSON.stringify(value));
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
   const setId = async id => {
     try {
       await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
   const setType = async type => {
     try {
       await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
   const setFirst = async first => {
     try {
       await AsyncStorage.setItem('firstName', first);
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
   const setLast = async last => {
     try {
       await AsyncStorage.setItem('lastName', last);
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
   const setEmail = async email => {
     try {
       await AsyncStorage.setItem('email', email);
-    } catch (error) {console.log(error)}
+    } catch (error) {
+      error;
+    }
   };
 
   const afterSignUp = () => {
+
     if (emailExists === true) {
       return Alert.alert('Email already exist');
     } else if (success === true) {
@@ -341,6 +358,7 @@ const toast =useToast();
 
               {buttonClick === 1 ? (
                 <View>
+                  
                   {!validEmail && Alert.alert('Enter Valid Email')}
                   {!validLength &&
                     Alert.alert(
@@ -404,6 +422,7 @@ const toast =useToast();
                 },
                 SignUpForm)
               }>
+                <HStack space={2}>
               <Text
                 style={[
                   styles.textSign,
@@ -414,6 +433,19 @@ const toast =useToast();
                 ]}>
                 Sign Up
               </Text>
+              {loading ? (
+      <View>
+     
+     <Spinner
+            accessibilityLabel="Loading posts"
+            color="#00415e"
+            size="lg"
+          />
+     
+      
+      </View>
+          ) : null}
+          </HStack>
             </TouchableOpacity>
             <VStack space={50}>
               <TouchableOpacity>

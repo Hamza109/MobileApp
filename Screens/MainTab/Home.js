@@ -67,7 +67,7 @@ const HomeScreen = ({navigation, route}) => {
         'mail1'
       ]);
     } catch (error) {
-      console.log('113',error);
+   error
     }
   };
   const backAction = () => {
@@ -221,7 +221,7 @@ const HomeScreen = ({navigation, route}) => {
         }
       });
     } catch (error) {
-      console.log('128', error);
+      error
     }
   };
   const isFocus = useIsFocused();

@@ -24,26 +24,12 @@ import { backendHost } from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 const SearchBarCity = ref => {
-  //   const [dataSource,setDataSource] = useState([])
-
-  //   const [colors] = useState(['#84DCC6', '#FEC8C8', '#F7E4CF', "#E8DEF3",])
+ 
   const [name, setName] = useState('');
-  //  const[text,setText]=useState()
-  //  const[loaded,setLoaded]=useState()
+
   const [items, setItems] = useState([]);
 
-  //   const isearch=(texts)=>{
-  //   setName(texts)
-  // axios.get(`${backendHost}/IntegratedActionController`)
-  // .then(res => res.data)
-  //  .then((doctordata)=>{
-  //      console.log(doctordata.map.Doctorname.myArrayList)
-  //      setItems(doctordata.map.Doctorname.myArrayList)
-  //  })
-
-  // .catch(res =>  console.log(res))
-  // }
-
+  
   const [searching, setSearching] = useState(false);
 
   const navigation = useNavigation();
@@ -79,23 +65,23 @@ cityAll();
     citydata.forEach(i => {
       temp.push(i.Cityname, i.Pincode)
     });
-console.log(temp)
+
             setItems(temp)
         ;
  
     })
 
-    .catch(res => console.log(res));
+    .catch(res => res);
   }
 
   const searchFilterFunction = text => {
     setName(null);
-    // Check if searched text is not blank
+    
     if (text) {
       setSearching(true);
-      // Inserted text is not blank
-      // Filter the masterDataSource
-      // Update FilteredDataSource
+      
+      
+      
       const newData = items.filter(function (item) {
         const itemData = item ? item.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
@@ -104,8 +90,8 @@ console.log(temp)
       setFilteredDataSource(newData);
       setName(text);
     } else {
-      // Inserted text is blank
-      // Update FilteredDataSource with masterDataSource
+      
+      
       setFilteredDataSource(items);
       setName(text);
     }
@@ -113,7 +99,7 @@ console.log(temp)
 
   const ItemView = ({item}) => {
     return (
-      // Flat List Item
+      
       <TouchableOpacity onPress={() => setName(item) & docresult(item)}>
       
           <View style={styles.itemView}>

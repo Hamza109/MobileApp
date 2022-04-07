@@ -83,7 +83,7 @@ const DocProfile = ({navigation, route}) => {
         }
       });
     } catch (error) {
-      console.log(error);
+      error
     }
   };
 
@@ -92,11 +92,11 @@ const DocProfile = ({navigation, route}) => {
     axios
       .get(`${backendHost}/rating/target/${id}/targettype/1/avg`)
       .then(res => {
-        console.log(res.data)
+      
         setShowValue(res.data);
       })
       .catch(err => {
-        console.log(err);
+  err
         throw err;
       });
   };
@@ -108,7 +108,7 @@ const DocProfile = ({navigation, route}) => {
         setCommentItems(json);
       })
       .catch(err => {
-        console.log(err);
+      err
         throw err;
       });
   }
@@ -122,7 +122,7 @@ const DocProfile = ({navigation, route}) => {
      
         setItems(json);
       })
-      .catch(err => {console.log(err)
+      .catch(err => {err
         throw err
         })
   };
@@ -141,7 +141,7 @@ const DocProfile = ({navigation, route}) => {
         setArticleItems(temp);
       })
       .catch(err => {
-       console.log('76:',err)
+    err
       });
   };
   function IsJsonValid(str) {
@@ -331,7 +331,7 @@ useEffect(()=>{
               <Text
                 style={{
                   fontFamily: 'Raleway-Medium',
-                  fontSize: 12,
+                  fontSize: wp('3.5%'),
                   color: '#00415e',
                 }}>
                 {items.about}
@@ -347,7 +347,7 @@ useEffect(()=>{
               <Text
                 style={{
                   fontFamily: 'Raleway-Medium',
-                  fontSize: 12,
+                  fontSize: wp('3.5%'),
                   color: '#00415e',
                 }}>
                 {items.edu_training}
@@ -365,7 +365,7 @@ useEffect(()=>{
                 style={{
                   color: '#00415e',
                   fontFamily: 'Raleway-Medium',
-                  fontSize: 12,
+                  fontSize: wp('3.5%'),
                 }}>
                 {items.primary_spl}
               </Text>

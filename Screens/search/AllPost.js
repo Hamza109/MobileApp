@@ -23,7 +23,7 @@ const AllPost = ({ id, title, f_title, w_title}) => {
 
       setShowValue(res.data.toFixed(1))
     })
-    .catch(err => console.log('26',err))
+    .catch(err => err)
   }
 
 useEffect(()=>{
@@ -38,7 +38,7 @@ const isFocus=useIsFocused()
         return (
           <View style={styles.contain}>
             <View>
-           <Text  numberOfLines={2} allowFontScaling={true}  onPress={()=>{{ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
+           <Text  numberOfLines={2} onPress={()=>{{ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>
@@ -74,7 +74,7 @@ const isFocus=useIsFocused()
         position:'absolute',
         top:0,
         fontFamily:'Raleway-Bold',
-        fontSize: widthPercentageToDP('3.5%'),
+        fontSize: widthPercentageToDP('4%'),
      
       
         

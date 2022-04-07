@@ -86,12 +86,8 @@ const Forgetpass = ({navigation, route}) => {
   const setSecond = event => {
     setPassword({...password, secondPassword: event});
   };
-  const setRow = async row => {
-    try {
-      await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {console.log(error)}
-  };
-const [decMail,setDecMail]=useState('')
+
+
   useEffect(() => {
 getMail()
     // const params = new URLSearchParams(location.search);
@@ -101,7 +97,7 @@ getMail()
     try {
       AsyncStorage.getItem('mail1').then(value2 => {
         if (value2 != null) {
-            console.log(value2)
+      
 
             axios.post(`${backendHost}/users/getemdecrypt`,
             {
@@ -163,59 +159,9 @@ getMail()
 
  
 
-  const setCheck = async value => {
-    try {
-      await AsyncStorage.setItem('check', JSON.stringify(value));
-    } catch (error) {console.log(error)}
-  };
-  const setId = async id => {
-    try {
-      await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {console.log(error)}
-  };
-  const setType = async type => {
-    try {
-      await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {console.log(error)}
-  };
-  const setFirst = async first => {
-    try {
-      await AsyncStorage.setItem('firstName', first);
-    } catch (error) {console.log(error)}
-  };
-  const setLast = async last => {
-    try {
-      await AsyncStorage.setItem('lastName', last);
-    } catch (error) {console.log(error)}
-  };
 
 
-  const afterSignUp = () => {
-    if (emailExists === true) {
-      return Alert.alert('Email already exist');
-    } else if (success === true) {
-      if (promo) {
-        return navigation.navigate('MainTab', {
-          params: {
-            userId: authid,
-          },
-        });
-      } else {
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-        return (
-          <Redirect
-            to={{
-              pathname: '#',
-            }}
-          />
-        );
-      }
-    } else if (isError === true) {
-      return Alert.alert('Some error occured');
-    }
-  };
+  
 
   return (
     <View style={styles.container}>

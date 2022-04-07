@@ -14,7 +14,7 @@ import {
   Share,
   Platform,
 } from 'react-native';
-import { useToast } from 'native-base';
+import {useToast} from 'native-base';
 import {Card} from 'react-native-paper';
 import AllPost from '../search/AllPost';
 import CenterWell1 from './CenterWell1';
@@ -57,7 +57,7 @@ import Svg, {Path, Circle} from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 import {block} from 'react-native-reanimated';
 const Disease = ({navigation, route}) => {
-  const toast=useToast();
+  const toast = useToast();
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
   const [option, setOption] = useState();
@@ -132,7 +132,7 @@ const Disease = ({navigation, route}) => {
         }
       });
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
   function User() {
@@ -150,44 +150,37 @@ const Disease = ({navigation, route}) => {
     );
   }
   const postSubscription = val => {
-    
-    
     var phoneNumber = val.split('+')[1];
-console.log('number',phoneNumber)
-var countryCodeLength 
-if(phoneNumber && phoneNumber.length){
-  countryCodeLength = phoneNumber.length % 10;
-  var countryCode = phoneNumber.slice(0, countryCodeLength);
-  var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-  if (phoneNumber) {
-    axios
-      .post(`${backendHost}/users/subscribe/${StringValue}`, {
-        nl_subscription_disease_id: option == 2 ? '1' : '0',
-        nl_sub_type: option == 1 ? 1 : 0,
-        nl_subscription_cures_id: option == 3 ? '1' : '0',
-        country_code: `'${countryCode}'`,
-      })
-      .then(res => {
-        if (res.data === 1) {
-          
-          Alert.alert('You have successfully subscribed to our Newsletter');
-  
-         
-        } else {
-          Alert.alert('Some error occured! Please try again later.');
-        }
-      })
-      .catch(err => {
-        Alert.alert('Some error occured! Please try again later.');
-      });
-  } else {
-    Alert.alert('Please enter a valid number!');
-  }
-}
-else {
-  Alert.alert('Please enter your number!');
-}
-   
+
+    var countryCodeLength;
+    if (phoneNumber && phoneNumber.length) {
+      countryCodeLength = phoneNumber.length % 10;
+      var countryCode = phoneNumber.slice(0, countryCodeLength);
+      var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
+      if (phoneNumber) {
+        axios
+          .post(`${backendHost}/users/subscribe/${StringValue}`, {
+            nl_subscription_disease_id: option == 2 ? '1' : '0',
+            nl_sub_type: option == 1 ? 1 : 0,
+            nl_subscription_cures_id: option == 3 ? '1' : '0',
+            country_code: `'${countryCode}'`,
+          })
+          .then(res => {
+            if (res.data === 1) {
+              Alert.alert('You have successfully subscribed to our Newsletter');
+            } else {
+              Alert.alert('Some error occured! Please try again later.');
+            }
+          })
+          .catch(err => {
+            Alert.alert('Some error occured! Please try again later.');
+          });
+      } else {
+        Alert.alert('Please enter a valid number!');
+      }
+    } else {
+      Alert.alert('Please enter your number!');
+    }
   };
 
   const checkIfImageExits = imageUrl => {
@@ -199,46 +192,41 @@ else {
           setImageExists(false);
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => err);
   };
   const isFocus = useIsFocused();
-  useEffect(()=>{
-    const get=()=>{
-      
+  useEffect(() => {
+    const get = () => {
       fetch(`${backendHost}/article/${id}`)
         .then(res => res.json())
         .then(json => {
-          console.log('title', json.title);
           setIsLoaded(true);
           setData(json);
           setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
           var articleTitle = json.title;
           var regex = new RegExp(' ', 'g');
           title = articleTitle.replace(regex, '-');
-          console.log(title);
- 
         })
         .catch(err => {
-          console.log(err);
+          err;
           throw err;
         });
-
-    }
+    };
     get();
-    return ()=>{ get()}
-  },[id]);
+    return () => {
+      get();
+    };
+  }, [id]);
 
   useEffect(() => {
+    comments();
 
-      comments();
-
-      if (data.reg_doc_pat_id !== null) {
-        checkIfImageExits(
-          `http://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
-        );
-      }
-  
-  },[]);
+    if (data.reg_doc_pat_id !== null) {
+      checkIfImageExits(
+        `http://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
+      );
+    }
+  }, []);
 
   useEffect(() => {
     if (isFocus) {
@@ -249,7 +237,7 @@ else {
     try {
       JSON.parse(str);
     } catch (e) {
-      console.log(e);
+      e;
     }
     return JSON.parse(str).blocks;
   }
@@ -262,7 +250,7 @@ else {
         setCommentItems(json);
       })
       .catch(err => {
-        console.log(err);
+        err;
         throw err;
       });
   }
@@ -276,7 +264,7 @@ else {
         setSItems(json);
       })
       .catch(err => {
-        console.log(err);
+        err;
         throw err;
       });
   };
@@ -293,9 +281,8 @@ else {
     await axios
       .get(`${backendHost}/favourite/userid/${regId}/articleid/${id}/favourite`)
       .then(res => {
-        console.log(res.data);
         setResponse(res.data);
-        console.log('276', stats);
+
         if (res.data.length != 0) {
           setStats(res.data[0].status);
         } else {
@@ -303,7 +290,7 @@ else {
         }
       })
       .catch(err => {
-        console.log(err);
+     err;
         throw err;
       });
   };
@@ -314,7 +301,7 @@ else {
         setShowValue(res.data);
       })
       .catch(err => {
-        console.log(err);
+   err;
         throw err;
       });
   };
@@ -327,11 +314,11 @@ else {
         }`,
       )
       .then(res => {
-        console.log('data', res.data[0].ratingVal);
+ 
         setRate(res.data[0].ratingVal);
       })
       .catch(err => {
-        console.log(err);
+ err;
         throw err;
       });
   };
@@ -346,22 +333,20 @@ else {
   };
 
   const goto = () => {
-
-      toast.show({
-        title: "Added to cures",
-  description:'Check MyCures Tab.',
-        status: "info",
-        placement:"bottom",
-        duration:2000,
-        style:{borderRadius:20,width:wp('70%'),marginBottom:20}
-      })
-
+    toast.show({
+      title: 'Added to cures',
+      description: 'Check MyCures Tab.',
+      status: 'info',
+      placement: 'bottom',
+      duration: 2000,
+      style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+    });
 
     return true;
   };
 
   const favorite = async status => {
-    console.log(status);
+
     if (status != 0) {
       setStats(1);
 
@@ -375,7 +360,7 @@ else {
           }
         })
         .catch(err => {
-          console.log(err);
+err;
           throw err;
         });
     } else {
@@ -387,17 +372,17 @@ else {
         .then(res => {
           if (res.data > 0) {
             toast.show({
-              title: "Remove from cures",
-        description:'Check MyCures Tab.',
-              status: "info",
-              placement:"bottom",
-              duration:2000,
-              style:{borderRadius:20,width:wp('70%'),marginBottom:20}
-            })
+              title: 'Remove from cures',
+              description: 'Check MyCures Tab.',
+              status: 'info',
+              placement: 'bottom',
+              duration: 2000,
+              style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+            });
           }
         })
         .catch(err => {
-          console.log(err);
+    err;
           throw err;
         });
     }
@@ -429,7 +414,10 @@ else {
         <View>
           <View style={{flex: 1}}>
             <View style={styles.HeadCard}>
-              <HStack ml="2" mt={Platform.OS ==='android'?'2':'9'} space={2}>
+              <HStack
+                ml="2"
+                mt={Platform.OS === 'android' ? '2' : '9'}
+                space={2}>
                 <Icon
                   name="close-circle-outline"
                   size={30}
@@ -507,12 +495,12 @@ else {
                 width: wp('100%'),
                 height: hp('100%'),
                 marginTop: 5,
-                marginLeft:5,
+                marginLeft: 5,
                 paddingLeft: 5,
-                marginRight:5,               
-                 paddingRight: 5,
+                marginRight: 5,
+                paddingRight: 5,
               }}>
-              <VStack space={3} ml='1'>
+              <VStack space={3} ml="1">
                 <HStack>
                   <Text
                     style={{
@@ -555,7 +543,7 @@ else {
                         backgroundColor: '#E5E5E5',
                         padding: 10,
                         marginTop: 10,
-                        marginLeft:5,
+                        marginLeft: 5,
                         marginBottom: 5,
                       }}>
                       <HStack space={2}>
@@ -564,7 +552,7 @@ else {
                             width: wp('20%'),
                             height: hp('10%'),
                             borderRadius: 200,
-                     
+
                             backgroundColor: '#fff',
                           }}>
                           <ImageBackground
@@ -636,7 +624,7 @@ else {
                           height: hp('12%'),
                           backgroundColor: '#E5E5E5',
                           padding: 10,
-                          marginLeft:5,
+                          marginLeft: 5,
                           marginTop: 10,
                           marginBottom: 5,
                         }}>
@@ -689,7 +677,7 @@ else {
                             imgLocation &&
                             imgLocation.includes('cures_articleimages')
                           ) {
-                            imageLoc = 'http://all-cures.com:8280/';
+                            imageLoc = 'http://all-cures.com:8080/';
                           } else {
                             imageLoc =
                               'https://all-cures.com:444/cures_articleimages//299/default.png';
@@ -701,18 +689,18 @@ else {
                           title = title.replace(regex, '-');
                           return (
                             <View>
-                              <View style={{height:170,width:wp('100%')}} >
+                              <View style={{height: 170, width: wp('100%')}}>
                                 <Card
                                   style={{
                                     width: wp('97%'),
-                                height: 168,
-                                backgroundColor: '#fff',
-                                borderWidth:2,
-                                borderColor:'aliceblue',
-                                justifyContent: 'center',
-                                paddingHorizontal: 5,
-                                borderRadius:15,
-                                alignItems: 'center',
+                                    height: 168,
+                                    backgroundColor: '#fff',
+                                    borderWidth: 2,
+                                    borderColor: 'aliceblue',
+                                    justifyContent: 'center',
+                                    paddingHorizontal: 5,
+                                    borderRadius: 15,
+                                    alignItems: 'center',
                                   }}>
                                   <HStack space={1}>
                                     <TouchableOpacity
@@ -733,13 +721,13 @@ else {
                                               .split('/webapps/')[1],
                                         }}
                                         style={{
-                                          position:'relative',
-                                          right:3,
+                                          position: 'relative',
+                                          right: 3,
                                           width: wp('44%'),
                                           height: 166,
                                           marginTop: 0,
-                                          borderBottomLeftRadius:15,
-                                          borderTopLeftRadius:15
+                                          borderBottomLeftRadius: 15,
+                                          borderTopLeftRadius: 15,
                                         }}
                                       />
                                     </TouchableOpacity>
@@ -823,12 +811,11 @@ else {
             </ScrollView>
           </View>
 
-          <Box width={wp('100%')}  alignSelf="center">
+          <Box width={wp('100%')} alignSelf="center">
             <Center flex={1}></Center>
             <HStack
               bg="#fff"
               alignItems="center"
-         
               width={wp('100%')}
               height={hp('8.9%')}
               shadow={6}>
@@ -957,7 +944,7 @@ else {
                     }}>
                     <Icon
                       name="chatbubbles"
-                      style={{opacity: 0.3,color:'grey'}}
+                      style={{opacity: 0.3, color: 'grey'}}
                       size={150}
                     />
                     <Text style={{color: 'grey'}}>No comments yet</Text>
@@ -1023,7 +1010,7 @@ else {
                     <Select
                       width={wp('90%')}
                       onValueChange={value =>
-                        setOption(value) & console.log(value)
+                        setOption(value)
                       }
                       selectedValue={option}
                       isRequired
@@ -1128,7 +1115,7 @@ const styles = StyleSheet.create({
   HeadCard: {
     backgroundColor: '#fff',
     width: wp('100%'),
-    height: Platform.OS==='android'?80:110,
+    height: Platform.OS === 'android' ? 80 : 110,
     fontSize: 20,
   },
 

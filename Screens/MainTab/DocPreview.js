@@ -47,6 +47,10 @@ const DocPreview = () => {
 
 
   useEffect((lat, lon, city) => {
+
+
+  
+
     fetch(
       `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=871,872,873,874,875,876,877,878,879,880,881,882`,
     )
@@ -55,7 +59,7 @@ const DocPreview = () => {
         setIsLoaded(true);
         setItems(json.map.DoctorDetails.myArrayList);
       })
-      .catch(err => console.log('58:',err));
+      .catch(err => err);
   }, []);
   
   if (!isLoaded) {

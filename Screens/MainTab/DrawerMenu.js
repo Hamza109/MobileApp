@@ -91,7 +91,7 @@ const DrawerMenu = () => {
       await AsyncStorage.getItem('author').then(value1 => {
         if (value1 != null) {
           setRegId(value1);
-          console.log('value2:', value1);
+       
         }
       });
     } catch (error) {}
@@ -105,13 +105,10 @@ const DrawerMenu = () => {
       await AsyncStorage.multiRemove([
         'author',
         'rateType',
-        'firstName',
-        'lastName',
-        'email',
         'rowno',
       ]);
     } catch (error) {
-      console.log('113',error);
+      error
     }
   };
   const logout = () => {
@@ -170,7 +167,7 @@ const DrawerMenu = () => {
     );
   }
   const login = () => {
-    console.log(regId);
+
     if (regId.length != 0) {
       return (
         <View>

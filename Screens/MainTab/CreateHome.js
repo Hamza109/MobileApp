@@ -58,7 +58,7 @@ const CreateScreenHome = () => {
         }
       });
     } catch (error) {
-    console.log('58',error)
+      error
     }
   };
   const getType = () => {
@@ -71,7 +71,7 @@ const CreateScreenHome = () => {
         }
       });
     } catch (error) {
-  console.log('71:',error)
+      error
     }
   };
 const isFocus= useIsFocused();
@@ -139,7 +139,7 @@ const isFocus= useIsFocused();
  
       })
       .catch(err => {
-             console.log('118:',err)
+           err
 
       });
     }else 
@@ -158,7 +158,7 @@ const isFocus= useIsFocused();
           placeholderTextColor="#00415e"
           style={[
             styles.textInputTitle,
-            {
+            {color:'#00415e',
               padding: 10,
             },
           ]}
@@ -186,6 +186,7 @@ const isFocus= useIsFocused();
           style={[
             styles.textInput,
             {
+              color:'#00415e',
               padding: 10,
             },
           ]}
@@ -208,6 +209,7 @@ const isFocus= useIsFocused();
           style={[
             styles.textInputArticle,
             {
+              color:'#00415e',
               height: 200,
               fontSize: 15,
             },

@@ -33,7 +33,7 @@ const Comment = props => {
         }
       });
     } catch (error) {
-      console.log(error)
+  error
     }
   };
   const getType = () => {
@@ -43,7 +43,7 @@ const Comment = props => {
           setRegType(value2);
         }
       });
-    } catch (error) { console.log(error)}
+    } catch (error) { error}
   };
   useEffect(() => {
     getId();
@@ -78,7 +78,7 @@ description:'Comment will be displayed once reviewed.',
           setCmtText('');
         })
 
-        .catch(err => {console.log(err)
+        .catch(err => {err
           throw err
           })
     } else {

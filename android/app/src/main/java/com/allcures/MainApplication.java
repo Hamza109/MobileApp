@@ -11,6 +11,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
+import com.facebook.react.modules.network.OkHttpClientProvider;
 import java.util.List;
 
 
@@ -53,6 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    OkHttpClientProvider.setOkHttpClientFactory(new CustomClientFactory());
   }
 
   /**

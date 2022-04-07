@@ -71,7 +71,7 @@ const DoctorsCard = ({
           setImageExists(false);
         }
       })
-      .catch(err => console.log('74:',err));
+      .catch(err => err);
   };
 
   const navigation = useNavigation();

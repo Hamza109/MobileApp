@@ -12,7 +12,7 @@ import {
   Animated,
   
 } from 'react-native';
-import { useToast } from 'native-base';
+import { useToast,Divider } from 'native-base';
 import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/routers';
@@ -90,24 +90,25 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   );
   const [imageUser, setImageUser] = useState(``);
   const [rowno, setRowno] = useState();
-  const [afterSubmitLoad, setafterSubmitLoad] = useState(false);
+const [mobile,setMobile]=useState();
   const [modalVisible, setModalVisible] = useState(false);
-  const logout = () => {
-    Alert.alert('Hold on!', 'Are you sure you want Logout?', [
-      {
-        text: 'Cancel',
-        onPress: () => null,
-        style: 'cancel',
-      },
-      {
-        text: 'YES',
-        onPress: () => {
-          Navigation.dispatch(StackActions.popToTop()), remove();
-        },
-      },
-    ]);
-    return true;
-  };
+  
+
+  const getProfile = (userId) => {
+    axios.get(`${backendHost}/profile/${userId}`)
+    .then(res => {
+        setFirstName(res.data.first_name)
+        setLastName(res.data.last_name)
+        setEmail(res.data.email_address)
+        setMobile(res.data.mobile_number)
+        // setRegType(res.data.registration_type)
+
+       
+    })
+    .catch(err => {return})
+ 
+}
+
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -124,8 +125,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-   
+  
         if (value1 != null) {
+          getProfile(value1)
            setRegId(value1)
         }
         else{
@@ -133,31 +135,20 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         }
       });
     } catch (error) {
-    console.log('58',error)
+      error
     }
   };
-  const getFirstName = () => {
-    try {
-      AsyncStorage.getItem('firstName').then(value1 => {
-        console.log('firstName:', value1);
-        if (value1 != null) {
-          setFirstName(value1);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
-        console.log('type:', value2);
+ ;
         if (value2 != null) {
           setRegType(value2);
         }
       });
     } catch (error) {
-      console.log('128', error);
+      error
     }
   };
   const getRow =  () => {
@@ -165,6 +156,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
    AsyncStorage.getItem('rowno').then(value2 => {
       
         if (value2 != null) {
+
+     
+
           fetch(
             `${backendHost}/DoctorsActionController?rowno=${Number(
               value2,
@@ -177,7 +171,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 setNameLoad(true);
                 setModalVisible(true);
               } else {
-                console.log(json);
+         
                 setRowno(Number(value2));
                 setIsLoaded(true);
                 setItems(json);
@@ -204,47 +198,12 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         }
       });
     } catch (error) {
-      console.log('128', error);
+      error
     }
   };
-  const getLastName = () => {
-    try {
-      AsyncStorage.getItem('lastName').then(value1 => {
-        console.log('lastName:', value1);
-        if (value1 != null) {
-          setLastName(value1);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getEmail = () => {
-    try {
-      AsyncStorage.getItem('email').then(value1 => {
-      
-        if (value1 != null) {
-          setEmail(value1);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const remove = async () => {
-    try {
-      await AsyncStorage.multiRemove([
-        'author',
-        'rateType',
-        'firstName',
-        'lastName',
-        'email',
-        'rowno',
-      ]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
+ 
+  
   function User() {
     return (
       <Svg
@@ -342,9 +301,7 @@ description:'profile updated successfully.',
       });
   };
   const isFocus = useIsFocused();
-  useEffect(() => {
-    getFirstName();
-  }, []);
+
   useEffect(() => {
     if (isFocus) {
       getId();
@@ -361,14 +318,8 @@ description:'profile updated successfully.',
       getType();
     }
   }, [regType]);
-  useEffect(() => {
-    getLastName();
-  }, []);
-  useEffect(() => {
-    if (isFocus) {
-      getEmail();
-    }
-  }, [email]);
+
+ 
   useEffect(() => {
     fetchTables();
   }, []);
@@ -411,7 +362,7 @@ description:'profile updated successfully.',
   const handleImageSubmission = e => {
     // e.preventDefault()
     setImageUploadLoading(true);
-    console.log('file:->', selectedFile);
+
 
     const formData = new FormData();
     formData.append('File', photo);
@@ -420,7 +371,7 @@ description:'profile updated successfully.',
       body: formData,
     })
       .then(response => {
-        response.json(), console.log(response);
+        response.json();
       })
       .then(result => {
         setTimeout(() => {
@@ -1150,43 +1101,47 @@ description:'profile updated successfully.',
         ) : (
           <View>
             <View>
-              <VStack space={2} ml="5" mt="5">
-                <HStack>
+              <VStack space={5} ml="0" mt="3">
+                <View>
+                <View style={{alignItems:'center'}}>
                   <User
                     style={{
                       borderRadius: 10,
                     }}
                   />
-
-                  <View style={{marginLeft: 12}}>
-                    <View>
-                      <HStack space={1}>
+                   <HStack space={1}>
                         <Text style={styles.margin}>{firstName}</Text>
                         <Text style={styles.margin}>{lastName}</Text>
-                        <Icon
-                          name="create-outline"
-                          size={25}
-                          color="#00415e"
-                          style={{position: 'absolute', right: 0}}
-                        />
+                     
                       </HStack>
+</View>
+                  <View style={{marginTop:5}}>
+                    <Divider/>
+                    <VStack space={2} ml='5' mt='2'>
+                     
                       <HStack space={1}>
-                        <Icon name="mail" size={20} color="grey" />
+                        <Icon name="mail" size={25} color="grey" />
+                      
                         <Text
                           style={{
                             color: '#00415e',
                             fontFamily: 'Raleway-Regular',
-                            fontSize: 12,
+                            fontSize: 15,
                           }}>
                           {email}
                         </Text>
                       </HStack>
                       <HStack>
-                        <Icon name="phone-portrait" size={20} color="grey" />
+                        <Icon name="phone-portrait" size={25} color="grey" />
+                        <Text  style={{
+                            color: '#00415e',
+                            fontFamily: 'Raleway-Regular',
+                            fontSize: 15,
+                          }}>{mobile}</Text>
                       </HStack>
-                    </View>
+                    </VStack>
                   </View>
-                </HStack>
+                </View>
               </VStack>
             </View>
           </View>
@@ -1211,7 +1166,7 @@ const styles = StyleSheet.create({
   },
   margin: {
     fontFamily: 'Raleway-Bold',
-    fontSize: 18,
+    fontSize: 23,
     color: '#00415e',
   },
   header: {

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Alert,
   ImageBackground,
   ToastAndroid,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import {
   HStack,
@@ -25,7 +25,7 @@ import {
 import axios from 'axios';
 import Home from '../MainTab/Home';
 import * as Animatable from 'react-native-animatable';
-import { useToast } from 'native-base';
+import {useToast} from 'native-base';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -59,7 +59,7 @@ const SignInScreen = ({navigation, props}) => {
   const {s, c} = bootstrapStyleSheet;
 
   const {colors} = useTheme();
- const toast=useToast()
+  const toast = useToast();
   const updateSecureTextEntry = () => {
     setData({
       ...data,
@@ -68,14 +68,14 @@ const SignInScreen = ({navigation, props}) => {
   };
   const backAction = () => {
     if (navigation.isFocused()) {
-    navigation.push('MainTab')
+      navigation.push('MainTab');
+    }
   };
-}
-  useEffect(()=>{
+  useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  })
+  });
 
   const loading = () => {
     return (
@@ -103,6 +103,11 @@ const SignInScreen = ({navigation, props}) => {
     axios
       .post(
         `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
+        {
+          headers: {
+            'Access-Control-Allow-Credentials': true,
+          },
+        },
       )
 
       .then(res => {
@@ -113,15 +118,15 @@ const SignInScreen = ({navigation, props}) => {
                 userId: authid,
               },
             });
-            analytics().setUserProperty('Reg_Id',JSON.stringify(res.data.registration_id));
+            analytics().setUserProperty(
+              'Reg_Id',
+              JSON.stringify(res.data.registration_id),
+            );
             analytics().setUserId(JSON.stringify(res.data.registration_id));
             analytics().logEvent('login', {reg_id: res.data.registration_id});
             setStatus(res.status);
             setId(res.data.registration_id);
             setType(res.data.registration_type);
-            setFirst(res.data.first_name);
-            setLast(res.data.last_name);
-            setEmail(res.data.email_address);
             setRow(res.data.rowno);
             setClicked(0);
           }, 3000);
@@ -135,15 +140,14 @@ const SignInScreen = ({navigation, props}) => {
             setTimeout(() => {
               setClicked(0);
               toast.show({
-                
-                title: "Invalid email address",
-                status: "warning",
-                description: "Please enter a valid email address",
-                duration:2000,
-             
-                style:{borderRadius:20,width:wp('70%'),marginBottom:20}
-              })
-            }, 2000);
+                title: 'Invalid email address',
+                status: 'warning',
+                description: 'Please enter a valid email address',
+                duration: 2000,
+
+                style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+              });
+            }, 1000);
           } else {
             setTimeout(() => {
               setClicked(0);
@@ -161,53 +165,35 @@ const SignInScreen = ({navigation, props}) => {
         }
       });
   };
-  const setCheck = async value => {
-    try {
-      await AsyncStorage.setItem('check', JSON.stringify(value));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const setId = async id => {
     try {
       await AsyncStorage.setItem('author', JSON.stringify(id));
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
   const setType = async type => {
     try {
       await AsyncStorage.setItem('rateType', JSON.stringify(type));
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
-  const setFirst = async first => {
-    try {
-      await AsyncStorage.setItem('firstName', first);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const setRow = async row => {
     try {
       await AsyncStorage.setItem('rowno', JSON.stringify(row));
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
-  const setLast = async last => {
-    try {
-      await AsyncStorage.setItem('lastName', last);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const setEmail = async email => {
     try {
       await AsyncStorage.setItem('email', email);
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
 
@@ -226,10 +212,10 @@ const SignInScreen = ({navigation, props}) => {
             style={{
               color: '#fff',
               position: 'absolute',
-              top: Platform.OS ==='android'?0:50,
-              right:Platform.OS ==='android'?0:45 ,
+              top: Platform.OS === 'android' ? 0 : 50,
+              right: Platform.OS === 'android' ? 0 : 45,
               fontSize: 18,
-              zIndex:999,
+              zIndex: 999,
               fontFamily: 'Raleway-Medium',
             }}>
             Skip
@@ -381,7 +367,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   textInput: {
-    height:48,
+    height: 48,
     flex: 1,
     padding: 6,
     paddingHorizontal: 15,

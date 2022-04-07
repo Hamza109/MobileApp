@@ -72,7 +72,7 @@ const [regId,setRegId]=useState()
         }
       });
     } catch (error) {
-      console.log(error);
+      error
     }
   };
   const getDeviceInfo = () => {
@@ -100,15 +100,15 @@ const [regId,setRegId]=useState()
   }
 
   const result = (texts) => {
-    console.log('test',text)
+
   
     info();
     
     if (texts) {
   
-      // analytics().setUserProperty('search_term', text);
-      // analytics().logEvent('search', {search_term: text});
-      // analytics().logSearch({search_term: text});
+      analytics().setUserProperty('search_term', text);
+      analytics().logEvent('search', {search_term: text});
+      analytics().logSearch({search_term: text});
 
       navigation.navigate('Result', {
         texts: `${texts}`,

@@ -66,7 +66,7 @@ const ArticlePreview = () => {
         setLoaded(true);
         setItems(json);
       })
-      .catch(err => {console.log('69',err)
+      .catch(err => {err
         throw err
         })
   }
@@ -86,7 +86,7 @@ const ArticlePreview = () => {
 
         setLoaded(true);
       })
-      .catch(err => {console.log('89:',err)
+      .catch(err => {err
         throw err
         })
   }
@@ -268,7 +268,7 @@ const ArticlePreview = () => {
                                       style={{
                                         color: '#00415e',
                                         position: 'absolute',
-                                        bottom:7,
+                                        bottom:7 ,
                                         fontFamily: 'Raleway-Medium',
                                         fontSize: wp('2.5%'),
                                       }}>

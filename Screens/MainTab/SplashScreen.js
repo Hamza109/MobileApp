@@ -24,7 +24,7 @@ const SplashScreen = ({navigation}) => {
   useEffect(()=>{
     
     setTimeout(() => {
-      navigation.push('MainTab');
+      navigation.navigate('MainTab');
     },2000);
   })
   // const getId = () => {

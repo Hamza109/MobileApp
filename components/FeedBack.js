@@ -12,131 +12,114 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { backendHost } from './apiConfig';
+import {backendHost} from './apiConfig';
 
-import { VStack,Stack,Container,HStack,Checkbox } from 'native-base';
+import {VStack, Stack, Container, HStack, Checkbox} from 'native-base';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Spinner,useToast } from 'native-base';
+import {Spinner, useToast} from 'native-base';
 const FeedBack = () => {
-  const navigation=useNavigation()
-  const toast=useToast()
-
+  const navigation = useNavigation();
+  const toast = useToast();
 
   const [data, setData] = useState([]);
 
   const [title, setTitle] = useState('');
   const [article, setArticle] = useState('');
-  const [lastName,setLastname]=useState('');
-  const [email,setEmail]=useState('');
-  const [num,setNum]=useState('');
+  const [lastName, setLastname] = useState('');
+  const [email, setEmail] = useState('');
+  const [num, setNum] = useState('');
 
   const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
   const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-   
         if (value1 != null) {
-           setRegId(value1)
+          setRegId(value1);
         }
-    
       });
-    } catch (error) {
-  
-    }
+    } catch (error) {}
   };
   const getType = () => {
     try {
-      AsyncStorage.getItem('rateType')
-      .then(value2 => {
-
+      AsyncStorage.getItem('rateType').then(value2 => {
         if (value2 != null) {
           setRegType(value2);
         }
       });
     } catch (error) {
-console.log(error)
+      error;
     }
   };
-const isFocus= useIsFocused();
-  
-  useEffect(() => {
-   
-    if(isFocus){
-      
-     
-    getType();
-    }
- 
-    getId();
-  },[regId]);
+  const isFocus = useIsFocused();
 
-const [loading,setLoading]=useState(false)
+  useEffect(() => {
+    if (isFocus) {
+      getType();
+    }
+
+    getId();
+  }, [regId]);
+
+  const [loading, setLoading] = useState(false);
   const submitFeedbackForm = async e => {
-if(article != '')
-{
-   setLoading(true)
-    axios.defaults.withCredentials = true
-    axios.post(`${backendHost}/admin/create/feedback  `, {
-        "firstname":title,
-        "lastname": lastName,
-        "email": email,
-        "phonenumber": num,
-        "feedback": article,
-    
-    })
-      .then(res => {
+    if (article != '') {
+      setLoading(true);
+      axios.defaults.withCredentials = true;
+      axios
+        .post(`${backendHost}/admin/create/feedback  `, {
+          firstname: title,
+          lastname: lastName,
+          email: email,
+          phonenumber: num,
+          feedback: article,
+        })
+        .then(res => {
           if (res.data === 1) {
-            setLoading(false)
+            setLoading(false);
             toast.show({
-              title: "Feedback submitted successfully!",
-        description:'Thankyou for your feedback.',
-              status: "success",
-              placement:"bottom",
-              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
-            })
+              title: 'Feedback submitted successfully!',
+              description: 'Thankyou for your feedback.',
+              status: 'success',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
           } else {
-            setLoading(false)
+            setLoading(false);
             toast.show({
-              title: "Some error occured",
-        description:'Try again',
-              status: "warning",
-              placement:"bottom",
-              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
-            })
+              title: 'Some error occured',
+              description: 'Try again',
+              status: 'warning',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
           }
- 
-      })
-      .catch(err => {console.log(err)
-        throw err
-        })}
-        else{
-          setLoading(false)
-          Alert.alert('Enter feedback')
-        }
+        })
+        .catch(err => {
+          err;
+          throw err;
+        });
+    } else {
+      setLoading(false);
+      Alert.alert('Enter feedback');
+    }
   };
 
   const titleValue = () => {
     return (
-      
       <View style={styles.action}>
         <TextInput
           placeholder="Enter first name"
           placeholderTextColor="#00415e"
-          style={[
-            styles.textInputTitle,
-            {
-              padding: 10,
-            },
-          ]}
+          style={[styles.textInputTitle, {color: '#00415e', padding: 10}]}
           autoCapitalize="none"
           value={title}
           returnKeyType="done"
@@ -161,6 +144,7 @@ if(article != '')
           style={[
             styles.textInput,
             {
+              color: '#00415e',
               padding: 10,
             },
           ]}
@@ -177,13 +161,13 @@ if(article != '')
     return (
       <View style={styles.article}>
         <TextInput
-        placeholder='Enter your feedback'
+          placeholder="Enter your feedback"
           placeholderTextColor="#00415e"
-          
           secureTextEntry={data.secureTextEntry ? true : false}
           style={[
             styles.textInputArticle,
             {
+              color: '#00415e',
               height: 120,
               fontSize: 15,
             },
@@ -198,91 +182,132 @@ if(article != '')
     );
   };
 
- 
-
   return (
-    <View style={{flex:1,backgroundColor:'#fff',padding:10}}>
-    <ScrollView>
-<Stack space={4}>
-     <VStack space={2}>
-       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter first name (optional)</Text>
-       {titleValue()}
-     </VStack>
-     <VStack space={2}>
-     <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter last name (optional)</Text>
-     <View style={styles.action}>
-        <TextInput
-          placeholder="Enter last name"
-          placeholderTextColor="#00415e"
-          style={[
-            styles.textInputTitle,
-            {
-              padding: 10,
-            },
-          ]}
-          autoCapitalize="none"
-          value={lastName}
-          returnKeyType="done"
-          onChangeText={e => setLastname(e)}
-        />
+    <View style={{flex: 1, backgroundColor: '#fff', padding: 10}}>
+      <ScrollView>
+        <Stack space={4}>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Enter first name (optional)
+            </Text>
+            {titleValue()}
+          </VStack>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Enter last name (optional)
+            </Text>
+            <View style={styles.action}>
+              <TextInput
+                placeholder="Enter last name"
+                placeholderTextColor="#00415e"
+                style={[
+                  styles.textInputTitle,
+                  {
+                    color: '#00415e',
+                    padding: 10,
+                  },
+                ]}
+                autoCapitalize="none"
+                value={lastName}
+                returnKeyType="done"
+                onChangeText={e => setLastname(e)}
+              />
+            </View>
+          </VStack>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Enter email (optional)
+            </Text>
+            {remarks()}
+          </VStack>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Enter phone number (optional)
+            </Text>
+            <View style={styles.action}>
+              <TextInput
+                placeholder="Enter phone number"
+                placeholderTextColor="#00415e"
+                style={[
+                  styles.textInputTitle,
+                  {
+                    color: '#00415e',
+                    padding: 10,
+                  },
+                ]}
+                autoCapitalize="none"
+                value={num}
+                returnKeyType="done"
+                keyboardType="numeric"
+                onChangeText={e => setNum(e)}
+              />
+            </View>
+          </VStack>
+          <VStack space={0}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Enter your feedback
+            </Text>
+            {articles()}
+          </VStack>
 
-      </View>
-      </VStack>
-     <VStack space={2}>
-       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter email (optional)</Text>
-       {remarks()}
-     </VStack>
-     <VStack space={2}>
-     <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter phone number (optional)</Text>
-     <View style={styles.action}>
-        <TextInput
-          placeholder="Enter phone number"
-          placeholderTextColor="#00415e"
-          style={[
-            styles.textInputTitle,
-            {
-              padding: 10,
-            },
-          ]}
-          autoCapitalize="none"
-          value={num}
-          returnKeyType="done"
-          keyboardType='numeric'
-          onChangeText={e => setNum(e)}
-        />
-
-      </View>
-      </VStack>
-     <VStack space={0}>
-       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Enter your feedback</Text>
-       {articles()}
-     </VStack>
-  
-     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
-     <TouchableOpacity style={styles.btn} onPress={e =>{submitFeedbackForm(e)}}>
-       <HStack space={2}>
-        <Text style={styles.textBtn}>Submit</Text>
-        {loading ? (
-      <View>
-     
-     <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-     
-      
-      </View>
-          ) : null}
-          </HStack>
-      </TouchableOpacity>
-      </View>
-      
-
-     </Stack>
-
-       
-    </ScrollView>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={e => {
+                submitFeedbackForm(e);
+              }}>
+              <HStack space={2}>
+                <Text style={styles.textBtn}>Submit</Text>
+                {loading ? (
+                  <View>
+                    <Spinner
+                      accessibilityLabel="Loading posts"
+                      color="#00415e"
+                      size="lg"
+                    />
+                  </View>
+                ) : null}
+              </HStack>
+            </TouchableOpacity>
+          </View>
+        </Stack>
+      </ScrollView>
     </View>
   );
 };
@@ -295,28 +320,22 @@ const styles = StyleSheet.create({
     padding: 40,
     margin: 0,
     backgroundColor: '#8cd4eb',
-  
-    alignItems:'center'
-  },
-  body:{
 
+    alignItems: 'center',
+  },
+  body: {
     borderWidth: 1,
-    backgroundColor:'#fff',
+    backgroundColor: '#fff',
     Color: 'lightgrey',
     borderColor: 'lightgrey',
     marginTop: Platform.OS === 'ios' ? 0 : -35,
     width: 380,
-   
-
   },
-  textBody:{
-      
-      padding:5,
-      fontSize:18,
-      fontWeight:'bold',
-textAlign:'center',
-
-
+  textBody: {
+    padding: 5,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   box: {
     backgroundColor: '#fff',
@@ -327,10 +346,9 @@ textAlign:'center',
     borderWidth: 1,
     Color: 'lightgrey',
     borderColor: 'lightgrey',
-    position:'relative',
-    left:10,
+    position: 'relative',
+    left: 10,
     width: 358,
-  
   },
   textCard: {
     padding: 10,
@@ -374,7 +392,7 @@ textAlign:'center',
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-    fontFamily:'Raleway-Regular',
+    fontFamily: 'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
@@ -382,32 +400,31 @@ textAlign:'center',
     marginBottom: 10,
     marginVertical: 0,
 
-    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
   },
   textInputTitle: {
     borderRadius: 15,
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-fontFamily:'Raleway-Regular',
+    fontFamily: 'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
-    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
     fontSize: 16,
-      marginBottom: -10,
+    marginBottom: -10,
     marginVertical: 0,
-
   },
   textInputArticle: {
     flex: 1,
     borderRadius: 15,
     color: 'grey',
     fontSize: 20,
-    textAlignVertical:'top',
-    paddingHorizontal:10,
-    fontFamily:'Raleway-Regular',
-    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    textAlignVertical: 'top',
+    paddingHorizontal: 10,
+    fontFamily: 'Raleway-Regular',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
   },
   errorMsg: {
     color: '#FF0000',
@@ -429,21 +446,19 @@ fontFamily:'Raleway-Regular',
   textBtn: {
     color: '#00415e',
     textAlign: 'center',
-    fontSize:20
+    fontSize: 20,
   },
 
   btn: {
     justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
     borderWidth: 0,
-    borderRadius:15,
+    borderRadius: 15,
     borderColor: 'rgba(0, 65, 94, 0.2)',
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
-    marginTop:5,
-    marginBottom:5,
+    marginTop: 5,
+    marginBottom: 5,
     width: wp('60%'),
     height: hp('6%'),
-  
-  
   },
 });
