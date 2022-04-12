@@ -14,11 +14,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useToast } from 'native-base';
+import {useToast} from 'native-base';
 const DocComment = props => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
-const toast=useToast();
+  const toast = useToast();
   const [cmtText, setCmtText] = useState();
   const [succAlert, setAlert] = useState('');
   const [regId, setRegId] = useState();
@@ -31,7 +31,7 @@ const toast=useToast();
         }
       });
     } catch (error) {
-      error
+      error;
     }
   };
   const getType = () => {
@@ -41,7 +41,9 @@ const toast=useToast();
           setRegType(value2);
         }
       });
-    } catch (error) { error}
+    } catch (error) {
+      error;
+    }
   };
   useEffect(() => {
     getId();
@@ -57,13 +59,17 @@ const toast=useToast();
           `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.docid}&targetTypeid=1&cmd=rateAsset`,
         )
         .then(res => {
-          Alert.alert('comment Successful','Comment will be displayed once reviewed');
+          Alert.alert(
+            'Comment Successful',
+            'Comment will be displayed once reviewed',
+          );
           setCmtText('');
         })
 
-        .catch(err => {err;
-          throw err
-          })
+        .catch(err => {
+          err;
+          throw err;
+        });
     } else {
       Alert.alert('Enter comment');
     }

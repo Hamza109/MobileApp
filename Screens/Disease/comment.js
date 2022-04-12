@@ -14,13 +14,13 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useToast } from 'native-base';
+import {useToast} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 import {Card} from 'react-native-paper';
 const Comment = props => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
-  const toast=useToast();
+  const toast = useToast();
   const [cmtText, setCmtText] = useState();
   const [succAlert, setAlert] = useState('');
   const [regId, setRegId] = useState();
@@ -33,7 +33,7 @@ const Comment = props => {
         }
       });
     } catch (error) {
-  error
+      error;
     }
   };
   const getType = () => {
@@ -43,7 +43,9 @@ const Comment = props => {
           setRegType(value2);
         }
       });
-    } catch (error) { error}
+    } catch (error) {
+      error;
+    }
   };
   useEffect(() => {
     getId();
@@ -51,36 +53,28 @@ const Comment = props => {
   }, []);
 
   const goto = () => {
+    Alert.alert(
+      'Comment Successful',
+      'Comment will be displayed once reviewed',
+    );
 
-    toast.show({
-      title: "Comment Successfull",
-description:'Comment will be displayed once reviewed.',
-      status: "info",
-      placement:"top",
-      duration:2000,
-      style:{borderRadius:20,width:wp('70%'),marginBottom:20}
-    })
-
-
-  return true;
-};
+    return true;
+  };
   const postComment = e => {
-
-
     if (cmtText != '') {
       axios
         .post(
           `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
         )
         .then(res => {
-
-        goto();
+          goto();
           setCmtText('');
         })
 
-        .catch(err => {err
-          throw err
-          })
+        .catch(err => {
+          err;
+          throw err;
+        });
     } else {
       Alert.alert('Enter comment');
     }
@@ -110,8 +104,6 @@ description:'Comment will be displayed once reviewed.',
                 setCmtText(e);
               }}
             />
-
-           
 
             <TouchableOpacity
               style={[s.btnTouchable, s.btn, s.btnSecondary, styles.button]}

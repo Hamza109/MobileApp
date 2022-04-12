@@ -66,7 +66,7 @@ const SignUpScreen = ({navigation, props}) => {
   const [promo, setPromo] = useState(null);
   const [validEmail, setValidEmail] = useState();
   const [success, setSuccess] = useState(false);
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] =
     usePasswordValidation({
       firstPassword: password.firstPassword,
@@ -90,12 +90,16 @@ const SignUpScreen = ({navigation, props}) => {
     }
   };
   const SignUpForm = () => {
-    setLoading(true)
+    setLoading(true);
     setClicked(1);
     setTimeout(() => {
-      setLoading(false)
-      setClicked(0);
-    }, 3000);
+      if(!validEmail)
+      {
+      setClicked(0)
+      setLoading(false);
+      }
+     
+    }, 2000);
     var res;
 
     if (validEmail && upperCase && lowerCase && match) {
@@ -106,17 +110,8 @@ const SignUpScreen = ({navigation, props}) => {
           {headers: {'Access-Control-Allow-Credentials': true}},
         )
         .then(response => {
-          if (response.data == 'Email Address already Exists in the System') {
-            setLoading(false)
-            toast.show({
-              title: 'Email already exists!',
-              description: 'Welcome To All Cures',
-              status: 'warning',
-              placement: 'bottom',
-              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-            });
-          } else if (response.data.registration_id) {
-            setLoading(false)
+          if (response.data.registration_id) {
+            setLoading(false);
             toast.show({
               title: 'Signup Successful',
               description: 'Welcome To All Cures',
@@ -124,18 +119,30 @@ const SignUpScreen = ({navigation, props}) => {
               placement: 'bottom',
               style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
             });
-
+            
             navigation.navigate('MainTab'),
-              setId(response.data.registration_id),
-              setType(response.data.registration_type),
-              setFirst(response.data.first_name),
-              setLast(response.data.last_name),
-              setRow(response.data.rowno);
-            setEmail(response.data.email_address);
+            setId(response.data.registration_id),
+            setType(response.data.registration_type),
+            setFirst(response.data.first_name),
+            setLast(response.data.last_name),
+            setRow(response.data.rowno);
+          setEmail(response.data.email_address);
+
+          } else if (response.data == 'Email Address already Exists in the System') {
+            setLoading(false);
+            toast.show({
+              title: 'Email already exists!',
+              description: 'Try with another email',
+              status: 'warning',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
+
+           
           }
         })
         .catch(res => {
-          setLoading(false)
+          setLoading(false);
           Alert.alert('some error occured');
         });
     } else {
@@ -210,7 +217,6 @@ const SignUpScreen = ({navigation, props}) => {
   };
 
   const afterSignUp = () => {
-
     if (emailExists === true) {
       return Alert.alert('Email already exist');
     } else if (success === true) {
@@ -312,6 +318,7 @@ const SignUpScreen = ({navigation, props}) => {
                 autoCapitalize="none"
                 returnKeyType="done"
                 onChangeText={e => validate(e)}
+            
               />
             </View>
             <View style={styles.action}>
@@ -358,7 +365,6 @@ const SignUpScreen = ({navigation, props}) => {
 
               {buttonClick === 1 ? (
                 <View>
-                  
                   {!validEmail && Alert.alert('Enter Valid Email')}
                   {!validLength &&
                     Alert.alert(
@@ -422,30 +428,27 @@ const SignUpScreen = ({navigation, props}) => {
                 },
                 SignUpForm)
               }>
-                <HStack space={2}>
-              <Text
-                style={[
-                  styles.textSign,
-                  {
-                    fontFamily: 'Raleway-Bold',
-                    color: '#00415e',
-                  },
-                ]}>
-                Sign Up
-              </Text>
-              {loading ? (
-      <View>
-     
-     <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-     
-      
-      </View>
-          ) : null}
-          </HStack>
+              <HStack space={2}>
+                <Text
+                  style={[
+                    styles.textSign,
+                    {
+                      fontFamily: 'Raleway-Bold',
+                      color: '#00415e',
+                    },
+                  ]}>
+                  Sign Up
+                </Text>
+                {loading ? (
+                  <View>
+                    <Spinner
+                      accessibilityLabel="Loading posts"
+                      color="#00415e"
+                      size="lg"
+                    />
+                  </View>
+                ) : null}
+              </HStack>
             </TouchableOpacity>
             <VStack space={50}>
               <TouchableOpacity>

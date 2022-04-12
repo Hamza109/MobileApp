@@ -550,7 +550,7 @@ useEffect(()=>{
               </ScrollView>
             </Modal.Body>
             <Modal.Footer>
-              <DocComment docid={items.docid}/>
+              <DocComment docid={items.rowno}/>
             </Modal.Footer>
           </Modal.Content>
         </Modal>

@@ -70,7 +70,7 @@ const FeedBack = () => {
   }, [regId]);
 
   const [loading, setLoading] = useState(false);
-  const submitFeedbackForm = async e => {
+  const submitFeedbackForm =  e => {
     if (article != '') {
       setLoading(true);
       axios.defaults.withCredentials = true;
