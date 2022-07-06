@@ -258,7 +258,7 @@ const HomeScreen = ({navigation, route}) => {
               width: wp('30%'),
               height: 120,
               backgroundColor: '#00415e',
-
+               
               borderRadius: 20,
               alignItems: 'center',
             }}

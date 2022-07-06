@@ -196,6 +196,8 @@ const SignInScreen = ({navigation, props}) => {
       error;
     }
   };
+  const [borderWidth, setborderWidth] = useState(1);
+  const [pBorderWidth, setPborderWidth] = useState(1);
 
   return (
     <View style={styles.container}>
@@ -228,9 +230,11 @@ const SignInScreen = ({navigation, props}) => {
             </View>
 
             <VStack space={3}>
-              <View style={styles.action}>
+              <View style={[styles.action, {borderWidth: borderWidth}]}>
                 <TextInput
                   placeholder="Enter your email"
+                  onFocus={() => setborderWidth(2)}
+                  onBlur={() => setborderWidth(1)}
                   placeholderTextColor="#fff"
                   style={[
                     styles.textInput,
@@ -238,6 +242,7 @@ const SignInScreen = ({navigation, props}) => {
                       color: '#fff',
                     },
                   ]}
+                  onfo
                   autoCapitalize="none"
                   value={data.email}
                   returnKeyType="done"
@@ -250,10 +255,12 @@ const SignInScreen = ({navigation, props}) => {
                 ) : null}
               </View>
 
-              <View style={styles.action}>
+              <View style={[styles.action, {borderWidth: pBorderWidth}]}>
                 <TextInput
                   placeholder="Enter your password"
                   placeholderTextColor="#fff"
+                  onFocus={() => setPborderWidth(2)}
+                  onBlur={() => setPborderWidth(1)}
                   secureTextEntry={data.secureTextEntry ? true : false}
                   style={[
                     styles.textInput,
