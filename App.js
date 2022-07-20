@@ -15,7 +15,7 @@ import {getUniqueId, getManufacturer} from 'react-native-device-info';
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
+  StatusBar,                                                  
   StyleSheet,
   Text,
   useColorScheme,

@@ -15,11 +15,12 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
+import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
@@ -34,6 +35,7 @@ import {
 import CenterWell from '../Disease/CenterWell';
 import {backendHost} from '../../components/apiConfig';
 import ArticlePreview from './ArticlePreview';
+import ProtectedPreview from '../Subscription/ProtectedArticles';
 import {Paragraph} from 'react-native-paper';
 import {
   widthPercentageToDP as wp,
@@ -53,7 +55,7 @@ const HomeScreen = ({navigation, route}) => {
   const [backPressed, setBack] = useState(1);
   const [visible, setVisible] = useState(false);
   const [isloaded, setIsLoaded] = useState(false);
-
+  const [activeIndex,setActiveIndex]=useState(null)
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const containerStyle = {backgroundColor: 'white', padding: 20, height: 400};
@@ -62,12 +64,9 @@ const HomeScreen = ({navigation, route}) => {
   };
   const remove = async () => {
     try {
-      await AsyncStorage.multiRemove([
-     
-        'mail1'
-      ]);
+      await AsyncStorage.multiRemove(['mail1']);
     } catch (error) {
-   error
+      error;
     }
   };
   const backAction = () => {
@@ -78,53 +77,29 @@ const HomeScreen = ({navigation, route}) => {
           onPress: () => null,
           style: 'cancel',
         },
-        {text: 'YES', onPress: () =>{ BackHandler.exitApp(),remove()} },
+        {
+          text: 'YES',
+          onPress: () => {
+            BackHandler.exitApp(), remove();
+          },
+        },
       ]);
       return true;
     }
   };
-  const postSubscription = val => {
-    var phoneNumber = val.split('+')[1];
 
-    var countryCodeLength = phoneNumber.length % 10;
-    var countryCode = phoneNumber.slice(0, countryCodeLength);
-    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-    if (phoneNumber) {
-      axios
-        .post(`${backendHost}/users/subscribe/${StringValue}`, {
-          nl_subscription_disease_id: '0',
-          nl_sub_type: 1,
-          nl_subscription_cures_id: '0',
-          country_code: `'${countryCode}'`,
-        })
-        .then(res => {
-          if (res.data === 1) {
-            Alert.alert('You have successfully subscribed to our Newsletter');
-          } else {
-            Alert.alert('Some error occured! Please try again later.');
-          }
-        })
-        .catch(err => {
-          Alert.alert('Some error occured! Please try again later.');
-        });
-    } else {
-      Alert.alert('Please enter a valid number!');
-    }
-  };
   const [isSignedIn, setIsSignedIn] = useState();
 
-  const getId =  () => {
+  const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-        if(value1 == null)
-    {
-       // navigation.navigate('Cures',{screen:'My Cures'})
-       navigation.navigate('SignIn')
-  
-    }
-    else{
-       navigation.navigate('CreateScreenHome')
-    }
+        if (value1 == null) {
+          setRegId(value1);
+          // navigation.navigate('Cures',{screen:'My Cures'})
+          navigation.navigate('SignIn');
+        } else {
+          navigation.navigate('CreateScreenHome');
+        }
       });
     } catch (error) {}
   };
@@ -139,14 +114,21 @@ const HomeScreen = ({navigation, route}) => {
     } catch (error) {}
   };
   const isFocuss = useIsFocused();
-  useEffect(()=>{
-  
-
-  })
   useEffect(() => {
-  
+    try {
+      AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(value1);
+          // navigation.navigate('Cures',{screen:'My Cures'})
+        } else {
+          null;
+        }
+      });
+    } catch (error) {}
+  });
+  useEffect(() => {
     if (isFocuss) {
-    
+      console.log('prop1', regId);
       getType();
 
       BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -155,15 +137,30 @@ const HomeScreen = ({navigation, route}) => {
     }
   });
 
-
   const DATA1 = [
-    {name: 'Ayurveda',type:1, source: require('../../assets/img/ayurvedic.jpg')},
+    {
+      name: 'Ayurveda',
+      type: 1,
+      source: require('../../assets/img/ayurvedic.jpg'),
+    },
 
-    {name: 'Unani',type:2, source: require('../../assets/img/unani.jpg')},
-    {name: 'Chinese',type:4, source: require('../../assets/img/chinese.jpg')},
-    {name: 'Persian', type:3,source: require('../../assets/img/medicine.jpg')},
-    {name: 'Scandavian',type:5, source: require('../../assets/img/herbal.jpg')},
-    {name: 'Japanese', type:6, source: require('../../assets/img/homeopathy.jpg')},
+    {name: 'Unani', type: 2, source: require('../../assets/img/unani.jpg')},
+    {name: 'Chinese', type: 4, source: require('../../assets/img/chinese.jpg')},
+    {
+      name: 'Persian',
+      type: 3,
+      source: require('../../assets/img/medicine.jpg'),
+    },
+    {
+      name: 'Scandavian',
+      type: 5,
+      source: require('../../assets/img/herbal.jpg'),
+    },
+    {
+      name: 'Japanese',
+      type: 6,
+      source: require('../../assets/img/homeopathy.jpg'),
+    },
   ];
   const [cont, setCont] = useState([]);
   function Create() {
@@ -184,21 +181,19 @@ const HomeScreen = ({navigation, route}) => {
   function User() {
     return (
       <Svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="42"
-      height="42"
-      fill="none"
-      viewBox="0 0 42 42"
-    >
-      <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
-      <Path
-        stroke="#fff"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="4"
-        d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"
-      ></Path>
-    </Svg>
+        xmlns="http://www.w3.org/2000/svg"
+        width="42"
+        height="42"
+        fill="none"
+        viewBox="0 0 42 42">
+        <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
+        <Path
+          stroke="#fff"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="4"
+          d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"></Path>
+      </Svg>
     );
   }
   const [row, setRow] = useState();
@@ -215,37 +210,23 @@ const HomeScreen = ({navigation, route}) => {
   const getRow = () => {
     try {
       AsyncStorage.getItem('rowno').then(value2 => {
-
         if (value2 != null) {
           setRow(Number(value2));
         }
       });
     } catch (error) {
-      error
+      error;
     }
   };
   const isFocus = useIsFocused();
   useEffect(() => {
     if (isFocus) {
       getRow();
-
-  
     }
   }, [row]);
-  const check=()=>{
 
-    if(regId.length === 0)
-    {
-       // navigation.navigate('Cures',{screen:'My Cures'})
-       navigation.navigate('SignIn')
-  
-    }
-    else{
-       navigation.navigate('CreateScreenHome')
-    }
-}
   function renderItemTrend({item, index}) {
-    const {name, source, color,type} = item;
+    const {name, source, color, type} = item;
     return (
       <View style={{marginRight: 12}}>
         <TouchableOpacity
@@ -258,7 +239,7 @@ const HomeScreen = ({navigation, route}) => {
               width: wp('30%'),
               height: 120,
               backgroundColor: '#00415e',
-               
+
               borderRadius: 20,
               alignItems: 'center',
             }}
@@ -275,7 +256,6 @@ const HomeScreen = ({navigation, route}) => {
           </Card>
         </TouchableOpacity>
         <Text
-      
           adjustsFontSizeToFit
           style={{
             color: '#00415e',
@@ -293,11 +273,13 @@ const HomeScreen = ({navigation, route}) => {
   }
 
   return (
-    
-    <View style={{flex: 1,backgroundColor:'#fff'}}>
-     <StatusBar backgroundColor="#00415e" barStyle="light-content" />
-      <Stack space={3} alignItems="center" bg="white" style={{marginTop:Platform.OS === 'android'?0:20}} >
-        
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
+      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+      <Stack
+        space={3}
+        alignItems="center"
+        bg="white"
+        style={{marginTop: Platform.OS === 'android' ? 0 : 20}}>
         <HStack mt="4" mb="1" space={1} alignItems="center">
           <View style={{position: 'relative', top: 2, right: 0}}>
             <TouchableOpacity
@@ -305,7 +287,7 @@ const HomeScreen = ({navigation, route}) => {
               onPress={() => {
                 navigation.openDrawer();
               }}>
-              {<User/>}
+              {<User />}
             </TouchableOpacity>
           </View>
 
@@ -317,13 +299,13 @@ const HomeScreen = ({navigation, route}) => {
             <View style={styles.card}>
               <HStack ml="2" space={110} alignItems="center">
                 <Text
-                adjustsFontSizeToFit
-                numberOfLines={1}
+                  adjustsFontSizeToFit
+                  numberOfLines={1}
                   style={{
                     fontSize: wp('4.5%'),
                     color: '#00415e',
                     fontFamily: 'Raleway-Regular',
-                    justifyContent:'center'
+                    justifyContent: 'center',
                   }}>
                   Search Cures
                 </Text>
@@ -331,10 +313,8 @@ const HomeScreen = ({navigation, route}) => {
               </HStack>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => getId()}>
-            <Create  />
+          <TouchableOpacity activeOpacity={0.8} onPress={() => getId()}>
+            <Create />
           </TouchableOpacity>
         </HStack>
       </Stack>
@@ -346,16 +326,20 @@ const HomeScreen = ({navigation, route}) => {
         }>
         <Stack mt="2" ml="2" space={3}>
           <HStack space={1}>
-          <Text
-          
-            style={{
-              fontSize: wp('5%'),
-              color: '#00415e',
-              fontFamily: 'Raleway-Regular',
-            }}>
-            Cures By Category
-          </Text>
-          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
+            <Text
+              style={{
+                fontSize: wp('5%'),
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}>
+              Cures By Category
+            </Text>
+            <Icon
+              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+              name="caret-right"
+              color={'#00415e'}
+              size={25}
+            />
           </HStack>
           <View
             style={{
@@ -399,7 +383,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-            
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -407,7 +390,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Arthritis
                   </Text>
@@ -443,7 +426,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-               
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -451,7 +433,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Thyroid
                   </Text>
@@ -487,7 +469,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-            
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -495,13 +476,13 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Diabetes
                   </Text>
                 </Card>
               </TouchableOpacity>
-        
+
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
@@ -532,7 +513,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-          
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -540,7 +520,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Insomnia
                   </Text>
@@ -574,7 +554,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-              
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -582,7 +561,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Skin Care
                   </Text>
@@ -617,7 +596,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-                  
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -625,7 +603,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Hyper Tension
                   </Text>
@@ -658,7 +636,6 @@ const HomeScreen = ({navigation, route}) => {
                   />
 
                   <Text
-           
                     style={{
                       color: '#fff',
                       fontWeight: 'bold',
@@ -666,7 +643,7 @@ const HomeScreen = ({navigation, route}) => {
                       top: 6,
                       left: 6,
                       fontFamily: 'Raleway',
-                      fontSize:wp('3%')
+                      fontSize: wp('3%'),
                     }}>
                     Psorasis
                   </Text>
@@ -675,49 +652,83 @@ const HomeScreen = ({navigation, route}) => {
             </ScrollView>
           </View>
           <HStack space={1}>
-          <Text
-       
-            style={{
-              fontSize: wp('5%'),
-              color: '#00415e',
-              fontFamily: 'Raleway-Regular',
-            }}>
-          System Of Medicine
-          </Text>
-          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
+            <Text
+              style={{
+                fontSize: wp('5%'),
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}>
+              System Of Medicine
+            </Text>
+            <Icon
+              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+              name="caret-right"
+              color={'#00415e'}
+              size={25}
+            />
           </HStack>
           <View style={{alignItems: 'center', width: wp('100%')}}>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
+          <Carousel
               data={DATA1}
               renderItem={renderItemTrend}
+              sliderWidth={370}
+              firstItem={1}
+              loop={true}
+              inactiveSlideOpacity={0.8}
+              itemWidth={120}
+              onSnapToItem={index => setActiveIndex(index)}
+              
             />
           </View>
-<HStack space={1}>
-          <Text
-       
-            style={{
-              fontSize: wp('5%'),
-              color: '#00415e',
-              fontFamily: 'Raleway-Regular',
-            }}>
-            Recent Cures
-          </Text>
-          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
+          <HStack space={1}>
+            <Text
+              style={{
+                fontSize: wp('5%'),
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}>
+              Recent Cures
+            </Text>
+            <Icon
+              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+              name="caret-right"
+              color={'#00415e'}
+              size={25}
+            />
           </HStack>
           <ArticlePreview />
           <HStack space={1}>
-          <Text
-        
-            style={{
-              fontSize: 20,
-              color: '#00415e',
-              fontFamily: 'Raleway-Regular',
-            }}>
-            Top Doctors
-          </Text>
-          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
+            <Text
+              style={{
+                fontSize: wp('5%'),
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}>
+              Recent Cures
+            </Text>
+            <Icon
+              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+              name="caret-right"
+              color={'#00415e'}
+              size={25}
+            />
+          </HStack>
+          <ProtectedPreview reg_Id={regId} />
+          <HStack space={1}>
+            <Text
+              style={{
+                fontSize: 20,
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}>
+              Top Doctors
+            </Text>
+            <Icon
+              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+              name="caret-right"
+              color={'#00415e'}
+              size={25}
+            />
           </HStack>
           <DocPreview />
         </Stack>
@@ -727,7 +738,6 @@ const HomeScreen = ({navigation, route}) => {
 };
 
 export default HomeScreen;
-const width = Dimensions.get('screen').width;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
@@ -741,8 +751,8 @@ const styles = StyleSheet.create({
     height: 55,
     fontSize: 20,
     borderRadius: 15,
-    
-    justifyContent:'center'
+
+    justifyContent: 'center',
   },
   inCard: {
     flexDirection: 'row',

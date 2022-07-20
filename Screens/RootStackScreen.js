@@ -27,14 +27,15 @@ import Subscribe from '../components/Subscribe';
 import Feedback from '../components/FeedBack';
 import Forgetpass from './login/ForgetPass';
 import MyCures from './MainTab/MyCures';
+import SubPlan from './Subscription/SubPlan';
 
 const Stack = createStackNavigator();
 
 const RootStack = () => {
   const navigation = useNavigation();
-  const getId =async () => {
+  const getId = async () => {
     try {
-     await  AsyncStorage.getItem('author').then(value1 => {
+      await AsyncStorage.getItem('author').then(value1 => {
         if (value1 != null) {
           setRegId(value1);
         } else {
@@ -42,7 +43,7 @@ const RootStack = () => {
         }
       });
     } catch (error) {
-     error;
+      error;
     }
   };
   return (
@@ -68,7 +69,6 @@ const RootStack = () => {
         options={{headerShown: false}}
       />
 
-     
       <Stack.Screen
         name="CreateScreenHome"
         component={CreateScreenHome}
@@ -79,12 +79,12 @@ const RootStack = () => {
         component={Result}
         options={{headerShown: null, headerLeft: null}}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="MainTab"
         component={DrawerMenu}
         options={{headerShown: null, headerLeft: null}}
       />
-        <Stack.Screen
+      <Stack.Screen
         name="MyCures"
         component={MyCures}
         options={{headerTitle: 'MyCures'}}
@@ -94,16 +94,8 @@ const RootStack = () => {
         component={Disease}
         options={{headerShown: null, headerLeft: null}}
       />
-         <Stack.Screen
-        name="Subscribe"
-        component={Subscribe}
-      
-      />
-         <Stack.Screen
-        name="Feedback"
-        component={Feedback}
-      
-      />
+      <Stack.Screen name="Subscribe" component={Subscribe} />
+      <Stack.Screen name="Feedback" component={Feedback} />
       <Stack.Screen
         name="searchArt"
         component={SearchArt}
@@ -142,7 +134,20 @@ const RootStack = () => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{headerShown: true,headerLeft:()=>(<Icon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('MainTab')}}/>)}}
+        options={{
+          headerShown: true,
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              style={{marginLeft: 10}}
+              color={'#00415e'}
+              size={28}
+              onPress={() => {
+                navigation.navigate('MainTab');
+              }}
+            />
+          ),
+        }}
       />
       <Stack.Screen
         name="Verify"
@@ -163,6 +168,11 @@ const RootStack = () => {
         name="SearchDoc"
         component={SearchDoc}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SubPlan"
+        component={SubPlan}
+        options={{headerTitle: 'Subscription Plans'}}
       />
     </Stack.Navigator>
   );
