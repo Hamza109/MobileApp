@@ -14,33 +14,32 @@ import Published from '../mycures/Publish';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import All from '../mycures/All';
-import { widthPercentageToDP } from 'react-native-responsive-screen';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 const Tab = createMaterialTopTabNavigator();
 const MyCures = () => {
-
-
-
-
-
-
   return (
     <>
       <Tab.Navigator
         initialRouteName="All"
         screenOptions={{
-      
-          tabBarStyle: {padding: 0,width:widthPercentageToDP('100%')},
+          tabBarIndicatorStyle: {color: '#00415e'},
+          tabBarIndicatorContainerStyle:{color:'#00415e'},
+        
+          tabBarStyle: {padding: 0, width: widthPercentageToDP('100%')},
           tabBarInactiveTintColor: 'grey',
-          tabBarLabelStyle: {fontFamily: 'Raleway-Bold', fontSize: widthPercentageToDP('3%')},
+          tabBarLabelStyle: {
+            fontFamily: 'Raleway-Bold',
+            fontSize: widthPercentageToDP('3%'),
+          },
         }}>
         <Tab.Screen
           name="All"
           component={All}
           options={{
-            unmountOnBlur:true,
+            unmountOnBlur: true,
             headerShown: false,
             tabBarActiveTintColor: '#00415e',
             tabBarLabel: 'Article',
@@ -52,14 +51,13 @@ const MyCures = () => {
           name="Cures"
           component={Published}
           options={{
-            unmountOnBlur:true,
+            unmountOnBlur: true,
             headerShown: false,
             tabBarActiveTintColor: '#00415e',
             tabBarLabel: 'Cures',
             tabBarColor: '#fff',
           }}
         />
-
       </Tab.Navigator>
     </>
   );

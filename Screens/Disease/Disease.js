@@ -5,27 +5,25 @@ import {
   FlatList,
   StyleSheet,
   StatusBar,
-  BackHandler,
   Alert,
   Pressable,
   TouchableOpacity,
   Image,
   ToastAndroid,
   Share,
+  BackHandler,
   Platform,
 } from 'react-native';
+import LottieView from 'lottie-react-native';
 import {useToast} from 'native-base';
 import {Card} from 'react-native-paper';
 import AllPost from '../search/AllPost';
 import CenterWell1 from './CenterWell1';
 import CenterWell from './CenterWell';
-import Autocomplete from '../MainTab/Autocomplete';
-import {Portal} from 'react-native-paper';
 import {backendHost} from '../../components/apiConfig';
 import Comment from './comment';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {ScrollView, ImageBackground} from 'react-native';
-import {KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -36,20 +34,14 @@ import {
 } from 'react-native-responsive-screen';
 import Rating from '../../components/StarRating';
 import {
-  Container,
   Modal,
-  Button,
-  Input,
-  Heading,
   VStack,
   FormControl,
   Center,
   Stack,
   HStack,
   Box,
-  Spinner,
   Select,
-  NativeBaseProvider,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {useIsFocused} from '@react-navigation/native';
@@ -106,6 +98,20 @@ const Disease = ({navigation, route}) => {
       alert(error.message);
     }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.push('MainTab');
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const fetchTables = () => {
     Promise.all([
@@ -290,7 +296,7 @@ const Disease = ({navigation, route}) => {
         }
       })
       .catch(err => {
-     err;
+        err;
         throw err;
       });
   };
@@ -301,7 +307,7 @@ const Disease = ({navigation, route}) => {
         setShowValue(res.data);
       })
       .catch(err => {
-   err;
+        err;
         throw err;
       });
   };
@@ -314,11 +320,10 @@ const Disease = ({navigation, route}) => {
         }`,
       )
       .then(res => {
- 
         setRate(res.data[0].ratingVal);
       })
       .catch(err => {
- err;
+        err;
         throw err;
       });
   };
@@ -346,7 +351,6 @@ const Disease = ({navigation, route}) => {
   };
 
   const favorite = async status => {
-
     if (status != 0) {
       setStats(1);
 
@@ -360,7 +364,7 @@ const Disease = ({navigation, route}) => {
           }
         })
         .catch(err => {
-err;
+          err;
           throw err;
         });
     } else {
@@ -382,7 +386,7 @@ err;
           }
         })
         .catch(err => {
-    err;
+          err;
           throw err;
         });
     }
@@ -395,16 +399,14 @@ err;
 
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
           />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
         </HStack>
       </View>
     );
@@ -1009,9 +1011,7 @@ err;
                     </FormControl.Label>
                     <Select
                       width={wp('90%')}
-                      onValueChange={value =>
-                        setOption(value)
-                      }
+                      onValueChange={value => setOption(value)}
                       selectedValue={option}
                       isRequired
                       placeholder="Select Option">
@@ -1193,5 +1193,16 @@ const styles = StyleSheet.create({
     color: 'white',
     marginRight: 10,
     marginTop: 12,
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

@@ -8,6 +8,7 @@ import {
   FlatList,
   StyleSheet,
   StatusBar,
+  SafeAreaView,
   BackHandler,
   Alert,
   TouchableOpacity,
@@ -273,7 +274,8 @@ const HomeScreen = ({navigation, route}) => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <SafeAreaView>
       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
       <Stack
         space={3}
@@ -675,7 +677,7 @@ const HomeScreen = ({navigation, route}) => {
               firstItem={1}
               loop={true}
               inactiveSlideOpacity={0.8}
-              itemWidth={120}
+              itemWidth={125}
               onSnapToItem={index => setActiveIndex(index)}
               
             />
@@ -733,7 +735,8 @@ const HomeScreen = ({navigation, route}) => {
           <DocPreview />
         </Stack>
       </ScrollView>
-    </View>
+      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
@@ -741,7 +744,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-
     alignItems: 'center',
     justifyContent: 'center',
   },

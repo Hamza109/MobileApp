@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {Dimensions, ImageBackground} from 'react-native';
+import {Button} from 'react-native-paper';
 import {
   View,
   ScrollView,
   Text,
-  Button,
   FlatList,
   StyleSheet,
   StatusBar,
@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
-import {useIsFocused, useTheme} from '@react-navigation/native';
+import {useIsFocused, useNavigation, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import Autocomplete from '../MainTab/Autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,14 +44,20 @@ import {
 } from 'react-native-responsive-screen';
 import Carousel from 'react-native-snap-carousel';
 import {set} from 'react-native-reanimated';
+import RazorpayCheckout from 'react-native-razorpay';
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
-const SubPlan = props => {
+const SubPlan = ({route}) => {
+  const navigation = useNavigation();
+  const ids = route.params.ids;
+  const [titleId, setTitleId] = useState(ids);
   const [regId, setRegId] = useState();
-  const [subId, setSubId] = useState();
+  const [subId, setSubId] = useState(4);
   const [subId1, setSubId1] = useState();
   const [subId2, setSubId2] = useState();
   const [subId3, setSubId3] = useState();
   const [loading, setLoading] = useState(false);
+  const [priceId, setPriceId] = useState(49);
   const [priceId1, setPriceId1] = useState();
   const [priceId2, setPriceId2] = useState();
   const [priceId3, setPriceId3] = useState();
@@ -61,8 +67,9 @@ const SubPlan = props => {
   const [details1, setDetails1] = useState();
   const [details2, setDetails2] = useState();
   const [details3, setDetails3] = useState();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState();
   const [status, setStatus] = useState(0);
+
   const [isLoaded, setIsLoaded] = useState(false);
   function sub() {
     axios
@@ -70,7 +77,7 @@ const SubPlan = props => {
 
       .then(res => {
         console.log(res.data);
-        setItems(res.data);
+
         setSubId1(res.data[0].subscription_id);
         setSubId2(res.data[1].subscription_id);
         setSubId3(res.data[2].subscription_id);
@@ -98,19 +105,107 @@ const SubPlan = props => {
       });
     } catch (error) {}
   }
-
-  function postsub() {
+  function postAmount() {
     setLoading(true);
     axios
-      .post(`${backendHost}/subscription/create/${regId}/${subId}/${status}`)
+      .post(`${backendHost}/subscription/create_order`, {
+        amount: `${priceId}`,
+      })
+      .then(res => {
+        if (res.data) {
+          console.log('orderID', JSON.parse(res.data).id);
+
+          postData(
+            JSON.parse(res.data).amount,
+            JSON.parse(res.data).id,
+            JSON.parse(res.data).status,
+          );
+          postsub(
+            JSON.parse(res.data).amount,
+            JSON.parse(res.data).currency,
+            JSON.parse(res.data).id,
+          );
+
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        setLoading(false);
+        Alert.alert('Something went wrong', 'Please try again.');
+      });
+  }
+  function postUpdate(paymentId, orderID) {
+    axios
+      .put(`${backendHost}/subscription/updatepayment/"${orderID}"`, {
+        payment_id: paymentId,
+        status: 1,
+        razorpay_status: 'paid',
+      })
       .then(res => {
         if (res.data === 1) {
-          setLoading(false);
-          console.log('done');
-        } else {
-          setLoading(false);
-          console.log('error');
+          Alert.alert('Subscription', 'Payment Successful.', [
+            {
+              text: 'Ok',
+              onPress: () => {
+                navigation.push(`Disease`, {ids: `${titleId}`});
+              },
+            },
+          ]);
         }
+      })
+      .catch(err => {
+        setLoading(false);
+        Alert.alert('Something went wrong', 'Please try again.');
+      });
+  }
+
+  function postData(amount, orderId, statusId) {
+    axios
+      .post(
+        `${backendHost}/subscription/order/userid/${regId}/subsid/${subId}`,
+        {
+          amount: amount.toString(),
+          order_id: orderId.toString(),
+          razorpay_status: statusId.toString(),
+        },
+      )
+      .then(res => {
+        console.log('order', res.data);
+      })
+      .catch(err => {
+        setLoading(false);
+        Alert.alert('Something went wrong', 'Please try again.');
+      });
+  }
+
+  function postsub(amount, currency, orderId) {
+    var options = {
+      description: 'Credits towards consultation',
+      image: 'https://i.imgur.com/3g7nmJC.png',
+      currency: currency,
+      key: 'rzp_test_GgDGBdRu7fT3hC',
+      amount: amount,
+      name: 'Acme Corp',
+      order_id: orderId,
+      prefill: {
+        email: 'gaurav.kumar@example.com',
+        contact: '9191919191',
+        name: 'Gaurav Kumar',
+      },
+      theme: {color: '#53a20e'},
+    };
+    RazorpayCheckout.open(options)
+      .then(data => {
+        // handle success
+
+        postUpdate(
+          `${data.razorpay_payment_id}`,
+          `${data.razorpay_order_id.toString()}`,
+        );
+      })
+      .catch(error => {
+        // handle failure
+        alert(`Error: ${error.code} | ${error.description}`);
       });
   }
   useEffect(() => {
@@ -148,11 +243,11 @@ const SubPlan = props => {
 
   function postIndex(index) {
     index === 0
-      ? (setActiveIndex(index), setSubId(subId1))
+      ? (setActiveIndex(index), setSubId(subId1), setPriceId(priceId1))
       : index === 1
-      ? (setActiveIndex(index), setSubId(subId2))
+      ? (setActiveIndex(index), setSubId(subId2), setPriceId(priceId2))
       : index === 2
-      ? (setActiveIndex(index), setSubId(subId3))
+      ? (setActiveIndex(index), setSubId(subId3), setPriceId(priceId3))
       : null;
   }
 
@@ -224,13 +319,13 @@ const SubPlan = props => {
   }
   if (!isLoaded) {
     return (
-      <View>
+      <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
           <LottieView
             source={require('../../assets/animation/load.json')}
             autoPlay
             loop
-            style={{width: 50, height: 50}}
+            style={{width: 50, height: 50, justifyContent: 'center'}}
           />
         </HStack>
       </View>
@@ -238,6 +333,16 @@ const SubPlan = props => {
   } else {
     return (
       <View style={styles.container}>
+        {loading ? (
+          <View style={styles.loading}>
+            <LottieView
+              source={require('../../assets/animation/load.json')}
+              autoPlay
+              loop
+              style={{width: 50, height: 50}}
+            />
+          </View>
+        ) : null}
         <Stack space={4} mt="20" ml="2">
           <Text style={styles.HeadText}>
             Subscribe and get access to unlimited articles
@@ -270,29 +375,13 @@ const SubPlan = props => {
             </View>
 
             <View style={{alignItems: 'center'}}>
-              <TouchableOpacity style={styles.signIn} onPress={() => postsub()}>
-                <HStack space={1}>
-                  <Text
-                    style={[
-                      styles.textSign,
-                      {
-                        fontFamily: 'Raleway-Bold',
-                        color: '#fff',
-                      },
-                    ]}>
-                    Buy Now
-                  </Text>
-                  {loading ? (
-                    <View>
-                      <Spinner
-                        accessibilityLabel="Loading posts"
-                        color="#00415e"
-                        size="lg"
-                      />
-                    </View>
-                  ) : null}
-                </HStack>
-              </TouchableOpacity>
+              <Button
+                mode="contained"
+                style={styles.btn}
+                labelStyle={{width: wp('40%')}}
+                onPress={() => postAmount()}>
+                Buy Now
+              </Button>
             </View>
           </VStack>
         </Stack>
@@ -319,18 +408,32 @@ const styles = StyleSheet.create({
     color: '#00415e',
     fontSize: 18,
   },
-  signIn: {
-    width: '50%',
-    height: hp('6%'),
+  btn: {
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: '#00415e',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 25,
+    width: wp('40%'),
+    height: 40,
     backgroundColor: '#00415e',
-    marginBottom: 10,
+    color: 'white',
+
+    marginTop: 10,
   },
   textSign: {
     fontSize: 20,
     textAlign: 'center',
   },
-  textCard: {},
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
+  },
 });
