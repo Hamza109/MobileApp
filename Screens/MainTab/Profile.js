@@ -97,6 +97,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     axios
       .get(`${backendHost}/profile/${userId}`)
       .then(res => {
+        setIsLoaded(true)
         setFirstName(res.data.first_name);
         setLastName(res.data.last_name);
         setEmail(res.data.email_address);
@@ -159,12 +160,12 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
             .then(res => res.json())
             .then(json => {
               if (json == null) {
-                setIsLoaded(true);
-                setNameLoad(true);
+                setIsLoaded(true)
+                setNameLoad(true)
                 setModalVisible(true);
               } else {
-                setRowno(Number(value2));
                 setIsLoaded(true);
+                setRowno(Number(value2));
                 setItems(json);
                 setFirst(json.docname_first);
                 setLast(json.docname_last);

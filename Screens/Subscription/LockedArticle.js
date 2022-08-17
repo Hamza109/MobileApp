@@ -59,9 +59,7 @@ const LockedPreview = props => {
   const [regId, setRegId] = useState([]);
   const [status, setStatus] = useState(0);
   const navigation = useNavigation();
-  useEffect(() => {
-    console.log('prop', regId);
-  });
+
   function Icon() {
     return (
       <Svg
@@ -77,23 +75,6 @@ const LockedPreview = props => {
     );
   }
 
-  function getStatus() {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-          axios
-            .get(`${backendHost}/subscription/orders/${value1}`)
-            .then(res => {
-              setStatus(res.data.status);
-            });
-          // navigation.navigate('Cures',{screen:'My Cures'})
-        } else {
-          null;
-        }
-      });
-    } catch (error) {}
-  }
 
   useEffect(() => {});
 

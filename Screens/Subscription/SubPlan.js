@@ -51,7 +51,7 @@ const SubPlan = ({route}) => {
   const navigation = useNavigation();
   const ids = route.params.ids;
   const [titleId, setTitleId] = useState(ids);
-  const [regId, setRegId] = useState();
+  const [regId, setRegId] = useState([]);
   const [subId, setSubId] = useState(4);
   const [subId1, setSubId1] = useState();
   const [subId2, setSubId2] = useState();
@@ -98,41 +98,51 @@ const SubPlan = ({route}) => {
         if (value1 != null) {
           console.log('helloi', value1);
           setRegId(value1);
-          // navigation.navigate('Cures',{screen:'My Cures'})
         } else {
-          null;
+          setRegId(0);
         }
       });
     } catch (error) {}
   }
   function postAmount() {
     setLoading(true);
-    axios
-      .post(`${backendHost}/subscription/create_order`, {
-        amount: `${priceId}`,
-      })
-      .then(res => {
-        if (res.data) {
-          console.log('orderID', JSON.parse(res.data).id);
-
-          postData(
-            JSON.parse(res.data).amount,
-            JSON.parse(res.data).id,
-            JSON.parse(res.data).status,
-          );
-          postsub(
-            JSON.parse(res.data).amount,
-            JSON.parse(res.data).currency,
-            JSON.parse(res.data).id,
-          );
-
-          setLoading(false);
+    try {
+      AsyncStorage.getItem('author').then(value1 => {
+        if (value1 != null) {
+          setRegId(value1);
+          axios
+          .post(`${backendHost}/subscription/create_order`, {
+            amount: `${priceId}`,
+          })
+          .then(res => {
+            if (res.data) {
+              console.log('orderID', JSON.parse(res.data).id);
+    
+              postData(
+                JSON.parse(res.data).amount,
+                JSON.parse(res.data).id,
+                JSON.parse(res.data).status,
+              );
+              postsub(
+                JSON.parse(res.data).amount,
+                JSON.parse(res.data).currency,
+                JSON.parse(res.data).id,
+              );
+    
+              setLoading(false);
+            }
+          })
+          .catch(err => {
+            setLoading(false);
+            Alert.alert('Something went wrong', 'Please try again.');
+          });
+        } else {
+          setRegId(0);
+          navigation.navigate('SignIn');
         }
-      })
-      .catch(err => {
-        setLoading(false);
-        Alert.alert('Something went wrong', 'Please try again.');
       });
+    } catch (error) {}
+   
   }
   function postUpdate(paymentId, orderID) {
     axios

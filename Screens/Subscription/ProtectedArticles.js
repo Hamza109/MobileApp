@@ -35,16 +35,15 @@ import {useNavigation} from '@react-navigation/native';
 
 import LockedPreview from './LockedArticle';
 import UnlockedPreview from './UnlockedArticle';
-const ProtectedPreview = props => {
+const ProtectedPreview = ({reg_Id}) => {
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
   const [regId, setRegId] = useState([]);
-  const [status, setStatus] = useState(0);
+
+  const [status, setStatus] = useState();
   const [itemStatus, setItemStatus] = useState();
   const navigation = useNavigation();
-  useEffect(() => {
-    console.log('prop', regId);
-  });
+
   function Icon() {
     return (
       <Svg
@@ -61,28 +60,22 @@ const ProtectedPreview = props => {
   }
 
   function getStatus() {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-          axios
-            .get(`${backendHost}/subscription/orders/${value1}`)
-            .then(res => {
-              setItemStatus(res.data);
-              console.log(res.data);
-            })
-            .catch(err => err);
-          // navigation.navigate('Cures',{screen:'My Cures'})
-        } else {
-          null;
-        }
-      });
-    } catch (error) {}
-  }
+    axios
+      .get(`${backendHost}/subscription/orders/${reg_Id}`)
+      .then(res => {
+        setStatus(res.data[0].status);
+        console.log(res.data);
+      })
+      .catch(err => err);
 
+    // navigation.navigate('Cures',{screen:'My Cures'})
+  }
   useEffect(() => {
-    getStatus();
-  }, []);
+    console.log(reg_Id);
+  });
+  useEffect(() => {
+    getStatus(reg_Id);
+  });
 
   function allPosts() {
     fetch(`${backendHost}/article/allkvprotected?limit=15`)
@@ -106,25 +99,10 @@ const ProtectedPreview = props => {
       });
   }
 
-  function IsJsonValid(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return [];
-    }
-    return JSON.parse(str).blocks;
-  }
-
   useEffect(() => {
     allPosts();
   }, []);
-  const swipe = () => {
-    setTimeout(() => {
-      <View style={{alignContent: 'center', width: wp('100%'), height: 50}}>
-        <Text style={{color: '#00415e'}}>swipe down to refresh</Text>
-      </View>;
-    }, 1000);
-  };
+
   function renderItemArt({item, index}) {
     const {friendly_name, source, content} = item;
 
@@ -163,19 +141,21 @@ const ProtectedPreview = props => {
   } else {
     return (
       <>
-        {itemStatus.map(i => {
-          return i.subscription_id === 3 ||
-            i.subscription_id === 4 ||
-            i.subscription_id === 5 && i.status === "paid" ? (
-            <View>
-              <LockedPreview />
-            </View>
-          ) : (
+        {reg_Id != 0 ? (
+          status === 1 ? (
             <View>
               <UnlockedPreview />
             </View>
-          );
-        })}
+          ) : (
+            <View>
+              <LockedPreview />
+            </View>
+          )
+        ) : (
+          <View>
+            <LockedPreview />
+          </View>
+        )}
       </>
     );
   }

@@ -56,7 +56,7 @@ const HomeScreen = ({navigation, route}) => {
   const [backPressed, setBack] = useState(1);
   const [visible, setVisible] = useState(false);
   const [isloaded, setIsLoaded] = useState(false);
-  const [activeIndex,setActiveIndex]=useState(null)
+  const [activeIndex, setActiveIndex] = useState(null);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const containerStyle = {backgroundColor: 'white', padding: 20, height: 400};
@@ -95,10 +95,11 @@ const HomeScreen = ({navigation, route}) => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
         if (value1 == null) {
-          setRegId(value1);
+          setRegId(0);
           // navigation.navigate('Cures',{screen:'My Cures'})
           navigation.navigate('SignIn');
         } else {
+          setRegId(value1);
           navigation.navigate('CreateScreenHome');
         }
       });
@@ -115,20 +116,23 @@ const HomeScreen = ({navigation, route}) => {
     } catch (error) {}
   };
   const isFocuss = useIsFocused();
-  useEffect(() => {
+  const getRegId = async () => {
     try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-          // navigation.navigate('Cures',{screen:'My Cures'})
-        } else {
-          null;
-        }
-      });
+      const value1 = await AsyncStorage.getItem('author');
+      if (value1 !== null) {
+        setRegId(value1);
+        // navigation.navigate('Cures',{screen:'My Cures'})
+      } else {
+        setRegId(0);
+      }
     } catch (error) {}
-  });
+  };
+  useEffect(()=>{
+    getRegId();
+  })
   useEffect(() => {
-    if (isFocuss) {
+    if (isFocuss && regId.length>0) {
+    
       console.log('prop1', regId);
       getType();
 
@@ -276,465 +280,464 @@ const HomeScreen = ({navigation, route}) => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <SafeAreaView>
-      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
-      <Stack
-        space={3}
-        alignItems="center"
-        bg="white"
-        style={{marginTop: Platform.OS === 'android' ? 0 : 20}}>
-        <HStack mt="4" mb="1" space={1} alignItems="center">
-          <View style={{position: 'relative', top: 2, right: 0}}>
+        <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+        <Stack
+          space={3}
+          alignItems="center"
+          bg="white"
+          style={{marginTop: Platform.OS === 'android' ? 0 : 20}}>
+          <HStack mt="4" mb="1" space={1} alignItems="center">
+            <View style={{position: 'relative', top: 2, right: 0}}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.openDrawer();
+                }}>
+                {<User />}
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
-                navigation.openDrawer();
+                navigation.navigate('searchArt');
               }}>
-              {<User />}
+              <View style={styles.card}>
+                <HStack ml="2" space={110} alignItems="center">
+                  <Text
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                    style={{
+                      fontSize: wp('4.5%'),
+                      color: '#00415e',
+                      fontFamily: 'Raleway-Regular',
+                      justifyContent: 'center',
+                    }}>
+                    Search Cures
+                  </Text>
+                  <Icon name="search" size={20} style={styles.icon}></Icon>
+                </HStack>
+              </View>
             </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate('searchArt');
-            }}>
-            <View style={styles.card}>
-              <HStack ml="2" space={110} alignItems="center">
-                <Text
-                  adjustsFontSizeToFit
-                  numberOfLines={1}
-                  style={{
-                    fontSize: wp('4.5%'),
-                    color: '#00415e',
-                    fontFamily: 'Raleway-Regular',
-                    justifyContent: 'center',
-                  }}>
-                  Search Cures
-                </Text>
-                <Icon name="search" size={20} style={styles.icon}></Icon>
-              </HStack>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => getId()}>
-            <Create />
-          </TouchableOpacity>
-        </HStack>
-      </Stack>
-      <ScrollView
-        style={{width: wp('100%'), backgroundColor: '#fff'}}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <Stack mt="2" ml="2" space={3}>
-          <HStack space={1}>
-            <Text
-              style={{
-                fontSize: wp('5%'),
-                color: '#00415e',
-                fontFamily: 'Raleway-Regular',
-              }}>
-              Cures By Category
-            </Text>
-            <Icon
-              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
-              name="caret-right"
-              color={'#00415e'}
-              size={25}
-            />
+            <TouchableOpacity activeOpacity={0.8} onPress={() => getId()}>
+              <Create />
+            </TouchableOpacity>
           </HStack>
-          <View
-            style={{
-              alignItems: 'center',
-              marginLeft: 0,
-              width: wp('100%'),
-              flex: 1,
-            }}>
-            <ScrollView
-              style={{width: wp('100%')}}
-              horizontal
-              showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Arthritis'});
-                }}>
-                <Card
-                  resizeMode="stretch"
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: '#f5b6ff',
-                    borderRadius: 20,
-                    marginRight: 10,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '90%',
-                      height: '80%',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 5,
-                      overflow: 'hidden',
-                    }}
-                    resizeMode="stretch"
-                    resizeMethod="resize"
-                    source={require('../../assets/img/arthritis.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Arthritis
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Thyroid'});
-                }}>
-                <Card
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: '#ffc672',
-                    borderRadius: 20,
-                    marginRight: 10,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '90%',
-                      height: '50%',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 5,
-                      overflow: 'hidden',
-                    }}
-                    resizeMode="stretch"
-                    resizeMethod="resize"
-                    source={require('../../assets/img/thyroid.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Thyroid
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Diabetes'});
-                }}>
-                <Card
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: '#ffa68a',
-                    borderRadius: 20,
-                    marginRight: 10,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '90%',
-                      height: '50%',
-
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 7,
-                    }}
-                    resizeMode="cover"
-                    resizeMethod="resize"
-                    source={require('../../assets/img/slider-2.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Diabetes
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Insomnia'});
-                }}>
-                <Card
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: '#cca4ff',
-                    borderRadius: 20,
-                    marginRight: 10,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '90%',
-                      height: '80%',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 5,
-                      overflow: 'hidden',
-                    }}
-                    resizeMode="stretch"
-                    resizeMethod="auto"
-                    source={require('../../assets/img/insomnia.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Insomnia
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Skin Care'});
-                }}>
-                <Card
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: '#ffa68a',
-                    borderRadius: 20,
-                    marginRight: 10,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '100%',
-                      height: '80%',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 5,
-                    }}
-                    resizeMode="stretch"
-                    source={require('../../assets/img/slider-5.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Skin Care
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Blood Pressure'});
-                }}>
-                <Card
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: 'lightblue',
-                    borderRadius: 20,
-                    marginRight: 10,
-                    overflow: 'hidden',
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '90%',
-                      height: '80%',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 5,
-                      overflow: 'hidden',
-                    }}
-                    resizeMode="stretch"
-                    source={require('../../assets/img/bloodpressure.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Hyper Tension
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate('Result', {texts: 'Psorasis'});
-                }}>
-                <Card
-                  style={{
-                    width: wp('30%'),
-                    height: hp('20%'),
-                    backgroundColor: 'lightgreen',
-                    borderRadius: 20,
-                    marginRight: 15,
-                  }}>
-                  <Image
-                    style={{
-                      alignContent: 'center',
-                      width: '90%',
-                      height: '80%',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 5,
-                    }}
-                    resizeMode="center"
-                    source={require('../../assets/img/psorasis.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      position: 'absolute',
-                      top: 6,
-                      left: 6,
-                      fontFamily: 'Raleway',
-                      fontSize: wp('3%'),
-                    }}>
-                    Psorasis
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
-          <HStack space={1}>
-            <Text
-              style={{
-                fontSize: wp('5%'),
-                color: '#00415e',
-                fontFamily: 'Raleway-Regular',
-              }}>
-              System Of Medicine
-            </Text>
-            <Icon
-              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
-              name="caret-right"
-              color={'#00415e'}
-              size={25}
-            />
-          </HStack>
-          <View style={{alignItems: 'center', width: wp('100%')}}>
-          <Carousel
-              data={DATA1}
-              renderItem={renderItemTrend}
-              sliderWidth={370}
-              firstItem={1}
-              loop={true}
-              inactiveSlideOpacity={0.8}
-              itemWidth={125}
-              onSnapToItem={index => setActiveIndex(index)}
-              
-            />
-          </View>
-          <HStack space={1}>
-            <Text
-              style={{
-                fontSize: wp('5%'),
-                color: '#00415e',
-                fontFamily: 'Raleway-Regular',
-              }}>
-              Recent Cures
-            </Text>
-            <Icon
-              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
-              name="caret-right"
-              color={'#00415e'}
-              size={25}
-            />
-          </HStack>
-          <ArticlePreview />
-          <HStack space={1}>
-            <Text
-              style={{
-                fontSize: wp('5%'),
-                color: '#00415e',
-                fontFamily: 'Raleway-Regular',
-              }}>
-              Recent Cures
-            </Text>
-            <Icon
-              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
-              name="caret-right"
-              color={'#00415e'}
-              size={25}
-            />
-          </HStack>
-          <ProtectedPreview reg_Id={regId} />
-          <HStack space={1}>
-            <Text
-              style={{
-                fontSize: 20,
-                color: '#00415e',
-                fontFamily: 'Raleway-Regular',
-              }}>
-              Top Doctors
-            </Text>
-            <Icon
-              style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
-              name="caret-right"
-              color={'#00415e'}
-              size={25}
-            />
-          </HStack>
-          <DocPreview />
         </Stack>
-      </ScrollView>
+        <ScrollView
+          style={{width: wp('100%'), backgroundColor: '#fff'}}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <Stack mt="2" ml="2" space={3}>
+            <HStack space={1}>
+              <Text
+                style={{
+                  fontSize: wp('5%'),
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }}>
+                Cures By Category
+              </Text>
+              <Icon
+                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                name="caret-right"
+                color={'#00415e'}
+                size={25}
+              />
+            </HStack>
+            <View
+              style={{
+                alignItems: 'center',
+                marginLeft: 0,
+                width: wp('100%'),
+                flex: 1,
+              }}>
+              <ScrollView
+                style={{width: wp('100%')}}
+                horizontal
+                showsHorizontalScrollIndicator={false}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Arthritis'});
+                  }}>
+                  <Card
+                    resizeMode="stretch"
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: '#f5b6ff',
+                      borderRadius: 20,
+                      marginRight: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '90%',
+                        height: '80%',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 5,
+                        overflow: 'hidden',
+                      }}
+                      resizeMode="stretch"
+                      resizeMethod="resize"
+                      source={require('../../assets/img/arthritis.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Arthritis
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Thyroid'});
+                  }}>
+                  <Card
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: '#ffc672',
+                      borderRadius: 20,
+                      marginRight: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '90%',
+                        height: '50%',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 5,
+                        overflow: 'hidden',
+                      }}
+                      resizeMode="stretch"
+                      resizeMethod="resize"
+                      source={require('../../assets/img/thyroid.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Thyroid
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Diabetes'});
+                  }}>
+                  <Card
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: '#ffa68a',
+                      borderRadius: 20,
+                      marginRight: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '90%',
+                        height: '50%',
+
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 7,
+                      }}
+                      resizeMode="cover"
+                      resizeMethod="resize"
+                      source={require('../../assets/img/slider-2.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Diabetes
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Insomnia'});
+                  }}>
+                  <Card
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: '#cca4ff',
+                      borderRadius: 20,
+                      marginRight: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '90%',
+                        height: '80%',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 5,
+                        overflow: 'hidden',
+                      }}
+                      resizeMode="stretch"
+                      resizeMethod="auto"
+                      source={require('../../assets/img/insomnia.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Insomnia
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Skin Care'});
+                  }}>
+                  <Card
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: '#ffa68a',
+                      borderRadius: 20,
+                      marginRight: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '100%',
+                        height: '80%',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 5,
+                      }}
+                      resizeMode="stretch"
+                      source={require('../../assets/img/slider-5.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Skin Care
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Blood Pressure'});
+                  }}>
+                  <Card
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: 'lightblue',
+                      borderRadius: 20,
+                      marginRight: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '90%',
+                        height: '80%',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 5,
+                        overflow: 'hidden',
+                      }}
+                      resizeMode="stretch"
+                      source={require('../../assets/img/bloodpressure.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Hyper Tension
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate('Result', {texts: 'Psorasis'});
+                  }}>
+                  <Card
+                    style={{
+                      width: wp('30%'),
+                      height: hp('20%'),
+                      backgroundColor: 'lightgreen',
+                      borderRadius: 20,
+                      marginRight: 15,
+                    }}>
+                    <Image
+                      style={{
+                        alignContent: 'center',
+                        width: '90%',
+                        height: '80%',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 5,
+                      }}
+                      resizeMode="center"
+                      source={require('../../assets/img/psorasis.png')}
+                    />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        fontFamily: 'Raleway',
+                        fontSize: wp('3%'),
+                      }}>
+                      Psorasis
+                    </Text>
+                  </Card>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+            <HStack space={1}>
+              <Text
+                style={{
+                  fontSize: wp('5%'),
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }}>
+                System Of Medicine
+              </Text>
+              <Icon
+                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                name="caret-right"
+                color={'#00415e'}
+                size={25}
+              />
+            </HStack>
+            <View style={{alignItems: 'center', width: wp('100%')}}>
+              <Carousel
+                data={DATA1}
+                renderItem={renderItemTrend}
+                sliderWidth={370}
+                firstItem={1}
+                loop={true}
+                inactiveSlideOpacity={0.8}
+                itemWidth={125}
+                onSnapToItem={index => setActiveIndex(index)}
+              />
+            </View>
+            <HStack space={1}>
+              <Text
+                style={{
+                  fontSize: wp('5%'),
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }}>
+                Recent Cures
+              </Text>
+              <Icon
+                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                name="caret-right"
+                color={'#00415e'}
+                size={25}
+              />
+            </HStack>
+            <ArticlePreview />
+            <HStack space={1}>
+              <Text
+                style={{
+                  fontSize: wp('5%'),
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }}>
+                Recent Cures
+              </Text>
+              <Icon
+                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                name="caret-right"
+                color={'#00415e'}
+                size={25}
+              />
+            </HStack>
+            <ProtectedPreview reg_Id={regId} />
+            <HStack space={1}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }}>
+                Top Doctors
+              </Text>
+              <Icon
+                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                name="caret-right"
+                color={'#00415e'}
+                size={25}
+              />
+            </HStack>
+            <DocPreview />
+          </Stack>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaView>
   );
