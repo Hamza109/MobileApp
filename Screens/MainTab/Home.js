@@ -10,6 +10,7 @@ import {
   StatusBar,
   BackHandler,
   Alert,
+  SafeAreaView,
   TouchableOpacity,
   TouchableHighlight,
   Image,
@@ -57,9 +58,7 @@ const HomeScreen = ({navigation, route}) => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const containerStyle = {backgroundColor: 'white', padding: 20, height: 400};
-  const canGoBack = () => {
-    navigation.goBack();
-  };
+
   const remove = async () => {
     try {
       await AsyncStorage.multiRemove([
@@ -83,50 +82,21 @@ const HomeScreen = ({navigation, route}) => {
       return true;
     }
   };
-  const postSubscription = val => {
-    var phoneNumber = val.split('+')[1];
-
-    var countryCodeLength = phoneNumber.length % 10;
-    var countryCode = phoneNumber.slice(0, countryCodeLength);
-    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-    if (phoneNumber) {
-      axios
-        .post(`${backendHost}/users/subscribe/${StringValue}`, {
-          nl_subscription_disease_id: '0',
-          nl_sub_type: 1,
-          nl_subscription_cures_id: '0',
-          country_code: `'${countryCode}'`,
-        })
-        .then(res => {
-          if (res.data === 1) {
-            Alert.alert('You have successfully subscribed to our Newsletter');
-          } else {
-            Alert.alert('Some error occured! Please try again later.');
-          }
-        })
-        .catch(err => {
-          Alert.alert('Some error occured! Please try again later.');
-        });
-    } else {
-      Alert.alert('Please enter a valid number!');
-    }
-  };
-  const [isSignedIn, setIsSignedIn] = useState();
-
+  
   const getId =  () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
         if(value1 == null)
     {
        // navigation.navigate('Cures',{screen:'My Cures'})
-       navigation.navigate('SignIn')
+       navigation.push('SignIn',{screen:`CreateScreenHome`})
   
     }
     else{
        navigation.navigate('CreateScreenHome')
     }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error}
   };
 
   const getType = () => {
@@ -135,8 +105,8 @@ const HomeScreen = ({navigation, route}) => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error}
   };
   const isFocuss = useIsFocused();
   useEffect(()=>{
@@ -208,9 +178,9 @@ const HomeScreen = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
-    navigation.push('MainTab');
+    navigation.push('Main');
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    wait(2000).then(() => setRefreshing(false)).catch(err=>err);;
   };
   const getRow = () => {
     try {
@@ -219,7 +189,7 @@ const HomeScreen = ({navigation, route}) => {
         if (value2 != null) {
           setRow(Number(value2));
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error
     }
@@ -232,18 +202,7 @@ const HomeScreen = ({navigation, route}) => {
   
     }
   }, [row]);
-  const check=()=>{
 
-    if(regId.length === 0)
-    {
-       // navigation.navigate('Cures',{screen:'My Cures'})
-       navigation.navigate('SignIn')
-  
-    }
-    else{
-       navigation.navigate('CreateScreenHome')
-    }
-}
   function renderItemTrend({item, index}) {
     const {name, source, color,type} = item;
     return (
@@ -294,11 +253,11 @@ const HomeScreen = ({navigation, route}) => {
 
   return (
     
-    <View style={{flex: 1,backgroundColor:'#fff'}}>
+    <SafeAreaView   style={{flex: 1,backgroundColor:'#fff'}}>
      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
-      <Stack space={3} alignItems="center" bg="white" style={{marginTop:Platform.OS === 'android'?0:20}} >
+      <Stack space={3} alignItems="center" bg="white" style={{marginTop:Platform.OS === 'android'?0:-18}} >
         
-        <HStack mt="4" mb="1" space={1} alignItems="center">
+        <HStack mt="4" mb="1" p='2' space={1} alignItems="center">
           <View style={{position: 'relative', top: 2, right: 0}}>
             <TouchableOpacity
               activeOpacity={0.8}
@@ -481,7 +440,7 @@ const HomeScreen = ({navigation, route}) => {
                       bottom: 0,
                       left: 7,
                     }}
-                    resizeMode="cover"
+                    resizeMode="stretch"
                     resizeMethod="resize"
                     source={require('../../assets/img/slider-2.png')}
                   />
@@ -653,7 +612,7 @@ const HomeScreen = ({navigation, route}) => {
                       bottom: 0,
                       left: 5,
                     }}
-                    resizeMode="center"
+                    resizeMode="stretch"
                     source={require('../../assets/img/psorasis.png')}
                   />
 
@@ -722,7 +681,7 @@ const HomeScreen = ({navigation, route}) => {
           <DocPreview />
         </Stack>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

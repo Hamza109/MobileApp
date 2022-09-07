@@ -24,7 +24,7 @@ const SearchDoc = ()=>{
      
 
 
-<SearchBar/>
+<SearchBar  placeholder='Search by name'/>
 
 
 

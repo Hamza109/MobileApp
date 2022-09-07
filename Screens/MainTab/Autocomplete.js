@@ -70,7 +70,7 @@ const [regId,setRegId]=useState()
         if (value1 != null) {
           setRegId(Number(value1));
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error
     }
@@ -81,8 +81,8 @@ const [regId,setRegId]=useState()
         if (value2 != null) {
           setUniqueId(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error}
   };
 
   useEffect(()=>{
@@ -138,7 +138,6 @@ const [regId,setRegId]=useState()
         <View style={{marginTop: 9, marginLeft: -38}}>
           <FlatList
             data={item}
-            indicatorStyle={'#00415e'}
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>setText(item) & result(item)}>
@@ -164,7 +163,7 @@ const [regId,setRegId]=useState()
           onSubmitEditing={(() => setText(text)& result(text))}
           value={text}
           width="62%"
-          height="95%"
+          height="88%"
           fontFamily="Raleway-Regular"
           color="#00415e"
           borderRadius="15"

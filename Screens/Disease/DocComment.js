@@ -29,7 +29,7 @@ const DocComment = props => {
         if (value1 != null) {
           setRegId(value1);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -40,7 +40,7 @@ const DocComment = props => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }

@@ -26,7 +26,7 @@ import CenterWell from '../Disease/CenterWell';
 import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import LottieView from 'lottie-react-native';
 import AllStat from '../search/AllStat';
 
 const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -47,11 +47,11 @@ const All = () => {
           if (value1 != null) {
             setRegId(value1);
           } else {
-            navigation.navigate('SignIn');
+            navigation.navigate('SignIn',{screen:'MainTab'});
           }
-        }),
+        }).catch(err=>err),
       );
-    } catch (error) {}
+    } catch (error) {error}
   };
 
   const getType = () => {
@@ -60,8 +60,8 @@ const All = () => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);
+    } catch (error) {error}
   };
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
@@ -70,19 +70,17 @@ const All = () => {
         setPubStatus(json.pubstatus_id);
         setIsLoaded(true);
         setItems(json);
-      });
+      }).catch(err=>err);;
   };
   const isFocus = useIsFocused();
-  
+
   useEffect(() => {
- if(isFocus){  
- 
-    getId();
- }
-  },[regId]);
+    if (isFocus) {
+      getId();
+    }
+  }, [regId]);
   useEffect(() => {
     if (navigation.isFocused()) {
-     
       getType();
 
       receivedData();
@@ -97,20 +95,16 @@ const All = () => {
     return JSON.parse(str).blocks;
   }
 
-
-
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
           />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
         </HStack>
       </View>
     );
@@ -139,39 +133,39 @@ const All = () => {
 
             return i.pubstatus_id === 3 && i.edited_by == regId ? (
               <View>
-              <View style={{alignItems:'center'}}>
-                <Card
-                  style={{
-                    width: wp('97%'),
-                    height: 83,
-                    backgroundColor: 'lightgrey',
-                    borderRadius: 15,
-                    marginBottom: 5,
-                    justifyContent: 'center',
+                <View style={{alignItems: 'center'}}>
+                  <Card
+                    style={{
+                      width: wp('97%'),
+                      height: 83,
+                      backgroundColor: 'lightgrey',
+                      borderRadius: 15,
+                      marginBottom: 5,
+                      justifyContent: 'center',
 
-                    paddingHorizontal: 6,
-                    alignItems: 'center',
-                  }}>
-                  <HStack space={1}>
-                    <Image
-                      source={{
-                        uri:
-                          imageLoc +
-                          imgLocation
-                            .replace('json', 'png')
-                            .split('/webapps/')[1],
-                      }}
-                      style={{
-                        position:'relative',
-                        right:5,
-                        width: wp('45%'),
-                        height: 83,
-                        marginTop: 0,
-                        borderRadius:15
-                      }}
-                    />
-                    <View>
-                    <Card style={[styles.publish, styles.opacity]}>
+                      paddingHorizontal: 6,
+                      alignItems: 'center',
+                    }}>
+                    <HStack space={1}>
+                      <Image
+                        source={{
+                          uri:
+                            imageLoc +
+                            imgLocation
+                              .replace('json', 'png')
+                              .split('/webapps/')[1],
+                        }}
+                        style={{
+                          position: 'relative',
+                          right: 5,
+                          width: wp('45%'),
+                          height: 83,
+                          marginTop: 0,
+                          borderRadius: 15,
+                        }}
+                      />
+                      <View>
+                        <Card style={[styles.publish, styles.opacity]}>
                           <Text
                             style={{
                               textAlign: 'center',
@@ -181,25 +175,24 @@ const All = () => {
                             Published
                           </Text>
                         </Card>
-                        <View style={{width:wp('50%'),position:'relative',right:5}}>
-                    <VStack py='2' space={10}>
-
-                      <AllStat
-                        id={i.article_id}
-                        title={i.title}
-                        f_title={i.friendly_name}
-                        w_title={i.window_title}
-                        allPostsContent={() => receivedData()}
-                      />
-              
-
-                       
-                    
-                      </VStack>
-                    
+                        <View
+                          style={{
+                            width: wp('50%'),
+                            position: 'relative',
+                            right: 5,
+                          }}>
+                          <VStack py="2" space={10}>
+                            <AllStat
+                              id={i.article_id}
+                              title={i.title}
+                              f_title={i.friendly_name}
+                              w_title={i.window_title}
+                              allPostsContent={() => receivedData()}
+                            />
+                          </VStack>
                         </View>
-                          
-                      <Text
+
+                        <Text
                           style={{
                             color: '#00415e',
                             fontFamily: 'Raleway-Medium',
@@ -209,122 +202,122 @@ const All = () => {
                           }}>
                           {i.authors_name}▪️{i.published_date}
                         </Text>
-                    </View>
-                  </HStack>
-                </Card>
+                      </View>
+                    </HStack>
+                  </Card>
+                </View>
               </View>
-            </View>   ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
-         <View>
-         <View style={{alignItems:'center'}}>
-                 <Card
-                   style={{
-                     width: wp('97%'),
-                     height: 83,
-                     backgroundColor: 'lightgrey',
-                     borderRadius: 15,
-                     marginBottom: 5,
-                     justifyContent: 'center',
-                     paddingHorizontal: 5,
-                     alignItems: 'center',
-                   }}>
-                   <HStack space={1}>
-                     <Image
-                       source={{
-                         uri:
-                           imageLoc +
-                           imgLocation
-                             .replace('json', 'png')
-                             .split('/webapps/')[1],
-                       }}
-                       style={{
-                         position:'relative',
-                         right:5,
-                         width: wp('45%'),
-                         height: 83,
-                         marginTop: 0,
-                         borderRadius:15
-                       }}
-                     />
-                     <View>
-                     <Card style={[styles.review, styles.opacity]}>
-                           <Text
-                             style={{
-                               textAlign: 'center',
-                               color: 'white',
-                               fontSize: wp('2.5%'),
-                             }}>
-                             Review
-                           </Text>
-                         </Card>
-                         <View style={{width:wp('50%'),position:'relative',right:5}}>
-                     <VStack py='2' space={10}>
+            ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
+              <View>
+                <View style={{alignItems: 'center'}}>
+                  <Card
+                    style={{
+                      width: wp('97%'),
+                      height: 83,
+                      backgroundColor: 'lightgrey',
+                      borderRadius: 15,
+                      marginBottom: 5,
+                      justifyContent: 'center',
+                      paddingHorizontal: 5,
+                      alignItems: 'center',
+                    }}>
+                    <HStack space={1}>
+                      <Image
+                        source={{
+                          uri:
+                            imageLoc +
+                            imgLocation
+                              .replace('json', 'png')
+                              .split('/webapps/')[1],
+                        }}
+                        style={{
+                          position: 'relative',
+                          right: 5,
+                          width: wp('45%'),
+                          height: 83,
+                          marginTop: 0,
+                          borderRadius: 15,
+                        }}
+                      />
+                      <View>
+                        <Card style={[styles.review, styles.opacity]}>
+                          <Text
+                            style={{
+                              textAlign: 'center',
+                              color: 'white',
+                              fontSize: wp('2.5%'),
+                            }}>
+                            Review
+                          </Text>
+                        </Card>
+                        <View
+                          style={{
+                            width: wp('50%'),
+                            position: 'relative',
+                            right: 5,
+                          }}>
+                          <VStack py="2" space={10}>
+                            <AllStat
+                              id={i.article_id}
+                              title={i.title}
+                              f_title={i.friendly_name}
+                              w_title={i.window_title}
+                              allPostsContent={() => receivedData()}
+                            />
+                          </VStack>
+                        </View>
 
-                       <AllStat
-                         id={i.article_id}
-                         title={i.title}
-                         f_title={i.friendly_name}
-                         w_title={i.window_title}
-                         allPostsContent={() => receivedData()}
-                       />
-               
+                        <Text
+                          style={{
+                            color: '#00415e',
 
-                        
-                     
-                       </VStack>
-                     
-                         </View>
-                           
-                       <Text
-                           style={{
-                             color: '#00415e',
-
-                             fontFamily: 'Raleway-Medium',
-                             fontSize: wp('2.5%'),
-                             position: 'absolute',
-                             bottom: 0,
-                           }}>
-                           {i.authors_name}▪️{i.create_date}
-                         </Text>
-                     </View>
-                   </HStack>
-                 </Card>
-               </View>
-             </View>
+                            fontFamily: 'Raleway-Medium',
+                            fontSize: wp('2.5%'),
+                            position: 'absolute',
+                            bottom: 0,
+                          }}>
+                          {i.authors_name}▪️{i.create_date}
+                        </Text>
+                      </View>
+                    </HStack>
+                  </Card>
+                </View>
+              </View>
             ) : i.pubstatus_id === 1 && i.edited_by == regId ? (
               <View>
-              <View style={{alignItems:'center'}}>
-                <Card
-                  style={{
-                    width: wp('97%'),
-                    height: 83,
-                    backgroundColor: 'lightgrey',
-                    borderRadius: 15,
-                    marginBottom: 5,
-                    justifyContent: 'center',
+                <View style={{alignItems: 'center'}}>
+                  <Card
+                    style={{
+                      width: wp('97%'),
+                      height: 83,
+                      backgroundColor: 'lightgrey',
+                      borderRadius: 15,
+                      marginBottom: 5,
+                      justifyContent: 'center',
 
-                    paddingHorizontal: 5,
-                    alignItems: 'center',
-                  }}>
-                  <HStack space={1}>
-                    <Image
-                      source={{
-                        uri:
-                          imageLoc +
-                          imgLocation
-                            .replace('json', 'png')
-                            .split('/webapps/')[1],
-                      }}
-                      style={{
-                        position:'relative',
-                        right:5,
-                        width: wp('45%'),
-                        height: 83,
-                        marginTop: 0,
-                        borderRadius:15
-                      }}
-                    />
-                    <View>
-                    <Card style={[styles.work, styles.opacity]}>
+                      paddingHorizontal: 5,
+                      alignItems: 'center',
+                    }}>
+                    <HStack space={1}>
+                      <Image
+                        source={{
+                          uri:
+                            imageLoc +
+                            imgLocation
+                              .replace('json', 'png')
+                              .split('/webapps/')[1],
+                        }}
+                        style={{
+                          position: 'relative',
+                          right: 5,
+                          width: wp('45%'),
+                          height: 83,
+                          marginTop: 0,
+                          borderRadius: 15,
+                        }}
+                      />
+                      <View>
+                        <Card style={[styles.work, styles.opacity]}>
                           <Text
                             style={{
                               textAlign: 'center',
@@ -334,25 +327,24 @@ const All = () => {
                             Overview
                           </Text>
                         </Card>
-                        <View style={{width:wp('50%'),position:'relative',right:5}}>
-                    <VStack py='2' space={10}>
-
-                      <AllStat
-                        id={i.article_id}
-                        title={i.title}
-                        f_title={i.friendly_name}
-                        w_title={i.window_title}
-                        allPostsContent={() => receivedData()}
-                      />
-              
-
-                       
-                    
-                      </VStack>
-                    
+                        <View
+                          style={{
+                            width: wp('50%'),
+                            position: 'relative',
+                            right: 5,
+                          }}>
+                          <VStack py="2" space={10}>
+                            <AllStat
+                              id={i.article_id}
+                              title={i.title}
+                              f_title={i.friendly_name}
+                              w_title={i.window_title}
+                              allPostsContent={() => receivedData()}
+                            />
+                          </VStack>
                         </View>
-                          
-                      <Text
+
+                        <Text
                           style={{
                             color: '#00415e',
 
@@ -363,11 +355,11 @@ const All = () => {
                           }}>
                           {i.authors_name}▪️{i.published_date}
                         </Text>
-                    </View>
-                  </HStack>
-                </Card>
+                      </View>
+                    </HStack>
+                  </Card>
+                </View>
               </View>
-            </View>
             ) : null;
           })}
         </ScrollView>
@@ -393,7 +385,7 @@ const styles = StyleSheet.create({
     padding: 2,
     width: wp('15%'),
     position: 'absolute',
-    right:20,
+    right: 20,
   },
   review: {
     borderWidth: 2,
@@ -402,7 +394,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     padding: 2,
     position: 'absolute',
-   right:20
+    right: 20,
   },
   publish: {
     borderWidth: 2,
@@ -411,9 +403,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     padding: 2,
     position: 'absolute',
-right:20
+    right: 20,
   },
   opacity: {
     opacity: 1,
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

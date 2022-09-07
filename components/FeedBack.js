@@ -11,12 +11,12 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
-
+import {Button} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import {useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import LottieView from 'lottie-react-native';
 import {backendHost} from './apiConfig';
 
 import {VStack, Stack, Container, HStack, Checkbox} from 'native-base';
@@ -45,8 +45,8 @@ const FeedBack = () => {
         if (value1 != null) {
           setRegId(value1);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {console.log(error)}
   };
   const getType = () => {
     try {
@@ -54,7 +54,7 @@ const FeedBack = () => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);
     } catch (error) {
       error;
     }
@@ -70,7 +70,7 @@ const FeedBack = () => {
   }, [regId]);
 
   const [loading, setLoading] = useState(false);
-  const submitFeedbackForm =  e => {
+  const submitFeedbackForm = e => {
     if (article != '') {
       setLoading(true);
       axios.defaults.withCredentials = true;
@@ -91,7 +91,7 @@ const FeedBack = () => {
               status: 'success',
               placement: 'bottom',
               style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-            });
+            }).catch(err=>err);;
           } else {
             setLoading(false);
             toast.show({
@@ -183,8 +183,19 @@ const FeedBack = () => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff', padding: 10}}>
-      <ScrollView>
+    <View style={{flex: 1, backgroundColor: '#fff', padding: 15}}>
+         {loading ? (
+          <View style={styles.loading}>
+            <LottieView
+              source={require('../assets/animation/load.json')}
+              autoPlay
+              loop
+              style={{width: 50, height: 50}}
+            />
+          </View>
+        ) : null}
+      <ScrollView style={{flex:1,marginTop:15}}>
+     
         <Stack space={4}>
           <VStack space={2}>
             <Text
@@ -285,26 +296,18 @@ const FeedBack = () => {
             {articles()}
           </VStack>
 
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <TouchableOpacity
+          <View style={{alignItems: 'center'}}>
+            <Button
+              mode="contained"
+              labelStyle={{
+                color: '#00415e',
+
+                width: wp('50%'),
+              }}
               style={styles.btn}
-              onPress={e => {
-                submitFeedbackForm(e);
-              }}>
-              <HStack space={2}>
-                <Text style={styles.textBtn}>Submit</Text>
-                {loading ? (
-                  <View>
-                    <Spinner
-                      accessibilityLabel="Loading posts"
-                      color="#00415e"
-                      size="lg"
-                    />
-                  </View>
-                ) : null}
-              </HStack>
-            </TouchableOpacity>
+              onPress={e => submitFeedbackForm(e)}>
+              Submit
+            </Button>
           </View>
         </Stack>
       </ScrollView>
@@ -376,7 +379,8 @@ const styles = StyleSheet.create({
   },
   article: {
     flexDirection: 'row',
-    margin: 7,
+    flex:1,
+    margin: 6,
     padding: 0,
   },
   actionError: {
@@ -450,15 +454,29 @@ const styles = StyleSheet.create({
   },
 
   btn: {
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: 'rgba(0, 65, 94, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 0,
-    borderRadius: 15,
-    borderColor: 'rgba(0, 65, 94, 0.2)',
-    backgroundColor: 'rgba(0, 65, 94, 0.2)',
+    width: wp('50%'),
+    height: 40,
+    
+    backgroundColor: 'rgba(0, 65, 90, 0.2)',
+    color: 'white',
+
     marginTop: 5,
     marginBottom: 5,
-    width: wp('60%'),
-    height: hp('6%'),
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

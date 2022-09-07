@@ -3,30 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* AllCuresTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* AllCuresTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		70DD22EC66A75BCFB0924BFF /* libPods-AllCures-AllCuresTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D37064A5EFE008EFA4DD9A6 /* libPods-AllCures-AllCuresTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		BBA0EC3727F4584A003F34C0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC3627F4584A003F34C0 /* GoogleService-Info.plist */; };
-		BBA0EC3827F45B42003F34C0 /* Raleway.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B7E13DEE8A34C9F83B28390 /* Raleway.ttf */; };
-		BBA0EC3927F45B42003F34C0 /* Raleway-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAAF8F43F20540BE8C25B139 /* Raleway-Regular.ttf */; };
-		BBA0EC3A27F45B42003F34C0 /* Raleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678188BBF59945578B2D9034 /* Raleway-Bold.ttf */; };
-		BBA0EC3B27F45B42003F34C0 /* Raleway-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A08B717B1C04C5DAB5F77B2 /* Raleway-Light.ttf */; };
-		BBA0EC3C27F45B42003F34C0 /* Raleway-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65C79C6E4E7C4011A75BA0B3 /* Raleway-Medium.ttf */; };
-		BBA0EC4427F45B91003F34C0 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC3D27F45B91003F34C0 /* Feather.ttf */; };
-		BBA0EC4B27F45CBC003F34C0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC3F27F45B91003F34C0 /* FontAwesome.ttf */; };
-		BBA0EC4C27F45CBC003F34C0 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC4127F45B91003F34C0 /* FontAwesome5_Brands.ttf */; };
-		BBA0EC4D27F45CBC003F34C0 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC3E27F45B91003F34C0 /* FontAwesome5_Regular.ttf */; };
-		BBA0EC4E27F45CBC003F34C0 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC4227F45B91003F34C0 /* FontAwesome5_Solid.ttf */; };
-		BBA0EC4F27F45CBC003F34C0 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC4027F45B91003F34C0 /* Ionicons.ttf */; };
-		BBA0EC5027F45CBC003F34C0 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC4327F45B91003F34C0 /* MaterialIcons.ttf */; };
-		F845EB0DD47C3D70A34C99E1 /* libPods-AllCures.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4861D81FAE2BC04F2BBA1A0 /* libPods-AllCures.a */; };
+		1855521C28B37B1A0086E8B2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		1855521E28B610AE0086E8B2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1855521D28B610AE0086E8B2 /* GoogleService-Info.plist */; };
+		1855521F28C72BAB0086E8B2 /* Raleway.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B7E13DEE8A34C9F83B28390 /* Raleway.ttf */; };
+		1855522028C72BAB0086E8B2 /* Raleway-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAAF8F43F20540BE8C25B139 /* Raleway-Regular.ttf */; };
+		1855522128C72BAB0086E8B2 /* Raleway-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F56DF59B76834BED9437A2A1 /* Raleway-Black.ttf */; };
+		1855522228C72BAB0086E8B2 /* Raleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678188BBF59945578B2D9034 /* Raleway-Bold.ttf */; };
+		1855522328C72BAB0086E8B2 /* Raleway-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A08B717B1C04C5DAB5F77B2 /* Raleway-Light.ttf */; };
+		1855522428C72BAB0086E8B2 /* Raleway-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65C79C6E4E7C4011A75BA0B3 /* Raleway-Medium.ttf */; };
+		51FAF607608398E955F290FF /* libPods-AllCures.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E3D69ADC36BC0498DDF98EF /* libPods-AllCures.a */; };
+		9E2CA18307EE73240DF8775B /* libPods-AllCures-AllCuresTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ABBB395BCB3CCB98462BD45 /* libPods-AllCures-AllCuresTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +37,6 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* AllCuresTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AllCuresTests.m; sourceTree = "<group>"; };
 		04E8575EF513466189499369 /* Raleway-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-SemiBold.ttf"; path = "../assets/fonts/Raleway-SemiBold.ttf"; sourceTree = "<group>"; };
-		0D37064A5EFE008EFA4DD9A6 /* libPods-AllCures-AllCuresTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllCures-AllCuresTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* AllCures.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllCures.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = AllCures/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = AllCures/AppDelegate.m; sourceTree = "<group>"; };
@@ -52,20 +44,28 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AllCures/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = AllCures/main.m; sourceTree = "<group>"; };
 		1608CCBE15194EBFA743E65F /* Raleway-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-Thin.ttf"; path = "../assets/fonts/Raleway-Thin.ttf"; sourceTree = "<group>"; };
+		1855521D28B610AE0086E8B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		186391A4776A4E71A1D64457 /* Raleway-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-Italic.ttf"; path = "../assets/fonts/Raleway-Italic.ttf"; sourceTree = "<group>"; };
 		1D21945DC7314C19BC534ABF /* Raleway-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-BoldItalic.ttf"; path = "../assets/fonts/Raleway-BoldItalic.ttf"; sourceTree = "<group>"; };
-		311C7A7C1D5B4689105B4B09 /* Pods-AllCures-AllCuresTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures-AllCuresTests.release.xcconfig"; path = "Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests.release.xcconfig"; sourceTree = "<group>"; };
+		2261D191DE94470692F04A01 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		2B9D7C2595F742EFAEF47BF3 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		38CAB99B89C964731FDFE796 /* Pods-AllCures-AllCuresTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures-AllCuresTests.release.xcconfig"; path = "Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests.release.xcconfig"; sourceTree = "<group>"; };
 		39AB9200EC7A4DCE8EF1811F /* Raleway-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-MediumItalic.ttf"; path = "../assets/fonts/Raleway-MediumItalic.ttf"; sourceTree = "<group>"; };
-		3E17ADA691DF1DDC86D7974E /* Pods-AllCures.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures.debug.xcconfig"; path = "Target Support Files/Pods-AllCures/Pods-AllCures.debug.xcconfig"; sourceTree = "<group>"; };
+		46B8EA2EDC2D0561E6F65E52 /* Pods-AllCures-AllCuresTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures-AllCuresTests.debug.xcconfig"; path = "Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4E3D69ADC36BC0498DDF98EF /* libPods-AllCures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllCures.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6186E200B6264C2784E6B22A /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		61F627241146463BAFBC42DC /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		65C79C6E4E7C4011A75BA0B3 /* Raleway-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-Medium.ttf"; path = "../assets/fonts/Raleway-Medium.ttf"; sourceTree = "<group>"; };
 		678188BBF59945578B2D9034 /* Raleway-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-Bold.ttf"; path = "../assets/fonts/Raleway-Bold.ttf"; sourceTree = "<group>"; };
 		6A08B717B1C04C5DAB5F77B2 /* Raleway-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-Light.ttf"; path = "../assets/fonts/Raleway-Light.ttf"; sourceTree = "<group>"; };
-		7627A65BCB1B07AA54FE62DE /* Pods-AllCures.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures.release.xcconfig"; path = "Target Support Files/Pods-AllCures/Pods-AllCures.release.xcconfig"; sourceTree = "<group>"; };
+		7C393997EE7778F058A1824C /* Pods-AllCures.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures.debug.xcconfig"; path = "Target Support Files/Pods-AllCures/Pods-AllCures.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AllCures/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8ABBB395BCB3CCB98462BD45 /* libPods-AllCures-AllCuresTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllCures-AllCuresTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B7E13DEE8A34C9F83B28390 /* Raleway.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Raleway.ttf; path = ../assets/fonts/Raleway.ttf; sourceTree = "<group>"; };
-		9F2AB1949A68AA82EA30FEC1 /* Pods-AllCures-AllCuresTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures-AllCuresTests.debug.xcconfig"; path = "Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A9275E76D01B4000A6EB6020 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		AD6A19855E9F4FB894F124D5 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		ADF4DF9A33DE478CAC0F4AC3 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		B3A2533D20E84E33919B2524 /* Raleway-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-ThinItalic.ttf"; path = "../assets/fonts/Raleway-ThinItalic.ttf"; sourceTree = "<group>"; };
-		BBA0EC3627F4584A003F34C0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BBA0EC3D27F45B91003F34C0 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		BBA0EC3E27F45B91003F34C0 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		BBA0EC3F27F45B91003F34C0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
@@ -73,11 +73,13 @@
 		BBA0EC4127F45B91003F34C0 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		BBA0EC4227F45B91003F34C0 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		BBA0EC4327F45B91003F34C0 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		C4861D81FAE2BC04F2BBA1A0 /* libPods-AllCures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AllCures.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6303EFBBA0F4C96BBF2B595 /* Raleway-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-ExtraLight.ttf"; path = "../assets/fonts/Raleway-ExtraLight.ttf"; sourceTree = "<group>"; };
 		C8F85E9A74A14765A50BD80F /* Raleway-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-LightItalic.ttf"; path = "../assets/fonts/Raleway-LightItalic.ttf"; sourceTree = "<group>"; };
 		CFB25A35DA3E4621B474BB73 /* Raleway-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-ExtraBold.ttf"; path = "../assets/fonts/Raleway-ExtraBold.ttf"; sourceTree = "<group>"; };
+		D2B5C8D81C524578AC9CBF18 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
+		D30C8ABC4E1947BE2B85DA3B /* Pods-AllCures.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures.release.xcconfig"; path = "Target Support Files/Pods-AllCures/Pods-AllCures.release.xcconfig"; sourceTree = "<group>"; };
 		D4AB750459F241B1963ACFCE /* Raleway-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-ExtraLightItalic.ttf"; path = "../assets/fonts/Raleway-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		DB2E1949F6544BE3BC66FE4D /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		DF119C9AB56E4AD79B5B3594 /* Raleway-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-BlackItalic.ttf"; path = "../assets/fonts/Raleway-BlackItalic.ttf"; sourceTree = "<group>"; };
 		E487EDAED95E425A9A8897B4 /* Raleway-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-ExtraBoldItalic.ttf"; path = "../assets/fonts/Raleway-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -91,7 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70DD22EC66A75BCFB0924BFF /* libPods-AllCures-AllCuresTests.a in Frameworks */,
+				9E2CA18307EE73240DF8775B /* libPods-AllCures-AllCuresTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F845EB0DD47C3D70A34C99E1 /* libPods-AllCures.a in Frameworks */,
+				51FAF607608398E955F290FF /* libPods-AllCures.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +128,6 @@
 		13B07FAE1A68108700A75B9A /* AllCures */ = {
 			isa = PBXGroup;
 			children = (
-				BBA0EC3627F4584A003F34C0 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -141,8 +142,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				C4861D81FAE2BC04F2BBA1A0 /* libPods-AllCures.a */,
-				0D37064A5EFE008EFA4DD9A6 /* libPods-AllCures-AllCuresTests.a */,
+				4E3D69ADC36BC0498DDF98EF /* libPods-AllCures.a */,
+				8ABBB395BCB3CCB98462BD45 /* libPods-AllCures-AllCuresTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -157,6 +158,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1855521D28B610AE0086E8B2 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* AllCures */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* AllCuresTests */,
@@ -195,7 +197,6 @@
 				DF119C9AB56E4AD79B5B3594 /* Raleway-BlackItalic.ttf */,
 				678188BBF59945578B2D9034 /* Raleway-Bold.ttf */,
 				1D21945DC7314C19BC534ABF /* Raleway-BoldItalic.ttf */,
-				CFB25A35DA3E4621B474BB73 /* Raleway-ExtraBold.ttf */,
 				E487EDAED95E425A9A8897B4 /* Raleway-ExtraBoldItalic.ttf */,
 				C6303EFBBA0F4C96BBF2B595 /* Raleway-ExtraLight.ttf */,
 				D4AB750459F241B1963ACFCE /* Raleway-ExtraLightItalic.ttf */,
@@ -207,7 +208,17 @@
 				04E8575EF513466189499369 /* Raleway-SemiBold.ttf */,
 				F24CEEF2F0D24129AD04CA5D /* Raleway-SemiBoldItalic.ttf */,
 				1608CCBE15194EBFA743E65F /* Raleway-Thin.ttf */,
+				CFB25A35DA3E4621B474BB73 /* Raleway-ExtraBold.ttf */,
 				B3A2533D20E84E33919B2524 /* Raleway-ThinItalic.ttf */,
+				D2B5C8D81C524578AC9CBF18 /* AntDesign.ttf */,
+				DB2E1949F6544BE3BC66FE4D /* Entypo.ttf */,
+				2261D191DE94470692F04A01 /* EvilIcons.ttf */,
+				61F627241146463BAFBC42DC /* Fontisto.ttf */,
+				2B9D7C2595F742EFAEF47BF3 /* Foundation.ttf */,
+				AD6A19855E9F4FB894F124D5 /* MaterialCommunityIcons.ttf */,
+				A9275E76D01B4000A6EB6020 /* Octicons.ttf */,
+				ADF4DF9A33DE478CAC0F4AC3 /* SimpleLineIcons.ttf */,
+				6186E200B6264C2784E6B22A /* Zocial.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -215,10 +226,10 @@
 		C7804C3A17D6EDD8A27B0EAA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3E17ADA691DF1DDC86D7974E /* Pods-AllCures.debug.xcconfig */,
-				7627A65BCB1B07AA54FE62DE /* Pods-AllCures.release.xcconfig */,
-				9F2AB1949A68AA82EA30FEC1 /* Pods-AllCures-AllCuresTests.debug.xcconfig */,
-				311C7A7C1D5B4689105B4B09 /* Pods-AllCures-AllCuresTests.release.xcconfig */,
+				7C393997EE7778F058A1824C /* Pods-AllCures.debug.xcconfig */,
+				D30C8ABC4E1947BE2B85DA3B /* Pods-AllCures.release.xcconfig */,
+				46B8EA2EDC2D0561E6F65E52 /* Pods-AllCures-AllCuresTests.debug.xcconfig */,
+				38CAB99B89C964731FDFE796 /* Pods-AllCures-AllCuresTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -230,12 +241,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "AllCuresTests" */;
 			buildPhases = (
-				51488223B80BA5CE6EB7FF65 /* [CP] Check Pods Manifest.lock */,
+				4CE50468FCBFAC6086189F23 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				F9C16BE213128B8E775BC353 /* [CP] Embed Pods Frameworks */,
-				3CCB4480598D5FB9D847C4DB /* [CP] Copy Pods Resources */,
+				547592167FA7E077BCC58C49 /* [CP] Embed Pods Frameworks */,
+				A557130C63BB33BA325A28CE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -251,15 +262,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AllCures" */;
 			buildPhases = (
-				90214AA4F68B47D5A94AE75A /* [CP] Check Pods Manifest.lock */,
+				656194C1C63F5124DDC7CA71 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				EFD7FC6FBAF75F94948BB874 /* [CP] Embed Pods Frameworks */,
-				07168CA4B069374B66BD8482 /* [CP] Copy Pods Resources */,
-				2617E89D2B7DB2467E10A40C /* [CP-User] [RNFB] Core Configuration */,
+				E295B2736377AAE6D7496AD2 /* [CP] Embed Pods Frameworks */,
+				1FAD47A7370216E3AE9E6235 /* [CP] Copy Pods Resources */,
+				2831AE0F4543B9A5EE0467B5 /* [CP-User] [RNFB] Core Configuration */,
 			);
 			buildRules = (
 			);
@@ -288,7 +299,7 @@
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "AllCures" */;
-			compatibilityVersion = "Xcode 12.0";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -318,21 +329,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBA0EC4B27F45CBC003F34C0 /* FontAwesome.ttf in Resources */,
-				BBA0EC4C27F45CBC003F34C0 /* FontAwesome5_Brands.ttf in Resources */,
-				BBA0EC4D27F45CBC003F34C0 /* FontAwesome5_Regular.ttf in Resources */,
-				BBA0EC4E27F45CBC003F34C0 /* FontAwesome5_Solid.ttf in Resources */,
-				BBA0EC4F27F45CBC003F34C0 /* Ionicons.ttf in Resources */,
-				BBA0EC5027F45CBC003F34C0 /* MaterialIcons.ttf in Resources */,
-				BBA0EC4427F45B91003F34C0 /* Feather.ttf in Resources */,
-				BBA0EC3827F45B42003F34C0 /* Raleway.ttf in Resources */,
-				BBA0EC3927F45B42003F34C0 /* Raleway-Regular.ttf in Resources */,
-				BBA0EC3A27F45B42003F34C0 /* Raleway-Bold.ttf in Resources */,
-				BBA0EC3B27F45B42003F34C0 /* Raleway-Light.ttf in Resources */,
-				BBA0EC3C27F45B42003F34C0 /* Raleway-Medium.ttf in Resources */,
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				BBA0EC3727F4584A003F34C0 /* GoogleService-Info.plist in Resources */,
+				1855521F28C72BAB0086E8B2 /* Raleway.ttf in Resources */,
+				1855522028C72BAB0086E8B2 /* Raleway-Regular.ttf in Resources */,
+				1855522128C72BAB0086E8B2 /* Raleway-Black.ttf in Resources */,
+				1855522228C72BAB0086E8B2 /* Raleway-Bold.ttf in Resources */,
+				1855522328C72BAB0086E8B2 /* Raleway-Light.ttf in Resources */,
+				1855522428C72BAB0086E8B2 /* Raleway-Medium.ttf in Resources */,
+				1855521E28B610AE0086E8B2 /* GoogleService-Info.plist in Resources */,
+				1855521C28B37B1A0086E8B2 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,9 +357,9 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		07168CA4B069374B66BD8482 /* [CP] Copy Pods Resources */ = {
+		1FAD47A7370216E3AE9E6235 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
@@ -365,12 +369,12 @@
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AllCures/Pods-AllCures-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures/Pods-AllCures-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2617E89D2B7DB2467E10A40C /* [CP-User] [RNFB] Core Configuration */ = {
+		2831AE0F4543B9A5EE0467B5 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -383,24 +387,7 @@
 			shellPath = /bin/sh;
 			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT=\"'react-native'\"\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"info:      setting plist entry '$1' of type '$2' in file '$4'\"\n  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"info:      '$1' already exists\"\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"info: -> RNFB build script started\"\necho \"info: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"info:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")\n  _RN_ROOT_EXISTS=$(ruby -e \"require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\" || echo '')\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    _JSON_OUTPUT_BASE64=$(python -c 'import json,sys,base64;print(base64.b64encode(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"').read())['${_JSON_ROOT}'])))' || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.app_data_collection_default_enabled\n  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_data_collection_default_enabled\")\n  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseDataCollectionDefaultEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_DATA_COLLECTION_ENABLED\")\")\n  fi\n\n  # config.analytics_auto_collection_enabled\n  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_auto_collection_enabled\")\n  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_COLLECTION\")\")\n  fi\n\n  # config.analytics_collection_deactivated\n  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_collection_deactivated\")\n  if [[ $_ANALYTICS_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_DEACTIVATED\")\")\n  fi\n\n  # config.analytics_idfv_collection_enabled\n  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_idfv_collection_enabled\")\n  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_IDFV_COLLECTION\")\")\n  fi\n\n  # config.analytics_default_allow_ad_personalization_signals\n  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_personalization_signals\")\n  if [[ $_ANALYTICS_PERSONALIZATION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_PERSONALIZATION\")\")\n  fi\n\n  # config.google_analytics_automatic_screen_reporting_enabled\n  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_automatic_screen_reporting_enabled\")\n  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAutomaticScreenReportingEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_SCREEN_REPORTING\")\")\n  fi\n\n  # config.perf_auto_collection_enabled\n  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_auto_collection_enabled\")\n  if [[ $_PERF_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_AUTO_COLLECTION\")\")\n  fi\n\n  # config.perf_collection_deactivated\n  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_collection_deactivated\")\n  if [[ $_PERF_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_deactivated\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_DEACTIVATED\")\")\n  fi\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.in_app_messaging_auto_colllection_enabled\n  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"in_app_messaging_auto_collection_enabled\")\n  if [[ $_FIAM_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseInAppMessagingAutomaticDataCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_FIAM_AUTO_INIT\")\")\n  fi\n\n  # config.app_check_token_auto_refresh\n  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_check_token_auto_refresh\")\n  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAppCheckTokenAutoRefreshEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_CHECK_TOKEN_AUTO_REFRESH\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"FirebaseCrashlyticsCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"info: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally\n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"info: <- RNFB build script finished\"\n";
 		};
-		3CCB4480598D5FB9D847C4DB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		51488223B80BA5CE6EB7FF65 /* [CP] Check Pods Manifest.lock */ = {
+		4CE50468FCBFAC6086189F23 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -422,7 +409,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		90214AA4F68B47D5A94AE75A /* [CP] Check Pods Manifest.lock */ = {
+		547592167FA7E077BCC58C49 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		656194C1C63F5124DDC7CA71 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -444,9 +448,26 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EFD7FC6FBAF75F94948BB874 /* [CP] Embed Pods Frameworks */ = {
+		A557130C63BB33BA325A28CE /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E295B2736377AAE6D7496AD2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
@@ -456,26 +477,9 @@
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AllCures/Pods-AllCures-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures/Pods-AllCures-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F9C16BE213128B8E775BC353 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures/Pods-AllCures-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -530,7 +534,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F2AB1949A68AA82EA30FEC1 /* Pods-AllCures-AllCuresTests.debug.xcconfig */;
+			baseConfigurationReference = 46B8EA2EDC2D0561E6F65E52 /* Pods-AllCures-AllCuresTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -557,7 +561,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 311C7A7C1D5B4689105B4B09 /* Pods-AllCures-AllCuresTests.release.xcconfig */;
+			baseConfigurationReference = 38CAB99B89C964731FDFE796 /* Pods-AllCures-AllCuresTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -581,13 +585,17 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3E17ADA691DF1DDC86D7974E /* Pods-AllCures.debug.xcconfig */;
+			baseConfigurationReference = 7C393997EE7778F058A1824C /* Pods-AllCures.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3LV8H5VM9T;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AllCures/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -599,20 +607,26 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AllCures;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7627A65BCB1B07AA54FE62DE /* Pods-AllCures.release.xcconfig */;
+			baseConfigurationReference = D30C8ABC4E1947BE2B85DA3B /* Pods-AllCures.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3LV8H5VM9T;
 				INFOPLIST_FILE = AllCures/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -624,7 +638,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AllCures;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

@@ -10,28 +10,30 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { Spinner,useToast } from 'native-base';
+import {Button} from 'react-native-paper';
+import LottieView from 'lottie-react-native';
+import {Spinner, useToast} from 'native-base';
 import axios from 'axios';
 import Collapsible from 'react-native-collapsible';
 import {Card} from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {backendHost} from '../../components/apiConfig';
 
-import { VStack,Stack,Container,HStack,Checkbox } from 'native-base';
+import {VStack, Stack, Container, HStack, Checkbox} from 'native-base';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 const CreateScreenHome = () => {
-  const toast=useToast()
-  const navigation=useNavigation()
+  const toast = useToast();
+  const navigation = useNavigation();
   const [comment, setComment] = useState('');
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [showTitle, setShowTitle] = useState(true);
   const [showRemarks, setShowRemarks] = useState(true);
@@ -46,122 +48,109 @@ const CreateScreenHome = () => {
   const [copyright, setCopyright] = useState(11);
   const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-   
-        if (value1 != null) {
-           setRegId(value1)
-        }
-        else{
-          navigation.navigate('SignIn')
-        }
-      });
-    } catch (error) {
-      error
-    }
-  };
+  // const getId = () => {
+  //   try {
+  //     AsyncStorage.getItem('author').then(value1 => {
+  //       if (value1 != null) {
+  //         setRegId(value1);
+  //       } else {
+  //         navigation.navigate('SignIn',{screen:`CreateScreenHome`});
+  //       }
+  //     }).catch(err=>err);;
+  //   } catch (error) {
+  //     error;
+  //   }
+  // };
   const getType = () => {
     try {
-      AsyncStorage.getItem('rateType')
-      .then(value2 => {
-
+      AsyncStorage.getItem('rateType').then(value2 => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
-      error
+      error;
     }
   };
-const isFocus= useIsFocused();
-  
-  useEffect(() => {
-   
-    if(isFocus){
-      
-     
-    getType();
-    }
- 
-    getId();
-  },[regId]);
+  const isFocus = useIsFocused();
 
-//   useEffect(()=> {
-//     check()
-//   }, [regId])
+  useEffect(() => {
+    if (isFocus) {
+      getType();
+    }
+
+  
+  }, [regId]);
+
+  //   useEffect(()=> {
+  //     check()
+  //   }, [regId])
   const submitArticleForm = async e => {
     e.preventDefault();
-    setLoading(true)
-    if(article!='')
-    {
-  
-    axios.defaults.withCredentials = true
-    axios.post(`${backendHost}/content?cmd=createArticle`, {
-      headers: {
-        'Access-Control-Allow-Credentials': true,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-     "title":title,
-     "comments":comment,
-     "authById":[regId],
-     "copyId":copyright,
-     "disclaimerId":1,
-     "articleStatus":2,
-     "articleContent":encodeURIComponent(JSON.stringify({"time":1631083559825,"blocks":[{"id":"ZvfhlKCqsp","type":"paragraph","data":{"text":article}}],"version":"2.21.0"})),
-     
-    
-    })
-      .then(res => {
+    setLoading(true);
+    if (article != '') {
+      axios.defaults.withCredentials = true;
+      axios
+        .post(`${backendHost}/content?cmd=createArticle`, {
+          headers: {
+            'Access-Control-Allow-Credentials': true,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          title: title,
+          comments: comment,
+          authById: [regId],
+          copyId: copyright,
+          disclaimerId: 1,
+          articleStatus: 2,
+          articleContent: encodeURIComponent(
+            JSON.stringify({
+              time: 1631083559825,
+              blocks: [
+                {id: 'ZvfhlKCqsp', type: 'paragraph', data: {text: article}},
+              ],
+              version: '2.21.0',
+            }),
+          ),
+        })
+        .then(res => {
           if (res.data === 1) {
-            setLoading(false)
+            setLoading(false);
             toast.show({
-              title: "Article created successfully!",
-        description:'Check MyCures Tab.',
-              status: "success",
-              placement:"bottom",
-              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
-            })
-          } else if(res.data === -3) {
-            setLoading(false)
+              title: 'Article created successfully!',
+              description: 'Check MyCures Tab.',
+              status: 'success',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
+          } else if (res.data === -3) {
+            setLoading(false);
             toast.show({
-              title: "Title Already Taken!",
-        description:'Please change the title',
-              status: "warning",
-              placement:"bottom",
-              style:{borderRadius:20,width:wp('80%'),marginBottom:20}
-            })
+              title: 'Title Already Taken!',
+              description: 'Please change the title',
+              status: 'warning',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
+          } else {
+            Alert.alert('some error occured');
           }
-          else 
-          {
-            Alert.alert('some error occured')
-          }
- 
-      })
-      .catch(err => {
-           err
-
-      });
-    }else 
-    {
-      setLoading(false)
-      Alert.alert('Enter article details!')
+        })
+        .catch(err => {
+          err;
+        });
+    } else {
+      setLoading(false);
+      Alert.alert('Enter article details!');
     }
   };
 
   const titleValue = () => {
     return (
-      
       <View style={styles.action}>
         <TextInput
           placeholder="Enter Title"
           placeholderTextColor="#00415e"
-          style={[
-            styles.textInputTitle,
-            {color:'#00415e',
-              padding: 10,
-            },
-          ]}
+          style={[styles.textInputTitle, {color: '#00415e', padding: 10}]}
           autoCapitalize="none"
           value={title}
           returnKeyType="done"
@@ -186,7 +175,7 @@ const isFocus= useIsFocused();
           style={[
             styles.textInput,
             {
-              color:'#00415e',
+              color: '#00415e',
               padding: 10,
             },
           ]}
@@ -203,13 +192,13 @@ const isFocus= useIsFocused();
     return (
       <View style={styles.article}>
         <TextInput
-        placeholder='Write cure description here'
+          placeholder="Write cure description here"
           placeholderTextColor="#00415e"
           secureTextEntry={data.secureTextEntry ? true : false}
           style={[
             styles.textInputArticle,
             {
-              color:'#00415e',
+              color: '#00415e',
               height: 200,
               fontSize: 15,
             },
@@ -225,7 +214,7 @@ const isFocus= useIsFocused();
   };
   const [isCollapsedCure, setIsCollapsedCure] = useState(true);
   const [isCollapsedDetails, setIsCollapsedDetails] = useState(true);
-  const [isCollapsed,setIsCollapsed]=useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleCure = () => {
     return setIsCollapsedCure(!isCollapsedCure);
   };
@@ -234,58 +223,107 @@ const isFocus= useIsFocused();
   };
 
   return (
-    <View style={{flex:1,backgroundColor:'#fff',padding:10}}>
-    <ScrollView>
-<Stack space={4}>
-     <VStack space={2}>
-       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Title</Text>
-       {titleValue()}
-     </VStack>
-     <VStack space={2}>
-       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Remarks</Text>
-       {remarks()}
-     </VStack>
-     <VStack space={2}>
-       <Text style={{position:'relative',left:15,fontSize:16,fontFamily:'Raleway-Regular',color:'#00415e'}}>Write cure here</Text>
-       {articles()}
-     </VStack>
-     <VStack space={2}>
-       
-     <Checkbox shadow={2} value="test" isDisabled accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
-     I certify that i am at least 13years old and I have read and
-      </Checkbox>
-      <Checkbox shadow={2} value="test" isDisabled accessibilityLabel="This is a dummy checkbox" defaultIsChecked>
-      Accept Terms & Conditions
-      </Checkbox>
-      <Checkbox shadow={2} value="test" isDisabled  accessibilityLabel="This is a dummy checkbox" defaultIsChecked isReadOnly >
-        Privacy Policy
-      </Checkbox>
-     </VStack>
-     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
-     <TouchableOpacity style={styles.btn} onPress={e => submitArticleForm(e)}>
-       <HStack space={1}>
-        <Text style={styles.textBtn}>Submit</Text>
+    <View style={{flex: 1, backgroundColor: '#fff', padding: 8}}>
+      <ScrollView>
         {loading ? (
-      <View>
-     
-     <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-     
-      
-      </View>
-          ) : null}
-          </HStack>
-      </TouchableOpacity>
-      </View>
-      
-
-     </Stack>
-
-       
-    </ScrollView>
+          <View style={styles.loading}>
+            <LottieView
+              source={require('../../assets/animation/load.json')}
+              autoPlay
+              loop
+              style={{width: 50, height: 50}}
+            />
+          </View>
+        ) : null}
+        <Stack space={4}>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Title
+            </Text>
+            {titleValue()}
+          </VStack>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Remarks
+            </Text>
+            {remarks()}
+          </VStack>
+          <VStack space={2}>
+            <Text
+              style={{
+                position: 'relative',
+                left: 15,
+                fontSize: 16,
+                fontFamily: 'Raleway-Regular',
+                color: '#00415e',
+              }}>
+              Write cure here
+            </Text>
+            {articles()}
+          </VStack>
+          <VStack space={2}>
+            <Checkbox
+              shadow={2}
+              value="test"
+              isDisabled
+              accessibilityLabel="This is a dummy checkbox"
+              defaultIsChecked
+     >
+                <Text style={{marginLeft:2,fontSize:12}}>
+              I certify that i am at least 13years old and I have read and
+              </Text>
+            </Checkbox>
+            <Checkbox
+              shadow={2}
+              value="test"
+              isDisabled
+              accessibilityLabel="This is a dummy checkbox"
+              defaultIsChecked>
+             <Text style={{marginLeft:2,fontSize:12}}>
+              Accept Terms & Conditions
+              </Text>
+            </Checkbox>
+            <Checkbox
+              shadow={2}
+              value="test"
+              isDisabled
+              accessibilityLabel="This is a dummy checkbox"
+              defaultIsChecked
+              isReadOnly>
+                     <Text style={{marginLeft:2,fontSize:12}}>
+              Privacy Policy
+              </Text>
+            </Checkbox>
+          </VStack>
+          <View style={{alignItems: 'center'}}>
+            <Button
+              mode="contained"
+              labelStyle={{
+                color: '#00415e',
+                width:wp('50%'),
+              
+              }}
+              style={styles.btn}
+              onPress={e => submitArticleForm(e)}>
+              Submit
+            </Button>
+          </View>
+        </Stack>
+      </ScrollView>
     </View>
   );
 };
@@ -298,28 +336,22 @@ const styles = StyleSheet.create({
     padding: 40,
     margin: 0,
     backgroundColor: '#8cd4eb',
-  
-    alignItems:'center'
-  },
-  body:{
 
+    alignItems: 'center',
+  },
+  body: {
     borderWidth: 1,
-    backgroundColor:'#fff',
+    backgroundColor: '#fff',
     Color: 'lightgrey',
     borderColor: 'lightgrey',
     marginTop: Platform.OS === 'ios' ? 0 : -35,
     width: 380,
-   
-
   },
-  textBody:{
-      
-      padding:5,
-      fontSize:18,
-      fontWeight:'bold',
-textAlign:'center',
-
-
+  textBody: {
+    padding: 5,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   box: {
     backgroundColor: '#fff',
@@ -330,10 +362,9 @@ textAlign:'center',
     borderWidth: 1,
     Color: 'lightgrey',
     borderColor: 'lightgrey',
-    position:'relative',
-    left:10,
+    position: 'relative',
+    left: 10,
     width: 358,
-  
   },
   textCard: {
     padding: 10,
@@ -377,7 +408,7 @@ textAlign:'center',
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-    fontFamily:'Raleway-Regular',
+    fontFamily: 'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
@@ -385,32 +416,31 @@ textAlign:'center',
     marginBottom: 10,
     marginVertical: 0,
 
-    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
   },
   textInputTitle: {
     borderRadius: 15,
     flex: 1,
 
     marginTop: Platform.OS === 'ios' ? 0 : -10,
-fontFamily:'Raleway-Regular',
+    fontFamily: 'Raleway-Regular',
     borderWidth: 1,
     borderColor: 'lightgrey',
     color: 'grey',
-    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
     fontSize: 16,
-      marginBottom: -10,
+    marginBottom: -10,
     marginVertical: 0,
-
   },
   textInputArticle: {
     flex: 1,
     borderRadius: 15,
     color: 'grey',
     fontSize: 20,
-    textAlignVertical:'top',
-    paddingHorizontal:10,
-    fontFamily:'Raleway-Regular',
-    backgroundColor:'rgba(0, 65, 94, 0.2)',
+    textAlignVertical: 'top',
+    paddingHorizontal: 10,
+    fontFamily: 'Raleway-Regular',
+    backgroundColor: 'rgba(0, 65, 94, 0.2)',
   },
   errorMsg: {
     color: '#FF0000',
@@ -432,21 +462,32 @@ fontFamily:'Raleway-Regular',
   textBtn: {
     color: '#00415e',
     textAlign: 'center',
-    fontSize:20
+    fontSize: 20,
   },
 
   btn: {
-    justifyContent: 'center',
-    alignItems:'center',
-    borderWidth: 0,
-    borderRadius:15,
+    borderWidth: 1,
+    borderRadius: 20,
     borderColor: 'rgba(0, 65, 94, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: wp('50%'),
+    height: 40,
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
-    marginTop:5,
+    color: 'white',
+
+    marginTop: 5,
     marginBottom:5,
-    width: wp('60%'),
-    height: hp('6%'),
-  
-  
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

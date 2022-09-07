@@ -8,6 +8,7 @@ import {
   BackHandler,
   Alert,
   TouchableOpacity,
+  SafeAreaView,
   Image,
 } from 'react-native';
 import {useTheme, Link} from '@react-navigation/native';
@@ -61,7 +62,7 @@ const Result = ({navigation, route}) => {
     try {
       JSON.parse(str);
     } catch (e) {
-      return [];
+      return e;
     }
     return JSON.parse(str).blocks;
   }
@@ -75,7 +76,7 @@ const Result = ({navigation, route}) => {
         setIsLoaded(true);
         setItems(json);
         
-      });
+      }).catch(err=>err);;
   };
 
   const isearch = () => {
@@ -89,7 +90,7 @@ const Result = ({navigation, route}) => {
         setIsLoaded(true);
         setItems(json);
         setLoading(false)
-      });
+      }).catch(err=>err);;
   };
   const itype = () => {
     setLoading(true)
@@ -100,7 +101,7 @@ const Result = ({navigation, route}) => {
         setIsLoaded(true);
         setItems(json);
         setLoading(false)
-      });
+      }).catch(err=>err);;
   };
 
   const [loading,setLoading]=useState(false)
@@ -169,7 +170,12 @@ const load = () => {
 };
 
   useEffect(() => {
+    let isMounted=true;
+    if(isMounted)
+    {
    api();
+    }
+    return () => { isMounted = false };
   }, []);
 
   if (!isLoaded) {
@@ -190,9 +196,9 @@ const load = () => {
   } else {
     return (
       <>
-        <View style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
           <ArticleHeader />
-          <View style={{margin: 6, flex: 1}}>
+          <View style={{margin: 6 , flex: 1}}>
             <ScrollView style={{width: wp('100%'), height: hp('100%')}}>
               {items.length !== 0 ? (
                 items
@@ -221,15 +227,18 @@ const load = () => {
                       //replace via regex
                       title = title.replace(regex, '-');
                       return (
-                        <View>
+                        <View     key={Math.random().toString(36)}>
                           <View
+                          key={Math.random().toString(36)}
                             style={{
                               marginRight: 10,
                               height: 170,
                               width: wp('100%'),
                             }}>
                             <Card
+                                   key={Math.random().toString(36)}               
                               style={{
+                                
                                 width: wp('97%'),
                                 height: 168,
                                 backgroundColor: '#fff',
@@ -240,8 +249,9 @@ const load = () => {
                                 borderRadius: 15,
                                 alignItems: 'center',
                               }}>
-                              <HStack space={1}>
+                              <HStack space={1} key={Math.random().toString(36)}>
                                 <TouchableOpacity
+                                key={Math.random().toString(36)}
                                   activeOpacity={0.8}
                                   onPress={() => {
                                     {
@@ -251,6 +261,7 @@ const load = () => {
                                     }
                                   }}>
                                   <Image
+                                key={Math.random().toString(36)}
                                     source={{
                                       uri:
                                         imageLoc +
@@ -269,25 +280,26 @@ const load = () => {
                                     }}
                                   />
                                 </TouchableOpacity>
-                                <View style={{width: wp('50%')}}>
+                                <View  key={Math.random().toString(36)} style={{width: wp('50%')}}  >
                                   <VStack py="2" space={10}>
                                     <AllPost
-                                      key={key}
+                                     key={Math.random().toString(36)}
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
                                       w_title={i.window_title}
                                       allPostsContent={() => receivedData()}
                                     />
-                                    <View style={{width: wp('50%')}}>
+                                    <View  key={Math.random().toString(36)}style={{width: wp('50%')}}>
                                       <Text
+                                      key={Math.random().toString(36)}
                                         style={{position: 'absolute', top: 0}}>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
-                                                    key={j}
+                                                  key={Math.random().toString(36)}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={
@@ -316,6 +328,7 @@ const load = () => {
                                     </View>
                                   </VStack>
                                   <Text
+                                  key={Math.random().toString(36)}
                                     adjustsFontSizeToFit
                                     numberOfLines={1}
                                     style={{
@@ -360,7 +373,7 @@ const load = () => {
               }
             </ScrollView>
           </View>
-        </View>
+        </SafeAreaView>
       </>
     );
   }

@@ -17,11 +17,11 @@ import {
 import {useToast} from 'native-base';
 import {KeyboardAvoidingView} from 'react-native';
 import {Card} from 'react-native-paper';
-const Comment = props => {
+const Comment = ({article_id,doc_id}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
   const toast = useToast();
-  const [cmtText, setCmtText] = useState();
+  const [cmtText, setCmtText] = useState('');
   const [succAlert, setAlert] = useState('');
   const [regId, setRegId] = useState();
   const [regType, setRegType] = useState();
@@ -31,7 +31,7 @@ const Comment = props => {
         if (value1 != null) {
           setRegId(value1);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -42,7 +42,7 @@ const Comment = props => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -61,10 +61,10 @@ const Comment = props => {
     return true;
   };
   const postComment = e => {
-    if (cmtText != '') {
+    if (cmtText !== '') {
       axios
         .post(
-          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
+          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${article_id!==null?article_id:doc_id}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
         )
         .then(res => {
           goto();

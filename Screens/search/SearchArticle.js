@@ -1,7 +1,7 @@
 import React from "react";
 import  AsyncStorage  from "@react-native-async-storage/async-storage";
 import { useState,useEffect} from "react";
-import { View, Text, Image, ScrollView, TextInput ,StyleSheet} from 'react-native';
+import { View, Text, Image, ScrollView, TextInput ,StyleSheet, SafeAreaView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
 import { useIsFocused } from "@react-navigation/native";
@@ -15,7 +15,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 const SearchArt = ()=>{
    const navigation=useNavigation();
     return(
-<Container bg='#fff'>
+<SafeAreaView style={{backgroundColor:'#fff'}}>
   
       {/* <View styles={styles.flex}>
           <Card style={styles.header}>
@@ -28,11 +28,11 @@ const SearchArt = ()=>{
 
         </View> */}
         <View styles={styles.flex}>
-    <Card style={styles.header}>
+    <Card elevation={0} style={styles.header}>
 
-      <HStack mt="5" ml="10" space={3}alignItems="center">
+      <HStack mt="0" ml="10" space={3}alignItems="center">
 
-<Icon name="arrow-back-outline" style={{position:'relative',left:10,alignItems:'center'}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+<Icon name="arrow-back-outline" style={{position:'relative',left:10,alignItems:'center'}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('Main')}}/>
 
 <Autocomplete/>
 
@@ -48,7 +48,7 @@ const SearchArt = ()=>{
  
 
 
-   </Container>
+   </SafeAreaView>
 
     )
 }
@@ -66,9 +66,8 @@ flex:{
    backgroundColor:'#fff'
 },
 header:{
-
-padding: 0,
-marginTop: Platform.OS === 'ios' ? 0 : -7,
+  paddingTop:Platform.OS === 'ios' ? 6 : 0,
+marginTop: Platform.OS === 'ios' ? 0 : 10,
 marginLeft:0,
 borderColor: '#fff',
 borderWidth: 0.1,
@@ -76,7 +75,7 @@ alignItems: 'center',
 justifyContent:'center',
 width: wp('100%'),
 height: 85,
-elevation: 5,
+elevation: 0,
 backgroundColor:'#fff'
 
 }

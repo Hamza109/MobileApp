@@ -177,10 +177,10 @@ const ArticlePreview = () => {
 
                       title = title.replace(regex, '-');
                       return (
-                        <View >
-                          <View style={{marginRight: 10,height:170,width:wp('100%')}} >
+                        <View     key={Math.random().toString(36)}>
+                          <View style={{marginRight: 10,height:170,width:wp('100%')}} key={Math.random().toString(36)} >
                             <Card
-                            key={items}
+key={Math.random().toString(36)}
                               style={{
                                 width: wp('97%'),
                                 height: 168,
@@ -192,9 +192,10 @@ const ArticlePreview = () => {
                                 borderRadius:15,
                                 alignItems: 'center',
                               }}>
-                              <HStack space={1}>
-                                <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                              <HStack space={1}  key={Math.random().toString(36)}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
+                              key={Math.random().toString(36)}
                                   source={{
                                     uri:
                                       imageLoc +
@@ -213,24 +214,25 @@ const ArticlePreview = () => {
                                   }}
                                 />
                                 </TouchableOpacity>
-                                <View style={{width:wp('50%')}}>
-                                  <VStack py='2' space={10}>
+                                <View style={{width:wp('50%')}} key={Math.random().toString(36)}>
+                                  <VStack py='2'  key={Math.random().toString(36)} space={10}>
                                   <AllPost
-                                  
+                                  key={Math.random().toString(36)}
                                     id={i.article_id}
                                     title={i.title}
                                     f_title={i.friendly_name}
                                     w_title={i.window_title}
                                     allPostsContent={() => receivedData()}
                                   />
-                                  <View style={{width:wp('50%')}}>
+                                  <View  key={Math.random().toString(36)} style={{width:wp('50%')}}>
                                    
-                                      <Text style={{position:'absolute',top:0}}>
+                                      <Text  key={Math.random().toString(36)} style={{position:'absolute',top:0}}>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
+                                                  key={Math.random().toString(36)}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={
@@ -263,6 +265,7 @@ const ArticlePreview = () => {
                                
                                   </VStack>
                                   <Text
+                                  key={Math.random().toString(36)}
                                   adjustsFontSizeToFit
                                   numberOfLines={1}
                                       style={{
@@ -292,9 +295,7 @@ const ArticlePreview = () => {
               )}
             </ScrollView>
           </View>
-          <View>
-            <View></View>
-          </View>
+       
         </View>
       </>
     );

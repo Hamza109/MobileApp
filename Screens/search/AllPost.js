@@ -12,27 +12,10 @@ const { s, c } = bootstrapStyleSheet;
 
 
 const AllPost = ({ id, title, f_title, w_title}) => {
-  const[showValue,setShowValue]=useState([])
-
-  const getRating = () => {
-
-    axios.get(`${backendHost}/rating/target/${id}/targettype/2/avg`)
-  
-    .then(res => {
-     
-
-      setShowValue(res.data.toFixed(1))
-    })
-    .catch(err => err)
-  }
-
-useEffect(()=>{
 
 
 
-  getRating()
 
-},[])  
 const isFocus=useIsFocused()
  const navigation=useNavigation()
         return (

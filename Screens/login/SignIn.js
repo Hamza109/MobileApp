@@ -8,10 +8,12 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
+
   ImageBackground,
   ToastAndroid,
   BackHandler,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   HStack,
   Stack,
@@ -39,11 +41,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons';
-const SignInScreen = ({navigation, props}) => {
+import { useNavigation } from '@react-navigation/native';
+const SignInScreen = ({ props,route}) => {
   const [status, setStatus] = useState('');
+  const navigation=useNavigation()
   const [buttonClick, setClicked] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(props);
   const [loginSuccess, setLoginSuccess] = useState(true);
+  const screen =route.params.screen
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -55,10 +60,7 @@ const SignInScreen = ({navigation, props}) => {
     navigation.navigate('Verify');
   };
 
-  const bootstrapStyleSheet = new BootstrapStyleSheet();
-  const {s, c} = bootstrapStyleSheet;
 
-  const {colors} = useTheme();
   const toast = useToast();
   const updateSecureTextEntry = () => {
     setData({
@@ -67,9 +69,9 @@ const SignInScreen = ({navigation, props}) => {
     });
   };
   const backAction = () => {
-    if (navigation.isFocused()) {
-      navigation.push('MainTab');
-    }
+  
+      navigation.push('Main');
+    
   };
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -113,7 +115,7 @@ const SignInScreen = ({navigation, props}) => {
       .then(res => {
         if (res.data.registration_id) {
           setTimeout(() => {
-            navigation.push('MainTab', {
+            navigation.push(screen, {
               params: {
                 userId: authid,
               },
@@ -196,24 +198,26 @@ const SignInScreen = ({navigation, props}) => {
       error;
     }
   };
+  const [borderWidth, setborderWidth] = useState(1);
+  const [pBorderWidth, setPborderWidth] = useState(1);
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+    
       <ImageBackground
         source={require('../../assets/img/backheart.png')}
-        resizeMode="cover"
+        resizeMode="stretch"
         style={styles.image}>
         <TouchableOpacity
-          style={{marginLeft: 20, color: '#fff'}}
+          style={{  zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.push('MainTab')}>
+          onPress={() => navigation.push('Main')}>
           <Text
             style={{
               color: '#fff',
-              position: 'absolute',
-              top: Platform.OS === 'android' ? 0 : 50,
-              right: Platform.OS === 'android' ? 0 : 45,
+              position: 'relative',
+              top: Platform.OS === 'android' ? 30 : 60,
+              left: Platform.OS === 'android' ? 265 : 285,
               fontSize: 18,
               zIndex: 999,
               fontFamily: 'Raleway-Medium',
@@ -228,9 +232,11 @@ const SignInScreen = ({navigation, props}) => {
             </View>
 
             <VStack space={3}>
-              <View style={styles.action}>
+              <View style={[styles.action, {borderWidth: borderWidth}]}>
                 <TextInput
                   placeholder="Enter your email"
+                  onFocus={() => setborderWidth(2)}
+                  onBlur={() => setborderWidth(1)}
                   placeholderTextColor="#fff"
                   style={[
                     styles.textInput,
@@ -238,6 +244,7 @@ const SignInScreen = ({navigation, props}) => {
                       color: '#fff',
                     },
                   ]}
+                  onfo
                   autoCapitalize="none"
                   value={data.email}
                   returnKeyType="done"
@@ -250,10 +257,12 @@ const SignInScreen = ({navigation, props}) => {
                 ) : null}
               </View>
 
-              <View style={styles.action}>
+              <View style={[styles.action, {borderWidth: pBorderWidth}]}>
                 <TextInput
                   placeholder="Enter your password"
                   placeholderTextColor="#fff"
+                  onFocus={() => setPborderWidth(2)}
+                  onBlur={() => setPborderWidth(1)}
                   secureTextEntry={data.secureTextEntry ? true : false}
                   style={[
                     styles.textInput,
@@ -396,8 +405,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    flex: 1,
-
+    width:wp('100%'),
+    height:hp('100%'),
+  zIndex:999,
     padding: 15,
   },
 });

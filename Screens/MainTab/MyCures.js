@@ -31,9 +31,11 @@ const MyCures = () => {
       <Tab.Navigator
         initialRouteName="All"
         screenOptions={{
-      
+        
+tabBarIndicatorStyle:{color:'#00415e'},
           tabBarStyle: {padding: 0,width:widthPercentageToDP('100%')},
           tabBarInactiveTintColor: 'grey',
+          tabBarActiveTintColor: '#00415e',
           tabBarLabelStyle: {fontFamily: 'Raleway-Bold', fontSize: widthPercentageToDP('3%')},
         }}>
         <Tab.Screen
@@ -42,7 +44,7 @@ const MyCures = () => {
           options={{
             unmountOnBlur:true,
             headerShown: false,
-            tabBarActiveTintColor: '#00415e',
+            tabBarIndicatorStyle:{color:'#00415e'},
             tabBarLabel: 'Article',
 
             tabBarColor: '#fff',
@@ -54,7 +56,7 @@ const MyCures = () => {
           options={{
             unmountOnBlur:true,
             headerShown: false,
-            tabBarActiveTintColor: '#00415e',
+            tabBarIndicatorStyle:{color:'#00415e'},
             tabBarLabel: 'Cures',
             tabBarColor: '#fff',
           }}

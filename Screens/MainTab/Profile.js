@@ -10,9 +10,8 @@ import {
   ImageBackground,
   RefreshControl,
   Animated,
-  
 } from 'react-native';
-import { useToast,Divider } from 'native-base';
+import {useToast, Divider} from 'native-base';
 import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/routers';
@@ -50,9 +49,10 @@ import {
 } from 'react-native-responsive-screen';
 import {TouchableOpacity} from 'react-native';
 import axios from 'axios';
+import LottieView from 'lottie-react-native';
 
 const ProfileScreen = ({sheetRef, onFileSelected}) => {
-  const toast=useToast()
+  const toast = useToast();
   const Navigation = useNavigation();
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
@@ -90,24 +90,24 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   );
   const [imageUser, setImageUser] = useState(``);
   const [rowno, setRowno] = useState();
-const [mobile,setMobile]=useState();
+  const [mobile, setMobile] = useState();
   const [modalVisible, setModalVisible] = useState(false);
-  
 
-  const getProfile = (userId) => {
-    axios.get(`${backendHost}/profile/${userId}`)
-    .then(res => {
-        setFirstName(res.data.first_name)
-        setLastName(res.data.last_name)
-        setEmail(res.data.email_address)
-        setMobile(res.data.mobile_number)
+  const getProfile = userId => {
+    axios
+      .get(`${backendHost}/profile/${userId}`)
+      .then(res => {
+        setIsLoaded(true)
+        setFirstName(res.data.first_name);
+        setLastName(res.data.last_name);
+        setEmail(res.data.email_address);
+        setMobile(res.data.mobile_number);
         // setRegType(res.data.registration_type)
-
-       
-    })
-    .catch(err => {return})
- 
-}
+      })
+      .catch(err => {
+        return;
+      });
+  };
 
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -116,49 +116,42 @@ const [mobile,setMobile]=useState();
 
   const onRefresh = () => {
     getRow();
-    
+
     setRefreshing(true);
-    
-    wait(2000).then(() => setRefreshing(false));
+
+    wait(2000).then(() => setRefreshing(false)).catch(err=>err);;
   };
   const [img, setImg] = useState();
   const getId = () => {
     try {
       AsyncStorage.getItem('author').then(value1 => {
-  
         if (value1 != null) {
-          getProfile(value1)
-           setRegId(value1)
+          getProfile(value1);
+          setRegId(value1);
+        } else {
+          navigation.push('SignIn',{screen:`Main`});
         }
-        else{
-          navigation.navigate('SignIn')
-        }
-      });
+      }).catch(err=>err);;
     } catch (error) {
-      error
+      error;
     }
   };
-  
+
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
- ;
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
-      error
+      error;
     }
   };
-  const getRow =  () => {
+  const getRow = () => {
     try {
-   AsyncStorage.getItem('rowno').then(value2 => {
-      
+      AsyncStorage.getItem('rowno').then(value2 => {
         if (value2 != null) {
-
-     
-
           fetch(
             `${backendHost}/DoctorsActionController?rowno=${Number(
               value2,
@@ -167,13 +160,12 @@ const [mobile,setMobile]=useState();
             .then(res => res.json())
             .then(json => {
               if (json == null) {
-                setIsLoaded(true);
-                setNameLoad(true);
+                setIsLoaded(true)
+                setNameLoad(true)
                 setModalVisible(true);
               } else {
-         
-                setRowno(Number(value2));
                 setIsLoaded(true);
+                setRowno(Number(value2));
                 setItems(json);
                 setFirst(json.docname_first);
                 setLast(json.docname_last);
@@ -196,14 +188,12 @@ const [mobile,setMobile]=useState();
               }
             });
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
-      error
+      error;
     }
   };
- 
- 
-  
+
   function User() {
     return (
       <Svg
@@ -219,19 +209,17 @@ const [mobile,setMobile]=useState();
     );
   }
   const goto = () => {
-
     toast.show({
-      title: "Profile Updated",
-description:'profile updated successfully.',
-      status: "success",
-      placement:"bottom",
-      duration:2000,
-      style:{borderRadius:20,width:wp('70%'),marginBottom:20}
-    })
+      title: 'Profile Updated',
+      description: 'profile updated successfully.',
+      status: 'success',
+      placement: 'bottom',
+      duration: 2000,
+      style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+    });
 
-
-  return true;
-};
+    return true;
+  };
 
   const formSubmit = e => {
     setafterSubmitLoad(true);
@@ -263,9 +251,8 @@ description:'profile updated successfully.',
         },
       )
       .then(res => {
- 
         if (res.data === 1) {
-       goto();
+          goto();
         } else {
           Alert.alert('Some error occured. Try again later');
         }
@@ -279,15 +266,15 @@ description:'profile updated successfully.',
     Promise.all([
       fetch(`${backendHost}/article/all/table/specialties`).then(res =>
         res.json(),
-      ),
+      ).catch(err=>err),
       fetch(`${backendHost}/article/all/table/hospital`).then(res =>
         res.json(),
-      ),
-      fetch(`${backendHost}/article/all/table/states`).then(res => res.json()),
-      fetch(`${backendHost}/article/all/table/city`).then(res => res.json()),
+      ).catch(err=>err),
+      fetch(`${backendHost}/article/all/table/states`).then(res => res.json()).catch(err=>err),
+      fetch(`${backendHost}/article/all/table/city`).then(res => res.json()).catch(err=>err),
       fetch(`${backendHost}/article/all/table/countries`).then(res =>
         res.json(),
-      ),
+      ).catch(err=>err),
     ])
       .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
         setDiseaseList(diseaseData);
@@ -297,7 +284,7 @@ description:'profile updated successfully.',
         setCountryList(countryData);
       })
       .catch(err => {
-        return;
+      err
       });
   };
   const isFocus = useIsFocused();
@@ -310,7 +297,6 @@ description:'profile updated successfully.',
   useEffect(() => {
     if (isFocus) {
       getRow();
- 
     }
   }, [rowno]);
   useEffect(() => {
@@ -319,7 +305,6 @@ description:'profile updated successfully.',
     }
   }, [regType]);
 
- 
   useEffect(() => {
     fetchTables();
   }, []);
@@ -332,12 +317,12 @@ description:'profile updated successfully.',
     }).then(image => {
       const a = image.path.split('/');
       const b = a[a.length - 1];
-  
+
       regType == 1
         ? (setImage(image), setSelectedFile(b), bs.current.snapTo(1))
         : setImageUser(image.path);
       bs.current.snapTo(1);
-    });
+    }).catch(err=>err);;
   };
   const changeHandler = event => {
     if (photo.name.size > 1048576) {
@@ -363,7 +348,6 @@ description:'profile updated successfully.',
     // e.preventDefault()
     setImageUploadLoading(true);
 
-
     const formData = new FormData();
     formData.append('File', photo);
     fetch(`${backendHost}/dashboard/imageupload/doctor/${rowno}`, {
@@ -378,7 +362,6 @@ description:'profile updated successfully.',
           setIsFilePicked(true);
           setImageUploadLoading(true);
         }, 3000);
-    
       })
       .catch(error => {
         return;
@@ -386,19 +369,15 @@ description:'profile updated successfully.',
   };
 
   if (!isLoaded) {
-
     return (
-      
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
           />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
         </HStack>
       </View>
     );
@@ -410,36 +389,39 @@ description:'profile updated successfully.',
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-              
             <Stack mt="0" space={5}>
-          
-              <View style={{backgroundColor:'#00415e',width:wp('100%'),height:140}}>
+              <View
+                style={{
+                  backgroundColor: '#00415e',
+                  width: wp('100%'),
+                  height: 140,
+                }}>
                 <HStack>
-                  <VStack py='2'>
-                  <Card
-                    style={{
-                      width: wp('30%'),
-                      height: hp('15%'),
-                      backgroundColor: 'grey',
-                      borderRadius: 200,
-                      position: 'relative',
-                      left: 20,
-                      justifyContent: 'center',
-                      paddingHorizontal: 5,
-                      alignItems: 'center',
-                    }}>
-                    <ImageBackground
-                      source={{uri: img}}
+                  <VStack py="2">
+                    <Card
                       style={{
                         width: wp('30%'),
                         height: hp('15%'),
+                        backgroundColor: 'grey',
                         borderRadius: 200,
-                        overflow: 'hidden',
-                      }}></ImageBackground>
-                  </Card>
-              </VStack>
+                        position: 'relative',
+                        left: 20,
+                        justifyContent: 'center',
+                        paddingHorizontal: 5,
+                        alignItems: 'center',
+                      }}>
+                      <ImageBackground
+                        source={{uri: img}}
+                        style={{
+                          width: wp('30%'),
+                          height: hp('15%'),
+                          borderRadius: 200,
+                          overflow: 'hidden',
+                        }}></ImageBackground>
+                    </Card>
+                  </VStack>
                   <View style={{position: 'relative', left: 30}}>
-                    <VStack space={1} py='2'>
+                    <VStack space={1} py="2">
                       <HStack>
                         <Text
                           style={{
@@ -529,11 +511,9 @@ description:'profile updated successfully.',
                       </HStack>
                     </VStack>
                   </View>
-                  
                 </HStack>
-                
               </View>
-              
+
               <View>
                 <VStack ml="2" space={1}>
                   <Text
@@ -1103,25 +1083,23 @@ description:'profile updated successfully.',
             <View>
               <VStack space={5} ml="0" mt="3">
                 <View>
-                <View style={{alignItems:'center'}}>
-                  <User
-                    style={{
-                      borderRadius: 10,
-                    }}
-                  />
-                   <HStack space={1}>
-                        <Text style={styles.margin}>{firstName}</Text>
-                        <Text style={styles.margin}>{lastName}</Text>
-                     
-                      </HStack>
-</View>
-                  <View style={{marginTop:5}}>
-                    <Divider/>
-                    <VStack space={2} ml='5' mt='2'>
-                     
+                  <View style={{alignItems: 'center'}}>
+                    <User
+                      style={{
+                        borderRadius: 10,
+                      }}
+                    />
+                    <HStack space={1}>
+                      <Text style={styles.margin}>{firstName}</Text>
+                      <Text style={styles.margin}>{lastName}</Text>
+                    </HStack>
+                  </View>
+                  <View style={{marginTop: 5}}>
+                    <Divider />
+                    <VStack space={2} ml="5" mt="2">
                       <HStack space={1}>
                         <Icon name="mail" size={25} color="grey" />
-                      
+
                         <Text
                           style={{
                             color: '#00415e',
@@ -1133,11 +1111,14 @@ description:'profile updated successfully.',
                       </HStack>
                       <HStack>
                         <Icon name="phone-portrait" size={25} color="grey" />
-                        <Text  style={{
+                        <Text
+                          style={{
                             color: '#00415e',
                             fontFamily: 'Raleway-Regular',
                             fontSize: 15,
-                          }}>{mobile}</Text>
+                          }}>
+                          {mobile}
+                        </Text>
                       </HStack>
                     </VStack>
                   </View>
@@ -1146,8 +1127,6 @@ description:'profile updated successfully.',
             </View>
           </View>
         )}
-
-       
       </View>
     );
   }
@@ -1205,5 +1184,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#343a40',
     color: 'white',
     fontFamily: 'Raleway-Bold',
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

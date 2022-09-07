@@ -1,55 +1,48 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useRef} from 'react';
 import {
   View,
   Text,
   FlatList,
   StyleSheet,
   StatusBar,
-  BackHandler,
   Alert,
   Pressable,
   TouchableOpacity,
   Image,
   ToastAndroid,
   Share,
+  BackHandler,
   Platform,
 } from 'react-native';
+import LottieView from 'lottie-react-native';
 import {useToast} from 'native-base';
 import {Card} from 'react-native-paper';
 import AllPost from '../search/AllPost';
 import CenterWell1 from './CenterWell1';
 import CenterWell from './CenterWell';
-import Autocomplete from '../MainTab/Autocomplete';
-import {Portal} from 'react-native-paper';
 import {backendHost} from '../../components/apiConfig';
 import Comment from './comment';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {ScrollView, ImageBackground} from 'react-native';
-import {KeyboardAvoidingView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Rating from '../../components/StarRating';
 import {
-  Container,
   Modal,
-  Button,
-  Input,
-  Heading,
   VStack,
   FormControl,
+  Divider,
   Center,
   Stack,
   HStack,
   Box,
-  Spinner,
   Select,
-  NativeBaseProvider,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {useIsFocused} from '@react-navigation/native';
@@ -64,6 +57,7 @@ const Disease = ({navigation, route}) => {
   const [commentItems, setCommentItems] = useState([]);
   const [selected, setSelected] = useState(1);
   const ids = route.params.ids;
+
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
   const [id, setId] = useState(ids);
@@ -73,11 +67,12 @@ const Disease = ({navigation, route}) => {
   const [formattedValue, setFormattedValue] = useState('');
   const [disease, setDisease] = useState([]);
   const [condition, setCondition] = useState();
+  const refRBSheet = useRef();
   const check = () => {
     if (regId.length == 0) {
-      navigation.navigate('SignIn');
+      navigation.navigate('SignIn',{screen:`Main`});
     } else {
-      setModalVisible(!modalVisible);
+      refRBSheet.current.open()
     }
   };
 
@@ -88,6 +83,34 @@ const Disease = ({navigation, route}) => {
   useEffect(() => {
     getRating();
   }, [id]);
+  
+  const comment=()=>{  fetch(`${backendHost}/rating/target/${id}/targettype/2`)
+    .then(res => res.json())
+    .then(json => {
+    var temp=[];
+    json.forEach(i => {
+      if(i.reviewed === 1){
+        temp.push(i)
+      }
+     
+    })
+    console.log(temp)
+    setCommentItems(temp)
+    })
+
+    .catch(err => {
+      err;
+      throw err;
+    });
+  }
+  useEffect(()=>{
+    
+  comment()
+  return ()=>{
+    comment()
+  }
+  },[])
+
   const onShare = () => {
     try {
       const result = Share.share({
@@ -107,6 +130,20 @@ const Disease = ({navigation, route}) => {
     }
   };
 
+  useEffect(() => {
+    const backAction = () => {
+      navigation.push('Main');
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const fetchTables = () => {
     Promise.all([
       fetch(`${backendHost}/article/all/table/disease_condition`).then(res =>
@@ -116,9 +153,7 @@ const Disease = ({navigation, route}) => {
       .then(([diseaseData]) => {
         setDisease(diseaseData);
       })
-      .catch(err => {
-        return;
-      });
+      .catch(err => err);
   };
 
   useEffect(() => {
@@ -130,7 +165,7 @@ const Disease = ({navigation, route}) => {
         if (value1 != null) {
           setRegId(value1);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -213,13 +248,15 @@ const Disease = ({navigation, route}) => {
         });
     };
     get();
+
     return () => {
       get();
+    
     };
   }, [id]);
 
   useEffect(() => {
-    comments();
+ 
 
     if (data.reg_doc_pat_id !== null) {
       checkIfImageExits(
@@ -242,18 +279,7 @@ const Disease = ({navigation, route}) => {
     return JSON.parse(str).blocks;
   }
 
-  function comments() {
-    // For all available blogs "/blogs"
-    fetch(`${backendHost}/rating/target/${id}/targettype/2`)
-      .then(res => res.json())
-      .then(json => {
-        setCommentItems(json);
-      })
-      .catch(err => {
-        err;
-        throw err;
-      });
-  }
+ 
   const [sItems, setSItems] = useState([]);
   const [result, setResult] = useState();
   const getResult = () => {
@@ -290,7 +316,7 @@ const Disease = ({navigation, route}) => {
         }
       })
       .catch(err => {
-     err;
+        err;
         throw err;
       });
   };
@@ -301,27 +327,12 @@ const Disease = ({navigation, route}) => {
         setShowValue(res.data);
       })
       .catch(err => {
-   err;
+        err;
         throw err;
       });
   };
   const [rate, setRate] = useState([]);
-  const getRate = () => {
-    axios
-      .get(
-        `${backendHost}/rating/target/${id}/targettype/2?userid=${
-          regId ? regId : 0
-        }`,
-      )
-      .then(res => {
- 
-        setRate(res.data[0].ratingVal);
-      })
-      .catch(err => {
- err;
-        throw err;
-      });
-  };
+
   const handlePress = () => {
     if (stats == 1) {
       setStats(0);
@@ -346,7 +357,6 @@ const Disease = ({navigation, route}) => {
   };
 
   const favorite = async status => {
-
     if (status != 0) {
       setStats(1);
 
@@ -360,7 +370,7 @@ const Disease = ({navigation, route}) => {
           }
         })
         .catch(err => {
-err;
+          err;
           throw err;
         });
     } else {
@@ -382,7 +392,7 @@ err;
           }
         })
         .catch(err => {
-    err;
+          err;
           throw err;
         });
     }
@@ -395,16 +405,14 @@ err;
 
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
           />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
         </HStack>
       </View>
     );
@@ -423,7 +431,7 @@ err;
                   size={30}
                   color={'#00415e'}
                   onPress={() => {
-                    navigation.push('MainTab', {Screen: 'Home'});
+                    navigation.navigate('Home');
                   }}
                 />
                 <View style={{width: wp('75%'), height: 50}}>
@@ -664,7 +672,7 @@ err;
                     sItems
                       .filter((i, idx) => idx < 9)
                       .map(
-                        i => {
+                        (i,j) => {
                           var content = [];
                           var imgLocation = i.content_location;
                           var imageLoc = '';
@@ -688,9 +696,10 @@ err;
 
                           title = title.replace(regex, '-');
                           return (
-                            <View>
-                              <View style={{height: 170, width: wp('100%')}}>
+                            <View key={Math.random().toString(36)}>
+                              <View style={{height: 170, width: wp('100%')}} key={Math.random().toString(36)}>
                                 <Card
+                                key={Math.random().toString(36)}
                                   style={{
                                     width: wp('97%'),
                                     height: 168,
@@ -702,8 +711,9 @@ err;
                                     borderRadius: 15,
                                     alignItems: 'center',
                                   }}>
-                                  <HStack space={1}>
+                                  <HStack  key={Math.random().toString(36)} space={1}>
                                     <TouchableOpacity
+                                    key={Math.random().toString(36)}
                                       activeOpacity={0.8}
                                       onPress={() => {
                                         {
@@ -713,6 +723,7 @@ err;
                                         }
                                       }}>
                                       <Image
+                                      key={Math.random().toString(36)}
                                         source={{
                                           uri:
                                             imageLoc +
@@ -731,17 +742,20 @@ err;
                                         }}
                                       />
                                     </TouchableOpacity>
-                                    <View style={{width: wp('50%')}}>
-                                      <VStack py="2" space={10}>
+                                    <View style={{width: wp('50%')}} key={Math.random().toString(36)} >
+                                      <VStack py="2" space={10} key={Math.random().toString(36)}>
                                         <AllPost
+                                        key={Math.random().toString(36)}
+                                     
                                           id={i.article_id}
                                           title={i.title}
                                           f_title={i.friendly_name}
                                           w_title={i.window_title}
                                           allPostsContent={() => receivedData()}
                                         />
-                                        <View style={{width: wp('50%')}}>
+                                        <View style={{width: wp('50%')}} key={Math.random().toString(36)}>
                                           <Text
+                                          key={Math.random().toString(36)}
                                             style={{
                                               position: 'absolute',
                                               top: 0,
@@ -751,6 +765,7 @@ err;
                                                   (j, idx) =>
                                                     idx < 1 && (
                                                       <CenterWell
+                                                      key={Math.random().toString(36)}
                                                         content={j.data.content}
                                                         type={j.type}
                                                         text={
@@ -781,6 +796,7 @@ err;
                                         </View>
                                       </VStack>
                                       <Text
+                                      key={Math.random().toString(36)}
                                         style={{
                                           color: '#00415e',
                                           position: 'absolute',
@@ -802,6 +818,7 @@ err;
                       )
                   ) : (
                     <Image
+                    key={Math.random().toString(36)}
                       Source={require('../../assets/img/heart.png')}
                       style={{width: wp('10%'), height: hp('10%')}}
                     />
@@ -820,7 +837,7 @@ err;
               height={hp('8.9%')}
               shadow={6}>
               <Center flex={2}>
-                <Rating article_id={id} />
+                <Rating article_id={id} rowno={null} />
                 <Text
                   style={{
                     fontFamily: 'Raleway',
@@ -906,8 +923,70 @@ err;
             </HStack>
           </Box>
         </View>
+        <RBSheet
+        ref={refRBSheet}
 
-        <Modal
+        closeOnPressMask={true}
+        
+        height={522}
+        customStyles={{
+        
+          wrapper: {
+            backgroundColor: "transparent",
+         
+  
+          },
+      
+        }}
+      >
+    <Stack space={3}>
+<View style={styles.cheader}>
+  <Text style={styles.ctext}>
+    Comments
+  </Text>
+</View>
+
+
+<ScrollView style={{height:350}}>
+                {commentItems.length !== 0 ? (
+                  commentItems.map(i => (
+                    <View style={{marginBottom: 10}}>
+                      <View
+                        style={styles.cbody}>
+                          <Box bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
+                          <Text style={styles.cbodyHead}>{i.first_name} {i.last_name}</Text>
+                        <Text style={styles.cbodyText}>{i.comments}</Text>
+                        </Box>
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="chatbubbles"
+                      style={{opacity: 0.3,color:'grey'}}
+                      size={150}
+                    />
+                    <Text style={{color: 'grey'}}>No comments yet</Text>
+                    <Text style={{color: 'grey'}}>
+                      Be the first to comment.
+                    </Text>
+                  </View>
+                )}
+              </ScrollView>
+<Divider  bg={'Darkgray'} />
+<View style={styles.cComment}>
+<Comment  article_id={id}  doc_id={null}/>
+</View>
+
+    </Stack>
+      </RBSheet>
+        {/* <Modal
           isOpen={modalVisible}
           onClose={() => setModalVisible(false)}
           avoidKeyboard
@@ -959,7 +1038,7 @@ err;
               <Comment article_id={id} />
             </Modal.Footer>
           </Modal.Content>
-        </Modal>
+        </Modal> */}
 
         <Modal
           isOpen={subModalVisible}
@@ -1009,9 +1088,7 @@ err;
                     </FormControl.Label>
                     <Select
                       width={wp('90%')}
-                      onValueChange={value =>
-                        setOption(value)
-                      }
+                      onValueChange={value => setOption(value)}
                       selectedValue={option}
                       isRequired
                       placeholder="Select Option">
@@ -1194,4 +1271,38 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 12,
   },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
+  },
+  cheader:{
+    padding:15,
+    borderBottomWidth:.3,
+    borderColor:'gray'
+      }
+      ,
+      ctext:{
+        color:'#000',
+        fontSize:18,
+      
+
+      },
+      cComment:{
+        padding:6
+      },
+      cbody:{
+      paddingLeft:25,
+      marginTop:8
+      },
+      cbodyHead:{
+        fontWeight:'bold',
+        color:'black'
+      }
 });

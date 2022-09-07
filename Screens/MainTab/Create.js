@@ -44,7 +44,7 @@ const CreateScreen = () => {
         if (value1 != null) {
           setRegId(value1);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       console.log(error);
     }
@@ -57,7 +57,7 @@ const CreateScreen = () => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       console.log(error);
     }

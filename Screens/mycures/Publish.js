@@ -9,7 +9,7 @@ import {Card} from 'react-native-paper';
 import {get} from 'js-cookie';
 import {ScrollView} from 'react-native';
 import {TouchableOpacity} from 'react-native';
-import {TouchableHighlight} from 'react-native';
+import LottieView from 'lottie-react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -41,7 +41,7 @@ const Published = () => {
   const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
   const [status, setStatus] = useState();
-  
+
   const getId = () => {
     try {
       Promise.all(
@@ -51,19 +51,18 @@ const Published = () => {
           } else {
             navigation.navigate('SignIn');
           }
-        }),
+        }).catch(err=>err),
       );
-    } catch (error) {}
+    } catch (error) {error}
   };
   const getType = () => {
     try {
-      AsyncStorage.getItem('rateType')
-      .then(value2 => {
+      AsyncStorage.getItem('rateType').then(value2 => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);
+    } catch (error) {error}
   };
   const receivedData = () => {
     fetch(`${backendHost}/favourite/userid/${regId}/favouritearticle`)
@@ -71,9 +70,9 @@ const Published = () => {
       .then(json => {
         setIsLoaded(true);
         setStatus(json.status);
-        
+
         setItems(json);
-      });
+      }).catch(err=>err);
   };
   const isFocus = useIsFocused();
   const check = () => {
@@ -84,15 +83,13 @@ const Published = () => {
       navigation.navigate('CreateScreenHome');
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     receivedData();
-  },[regId])
+  }, [regId]);
   useEffect(() => {
     if (isFocus) {
       getId();
       getType();
-
-     
     }
   });
   function IsJsonValid(str) {
@@ -104,19 +101,16 @@ const Published = () => {
     return JSON.parse(str).blocks;
   }
 
-
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
           />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
         </HStack>
       </View>
     );
@@ -124,8 +118,8 @@ const Published = () => {
     return (
       <View style={styles.container}>
         <ScrollView style={{flex: 1, marginTop: 5}}>
-          {items.map(
-            i => {
+          {items.length !== 0 ? (
+            items.map(i => {
               var content = [];
               var imgLocation = i.content_location;
               var imageLoc = '';
@@ -145,7 +139,7 @@ const Published = () => {
               //replace via regex
               title = title.replace(regex, '-');
 
-              return i.status === 1  ? (
+              return i.status === 1 ? (
                 <View>
                   <View>
                     <Card
@@ -154,71 +148,80 @@ const Published = () => {
                         height: hp('10.7%'),
                         backgroundColor: '#fff',
                         borderRadius: 15,
-                        borderColor:'aliceblue',
-                        borderWidth:2,
+                        borderColor: 'aliceblue',
+                        borderWidth: 2,
                         marginBottom: 5,
                       }}>
-
                       <HStack space={3}>
-                      <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
-                        <Image
-                          source={{
-                            uri:
-                              imageLoc +
-                              imgLocation
-                                .replace('json', 'png')
-                                .split('/webapps/')[1],
-                          }}
-                          style={{
-                            overflow:'hidden',
-                            width: wp('42%'),
-                            height: hp('10.5%'),
-                            marginTop: 0,
-                           borderTopLeftRadius:15,
-                           borderBottomLeftRadius:15
-                          }}
-                        />
+                        <TouchableOpacity
+                          activeOpacity={0.8}
+                          onPress={() => {
+                            {
+                              navigation.push(`Disease`, {
+                                ids: `${i.article_id}`,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={{
+                              uri:
+                                imageLoc +
+                                imgLocation
+                                  .replace('json', 'png')
+                                  .split('/webapps/')[1],
+                            }}
+                            style={{
+                              overflow: 'hidden',
+                              width: wp('42%'),
+                              height: hp('10.5%'),
+                              marginTop: 0,
+                              borderTopLeftRadius: 15,
+                              borderBottomLeftRadius: 15,
+                            }}
+                          />
                         </TouchableOpacity>
                         <View>
-                       
-                            <View style={{width:wp('50%'),position:'relative',right:5}}>
-                        <VStack py='2' space={10}>
+                          <View
+                            style={{
+                              width: wp('50%'),
+                              position: 'relative',
+                              right: 5,
+                            }}>
+                            <VStack py="2" space={10}>
+                              <AllStat
+                                id={i.article_id}
+                                title={i.title}
+                                f_title={i.friendly_name}
+                                w_title={i.window_title}
+                                allPostsContent={() => receivedData()}
+                              />
+                            </VStack>
+                          </View>
 
-                          <AllStat
-                            id={i.article_id}
-                            title={i.title}
-                            f_title={i.friendly_name}
-                            w_title={i.window_title}
-                            allPostsContent={() => receivedData()}
-                          />
-                  
-
-                           
-                        
-                          </VStack>
-                        
-                            </View>
-                              
                           <Text
-                              style={{
-                                color: '#00415e',
+                            style={{
+                              color: '#00415e',
 
-                                fontFamily: 'Raleway-Medium',
-                                fontSize: wp('2.5%'),
-                                position: 'absolute',
-                                bottom: 0,
-                              }}>
-                              {i.authors_name}▪️{i.published_date}
-                            </Text>
+                              fontFamily: 'Raleway-Medium',
+                              fontSize: wp('2.5%'),
+                              position: 'absolute',
+                              bottom: 0,
+                            }}>
+                            {i.authors_name}▪️{i.published_date}
+                          </Text>
                         </View>
                       </HStack>
                     </Card>
                   </View>
                 </View>
-              ) : null;
-            },
-
-            // : null
+              ) : (
+                null
+              );
+            })
+          ) : (
+       
+              <Text style={{color: '#00415e'}}>No Cures Yet</Text>
+     
           )}
         </ScrollView>
       </View>
@@ -237,7 +240,6 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
 
-  
   publish: {
     borderWidth: 2,
     width: wp('15%'),
@@ -249,5 +251,18 @@ const styles = StyleSheet.create({
   },
   opacity: {
     opacity: 1,
+  },
+  loading: {
+
+    justifyContent: 'center',
+    backgroundColor: '#f0f0f0',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    zIndex: 999,
+
   },
 });

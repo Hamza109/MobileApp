@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   StatusBar,
+  SafeAreaView,
   BackHandler,
   Alert,
   TouchableOpacity,
@@ -38,7 +39,7 @@ import {
   Box,
   NativeBaseProvider,
 } from 'native-base';
-import SearchBarCity from './SearchBarCity';
+
 
 const DocResultCity = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -65,7 +66,7 @@ const DocResultCity = ({navigation, route}) => {
       .then(json => {
         setIsLoaded(true);
         setItems(json.map.DoctorDetails.myArrayList);
-      });
+      }).catch(err=>err);;
   };
 
   useEffect(() => {
@@ -89,8 +90,8 @@ const DocResultCity = ({navigation, route}) => {
     );
   } else {
     return (
-      <View style={styles.container}>
-        <SearchBarCity />
+      <SafeAreaView style={styles.container}>
+        <SearchBar placeholder='Search by city' />
 
         <ScrollView style={{marginTop: 10}}>
           {items.map(i => (
@@ -136,7 +137,7 @@ const DocResultCity = ({navigation, route}) => {
         </ScrollView>
 
         <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-      </View>
+      </SafeAreaView>
     );
   }
 };

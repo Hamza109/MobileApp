@@ -12,7 +12,8 @@ import { Card } from "react-native-paper";
 import { HStack, Stack, Center, Heading, NativeBaseProvider, Container,Input } from "native-base"
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import SearchBar from "./SearchBar";
-import SearchBarCity from "./SearchBarCity";
+
+
 
 const SearchDocCity = ()=>{
    const navigation=useNavigation();
@@ -25,7 +26,7 @@ const SearchDocCity = ()=>{
      
 
 
-<SearchBarCity/>
+<SearchBar placeholder='Search by city'/>
 
 
 

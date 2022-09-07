@@ -33,7 +33,7 @@ import {useNavigation} from '@react-navigation/core';
 import {backendHost} from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-const SearchBar = ref => {
+const SearchBar = ({placeholder}) => {
 
   const [name, setName] = useState('');
 
@@ -112,23 +112,23 @@ const SearchBar = ref => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View>
         <View styles={styles.flex}>
           <Card style={styles.header}>
-            <HStack mt="5" ml="10" space={1} alignItems="center">
+            <HStack mt="5" ml="10" p='1' space={1} alignItems="center">
               <Icon
                 name="arrow-back-outline"
                 style={{marginTop: 4, marginLeft: 11}}
                 color={'#00415e'}
                 size={35}
                 onPress={() => {
-                  navigation.navigate('MainTab');
+                  navigation.navigate('DocTab');
                 }}
               />
               <View>
                 <Input
-                  placeholder="Search by name"
+                  placeholder={placeholder}
                   placeholderTextColor="#00415e"
                   fontFamily="Raleway-Regular"
                   bg="#fff"
@@ -172,8 +172,8 @@ const SearchBar = ref => {
           renderItem={ItemView}
         />
       )}
-      <View></View>
-    </View>
+   
+    </SafeAreaView>
   );
 };
 export default SearchBar;
@@ -190,14 +190,14 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 0,
-    marginTop: Platform.OS === 'ios' ? 0 : -7,
+    marginTop: Platform.OS === 'ios' ? -15 : 0,
     marginLeft: 0,
     borderColor: '#fff',
     borderWidth: 0.1,
     alignItems: 'center',
     width: wp('100%'),
     height: 85,
-    elevation: 5,
+ 
   },
 
   itemView: {

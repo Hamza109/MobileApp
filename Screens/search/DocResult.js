@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   BackHandler,
+  SafeAreaView,
   Alert,
   TouchableOpacity,
   ImageBackground,
@@ -64,7 +65,7 @@ const DocResult = ({navigation, route}) => {
       .then(json => {
         setIsLoaded(true);
         setItems(json.map.DoctorDetails.myArrayList);
-      });
+      }).catch(err=>err);;
   };
 
   useEffect(() => {
@@ -88,11 +89,11 @@ const DocResult = ({navigation, route}) => {
     );
   } else {
     return (
-      <View style={styles.container}>
-        <SearchBar />
+      <SafeAreaView style={styles.container}>
+        <SearchBar placeholder='Search by name' />
 
         <ScrollView style={{marginTop: 10}}>
-          {items.map(i => (
+          {items.map((i,j) => (
             <Card
               style={{
                 padding: 5,
@@ -120,6 +121,7 @@ const DocResult = ({navigation, route}) => {
       /> */}
               <View>
                 <ProfileTab
+                key={j.id}
                   rowno={i.map.rowno}
                   firstName={i.map.docname_first}
                   lastName={i.map.docname_last}
@@ -135,7 +137,7 @@ const DocResult = ({navigation, route}) => {
         </ScrollView>
 
         <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-      </View>
+      </SafeAreaView>
     );
   }
 };

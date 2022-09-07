@@ -9,6 +9,7 @@ import {
   StatusBar,
   Alert,
   ImageBackground,
+  SafeAreaView,
   ToastAndroid,
 } from 'react-native';
 import {
@@ -39,9 +40,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {usePasswordValidation} from '../../components/usePasswordValidation';
-const SignUpScreen = ({navigation, props}) => {
+import { useNavigation } from '@react-navigation/native';
+const SignUpScreen = ({props}) => {
   const [emails, setEmails] = useState('');
-
+const navigation=useNavigation()
   const [password, setPassword] = useState({
     firstPassword: '',
     secondPassword: '',
@@ -120,7 +122,7 @@ const SignUpScreen = ({navigation, props}) => {
               style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
             });
             
-            navigation.navigate('MainTab'),
+            navigation.navigate('Main'),
             setId(response.data.registration_id),
             setType(response.data.registration_type),
             setFirst(response.data.first_name),
@@ -221,7 +223,7 @@ const SignUpScreen = ({navigation, props}) => {
       return Alert.alert('Email already exist');
     } else if (success === true) {
       if (promo) {
-        return navigation.navigate('MainTab', {
+        return navigation.navigate('Main', {
           params: {
             userId: authid,
           },
@@ -250,18 +252,19 @@ const SignUpScreen = ({navigation, props}) => {
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
-        <TouchableOpacity
-          style={{marginLeft: 20, color: '#fff'}}
+       <TouchableOpacity
+          style={{marginLeft: 20,   zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.navigate('MainTab')}>
+          onPress={() => navigation.push('Main')}>
           <Text
             style={{
               color: '#fff',
-              position: 'absolute',
-              bottom: 140,
-              left: 300,
+              position: 'relative',
+              top: Platform.OS === 'android' ? 0 : 0,
+              left: Platform.OS === 'android' ? 265 : 255,
               fontSize: 18,
-              fontFamily: 'Raleway',
+              zIndex: 999,
+              fontFamily: 'Raleway-Medium',
             }}>
             Skip
           </Text>
@@ -401,7 +404,7 @@ const SignUpScreen = ({navigation, props}) => {
             </View>
             <View>
               <TouchableOpacity onPress={updateSecureTextEntry}>
-                <View style={{position: 'absolute', right: 10, bottom: 85}}>
+                <View  style={{position: 'absolute', right: 10, bottom: 85,zIndex:999}}>
                   {data.secureTextEntry ? (
                     <Feather name="eye-off" color="grey" size={20} />
                   ) : (
@@ -459,7 +462,7 @@ const SignUpScreen = ({navigation, props}) => {
                     marginTop: 25,
                     fontFamily: 'Raleway',
                   }}
-                  onPress={() => navigation.navigate('SignIn')}>
+                  onPress={() => navigation.navigate('SignIn',{screen:`SignIn`})}>
                   Already have an account? Sign In
                 </Text>
               </TouchableOpacity>
@@ -497,9 +500,9 @@ const styles = StyleSheet.create({
   },
   action: {
     flexDirection: 'row',
-
+padding:Platform.OS=='ios'?10:0,
     borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: Platform.OS=='android'?15:12,
     borderColor: '#f2f2f2',
     paddingBottom: 5,
   },
