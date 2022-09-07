@@ -11,26 +11,19 @@ import {
   SafeAreaView,
   Image,
 } from 'react-native';
-import {useTheme, Link} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import AllPost from './AllPost';
 import {Card} from 'react-native-paper';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
-import Autocomplete from '../MainTab/Autocomplete';
 import {backendHost} from '../../components/apiConfig';
 import {ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import SearchArt from './SearchArticle';
+
 import ArticleHeader from './ArticleHeader';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import StarRating from 'react-native-star-rating';
 import {
   HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Box,
   Spinner,
   VStack,
 } from 'native-base';
@@ -43,15 +36,9 @@ import CenterWell from '../Disease/CenterWell';
 
 const Result = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
-  const {s, c} = bootstrapStyleSheet;
 
   const texts = route.params.texts;
   const types = route.params.types;
-  const {colors} = useTheme();
-
-  const theme = useTheme();
-
-  const [value, setValue] = useState();
   // const [params] = useState(props)
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -180,18 +167,16 @@ const load = () => {
 
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
-        </HStack>
-      </View>
+      <View style={styles.loading}>
+      <HStack space={2} justifyContent="center">
+        <LottieView
+          source={require('../../assets/animation/load.json')}
+          autoPlay
+          loop
+          style={{width: 50, height: 50, justifyContent: 'center'}}
+        />
+      </HStack>
+    </View>
     );
   } else {
     return (
@@ -412,5 +397,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 0,
     margin: 0,
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

@@ -986,60 +986,7 @@ const Disease = ({navigation, route}) => {
 
     </Stack>
       </RBSheet>
-        {/* <Modal
-          isOpen={modalVisible}
-          onClose={() => setModalVisible(false)}
-          avoidKeyboard
-          justifyContent="flex-end"
-          bottom="0"
-          size="full">
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>comments</Modal.Header>
-            <Modal.Body>
-              <ScrollView>
-                {commentItems.reviewd == 1 ? (
-                  commentItems.map(i => (
-                    <View style={{marginBottom: 10}}>
-                      <View
-                        style={{
-                          padding: 10,
-                          marginVertical: 0,
-                          marginBottom: 0,
-                          Width: wp('80%'),
-                          height: hp('10%'),
-                          borderBottomWidth: 0.2,
-                        }}>
-                        <Text>{i.comments}</Text>
-                      </View>
-                    </View>
-                  ))
-                ) : (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Icon
-                      name="chatbubbles"
-                      style={{opacity: 0.3, color: 'grey'}}
-                      size={150}
-                    />
-                    <Text style={{color: 'grey'}}>No comments yet</Text>
-                    <Text style={{color: 'grey'}}>
-                      Be the first to comment.
-                    </Text>
-                  </View>
-                )}
-              </ScrollView>
-            </Modal.Body>
-            <Modal.Footer>
-              <Comment article_id={id} />
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal> */}
-
+       
         <Modal
           isOpen={subModalVisible}
           onClose={() => setSubModalVisible(false)}
