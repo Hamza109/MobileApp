@@ -62,7 +62,11 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-toast-message": "^2.1.1",
     "react-native-vector-icons": "^9.0.0",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+    "react-redux": "^8.0.2",
+    "react-thunk": "^1.0.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1"
   },
   "devDependencies": {
     "@babel/core": "7.16.7",
@@ -77,5 +81,4 @@
   "jest": {
     "preset": "react-native"
   }
-
 }

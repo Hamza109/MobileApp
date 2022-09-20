@@ -26,7 +26,7 @@ const SearchDocCity = ()=>{
      
 
 
-<SearchBar placeholder='Search by city'/>
+<SearchBar placeholder='Search by city' doc={0} city={1} />
 
 
 

@@ -423,15 +423,15 @@ const Disease = ({navigation, route}) => {
           <View style={{flex: 1}}>
             <View style={styles.HeadCard}>
               <HStack
-                ml="2"
+                ml={Platform.OS === 'android' ? '3' : '3'}
                 mt={Platform.OS === 'android' ? '2' : '9'}
-                space={2}>
+                space={1}>
                 <Icon
                   name="close-circle-outline"
-                  size={30}
+                  size={Platform.OS==='ios'?35:35}
                   color={'#00415e'}
                   onPress={() => {
-                    navigation.navigate('Home');
+                    navigation.push('Main');
                   }}
                 />
                 <View style={{width: wp('75%'), height: 50}}>
@@ -485,7 +485,7 @@ const Disease = ({navigation, route}) => {
                 style={{
                   width: wp('25%'),
                   position: 'relative',
-                  left: 48,
+                  left: 64,
                   marginTop: 5,
                 }}>
                 <StarRating
@@ -828,7 +828,7 @@ const Disease = ({navigation, route}) => {
             </ScrollView>
           </View>
 
-          <Box width={wp('100%')} alignSelf="center">
+          <Box width={wp('100%')}  alignSelf="center">
             <Center flex={1}></Center>
             <HStack
               bg="#fff"
@@ -1099,7 +1099,7 @@ const Disease = ({navigation, route}) => {
                   }}
                   withDarkTheme
                   withShadow
-                  autoFocus
+                
                 />
                 <TouchableOpacity
                   style={styles.btn}

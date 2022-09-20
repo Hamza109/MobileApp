@@ -11,7 +11,8 @@ import {
   Alert,
   Button,
   Dimensions,
-  FlatList
+  FlatList,
+  Platform
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -33,7 +34,7 @@ import {useNavigation} from '@react-navigation/core';
 import {backendHost} from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-const SearchBar = ({placeholder}) => {
+const SearchBar = ({placeholder,doc,city}) => {
 
   const [name, setName] = useState('');
 
@@ -46,15 +47,16 @@ const SearchBar = ({placeholder}) => {
   const navigation = useNavigation();
 
   const docresult = (text) => {
-    if (text)
+    if (text && doc === 1)
       return navigation.push('docResult', {
         names: `${text}`,
       });
-    else {
-
-      navigation.navigate('SearchBar', {
+    else if(text && city===1){
+      return navigation.push('docResultCity', {
         names: `${text}`,
       });
+   }
+    else{
       Alert.alert('type something');
     }
   };
@@ -64,6 +66,9 @@ const SearchBar = ({placeholder}) => {
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   useEffect(() => {
+  
+    if(doc===1)
+    {
     axios
       .get(`${backendHost}/IntegratedActionController`)
       .then(res => res.data)
@@ -73,6 +78,26 @@ const SearchBar = ({placeholder}) => {
       })
 
       .catch(res => res);
+    }
+   else if(city===1)
+    {
+      axios
+      .get(`${backendHost}/city/all`)
+      .then(res => res.data)
+      .then(citydata => {
+  
+      var temp = []
+      citydata.forEach(i => {
+        temp.push(i.Cityname, i.Pincode)
+      });
+  
+              setItems(temp)
+          ;
+   
+      })
+  
+      .catch(res => res);
+    }
   }, []);
 
   const searchFilterFunction = text => {
@@ -119,9 +144,9 @@ const SearchBar = ({placeholder}) => {
             <HStack mt="5" ml="10" p='1' space={1} alignItems="center">
               <Icon
                 name="arrow-back-outline"
-                style={{marginTop: 4, marginLeft: 11}}
+                style={{marginTop: 4, marginLeft: Platform.OS==='android'?11:13}}
                 color={'#00415e'}
-                size={35}
+                size={Platform.OS ==='android'?35:37}
                 onPress={() => {
                   navigation.navigate('DocTab');
                 }}

@@ -46,7 +46,7 @@ import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import Svg, {Path, Circle} from 'react-native-svg';
 const HomeScreen = ({navigation, route}) => {
   const userId = route.userId;
-
+  
   const theme = useTheme();
   const {colors} = useTheme();
   const [regId, setRegId] = useState([]);
