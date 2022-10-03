@@ -38,7 +38,7 @@ const Review = () => {
 
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
+
   const [regType, setRegType] = useState();
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
@@ -46,7 +46,7 @@ const Review = () => {
       Promise.all(
         AsyncStorage.getItem('author').then(value1 => {
           if (value1 != null) {
-            setRegId(value1);
+            setuserId(value1);
           } else {
             navigation.navigate('SignIn');
           }
@@ -74,14 +74,7 @@ const Review = () => {
       }).catch(err=>err);;
   };
   const isFocus = useIsFocused();
-  const check = () => {
-    if (regId.length === 0) {
-      // navigation.navigate('Cures',{screen:'My Cures'})
-      navigation.navigate('SignIn');
-    } else {
-      navigation.navigate('CreateScreenHome');
-    }
-  };
+ 
   useEffect(() => {
     if (isFocus) {
       getId();
@@ -103,7 +96,7 @@ const Review = () => {
     if (isFocus) {
       // check()
     }
-  }, [regId]);
+  }, [userId]);
 
   if (!isLoaded) {
     return (
@@ -144,7 +137,7 @@ const Review = () => {
             //replace via regex
             title = title.replace(regex, '-');
 
-            return i.pubstatus_id === 2 && i.edited_by == regId ? (
+            return i.pubstatus_id === 2 && i.edited_by == userId ? (
               <View>
               <View>
                 <Card

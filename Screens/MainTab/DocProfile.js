@@ -47,49 +47,34 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 
 import AllPost from '../search/AllPost';
 import Comment from '../Disease/comment';
-
+import { useStore } from 'react-redux';
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(ids);
+  const user=useStore()
   const [items, setItems] = useState([]);
   const [articleItems, setArticleItems] = useState([]);
-  const [formattedValue, setFormattedValue] = useState('');
+
   const [selected, setSelected] = useState(1);
-  const [modalVisible, setModalVisible] = useState(false);
+
   const [isLoaded, setIsLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [regType, setRegType] = useState();
+
   const [showValue, setShowValue] = useState();
-  const [regId, setRegId] = useState([]);
+
   const [commentItems, setCommentItems] = useState([]);
   const refRBSheet = useRef();
   const check = () => {
-    if (regId.length == 0) {
-      navigation.navigate('SignIn',{screen:'Main'});
+    if (user.getState().userId.regId == 0) {
+      navigation.navigate('SignIn')
     } else {
-
-    refRBSheet.current.open()
+     refRBSheet.current.open()
     }
   };
 
-  useEffect(() => {
-    getId();
-    
-  },[regId]);
-
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(Number(value1));
-        }
-      });
-    } catch (error) {
-      error
-    }
-  };
+ 
+ 
 
   
   const getRating = () => {

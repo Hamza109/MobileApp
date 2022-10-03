@@ -8,26 +8,16 @@ import { ToastAndroid } from 'react-native';
 import { useToast } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-
+import { useStore } from 'react-redux';
 export default function Ratings({article_id,rowno}) {
   const [ratingValue, setRatingValue] = useState([]);
   const [showValue, setShowValue] = useState();
-  const [regId, setRegId] = useState([]);
+
   const [copyId, setCopyId] = useState([]);
   const [disId, setDisId] = useState([]);
   const [regType, setRegType] = useState();
   const toast=useToast();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      }).catch(err=>err);;
-    } catch (error) {
- error
-    }
-  };
+  const user=useStore();
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType')
@@ -40,7 +30,7 @@ export default function Ratings({article_id,rowno}) {
   error
     }
   };
-  const rateId=regId.length!=0?(regId):(0)
+  const rateId=user.getState().userId
   const postRating = rating => {
 
     axios
@@ -77,7 +67,6 @@ export default function Ratings({article_id,rowno}) {
   };
 
   useEffect(() => {
-    getId();
     getType();
   }, []);
 

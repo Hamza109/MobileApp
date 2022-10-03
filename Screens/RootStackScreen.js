@@ -140,19 +140,7 @@ return(
 }
 const HomeStack = () => {
   const navigation = useNavigation();
-  const getId =async () => {
-    try {
-     await  AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        } else {
-          navigation.navigate('SignIn');
-        }
-      }).catch(err=>err);;
-    } catch (error) {
-     error;
-    }
-  };
+
   return (
     <Stack.Navigator
       initialRouteName="Home"

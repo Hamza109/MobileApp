@@ -42,13 +42,20 @@ import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { reg } from '../Redux/Action';
+import { useStore } from 'react-redux';
+import { screenName } from '../Redux/Action';
+
+
 const SignInScreen = ({ props,route}) => {
   const [status, setStatus] = useState('');
   const navigation=useNavigation()
   const [buttonClick, setClicked] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(props);
   const [loginSuccess, setLoginSuccess] = useState(true);
-  const screen =route.params.screen
+  const routeName = useStore()
+  const user=useStore()
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -59,6 +66,7 @@ const SignInScreen = ({ props,route}) => {
   const verify = () => {
     navigation.navigate('Verify');
   };
+const dispatch=useDispatch();
 
 
   const toast = useToast();
@@ -73,6 +81,9 @@ const SignInScreen = ({ props,route}) => {
       navigation.push('Main');
     
   };
+  useEffect(()=>{
+    console.log('screen:',routeName.getState().name.screen)
+  })
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
@@ -115,11 +126,7 @@ const SignInScreen = ({ props,route}) => {
       .then(res => {
         if (res.data.registration_id) {
           setTimeout(() => {
-            navigation.push(screen, {
-              params: {
-                userId: authid,
-              },
-            });
+            navigation.push(routeName.getState().name.screen);
             analytics().setUserProperty(
               'Reg_Id',
               JSON.stringify(res.data.registration_id),
@@ -127,7 +134,7 @@ const SignInScreen = ({ props,route}) => {
             analytics().setUserId(JSON.stringify(res.data.registration_id));
             analytics().logEvent('login', {reg_id: res.data.registration_id});
             setStatus(res.status);
-            setId(res.data.registration_id);
+            user.dispatch(reg(res.data.registration_id))
             setType(res.data.registration_type);
             setRow(res.data.rowno);
             setClicked(0);
@@ -211,7 +218,7 @@ const SignInScreen = ({ props,route}) => {
         <TouchableOpacity
           style={{  zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.push('Main')}>
+          onPress={() => dispatch(screenName('Main'))& navigation.push('Main')}>
           <Text
             style={{
               color: '#fff',

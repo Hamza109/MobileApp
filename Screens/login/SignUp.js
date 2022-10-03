@@ -223,11 +223,7 @@ const navigation=useNavigation()
       return Alert.alert('Email already exist');
     } else if (success === true) {
       if (promo) {
-        return navigation.navigate('Main', {
-          params: {
-            userId: authid,
-          },
-        });
+        return navigation.navigate('Main');
       } else {
         setTimeout(() => {
           window.location.reload();
@@ -462,7 +458,7 @@ const navigation=useNavigation()
                     marginTop: 25,
                     fontFamily: 'Raleway',
                   }}
-                  onPress={() => navigation.navigate('SignIn',{screen:`SignIn`})}>
+                  onPress={() => navigation.navigate('SignIn')}>
                   Already have an account? Sign In
                 </Text>
               </TouchableOpacity>

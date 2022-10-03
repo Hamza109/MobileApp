@@ -48,68 +48,28 @@ import axios from 'axios';
 import { backendHost } from '../../components/apiConfig';
 import Subscribe from '../../components/Subscribe';
 import Feedback from '../../components/FeedBack';
+import { useStore ,useDispatch} from 'react-redux';
+import { reg } from '../Redux/Action';
+import { screenName } from '../Redux/Action';
+
+
 const Drawer = createDrawerNavigator();
 
 const DrawerMenu = () => {
-  const isFocus = useIsFocused();
+
+  const user=useStore();
+const dispatch=useDispatch();
   const Navigation = useNavigation();
-  const [regId, setRegId] = useState([]);
-  const [value, setValue] = useState();
-  const [subModalVisible, setSubModalVisible] = useState(false);
-  const [formattedValue, setFormattedValue] = useState('');
-  const postSubscription = val => {
-    var phoneNumber = val.split('+')[1];
+ 
 
-    var countryCodeLength = phoneNumber.length % 10;
-    var countryCode = phoneNumber.slice(0, countryCodeLength);
-    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-    if (phoneNumber) {
-      axios
-        .post(`${backendHost}/users/subscribe/${StringValue}`, {
-          nl_subscription_disease_id: '0',
-          nl_sub_type: 1,
-          nl_subscription_cures_id: '0',
-          country_code: `'${countryCode}'`,
-        })
-        .then(res => {
-          if (res.data === 1) {
-            Alert.alert('You have successfully subscribed to our Newsletter');
-          } else {
-            Alert.alert('Some error occured! Please try again later.');
-          }
-        })
-        .catch(err => {
-          Alert.alert('Some error occured! Please try again later.');
-        });
-    } else {
-      Alert.alert('Please enter a valid number!');
-    }
-  };
+  
 
-  const getId = async () => {
-    try {
-      await AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-       
-        }
-      }).catch(err=>err);;
-    } catch (error) { console.log(error)}
-  };
   
   useEffect(() => {
-    getId();
-  });
+   console.log('drawer',user.getState().userId.regId)
+  },[]);
   const remove = async () => {
-    try {
-      await AsyncStorage.multiRemove([
-        'author',
-        'rateType',
-        'rowno',
-      ]);
-    } catch (error) {
-      error
-    }
+    dispatch(reg(0))
   };
   const logout = () => {
     Alert.alert('Hold on!', 'Are you sure you want Logout?', [
@@ -168,7 +128,8 @@ const DrawerMenu = () => {
   }
   const login = () => {
 
-    if (regId.length != 0) {
+    if (user.getState().userId.regId != 0) {
+      dispatch(screenName('Main'))
       return (
         <View>
 

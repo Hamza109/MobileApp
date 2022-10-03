@@ -46,7 +46,7 @@ tabBarIndicatorStyle:{color:'#00415e'},
             headerShown: false,
             tabBarIndicatorStyle:{color:'#00415e'},
             tabBarLabel: 'Article',
-
+          
             tabBarColor: '#fff',
           }}
         />

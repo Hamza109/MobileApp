@@ -50,10 +50,13 @@ import {
 import {TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
+import { useStore ,useDispatch} from 'react-redux';
+import { screenName } from '../Redux/Action';
 
 const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const toast = useToast();
-  const Navigation = useNavigation();
+  const user=useStore();
+  const dispatch=useDispatch();
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
   const [primarySpl, setPrimary] = useState();
@@ -84,10 +87,11 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const [nameLoad, setNameLoad] = useState(false);
   const [items, setItems] = useState([]);
   const navigation = useNavigation();
-  const [regId, setRegId] = useState([]);
+
   const [image, setImage] = useState(
     `http://all-cures.com:8280/cures_articleimages/doctors/${items.rowno}.png`,
   );
+
   const [imageUser, setImageUser] = useState(``);
   const [rowno, setRowno] = useState();
   const [mobile, setMobile] = useState();
@@ -123,18 +127,13 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   };
   const [img, setImg] = useState();
   const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          getProfile(value1);
-          setRegId(value1);
+ 
+        if (user.getState().userId.regId != 0) {
+          getProfile(user.getState().userId.regId);
         } else {
-          navigation.push('SignIn',{screen:`Main`});
+          navigation.push('SignIn');
         }
-      }).catch(err=>err);;
-    } catch (error) {
-      error;
-    }
+    
   };
 
   const getType = () => {
@@ -293,7 +292,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     if (isFocus) {
       getId();
     }
-  }, [regId]);
+  },[]);
   useEffect(() => {
     if (isFocus) {
       getRow();

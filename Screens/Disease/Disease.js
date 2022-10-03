@@ -33,6 +33,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Rating from '../../components/StarRating';
+import { useStore,useDispatch } from 'react-redux';
+import { fav } from '../Redux/Action';
+
 import {
   Modal,
   VStack,
@@ -57,28 +60,26 @@ const Disease = ({navigation, route}) => {
   const [commentItems, setCommentItems] = useState([]);
   const [selected, setSelected] = useState(1);
   const ids = route.params.ids;
-
+  const user =useStore();
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
   const [id, setId] = useState(ids);
-  const [regId, setRegId] = useState([]);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [formattedValue, setFormattedValue] = useState('');
   const [disease, setDisease] = useState([]);
   const [condition, setCondition] = useState();
   const refRBSheet = useRef();
+  const dispatch=useDispatch();
   const check = () => {
-    if (regId.length == 0) {
-      navigation.navigate('SignIn',{screen:`Main`});
+    if (user.getState().userId.regId == 0) {
+      navigation.navigate('SignIn');
     } else {
       refRBSheet.current.open()
     }
   };
 
-  useEffect(() => {
-    getId();
-  });
+ 
 
   useEffect(() => {
     getRating();
@@ -159,17 +160,7 @@ const Disease = ({navigation, route}) => {
   useEffect(() => {
     fetchTables();
   }, []);
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      }).catch(err=>err);;
-    } catch (error) {
-      error;
-    }
-  };
+  
   function User() {
     return (
       <Svg
@@ -293,8 +284,7 @@ const Disease = ({navigation, route}) => {
         err;
         throw err;
       });
-  };
-  const [like, setLike] = useState(like);
+  }
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [imageExists, setImageExists] = useState(false);
@@ -303,14 +293,16 @@ const Disease = ({navigation, route}) => {
   const [response, setResponse] = useState([]);
   const [stats, setStats] = useState();
   const [cure, setCure] = useState();
+  const like=useStore()
   const stat = async () => {
     await axios
-      .get(`${backendHost}/favourite/userid/${regId}/articleid/${id}/favourite`)
+      .get(`${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/favourite`)
       .then(res => {
         setResponse(res.data);
 
         if (res.data.length != 0) {
-          setStats(res.data[0].status);
+          dispatch(fav(res.data[0].status))
+      
         } else {
           return;
         }
@@ -334,12 +326,13 @@ const Disease = ({navigation, route}) => {
   const [rate, setRate] = useState([]);
 
   const handlePress = () => {
-    if (stats == 1) {
-      setStats(0);
-      favorite(0);
+    if (like.getState().favourite.stat == 1) {
+     dispatch(fav(0))
+      favorite(like.getState().favourite.stat)
     } else {
-      setStats(1);
-      favorite(1);
+      dispatch(fav(1))
+      favorite(like.getState().favourite.stat)
+      
     }
   };
 
@@ -358,11 +351,11 @@ const Disease = ({navigation, route}) => {
 
   const favorite = async status => {
     if (status != 0) {
-      setStats(1);
+      dispatch(fav(1))
 
       await axios
         .post(
-          `${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${status}/create`,
+          `${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/status/${status}/create`,
         )
         .then(res => {
           if (res.data > 0) {
@@ -374,10 +367,10 @@ const Disease = ({navigation, route}) => {
           throw err;
         });
     } else {
-      setStats(0);
+      dispatch(fav(0));
       axios
         .post(
-          `${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${status}/create`,
+          `${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/status/${status}/create`,
         )
         .then(res => {
           if (res.data > 0) {
@@ -401,7 +394,7 @@ const Disease = ({navigation, route}) => {
     if (isFocus) {
       stat();
     }
-  }, [regId, id]);
+  }, [user.getState().userId.regId,id]);
 
   if (!isLoaded) {
     return (
@@ -448,9 +441,9 @@ const Disease = ({navigation, route}) => {
                     {data.title}
                   </Text>
                 </View>
-                {regId.length != 0 ? (
+                {user.getState().userId.regId != 0 ? (
                   response.length != 0 ? (
-                    stats == 0 ? (
+                    like.getState().favourite.stat == 0 ? (
                       <Icon
                         name={'heart-outline'}
                         size={30}

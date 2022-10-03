@@ -21,20 +21,7 @@ const Tab = createBottomTabNavigator();
 
 const MainTabScreen = () => {
 
-  const [regId, setRegId] = useState([]);
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-
-          setRegId(value1);
-        }
-      });
-    } catch (error) {error}
-  };
-useEffect(()=>{
-  getId();
-},[regId])
+ 
   return (
     <Tab.Navigator
       initialRouteName="Home"

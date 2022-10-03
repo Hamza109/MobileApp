@@ -37,17 +37,8 @@ const FeedBack = () => {
   const [email, setEmail] = useState('');
   const [num, setNum] = useState('');
 
-  const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      }).catch(err=>err);;
-    } catch (error) {console.log(error)}
-  };
+
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
@@ -66,8 +57,8 @@ const FeedBack = () => {
       getType();
     }
 
-    getId();
-  }, [regId]);
+  
+  });
 
   const [loading, setLoading] = useState(false);
   const submitFeedbackForm = e => {

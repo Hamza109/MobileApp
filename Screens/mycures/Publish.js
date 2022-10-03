@@ -30,30 +30,23 @@ import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import AllStat from '../search/AllStat';
+import { useStore } from 'react-redux';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 
 const Published = () => {
   const navigation = useNavigation();
-
+const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
+
   const [regType, setRegType] = useState();
   const [status, setStatus] = useState();
 
   const getId = () => {
-    try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setRegId(value1);
-          } else {
+    if(user.getState().userId.regId==0)
             navigation.navigate('SignIn');
-          }
-        }).catch(err=>err),
-      );
-    } catch (error) {error}
+ 
   };
   const getType = () => {
     try {
@@ -65,7 +58,7 @@ const Published = () => {
     } catch (error) {error}
   };
   const receivedData = () => {
-    fetch(`${backendHost}/favourite/userid/${regId}/favouritearticle`)
+    fetch(`${backendHost}/favourite/userid/${user.getState().userId.regId}/favouritearticle`)
       .then(res => res.json())
       .then(json => {
         setIsLoaded(true);
@@ -75,17 +68,10 @@ const Published = () => {
       }).catch(err=>err);
   };
   const isFocus = useIsFocused();
-  const check = () => {
-    if (regId.length === 0) {
-      // navigation.navigate('Cures',{screen:'My Cures'})
-      navigation.navigate('SignIn');
-    } else {
-      navigation.navigate('CreateScreenHome');
-    }
-  };
+  
   useEffect(() => {
     receivedData();
-  }, [regId]);
+  }, []);
   useEffect(() => {
     if (isFocus) {
       getId();

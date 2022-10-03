@@ -28,31 +28,22 @@ import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import AllStat from '../search/AllStat';
-
-const bootstrapStyleSheet = new BootstrapStyleSheet();
-const {s, c} = bootstrapStyleSheet;
-
+import { useStore,useDispatch } from 'react-redux';
+import { screenName } from '../Redux/Action';
 const All = () => {
   const navigation = useNavigation();
-
+  const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
+
   const [regType, setRegType] = useState();
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
-    try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setRegId(value1);
-          } else {
-            navigation.navigate('SignIn',{screen:'MainTab'});
-          }
-        }).catch(err=>err),
-      );
-    } catch (error) {error}
-  };
+    if(user.getState().userId.regId===0)
+      {
+            navigation.navigate('SignIn');
+      }
+    }
 
   const getType = () => {
     try {
@@ -78,7 +69,7 @@ const All = () => {
     if (isFocus) {
       getId();
     }
-  }, [regId]);
+  }, []);
   useEffect(() => {
     if (navigation.isFocused()) {
       getType();
@@ -131,7 +122,7 @@ const All = () => {
 
             title = title.replace(regex, '-');
 
-            return i.pubstatus_id === 3 && i.edited_by == regId ? (
+            return i.pubstatus_id === 3 && i.edited_by == user.getState().userId.regId ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -207,7 +198,7 @@ const All = () => {
                   </Card>
                 </View>
               </View>
-            ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
+            ) : i.pubstatus_id === 2 && i.edited_by == user.getState().userId ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -283,7 +274,7 @@ const All = () => {
                   </Card>
                 </View>
               </View>
-            ) : i.pubstatus_id === 1 && i.edited_by == regId ? (
+            ) : i.pubstatus_id === 1 && i.edited_by == user.getState().userId ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card

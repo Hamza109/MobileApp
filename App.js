@@ -38,7 +38,8 @@ import {SSRProvider} from '@react-aria/ssr';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import DrawerMenu from './Screens/MainTab/DrawerMenu';
 import { SplashStack } from './Screens/RootStackScreen';
-
+import { Provider } from 'react-redux';
+import { Store }  from './Screens/Redux/Store';
 const App = () => {
   // const linking = {
   //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
@@ -105,7 +106,9 @@ const App = () => {
   const navigationRef = React.useRef();
 
   return (
+    <Provider store={Store}>
 <SSRProvider>
+
     <NativeBaseProvider>
       <PaperProvider>
         <SafeAreaProvider>
@@ -134,8 +137,9 @@ const App = () => {
         </SafeAreaProvider>
       </PaperProvider>
     </NativeBaseProvider>
-    </SSRProvider>
 
+    </SSRProvider>
+    </Provider>
   );
 };
 

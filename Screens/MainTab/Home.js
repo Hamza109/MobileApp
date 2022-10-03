@@ -44,12 +44,13 @@ import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
 import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import Svg, {Path, Circle} from 'react-native-svg';
+import { useStore,useDispatch } from 'react-redux';
+import { screenName } from '../Redux/Action';
 const HomeScreen = ({navigation, route}) => {
-  const userId = route.userId;
-  
+
+  const user=useStore();  
   const theme = useTheme();
-  const {colors} = useTheme();
-  const [regId, setRegId] = useState([]);
+ const dispatch=useDispatch();
   const [regType, setRegType] = useState();
   const [backPressed, setBack] = useState(1);
   const [visible, setVisible] = useState(false);
@@ -84,19 +85,14 @@ const HomeScreen = ({navigation, route}) => {
   };
   
   const getId =  () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if(value1 == null)
-    {
-       // navigation.navigate('Cures',{screen:'My Cures'})
-       navigation.push('SignIn',{screen:`CreateScreenHome`})
-  
-    }
-    else{
-       navigation.navigate('CreateScreenHome')
-    }
-      }).catch(err=>err);;
-    } catch (error) {error}
+  if(user.getState().userId.regId!=0){
+    navigation.navigate('CreateScreenHome')
+  }
+  else{
+    dispatch(screenName('CreateScreenHome'))
+    navigation.navigate('SignIn')
+   
+  }
   };
 
   const getType = () => {
@@ -111,14 +107,15 @@ const HomeScreen = ({navigation, route}) => {
   const isFocuss = useIsFocused();
   useEffect(()=>{
   
-
-  })
+   console.log('user',user.getState().userId.regId)
+    
+  },[])
   useEffect(() => {
   
     if (isFocuss) {
-    
+     
       getType();
-
+    
       BackHandler.addEventListener('hardwareBackPress', backAction);
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', backAction);
