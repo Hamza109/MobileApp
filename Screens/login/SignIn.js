@@ -140,6 +140,7 @@ const dispatch=useDispatch();
             setClicked(0);
           }, 3000);
         }
+        return true;
       })
 
       .catch(err => {
@@ -218,7 +219,7 @@ const dispatch=useDispatch();
         <TouchableOpacity
           style={{  zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => dispatch(screenName('Main'))& navigation.push('Main')}>
+          onPress={() => dispatch(screenName('Main'))& navigation.replace('Main')}>
           <Text
             style={{
               color: '#fff',

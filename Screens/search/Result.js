@@ -18,7 +18,7 @@ import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {backendHost} from '../../components/apiConfig';
 import {ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import ArticleHeader from './ArticleHeader';
 
 // import StarRating from 'react-native-star-rating';
@@ -101,7 +101,7 @@ const Result = ({navigation, route}) => {
         <TouchableOpacity onPress={()=>setLoading(true)&api()}>
           <HStack>
 
-          <Text style={{fontFamily:'Raleway-Medium',color:'#00415e'}}>Load More</Text>
+          <Text style={{fontFamily:'Raleway-Medium',color:'#00415e',display:loading?'none':'flex'}}>Load More</Text>
        
 
           {loading ? (
@@ -117,7 +117,7 @@ const Result = ({navigation, route}) => {
       </View>
           ) : null}
           </HStack>
-          <Icon name='caret-down'style={{color:'#00415e',position:'relative',left:25,bottom:5}} size={20} />
+          <Icon name='caret-down'style={{color:'#00415e',position:'relative',left:25,bottom:5,display:loading?'none':'flex'}} size={20} />
         </TouchableOpacity>:null
   }
       </View>
@@ -213,78 +213,61 @@ const load = () => {
                       title = title.replace(regex, '-');
                       return (
                         <View     key={Math.random().toString(36)}>
-                          <View
-                          key={Math.random().toString(36)}
-                            style={{
-                              marginRight: 10,
-                              height: 170,
-                              width: wp('100%'),
-                            }}>
+                          <View style={{marginRight: 0,height:scale(170),width:wp('100%'),padding:2}} key={Math.random().toString(36)} >
                             <Card
-                                   key={Math.random().toString(36)}               
+key={Math.random().toString(36)}
                               style={{
-                                
-                                width: wp('97%'),
-                                height: 168,
-                                backgroundColor: '#fff',
-                                borderWidth: 2,
-                                borderColor: 'aliceblue',
-                                justifyContent: 'center',
-                                paddingHorizontal: 5,
-                                borderRadius: 15,
-                                alignItems: 'center',
+                                width: scale(370),
+                                height: '100%',
+                                overflow:'hidden',
+                                backgroundColor: '#f7f7f7',
+                                borderWidth:1,
+                                elevation:2,
+                                borderColor:'#e0e0e0',
+                               marginBottom:5,
+                                borderRadius:15,
+                           
                               }}>
-                              <HStack space={1} key={Math.random().toString(36)}>
-                                <TouchableOpacity
-                                key={Math.random().toString(36)}
-                                  activeOpacity={0.8}
-                                  onPress={() => {
-                                    {
-                                      navigation.push(`Disease`, {
-                                        ids: `${i.article_id}`,
-                                      });
-                                    }
-                                  }}>
-                                  <Image
-                                key={Math.random().toString(36)}
-                                    source={{
-                                      uri:
-                                        imageLoc +
-                                        imgLocation
-                                          .replace('json', 'png')
-                                          .split('/webapps/')[1],
-                                    }}
-                                    style={{
-                                      position: 'relative',
-                                      right: 3,
-                                      width: wp('44%'),
-                                      height: 166,
-                                      marginTop: 0,
-                                      borderBottomLeftRadius: 15,
-                                      borderTopLeftRadius: 15,
-                                    }}
-                                  />
+                                
+                              <HStack space={1}  key={Math.random().toString(36)}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
+                                <Image
+                                resizeMode='cover'
+                              key={Math.random().toString(36)}
+                                  source={{
+                                    uri:
+                                      imageLoc +
+                                      imgLocation
+                                        .replace('json', 'png')
+                                        .split('/webapps/')[1],
+                                  }}
+                                  style={{
+                                    position:'relative',
+                                    right:3,
+                                    width: scale(160),
+                                    height: '100%',
+                                    marginTop: 0,
+                                    borderBottomLeftRadius:15,
+                                    borderTopLeftRadius:15
+                                  }}
+                                />
                                 </TouchableOpacity>
-                                <View  key={Math.random().toString(36)} style={{width: wp('50%')}}  >
-                                  <VStack py="2" space={10}>
-                                    <AllPost
-                                     key={Math.random().toString(36)}
+                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View style={{width:'90%'}}>
+                               <AllPost
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
                                       w_title={i.window_title}
                                       allPostsContent={() => receivedData()}
                                     />
-                                    <View  key={Math.random().toString(36)}style={{width: wp('50%')}}>
-                                      <Text
-                                      key={Math.random().toString(36)}
-                                        style={{position: 'absolute', top: 0}}>
+                               </View>
+                               <Text>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
-                                                  key={Math.random().toString(36)}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={
@@ -309,24 +292,24 @@ const load = () => {
                                                 ),
                                             )
                                           : null}
-                                      </Text>
-                                    </View>
-                                  </VStack>
-                                  <Text
+                                          </Text>
+                               <Text
                                   key={Math.random().toString(36)}
-                                    adjustsFontSizeToFit
-                                    numberOfLines={1}
-                                    style={{
-                                      color: '#00415e',
-                                      position: 'absolute',
-                                      bottom: 7,
-                                      fontFamily: 'Raleway-Medium',
-                                      fontSize: wp('2.5%'),
-                                    }}>
+                                  adjustsFontSizeToFit
+                                  numberOfLines={1}
+                                      style={{
+                                        color: '#00415e',
+                                
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: scale(9),
+                                      }}>
                                     {i.authors_name}▪️{i.published_date}
-                                  </Text>
-                                </View>
+                                    </Text>
+                                    </View>
                               </HStack>
+                         
+                              
+                           
                             </Card>
                           </View>
                         </View>

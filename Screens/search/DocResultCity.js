@@ -11,6 +11,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import {useTheme, Link} from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 import axios from 'axios';
 
 import {Card, Searchbar} from 'react-native-paper';
@@ -39,6 +40,8 @@ import {
   Box,
   NativeBaseProvider,
 } from 'native-base';
+import ArticleHeader from './ArticleHeader';
+import { scale, verticalScale } from '../../components/Scale';
 
 
 const DocResultCity = ({navigation, route}) => {
@@ -75,35 +78,32 @@ const DocResultCity = ({navigation, route}) => {
 
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
-        </HStack>
-      </View>
+      <View style={styles.loading}>
+      <HStack space={2} justifyContent="center">
+        <LottieView
+          source={require('../../assets/animation/load.json')}
+          autoPlay
+          loop
+          style={{width: 50, height: 50, justifyContent: 'center'}}
+        />
+      </HStack>
+    </View>
     );
   } else {
     return (
       <SafeAreaView style={styles.container}>
-        <SearchBar placeholder='Search by city' />
-
-        <ScrollView style={{marginTop: 10}}>
+            <ArticleHeader placeholder='Search by city'   doc={0} city={1}   />
+        <ScrollView >
           {items.map(i => (
             <Card
               style={{
                 padding: 5,
                 margin: 5,
-                height: hp('17%'),
-                width: wp('96%'),
-                backgroundColor: '#fff',
-                borderColor:'aliceblue',
-                borderWidth:2,
+                height: verticalScale(150),
+                width: scale(370),
+                backgroundColor: '#f7f7f7',
+                borderColor:'#e0e0e0',
+                borderWidth:1,
                 padding: 9,
               }}>
               {/* <StarRating
@@ -147,8 +147,7 @@ export default DocResultCity;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    width: '100%',
-    height: '100%',
+  flex:1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -188,5 +187,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 0,
     margin: 0,
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

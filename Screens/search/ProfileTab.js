@@ -42,6 +42,7 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation
  } from '@react-navigation/native';
+import { scale, verticalScale } from '../../components/Scale';
 
 const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated, state, country_code}) => {
    const [imageExists, setImageExists] = useState(false)
@@ -67,20 +68,18 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
     return(
       
          <View>
-             <HStack>
+             <HStack space={2}>
     <View>
     
    < Card
                           
                           style={{
-                            width: wp('30%'),
-                            height: hp('15%'),
+                            width: scale(120),
+                            height: verticalScale(120),
                             backgroundColor: 'lightgrey',
                             borderRadius: 200,
                             marginRight:8,
                             justifyContent:'center',
-                          
-                          
                             paddingHorizontal:5,
                             alignItems:'center'
                           }}>
@@ -89,7 +88,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
                              style={{}}
                              onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
                              >
-      <ImageBackground source={{uri:`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`}} style={{width:wp('30%'),height:hp('15%'),borderRadius:200,overflow:'hidden'}}
+      <ImageBackground source={{uri:`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`}} style={{width:scale(120),height:verticalScale(120),borderRadius:200,overflow:'hidden'}}
        
     onError={(e) => onError(e)}  />
     </TouchableOpacity>
@@ -98,7 +97,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
         </Card>
     </View>
     <View>
-       <View style={{zIndex:999,width:wp('60%')}}>
+       <View style={{width:scale(200)}}>
          <TouchableOpacity
          style={{}}
          onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
@@ -108,8 +107,8 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
           <Text  style={{
             color: '#00415e',
             marginTop: 5,
-            fontFamily:'Raleway-Medium',
-            fontSize: wp('4%'),
+            fontFamily:'Raleway-Bold',
+            fontSize: scale(15),
             position: 'relative',
             bottom: 0,
          
@@ -118,8 +117,8 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
           <Text  style={{
             color: '#00415e',
             marginTop: 5,
-            fontFamily:'Raleway-Regular',
-            fontSize: wp('2.5%'),
+            fontFamily:'Raleway-Medium',
+            fontSize: scale(12),
             position: 'relative',
             bottom: 0,
          
@@ -128,7 +127,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
             color: '#00415e',
             marginTop: 5,
             fontFamily:'Raleway-Regular',
-            fontSize: wp('2.5%'),
+            fontSize: scale(11),
             position: 'relative',
             bottom: 0,
          
@@ -137,7 +136,7 @@ const ProfileTab = ({rowno, firstName, lastName, primary_spl, hospital_affliated
             color: '#00415e',
             marginTop: 5,
             fontFamily:'Raleway-Regular',
-            fontSize: wp('2.5%'),
+            fontSize: scale(11),
             position: 'relative',
             bottom: 0,
              right: 4

@@ -26,31 +26,55 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { scale, verticalScale } from '../../components/Scale';
 
-const ArticleHeader =()=>{
+const ArticleHeader =({placeholder,doc,city})=>{
     const navigation=useNavigation();
 return(
 <SafeAreaView style={styles.container}>
   
   <View styles={styles.flex}>
     <Card style={styles.header}>
-<HStack space={2}>
-<Icon name="arrow-back-outline" style={{marginTop:7,marginLeft:7}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('Main')}}/>
+<HStack space={2} >
+<Icon name="arrow-back-outline" style={{marginTop:7,marginLeft:7}}color={'#00415e'} size={35} onPress={()=>{doc===1||city===1?navigation.navigate('DocTab'):navigation.navigate('Main')}}/>
 <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
-              navigation.navigate('searchArt');
+              if(doc==1)
+              {
+              navigation.push('SearchDoc');
+              }else if(city ==1 )
+              {
+                navigation.push('SearchDocCity');
+              }
+              else{
+                navigation.navigate('searchArt');
+              }
             }}>
             <View style={styles.card}>
               <HStack ml="2" space={110} alignItems="center">
-                <Text
-                  style={{
+              {
+                    doc?(
+               <Text  style={{
+                fontSize: wp('4.5%'),
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}> {placeholder}</Text> 
+                 )
+                 :city?(
+                  <Text  style={{
                     fontSize: wp('4.5%'),
                     color: '#00415e',
                     fontFamily: 'Raleway-Regular',
-                  }}>
-                  Search cures
-                </Text>
+                  }}> {placeholder}</Text> 
+                  )
+                 :<Text style={{
+                  fontSize: wp('4.5%'),
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }} >search cures</Text>
+                  }
+               
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
             </View>
@@ -78,8 +102,8 @@ const styles = StyleSheet.create({
 card: {
 
   backgroundColor: 'rgba(0, 65, 94, 0.2)',
-  width: wp('80%'),
-  height: 50,
+  width:scale(320),
+    height:verticalScale('52'),
   fontSize: 20,
   paddingTop:13,
   borderRadius: 15,

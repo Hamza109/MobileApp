@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {Card} from 'react-native-paper';
 import {ScrollView} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -35,13 +36,13 @@ const All = () => {
   const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-
+const dispatch=useDispatch()
   const [regType, setRegType] = useState();
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
     if(user.getState().userId.regId===0)
       {
-            navigation.navigate('SignIn');
+            navigation.replace('SignIn');
       }
     }
 
@@ -103,7 +104,10 @@ const All = () => {
     return (
       <View style={styles.container}>
         <ScrollView style={{flex: 1, marginTop: 5}}>
-          {items.map(i => {
+
+          {
+            items.length!==0?
+          items.map(i => {
             var content = [];
             var imgLocation = i.content_location;
             var imageLoc = '';
@@ -351,8 +355,8 @@ const All = () => {
                   </Card>
                 </View>
               </View>
-            ) : null;
-          })}
+            ) :   null;
+          }):  null}
         </ScrollView>
       </View>
     );

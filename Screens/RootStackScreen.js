@@ -39,6 +39,8 @@ return(
   <Stack.Navigator
       initialRouteName="SplashScreen"
       screenOptions={{
+       
+    
         headerStyle: {
           backgroundColor: '#fff',
         
@@ -47,7 +49,7 @@ return(
         
         headerTintColor: '#00415e',
         headerTitleStyle: {
-          fontWeight: 'bold',
+          fontWeight: 'raleway-medium',
         },
       }}>
 <Stack.Screen
@@ -57,18 +59,19 @@ return(
       />
           <Stack.Screen
         name="Main"
+        key={'main'}
         component={DrawerMenu}
         options={{headerShown: false}}
       />
  <Stack.Screen
         name="SignIn"
         component={SignInScreen}
-        options={{headerShown: false}}
+        options={{headerShown: false,gestureEnabled:false}}
       />
       <Stack.Screen
         name="SignUp"
         component={SignUpScreen}
-        options={{headerShown: false}}
+        options={{headerShown: false,gestureEnabled:false}}
       />
       <Stack.Screen
         name="Forgetpass"
@@ -92,7 +95,7 @@ return(
       <Stack.Screen
         name="Disease"
         component={Disease}
-        options={{headerShown: false, headerLeft: null}}
+        options={{headerShown: false, headerLeft: null,gestureEnabled:false}}
       />
          <Stack.Screen
         name="Subscribe"
@@ -183,7 +186,7 @@ return(
     },
     headerTintColor: '#00415e',
     headerTitleStyle: {
-      fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+      fontWeight: 'raleway-medium', marginTop:Platform.OS === 'android'?0:30
       
     },
   }}>
@@ -227,7 +230,17 @@ return(
          <Stack.Screen
         name="SearchDocCity"
         component={SearchDocCity}
-        options={{headerShown: false}}
+        options={{headerShown: true,
+          headerTitle:'Doctor Finder',
+          headerLeft: () => (
+  
+            <Icon
+              name="user-md"
+              size={30}
+              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:30}}
+              backgroundColor="#fff"></Icon>
+          ),
+        }}
       />
       <Stack.Screen
         name="DocProfile"
@@ -237,7 +250,17 @@ return(
       <Stack.Screen
         name="SearchDoc"
         component={SearchDoc}
-        options={{headerShown: false}}
+        options={{headerShown: true,
+          headerTitle:'Doctor Finder',
+          headerLeft: () => (
+  
+            <Icon
+              name="user-md"
+              size={30}
+              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:30}}
+              backgroundColor="#fff"></Icon>
+          ),
+        }}
       />
           <Stack.Screen
         name="Disease"

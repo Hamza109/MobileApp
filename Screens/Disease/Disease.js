@@ -24,7 +24,7 @@ import {backendHost} from '../../components/apiConfig';
 import Comment from './comment';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {ScrollView, ImageBackground} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -35,7 +35,7 @@ import {
 import Rating from '../../components/StarRating';
 import { useStore,useDispatch } from 'react-redux';
 import { fav } from '../Redux/Action';
-
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {
   Modal,
   VStack,
@@ -60,6 +60,7 @@ const Disease = ({navigation, route}) => {
   const [commentItems, setCommentItems] = useState([]);
   const [selected, setSelected] = useState(1);
   const ids = route.params.ids;
+  const flow =route.params.flow
   const user =useStore();
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
@@ -79,7 +80,27 @@ const Disease = ({navigation, route}) => {
     }
   };
 
- 
+
+ useEffect(()=>{
+  const backAction =()=>{
+    flow!=0?
+    navigation.setOptions({
+      gestureEnabled:false
+    }):null
+  if (flow!=0){
+
+    navigation.push('Main')
+    return true;
+  }
+
+  }
+  const backHandler = BackHandler.addEventListener(
+    "hardwareBackPress",
+    backAction
+  );
+
+  return () => backHandler.remove();
+ },[])
 
   useEffect(() => {
     getRating();
@@ -131,19 +152,7 @@ const Disease = ({navigation, route}) => {
     }
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      navigation.push('Main');
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
+ 
 
   const fetchTables = () => {
     Promise.all([
@@ -229,6 +238,7 @@ const Disease = ({navigation, route}) => {
           setIsLoaded(true);
           setData(json);
           setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
+         
           var articleTitle = json.title;
           var regex = new RegExp(' ', 'g');
           title = articleTitle.replace(regex, '-');
@@ -689,121 +699,106 @@ const Disease = ({navigation, route}) => {
 
                           title = title.replace(regex, '-');
                           return (
-                            <View key={Math.random().toString(36)}>
-                              <View style={{height: 170, width: wp('100%')}} key={Math.random().toString(36)}>
-                                <Card
+                            <View     key={Math.random().toString(36)}>
+                            <View style={{marginRight: 0,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
+                              <Card
+  key={Math.random().toString(36)}
+                                style={{
+                                  width: scale(370),
+                                  height: '100%',
+                                  overflow:'hidden',
+                                  backgroundColor: '#f7f7f7',
+                                  borderWidth:1,
+                                  elevation:2,
+                                  borderColor:'#e0e0e0',
+                                 marginBottom:5,
+                                  borderRadius:15,
+                             
+                                }}>
+                                  
+                                <HStack space={1}  key={Math.random().toString(36)}>
+                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                  <Image
                                 key={Math.random().toString(36)}
-                                  style={{
-                                    width: wp('97%'),
-                                    height: 168,
-                                    backgroundColor: '#fff',
-                                    borderWidth: 2,
-                                    borderColor: 'aliceblue',
-                                    justifyContent: 'center',
-                                    paddingHorizontal: 5,
-                                    borderRadius: 15,
-                                    alignItems: 'center',
-                                  }}>
-                                  <HStack  key={Math.random().toString(36)} space={1}>
-                                    <TouchableOpacity
-                                    key={Math.random().toString(36)}
-                                      activeOpacity={0.8}
-                                      onPress={() => {
-                                        {
-                                          navigation.push(`Disease`, {
-                                            ids: `${i.article_id}`,
-                                          });
-                                        }
-                                      }}>
-                                      <Image
-                                      key={Math.random().toString(36)}
-                                        source={{
-                                          uri:
-                                            imageLoc +
-                                            imgLocation
-                                              .replace('json', 'png')
-                                              .split('/webapps/')[1],
-                                        }}
-                                        style={{
-                                          position: 'relative',
-                                          right: 3,
-                                          width: wp('44%'),
-                                          height: 166,
-                                          marginTop: 0,
-                                          borderBottomLeftRadius: 15,
-                                          borderTopLeftRadius: 15,
-                                        }}
+                                    source={{
+                                      uri:
+                                        imageLoc +
+                                        imgLocation
+                                          .replace('json', 'png')
+                                          .split('/webapps/')[1],
+                                    }}
+                                    style={{
+                                      position:'relative',
+                                      right:3,
+                                      width: scale(160),
+                                      height: '100%',
+                                      marginTop: 0,
+                                      borderBottomLeftRadius:15,
+                                      borderTopLeftRadius:15
+                                    }}
+                                  />
+                                  </TouchableOpacity>
+                                  <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                                 <View style={{width:'90%'}}>
+                                 <AllPost
+                                        id={i.article_id}
+                                        title={i.title}
+                                        f_title={i.friendly_name}
+                                        w_title={i.window_title}
+                                        allPostsContent={() => receivedData()}
                                       />
-                                    </TouchableOpacity>
-                                    <View style={{width: wp('50%')}} key={Math.random().toString(36)} >
-                                      <VStack py="2" space={10} key={Math.random().toString(36)}>
-                                        <AllPost
-                                        key={Math.random().toString(36)}
-                                     
-                                          id={i.article_id}
-                                          title={i.title}
-                                          f_title={i.friendly_name}
-                                          w_title={i.window_title}
-                                          allPostsContent={() => receivedData()}
-                                        />
-                                        <View style={{width: wp('50%')}} key={Math.random().toString(36)}>
-                                          <Text
-                                          key={Math.random().toString(36)}
-                                            style={{
-                                              position: 'absolute',
-                                              top: 0,
-                                            }}>
-                                            {content
-                                              ? content.map(
-                                                  (j, idx) =>
-                                                    idx < 1 && (
-                                                      <CenterWell
-                                                      key={Math.random().toString(36)}
-                                                        content={j.data.content}
-                                                        type={j.type}
-                                                        text={
-                                                          j.data.text.substr(
-                                                            0,
-                                                            150,
-                                                          ) + '....'
-                                                        }
-                                                        title={j.data.title}
-                                                        message={j.data.message}
-                                                        source={j.data.source}
-                                                        embed={j.data.embed}
-                                                        caption={j.data.caption}
-                                                        alignment={
-                                                          j.data.alignment
-                                                        }
-                                                        imageUrl={
-                                                          j.data.file
-                                                            ? j.data.file.url
-                                                            : null
-                                                        }
-                                                        url={j.data.url}
-                                                      />
-                                                    ),
-                                                )
-                                              : null}
-                                          </Text>
-                                        </View>
-                                      </VStack>
-                                      <Text
-                                      key={Math.random().toString(36)}
+                                 </View>
+                                 <Text>
+                                          {content
+                                            ? content.map(
+                                                (j, idx) =>
+                                                  idx < 1 && (
+                                                    <CenterWell
+                                                      content={j.data.content}
+                                                      type={j.type}
+                                                      text={
+                                                        j.data.text.substr(
+                                                          0,
+                                                          150,
+                                                        ) + '....'
+                                                      }
+                                                      title={j.data.title}
+                                                      message={j.data.message}
+                                                      source={j.data.source}
+                                                      embed={j.data.embed}
+                                                      caption={j.data.caption}
+                                                      alignment={j.data.alignment}
+                                                      imageUrl={
+                                                        j.data.file
+                                                          ? j.data.file.url
+                                                          : null
+                                                      }
+                                                      url={j.data.url}
+                                                    />
+                                                  ),
+                                              )
+                                            : null}
+                                            </Text>
+                                 <Text
+                                    key={Math.random().toString(36)}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
                                         style={{
                                           color: '#00415e',
-                                          position: 'absolute',
-                                          bottom: 0,
+                                  
                                           fontFamily: 'Raleway-Medium',
-                                          fontSize: wp('2.5%'),
+                                          fontSize: scale(9),
                                         }}>
-                                        {i.authors_name}▪️{i.published_date}
+                                      {i.authors_name}▪️{i.published_date}
                                       </Text>
-                                    </View>
-                                  </HStack>
-                                </Card>
-                              </View>
+                                      </View>
+                                </HStack>
+                           
+                                
+                             
+                              </Card>
                             </View>
+                          </View>
                           );
                         },
 

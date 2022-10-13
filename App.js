@@ -39,7 +39,9 @@ import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import DrawerMenu from './Screens/MainTab/DrawerMenu';
 import { SplashStack } from './Screens/RootStackScreen';
 import { Provider } from 'react-redux';
-import { Store }  from './Screens/Redux/Store';
+import reduxStore  from './Screens/Redux/Store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { useStore } from 'react-redux';
 const App = () => {
   // const linking = {
   //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
@@ -83,7 +85,7 @@ const App = () => {
 
         setTimeout(() => {
           navigationRef.current?.navigate('Disease', {ids: `${id}`});
-        }, 4000);
+        }, 3000);
       }
       if (initialUrl.includes('/ResetPass')) {
         const url = initialUrl.split('em=')[1];
@@ -104,9 +106,10 @@ const App = () => {
 
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
-
+  const {Store,persistor}=reduxStore();
   return (
     <Provider store={Store}>
+<PersistGate loading={null} persistor={persistor}>
 <SSRProvider>
 
     <NativeBaseProvider>
@@ -139,6 +142,7 @@ const App = () => {
     </NativeBaseProvider>
 
     </SSRProvider>
+    </PersistGate>
     </Provider>
   );
 };

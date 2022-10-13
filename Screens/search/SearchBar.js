@@ -34,6 +34,7 @@ import {useNavigation} from '@react-navigation/core';
 import {backendHost} from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { scale, verticalScale } from '../../components/Scale';
 const SearchBar = ({placeholder,doc,city}) => {
 
   const [name, setName] = useState('');
@@ -48,13 +49,22 @@ const SearchBar = ({placeholder,doc,city}) => {
 
   const docresult = (text) => {
     if (text && doc === 1)
-      return navigation.push('docResult', {
+    (
+   
+     navigation.push('docResult', {
         names: `${text}`,
-      });
+      }),
+      setName(null),
+      setSearching(false)
+    
+    
+    )
     else if(text && city===1){
       return navigation.push('docResultCity', {
         names: `${text}`,
-      });
+      }),
+      setName(null),
+      setSearching(false)
    }
     else{
       Alert.alert('type something');
@@ -117,7 +127,7 @@ const SearchBar = ({placeholder,doc,city}) => {
       setName(text);
     } else {
       
-      
+      setSearching(false)
       setFilteredDataSource(items);
       setName(text);
     }
@@ -140,8 +150,8 @@ const SearchBar = ({placeholder,doc,city}) => {
     <SafeAreaView style={styles.container}>
       <View>
         <View styles={styles.flex}>
-          <Card style={styles.header}>
-            <HStack mt="5" ml="10" p='1' space={1} alignItems="center">
+          <View style={styles.header}>
+           
               <Icon
                 name="arrow-back-outline"
                 style={{marginTop: 4, marginLeft: Platform.OS==='android'?11:13}}
@@ -161,8 +171,8 @@ const SearchBar = ({placeholder,doc,city}) => {
                   onClear={text => searchFilterFunction('')}
                   onSubmitEditing={(() => setName(name)& docresult(name))}
                   value={name}
-                  width="62%"
-                  height="95%"
+                  width={scale(320)}
+          height={verticalScale('52')}
                   color="#00415e"
                   borderRadius="15"
                   _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
@@ -171,7 +181,7 @@ const SearchBar = ({placeholder,doc,city}) => {
                   py="3"
                   px="1"
                   fontSize="18"
-                  autoFocus
+               
                   InputRightElement={
                     <View style={{position: 'relative', right: 20}}>
                       <Icon
@@ -186,8 +196,8 @@ const SearchBar = ({placeholder,doc,city}) => {
                   }
                 />
               </View>
-            </HStack>
-          </Card>
+     
+          </View>
         </View>
       </View>
       {searching && (
@@ -208,21 +218,20 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
 
-    alignItems: 'center',
   },
-  flex: {
-    flex: 1,
-  },
+
   header: {
-    padding: 0,
-    marginTop: Platform.OS === 'ios' ? -15 : 0,
-    marginLeft: 0,
+    paddingTop:Platform.OS === 'ios' ? 0 : 0,
     borderColor: '#fff',
     borderWidth: 0.1,
-    alignItems: 'center',
-    width: wp('100%'),
-    height: 85,
- 
+    justifyContent:'flex-start',
+    
+    alignItems:'center',
+    flexDirection:'row',
+    width: scale(400),
+    height: verticalScale(80),
+    elevation: 1,
+    backgroundColor:'#fff'
   },
 
   itemView: {
@@ -230,8 +239,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#00415e',
 
     backgroundColor: '#fff',
-    height: 80,
-    width: wp('100%'),
+    height: verticalScale(80),
+    width: scale(500),
     justifyContent: 'center',
 
     padding: 10,

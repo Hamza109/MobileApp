@@ -48,6 +48,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import AllPost from '../search/AllPost';
 import Comment from '../Disease/comment';
 import { useStore } from 'react-redux';
+import { scale, verticalScale } from '../../components/Scale';
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
@@ -180,14 +181,15 @@ else{
     <>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <Stack space={5}>
-          <View style={{backgroundColor:'#00415e',height:155,alignItems:'center'}}>
-            <HStack space={3} p='1'>
+          <View style={{height:verticalScale(155),width:scale(400)}}>
+          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center'}}>
+            <HStack space={5} p='1'>
               <VStack py='2'>
               <Card
 
                 style={{
-                  width: wp('30%'),
-                  height: hp('14.2%'),
+                  width: scale(120),
+                  height: verticalScale(120),
                   backgroundColor: '#fff',
                   borderRadius: 200,
                 
@@ -200,8 +202,8 @@ else{
                     uri: `http://all-cures.com:8080/cures_articleimages/doctors/${items.rowno}.png`,
                   }}
                   style={{
-                    width: wp('30%'),
-                    height: hp('14.2%'),
+                    width: scale(120),
+                    height: verticalScale(120),
                     borderRadius: 200,
                     overflow: 'hidden',
                   }}
@@ -276,10 +278,14 @@ else{
                   emptyStarColor={'#fff'}
                   fullStarColor={'orange'}
                 />
+
               </View>
+              
                 </VStack>
+                
               </View>
             </HStack>
+            </View>
           </View>
           <View>
           <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:20}}>
@@ -288,10 +294,10 @@ else{
               bg="#fff"
               alignItems="center"
         
-              width={wp('100%')}
-              height={hp('8.9%')}
-              shadow={6}>
-              <Center mr='10' flex={2}>
+            
+              
+              shadow={5}>
+              <Center mr='10' flex={1}>
                 <Ratings rowno={items.rowno} article_id={null} />
                 <Text
                   style={{
@@ -365,7 +371,7 @@ else{
             <View style={{margin: 6,height:430}}>
             <View style={{height:140,padding:3}}>
               <ScrollView nestedScrollEnabled={true}
-                style={{width: wp('100%'), height: hp('100%')}}
+                style={{width: wp('100%'), height: hp('100%'),marginBottom:10}}
                 >
               
                 {articleItems.length !== 0 ? (
@@ -398,12 +404,13 @@ else{
                           <View  key={Math.random().toString(36)}>
                             <Card
                               style={{
-                                width: wp('95%'),
-                                height: hp('10.7%'),
-                                backgroundColor: '#fff',
+                                width: scale(400),
+                                height: verticalScale(85),
+                                backgroundColor: '#f7f7f7',
+                                overflow:'hidden',
                                 borderRadius: 15,
-                                borderColor:'aliceblue',
-                                borderWidth:2,
+                                borderColor:'#e0e0e0',
+                                borderWidth:1,
                                 marginBottom: 5,
                               }}>
                               <HStack space={1}  key={Math.random().toString(36)}>
@@ -419,8 +426,8 @@ else{
                                   }}
                                   style={{
                                     overflow:'hidden',
-                                    width: wp('42%'),
-                                    height: hp('10.5%'),
+                                    width: wp('40%'),
+                                    height: verticalScale(85),
                                     marginTop: 0,
                                    borderTopLeftRadius:15,
                                    borderBottomLeftRadius:15

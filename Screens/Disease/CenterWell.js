@@ -16,11 +16,10 @@ import {
   Cols,
   Cell,
 } from 'react-native-table-component';
-import { useResponsiveFontSize } from 'react-native-responsive-dimensions';
-import { RFPercentage } from 'react-native-responsive-fontsize';
-import {Paragraph} from 'react-native-paper';
-import {scale} from 'react-native-size-matters';
-import RenderHTML from 'react-native-render-html';
+
+
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
+
 const CenterWell = ({
   content,
   type,
@@ -63,7 +62,7 @@ const CenterWell = ({
           paragraph: (
           
             <View style={{width:wp('50%'),height:hp('12%')}}>
-<Text numberOfLines={4} style={{fontSize:wp('3.5%')}}>{texts}</Text>
+<Text numberOfLines={4} style={{fontSize:scale(12)}}>{texts}</Text>
             </View>
           ),
 

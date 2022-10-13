@@ -26,7 +26,7 @@ const SplashScreen = () => {
     
     setTimeout(() => {
       navigate.navigate('Main')
-    },2000);
+    },1000);
   })
 
 
@@ -40,7 +40,7 @@ const SplashScreen = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
       <View style={styles.header}>
-      <LottieView source={require('../../assets/animation/heart.json')} autoPlay loop style={{width:400,height:100}} />
+      <Image source={require('../../assets/img/whitelogo.png')} autoPlay resizeMethod='resize' resizeMode='cover' loop style={{width:80,height:80}} />
         <Text  style={styles.head}>
           All Cures
         </Text>

@@ -18,7 +18,7 @@ import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
-import Autocomplete from './Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
