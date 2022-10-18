@@ -3,6 +3,7 @@ import {
   View,
   ScrollView,
   Text,
+  SafeAreaView,
   Button,
   StyleSheet,
   StatusBar,
@@ -21,35 +22,59 @@ import {
   Container,
 } from 'native-base';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { scale, verticalScale } from '../../components/Scale';
 
-const ArticleHeader =()=>{
+const ArticleHeader =({placeholder,doc,city})=>{
     const navigation=useNavigation();
 return(
-<View style={styles.container}>
+<SafeAreaView style={styles.container}>
   
   <View styles={styles.flex}>
     <Card style={styles.header}>
-<HStack space={2}>
-<Icon name="arrow-left" style={{marginTop:7,marginLeft:7}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+<HStack space={2} >
+<Icon name="arrow-back-outline" style={{marginTop:7,marginLeft:7}}color={'#00415e'} size={35} onPress={()=>{doc===1||city===1?navigation.navigate('DocTab'):navigation.navigate('Main')}}/>
 <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
-              navigation.navigate('searchArt');
+              if(doc==1)
+              {
+              navigation.push('SearchDoc');
+              }else if(city ==1 )
+              {
+                navigation.push('SearchDocCity');
+              }
+              else{
+                navigation.navigate('searchArt');
+              }
             }}>
             <View style={styles.card}>
               <HStack ml="2" space={110} alignItems="center">
-                <Text
-                  style={{
+              {
+                    doc?(
+               <Text  style={{
+                fontSize: wp('4.5%'),
+                color: '#00415e',
+                fontFamily: 'Raleway-Regular',
+              }}> {placeholder}</Text> 
+                 )
+                 :city?(
+                  <Text  style={{
                     fontSize: wp('4.5%'),
                     color: '#00415e',
                     fontFamily: 'Raleway-Regular',
-                  }}>
-                  Search Cures
-                </Text>
+                  }}> {placeholder}</Text> 
+                  )
+                 :<Text style={{
+                  fontSize: wp('4.5%'),
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }} >search cures</Text>
+                  }
+               
                 <Icon name="search" size={20} style={styles.icon}></Icon>
               </HStack>
             </View>
@@ -61,7 +86,7 @@ return(
 
     </View>
  
-</View>
+</SafeAreaView>
 )
 }
  export default ArticleHeader;
@@ -77,29 +102,26 @@ const styles = StyleSheet.create({
 card: {
 
   backgroundColor: 'rgba(0, 65, 94, 0.2)',
-  width: wp('85%'),
-  height: 50,
+  width:scale(320),
+    height:verticalScale('52'),
   fontSize: 20,
-
+  paddingTop:13,
   borderRadius: 15,
   position: 'relative',
-
-
-  padding: 10,
   },
   inCard: {
   
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-  flex:{
-    flex:1,
+//   flex:{
+//     flex:1,
    
-},
+// },
 header:{
 flexDirection:'row',
 padding: 0,
-marginTop: Platform.OS === 'ios' ? 0 : -7,
+marginTop: Platform.OS === 'ios' ? -17 : 0,
 marginLeft:0,
 borderColor: '#fff',
 borderWidth: 0.1,

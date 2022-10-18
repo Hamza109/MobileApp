@@ -15,40 +15,28 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useToast} from 'native-base';
-import {KeyboardAvoidingView} from 'react-native';
-import {Card} from 'react-native-paper';
-const Comment = props => {
+import { useStore } from 'react-redux';
+const Comment = ({article_id,doc_id}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
   const toast = useToast();
-  const [cmtText, setCmtText] = useState();
-  const [succAlert, setAlert] = useState('');
-  const [regId, setRegId] = useState();
+  const user= useStore()
+  const [cmtText, setCmtText] = useState('');
+
   const [regType, setRegType] = useState();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      });
-    } catch (error) {
-      error;
-    }
-  };
+
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
   };
   useEffect(() => {
-    getId();
     getType();
   }, []);
 
@@ -61,10 +49,10 @@ const Comment = props => {
     return true;
   };
   const postComment = e => {
-    if (cmtText != '') {
+    if (cmtText !== '') {
       axios
         .post(
-          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${regId}&ratedbytype=${regType}&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
+          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${user.getState().userId.regId}&ratedbytype=${regType}&targetid=${article_id!==null?article_id:doc_id}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
         )
         .then(res => {
           goto();

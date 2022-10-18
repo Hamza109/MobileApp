@@ -10,15 +10,17 @@ import {
   StatusBar,
   BackHandler,
   Alert,
+  
   TouchableOpacity,
   TouchableHighlight,
   Image,
 } from 'react-native';
 import ArticleHeader from '../search/ArticleHeader';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
-import Autocomplete from '../MainTab/Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, {Path, Circle} from 'react-native-svg';
 import {
@@ -52,11 +54,11 @@ import CenterWell from '../Disease/CenterWell';
 import Heart from '../../assets/img/heart.png';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-snap-carousel';
-
+import { useStore } from 'react-redux';
 const LockedPreview = props => {
+  const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
   const [status, setStatus] = useState(0);
   const navigation = useNavigation();
 
@@ -188,38 +190,28 @@ const LockedPreview = props => {
 
                     title = title.replace(regex, '-');
                     return (
-                      <View>
-                        <View
-                          style={{
-                            marginRight: 10,
-                            height: 170,
-                            width: wp('100%'),
-                          }}>
-                          <Card
-                            key={items}
-                            style={{
-                              width: wp('97%'),
-                              height: 168,
-                              backgroundColor: '#fff',
-                              borderWidth: 2,
-                              borderColor: 'aliceblue',
-                              justifyContent: 'center',
-                              paddingHorizontal: 5,
-                              borderRadius: 15,
-                              alignItems: 'center',
-                            }}>
-                            <HStack space={1}>
-                              <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                  {
-                                    navigation.push(`SubPlan`, {
-                                      ids: `${i.article_id}`,
-                                    });
-                                  }
-                                }}>
-                                <ImageBackground
-                                  blurRadius={regId ? 25 : 0}
+                      <View     key={Math.random().toString(36)}>
+                          <View style={{marginRight: 0,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
+                            <Card
+key={Math.random().toString(36)}
+                              style={{
+                                width: scale(370),
+                                height: '100%',
+                                overflow:'hidden',
+                                backgroundColor: '#f7f7f7',
+                                borderWidth:1,
+                                elevation:2,
+                                borderColor:'#e0e0e0',
+                               marginBottom:5,
+                             
+                                borderRadius:15,
+                           
+                              }}>
+                    <HStack space={1}  key={Math.random().toString(36)}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`SubPlan`, {ids:`${i.article_id}`})}}}>
+                              
+<ImageBackground
+                                  blurRadius={user.getState().subStat.subId === 0? 25 : 0}
                                   source={{
                                     uri:
                                       imageLoc +
@@ -236,12 +228,12 @@ const LockedPreview = props => {
                                     alignItems: 'center',
                                     position: 'relative',
                                     right: 3,
-                                    width: wp('44%'),
-                                    height: 166,
+                                    width: scale(160),
+                                    height: '100%',
                                     marginTop: 0,
                                   }}>
                                   <VStack
-                                    style={{alignItems: 'center'}}
+                                    style={{alignItems: 'center',display:user.getState().subStat.subId==0?'flex':'none'}}
                                     space={1}>
                                     <Icon />
                                     <Text
@@ -253,63 +245,62 @@ const LockedPreview = props => {
                                     </Text>
                                   </VStack>
                                 </ImageBackground>
-                              </TouchableOpacity>
-                              <View style={{width: wp('50%')}}>
-                                <VStack py="2" space={10}>
-                                  <AllPost
-                                    id={i.article_id}
-                                    title={i.title}
-                                    f_title={i.friendly_name}
-                                    w_title={i.window_title}
-                                    allPostsContent={() => receivedData()}
-                                  />
-                                  <View style={{width: wp('50%')}}>
-                                    <Text
-                                      style={{position: 'absolute', top: 0}}>
-                                      {content
-                                        ? content.map(
-                                            (j, idx) =>
-                                              idx < 1 && (
-                                                <CenterWell
-                                                  content={j.data.content}
-                                                  type={j.type}
-                                                  text={
-                                                    j.data.text.substr(0, 150) +
-                                                    '....'
-                                                  }
-                                                  title={j.data.title}
-                                                  message={j.data.message}
-                                                  source={j.data.source}
-                                                  embed={j.data.embed}
-                                                  caption={j.data.caption}
-                                                  alignment={j.data.alignment}
-                                                  imageUrl={
-                                                    j.data.file
-                                                      ? j.data.file.url
-                                                      : null
-                                                  }
-                                                  url={j.data.url}
-                                                />
-                                              ),
-                                          )
-                                        : null}
-                                    </Text>
-                                  </View>
-                                </VStack>
-                                <Text
+                                </TouchableOpacity>
+                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View style={{width:'90%'}}>
+                               <AllPost
+                                      id={i.article_id}
+                                      title={i.title}
+                                      f_title={i.friendly_name}
+                                      w_title={i.window_title}
+                                      allPostsContent={() => receivedData()}
+                                    />
+                               </View>
+                               <Text>
+                                        {content
+                                          ? content.map(
+                                              (j, idx) =>
+                                                idx < 1 && (
+                                                  <CenterWell
+                                                    content={j.data.content}
+                                                    type={j.type}
+                                                    text={
+                                                      j.data.text.substr(
+                                                        0,
+                                                        150,
+                                                      ) + '....'
+                                                    }
+                                                    title={j.data.title}
+                                                    message={j.data.message}
+                                                    source={j.data.source}
+                                                    embed={j.data.embed}
+                                                    caption={j.data.caption}
+                                                    alignment={j.data.alignment}
+                                                    imageUrl={
+                                                      j.data.file
+                                                        ? j.data.file.url
+                                                        : null
+                                                    }
+                                                    url={j.data.url}
+                                                  />
+                                                ),
+                                            )
+                                          : null}
+                                          </Text>
+                               <Text
+                                  key={Math.random().toString(36)}
                                   adjustsFontSizeToFit
                                   numberOfLines={1}
-                                  style={{
-                                    color: '#00415e',
-                                    position: 'absolute',
-                                    bottom: 7,
-                                    fontFamily: 'Raleway-Medium',
-                                    fontSize: wp('2.5%'),
-                                  }}>
-                                  {i.authors_name}▪️{i.published_date}
-                                </Text>
-                              </View>
-                            </HStack>
+                                      style={{
+                                        color: '#00415e',
+                                
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: scale(9),
+                                      }}>
+                                    {i.authors_name}▪️{i.published_date}
+                                    </Text>
+                                    </View>
+                              </HStack>
                           </Card>
                         </View>
                       </View>
@@ -334,3 +325,6 @@ const LockedPreview = props => {
 };
 
 export default LockedPreview;
+
+
+

@@ -5,7 +5,7 @@ import { View, Text, Image, ScrollView, TextInput ,StyleSheet} from 'react-nativ
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
 import { useIsFocused } from "@react-navigation/native";
-import Autocomplete from "../MainTab/Autocomplete";
+
 import { Avatar } from "react-native-paper";
 import { Dimensions } from "react-native";
 import { Card } from "react-native-paper";
@@ -24,7 +24,7 @@ const SearchDoc = ()=>{
      
 
 
-<SearchBar/>
+<SearchBar  placeholder='Search by name' doc={1} city={0}/>
 
 
 

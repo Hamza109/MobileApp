@@ -22,7 +22,7 @@ import {
   useTheme,
 } from '@react-navigation/native';
 import axios from 'axios';
-import Autocomplete from './Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Card,
@@ -50,6 +50,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 
 const DoctorsCard = ({
   rowno,
@@ -91,8 +92,8 @@ const DoctorsCard = ({
             }}>
         <Card
           style={{
-            width: wp('30%'),
-            height: 120,
+            width: scale(110),
+            height: verticalScale('130'),
             backgroundColor: 'grey',
             borderRadius: 20,
             marginRight: 12,
@@ -108,8 +109,8 @@ const DoctorsCard = ({
                 uri: `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
               }}
               style={{
-                width: wp('30%'),
-                height: 120,
+                width: scale(110),
+                height: verticalScale('130'),
                 borderRadius: 20,
                 overflow: 'hidden',
               }}
@@ -119,14 +120,15 @@ const DoctorsCard = ({
         </TouchableOpacity>
       </View>
       <View>
-        <View style={{zIndex: 999, width: wp('31%')}}>
+        <View style={{zIndex: 999, width: scale(100)}}>
         
             <Text
               style={{
                 color: '#00415e',
                 marginTop: 5,
+          
                 fontFamily: 'Raleway-Medium',
-                fontSize: 13,
+                fontSize: scale(12),
                 position: 'relative',
                 bottom: 0,
                 textAlign: 'center',
@@ -138,8 +140,9 @@ const DoctorsCard = ({
             style={{
               color: '#00415e',
               marginTop: 5,
+              marginBottom:50,
               fontFamily: 'Raleway-Medium',
-              fontSize: 13,
+              fontSize: scale(9),
               position: 'relative',
               bottom: 0,
               textAlign: 'center',

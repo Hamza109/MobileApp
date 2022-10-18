@@ -12,6 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import analytics from '@react-native-firebase/analytics';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {
   HStack,
   Stack,
@@ -34,9 +35,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { useStore } from 'react-redux';
+
 const Autocomplete = () => {
   const [dataSource, setDataSource] = useState([]);
-
+ const user=useStore();
   const [colors] = useState(['#84DCC6', '#FEC8C8', '#F7E4CF', '#E8DEF3']);
   const [text, setText] = useState('');
   const isearch = texts => {
@@ -56,44 +59,29 @@ const Autocomplete = () => {
       });
   };
 
-  const [isLoaded, setisLoaded] = useState(false);
-
-  const [filtered, setFiltered] = useState(dataSource);
 
   const [searching, setSearching] = useState(false);
 const [uniqueId,setUniqueId]=useState()
-const [regId,setRegId]=useState()
   const navigation = useNavigation();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(Number(value1));
-        }
-      });
-    } catch (error) {
-      error
-    }
-  };
+ 
   const getDeviceInfo = () => {
     try {
       AsyncStorage.getItem('device').then(value2 => {
         if (value2 != null) {
           setUniqueId(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error}
   };
 
   useEffect(()=>{
     getDeviceInfo()
-    getId()
   })
 
   const info=()=>{
     axios.post(`${backendHost}/data/create`,{
       'device_id': uniqueId,
-      'user_id':regId?regId:0,
+      'user_id':user.getState().userId.regId,
       'event_type':'search',
       'event_value':text
     })
@@ -138,7 +126,6 @@ const [regId,setRegId]=useState()
         <View style={{marginTop: 9, marginLeft: -38}}>
           <FlatList
             data={item}
-            indicatorStyle={'#00415e'}
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>setText(item) & result(item)}>
@@ -163,8 +150,8 @@ const [regId,setRegId]=useState()
           onChangeText={onSearch}
           onSubmitEditing={(() => setText(text)& result(text))}
           value={text}
-          width="62%"
-          height="95%"
+          width={scale(320)}
+          height={verticalScale('52')}
           fontFamily="Raleway-Regular"
           color="#00415e"
           borderRadius="15"
@@ -182,7 +169,7 @@ const [regId,setRegId]=useState()
                 color="#00415e"
                 name="search"
                 onPress={(() => setText(text)&result(text))}
-                size={20}
+                size={scale(20)}
               />
             </View>
           }

@@ -37,24 +37,15 @@ const FeedBack = () => {
   const [email, setEmail] = useState('');
   const [num, setNum] = useState('');
 
-  const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      });
-    } catch (error) {}
-  };
+
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);
     } catch (error) {
       error;
     }
@@ -66,8 +57,8 @@ const FeedBack = () => {
       getType();
     }
 
-    getId();
-  }, [regId]);
+  
+  });
 
   const [loading, setLoading] = useState(false);
   const submitFeedbackForm = e => {
@@ -91,7 +82,7 @@ const FeedBack = () => {
               status: 'success',
               placement: 'bottom',
               style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-            });
+            }).catch(err=>err);;
           } else {
             setLoading(false);
             toast.show({
@@ -184,8 +175,7 @@ const FeedBack = () => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#fff', padding: 15}}>
-      <ScrollView style={{flex:1}}>
-        {loading ? (
+         {loading ? (
           <View style={styles.loading}>
             <LottieView
               source={require('../assets/animation/load.json')}
@@ -195,6 +185,8 @@ const FeedBack = () => {
             />
           </View>
         ) : null}
+      <ScrollView style={{flex:1,marginTop:15}}>
+     
         <Stack space={4}>
           <VStack space={2}>
             <Text
@@ -378,7 +370,8 @@ const styles = StyleSheet.create({
   },
   article: {
     flexDirection: 'row',
-    margin: 7,
+    flex:1,
+    margin: 6,
     padding: 0,
   },
   actionError: {
@@ -459,6 +452,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: wp('50%'),
     height: 40,
+    
     backgroundColor: 'rgba(0, 65, 90, 0.2)',
     color: 'white',
 

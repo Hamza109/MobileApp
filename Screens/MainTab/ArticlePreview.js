@@ -18,7 +18,7 @@ import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
-import Autocomplete from './Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Card,
@@ -29,6 +29,7 @@ import {
   Provider,
 } from 'react-native-paper';
 import AllPost from '../search/AllPost';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PhoneInput from 'react-native-phone-number-input';
 import { useResponsiveFontSize } from 'react-native-responsive-dimensions';
@@ -103,36 +104,8 @@ const ArticlePreview = () => {
   useEffect(() => {
     allPosts();
   }, []);
-  const swipe=()=>{
-    setTimeout(()=>{
-      <View style={{alignContent:'center',width:wp('100%'),height:50}}>
-      <Text style={{color:'#00415e'}}>swipe down to refresh</Text>
-      </View>
-    },1000)
-  }
-  function renderItemArt({item, index}) {
-    const {friendly_name, source, content} = item;
-
-    return (
-      <View>
-        <View style={{marginRight: 25, width: wp('100%'), height: hp('20%')}}>
-       
-          <View>
-            <Paragraph>
-              <Card
-                style={{
-                  width: wp('90%'),
-                  height: hp('25%'),
-                  backgroundColor: '#00415e',
-                  borderRadius: 20,
-                  marginRight: 5,
-                }}></Card>
-            </Paragraph>
-          </View>
-        </View>
-      </View>
-    );
-  }
+  
+  
     if (!isLoaded) {
    
     return (
@@ -177,24 +150,27 @@ const ArticlePreview = () => {
 
                       title = title.replace(regex, '-');
                       return (
-                        <View >
-                          <View style={{marginRight: 10,height:170,width:wp('100%')}} >
+                        <View     key={Math.random().toString(36)}>
+                          <View style={{marginRight: 0,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
                             <Card
-                            key={items}
+key={Math.random().toString(36)}
                               style={{
-                                width: wp('97%'),
-                                height: 168,
-                                backgroundColor: '#fff',
-                                borderWidth:2,
-                                borderColor:'aliceblue',
-                                justifyContent: 'center',
-                                paddingHorizontal: 5,
+                                width: scale(370),
+                                height: '100%',
+                                overflow:'hidden',
+                                backgroundColor: '#f7f7f7',
+                                borderWidth:1,
+                                elevation:2,
+                                borderColor:'#e0e0e0',
+                               marginBottom:5,
                                 borderRadius:15,
-                                alignItems: 'center',
+                           
                               }}>
-                              <HStack space={1}>
-                                <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                
+                              <HStack space={1}  key={Math.random().toString(36)}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
+                              key={Math.random().toString(36)}
                                   source={{
                                     uri:
                                       imageLoc +
@@ -205,27 +181,25 @@ const ArticlePreview = () => {
                                   style={{
                                     position:'relative',
                                     right:3,
-                                    width: wp('44%'),
-                                    height: 166,
+                                    width: scale(160),
+                                    height: '100%',
                                     marginTop: 0,
                                     borderBottomLeftRadius:15,
                                     borderTopLeftRadius:15
                                   }}
                                 />
                                 </TouchableOpacity>
-                                <View style={{width:wp('50%')}}>
-                                  <VStack py='2' space={10}>
-                                  <AllPost
-                                  
-                                    id={i.article_id}
-                                    title={i.title}
-                                    f_title={i.friendly_name}
-                                    w_title={i.window_title}
-                                    allPostsContent={() => receivedData()}
-                                  />
-                                  <View style={{width:wp('50%')}}>
-                                   
-                                      <Text style={{position:'absolute',top:0}}>
+                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View style={{width:'90%'}}>
+                               <AllPost
+                                      id={i.article_id}
+                                      title={i.title}
+                                      f_title={i.friendly_name}
+                                      w_title={i.window_title}
+                                      allPostsContent={() => receivedData()}
+                                    />
+                               </View>
+                               <Text>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
@@ -255,27 +229,24 @@ const ArticlePreview = () => {
                                                 ),
                                             )
                                           : null}
-                                      </Text>
-                               
-                                  
-                                  </View>
-                                    
-                               
-                                  </VStack>
-                                  <Text
+                                          </Text>
+                               <Text
+                                  key={Math.random().toString(36)}
                                   adjustsFontSizeToFit
                                   numberOfLines={1}
                                       style={{
                                         color: '#00415e',
-                                        position: 'absolute',
-                                        bottom:7 ,
+                                
                                         fontFamily: 'Raleway-Medium',
-                                        fontSize: wp('2.5%'),
+                                        fontSize: scale(9),
                                       }}>
                                     {i.authors_name}▪️{i.published_date}
                                     </Text>
-                                </View>
+                                    </View>
                               </HStack>
+                         
+                              
+                           
                             </Card>
                           </View>
                         </View>
@@ -292,9 +263,7 @@ const ArticlePreview = () => {
               )}
             </ScrollView>
           </View>
-          <View>
-            <View></View>
-          </View>
+       
         </View>
       </>
     );

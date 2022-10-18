@@ -1,16 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useRef} from 'react';
 import {
   View,
   ScrollView,
   Text,
-  Button,
-  StyleSheet,
-  StatusBar,
-  BackHandler,
 
-  Alert,
+  StyleSheet,
+
   TouchableOpacity,
-  TouchableHighlight,
   ImageBackground,
   Image,
 } from 'react-native';
@@ -24,11 +20,13 @@ import {
   Container,
   Box,
   Pressable,
+  Divider,
   
   VStack,
 } from 'native-base';
-import DocComment from '../Disease/DocComment';
+import RBSheet from "react-native-raw-bottom-sheet";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from 'lottie-react-native';
 import axios from 'axios';
 import {Card, Checkbox, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -37,7 +35,8 @@ import {Dimensions} from 'react-native';
 import ProfileTab from '../search/ProfileTab';
 import DoctorsCard from './DoctorsCard';
 import {backendHost} from '../../components/apiConfig';
-import DocRatings from '../../components/DocRating';
+
+import Ratings from '../../components/StarRating';
 import StarRating from 'react-native-star-rating';
 
 import {
@@ -47,45 +46,36 @@ import {
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import AllPost from '../search/AllPost';
-
+import Comment from '../Disease/comment';
+import { useStore } from 'react-redux';
+import { scale, verticalScale } from '../../components/Scale';
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(ids);
+  const user=useStore()
   const [items, setItems] = useState([]);
   const [articleItems, setArticleItems] = useState([]);
-  const [formattedValue, setFormattedValue] = useState('');
+
   const [selected, setSelected] = useState(1);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [regType, setRegType] = useState();
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const [showValue, setShowValue] = useState();
-  const [regId, setRegId] = useState([]);
+
   const [commentItems, setCommentItems] = useState([]);
+  const refRBSheet = useRef();
   const check = () => {
-    if (regId.length == 0) {
-      navigation.navigate('SignIn');
+    if (user.getState().userId.regId == 0) {
+      navigation.navigate('SignIn')
     } else {
-      setModalVisible(!modalVisible);
+     refRBSheet.current.open()
     }
   };
 
-  useEffect(() => {
-    getId();
-    
-  },[regId]);
-
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(Number(value1));
-        }
-      });
-    } catch (error) {
-      error
-    }
-  };
+ 
+ 
 
   
   const getRating = () => {
@@ -116,30 +106,38 @@ const DocProfile = ({navigation, route}) => {
     comments();
   },[id])
   const getDoc = () => {
+      
     fetch(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
       .then(res => res.json())
       .then(json => {
-     
+    
+
+    
         setItems(json);
-      })
+       
+
+      },[id])
       .catch(err => {err
         throw err
         })
   };
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
+         
     fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`)
       .then(res => res.json())
       .then(json => {
+        setIsLoaded(true)
         var temp = [];
         json.forEach(i => {
           if (i.pubstatus_id === 3) {
             temp.push(i);
           }
         });
-
+     
         setArticleItems(temp);
-      })
+        getDoc()
+      },[id])
       .catch(err => {
     err
       });
@@ -152,9 +150,9 @@ const DocProfile = ({navigation, route}) => {
     }
     return JSON.parse(str).blocks;
   }
-useEffect(()=>{
-  getDoc();
-},[id])
+// useEffect(()=>{
+//   getDoc();
+// },[id])
 
 useEffect(()=>{
   getRating();
@@ -164,18 +162,34 @@ useEffect(()=>{
     allpost();
 
   }, [id]);
+  if (!isLoaded) {
+    return (
+      <View style={styles.loading}>
+        <HStack space={2} justifyContent="center">
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
+          />
+        </HStack>
+      </View>
+    );
+  } 
+else{
   return (
     <>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <Stack space={5}>
-          <View style={{backgroundColor:'#00415e',height:140,alignItems:'center'}}>
-            <HStack space={3}>
+          <View style={{height:verticalScale(155),width:scale(400)}}>
+          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center'}}>
+            <HStack space={5} p='1'>
               <VStack py='2'>
               <Card
 
                 style={{
-                  width: wp('30%'),
-                  height: hp('15%'),
+                  width: scale(120),
+                  height: verticalScale(120),
                   backgroundColor: '#fff',
                   borderRadius: 200,
                 
@@ -188,8 +202,8 @@ useEffect(()=>{
                     uri: `http://all-cures.com:8080/cures_articleimages/doctors/${items.rowno}.png`,
                   }}
                   style={{
-                    width: wp('30%'),
-                    height: hp('15%'),
+                    width: scale(120),
+                    height: verticalScale(120),
                     borderRadius: 200,
                     overflow: 'hidden',
                   }}
@@ -264,10 +278,14 @@ useEffect(()=>{
                   emptyStarColor={'#fff'}
                   fullStarColor={'orange'}
                 />
+
               </View>
+              
                 </VStack>
+                
               </View>
             </HStack>
+            </View>
           </View>
           <View>
           <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:20}}>
@@ -276,11 +294,11 @@ useEffect(()=>{
               bg="#fff"
               alignItems="center"
         
-              width={wp('100%')}
-              height={hp('8.9%')}
-              shadow={6}>
-              <Center mr='10' flex={2}>
-                <DocRatings  rowno={items.rowno} />
+            
+              
+              shadow={5}>
+              <Center mr='10' flex={1}>
+                <Ratings rowno={items.rowno} article_id={null} />
                 <Text
                   style={{
                     fontFamily: 'Raleway',
@@ -318,70 +336,44 @@ useEffect(()=>{
              
             </HStack>
           </Box>
-            <ScrollView   style={{width: wp('100%'), height: hp('100%')}}>
+            <ScrollView scrollEnabled={true}  style={{width: wp('100%'), height: hp('100%')}}>
             <VStack ml="2" space={1}>
               <Text
-                style={{
-                  color: '#00415e',
-                  fontFamily: 'Raleway-Bold',
-                  fontSize: 12,
-                }}>
+                style={styles.dbodyHead}>
                 About
               </Text>
               <Text
-                style={{
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: wp('3.5%'),
-                  color: '#00415e',
-                }}>
+                style={styles.dbodyText}>
                 {items.about}
               </Text>
               <Text
-                style={{
-                  color: '#00415e',
-                  fontFamily: 'Raleway-Bold',
-                  fontSize: 12,
-                }}>
+                  style={styles.dbodyHead}>
                 Education
               </Text>
               <Text
-                style={{
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: wp('3.5%'),
-                  color: '#00415e',
-                }}>
+                style={styles.dbodyText}>
                 {items.edu_training}
               </Text>
               <Text
-                style={{
-                  color: '#00415e',
-                  fontFamily: 'Raleway-Bold',
-                  fontSize: 12,
-                }}>
+                  style={styles.dbodyHead}>
                 Specialities
               </Text>
 
               <Text
-                style={{
-                  color: '#00415e',
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: wp('3.5%'),
-                }}>
+                 style={styles.dbodyText}>
                 {items.primary_spl}
               </Text>
               <Text
-                style={{
-                  color: '#00415e',
-                  fontFamily: 'Raleway-Bold',
-                  fontSize: 12,
-                }}>
+                   style={styles.dbodyHead}>
                 Cures
               </Text>
             </VStack>
-            <View style={{margin: 6}}>
-              <ScrollView
-                style={{width: wp('100%'), height: hp('100%')}}
-                showsVerticalScrollIndicator={false}>
+            <View style={{margin: 6,height:430}}>
+            <View style={{height:140,padding:3}}>
+              <ScrollView nestedScrollEnabled={true}
+                style={{width: wp('100%'), height: hp('100%'),marginBottom:10}}
+                >
+              
                 {articleItems.length !== 0 ? (
                   articleItems
                     .filter((i, idx) => idx < 9)
@@ -408,22 +400,23 @@ useEffect(()=>{
                       //replace via regex
                       title = title.replace(regex, '-');
                       return (
-                        <View>
-                          <View key={j}>
+                        <View  key={Math.random().toString(36)}>
+                          <View  key={Math.random().toString(36)}>
                             <Card
                               style={{
-                                width: wp('97%'),
-                                height: hp('10.7%'),
-                                backgroundColor: '#fff',
+                                width: scale(370),
+                                height: verticalScale(85),
+                                backgroundColor: '#f7f7f7',
+                                overflow:'hidden',
                                 borderRadius: 15,
-                                borderColor:'aliceblue',
-                                borderWidth:2,
+                                borderColor:'#e0e0e0',
+                                borderWidth:1,
                                 marginBottom: 5,
                               }}>
-                              <HStack space={1}>
-                              <TouchableOpacity activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                              <HStack space={1}  key={Math.random().toString(36)}>
+                              <TouchableOpacity  key={Math.random().toString(36)} activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                 <Image
-                                
+                                 key={Math.random().toString(36)}
                                   source={{
                                     uri:
                                       imageLoc +
@@ -433,24 +426,26 @@ useEffect(()=>{
                                   }}
                                   style={{
                                     overflow:'hidden',
-                                    width: wp('42%'),
-                                    height: hp('10.5%'),
+                                    width: wp('40%'),
+                                    height: verticalScale(85),
                                     marginTop: 0,
                                    borderTopLeftRadius:15,
                                    borderBottomLeftRadius:15
                                   }}
                                 />
                                 </TouchableOpacity>
-                                <View style={{width:wp('50%')}}>
+                                <View  key={Math.random().toString(36)} style={{width:wp('50%')}}>
                                   <AllPost
+                                   key={Math.random().toString(36)}
                                     id={i.article_id}
                                     title={i.title}
                                     f_title={i.friendly_name}
                                     w_title={i.window_title}
                                     allPostsContent={() => receivedData()}
                                   />
-                                  <View style={{flex: 1}}>
+                                  <View style={{flex: 1}}  key={Math.random().toString(36)}>
                                     <Text
+                                     key={Math.random().toString(36)}
                                       style={{
                                         color: '#00415e',
                                         position: 'absolute',
@@ -461,6 +456,7 @@ useEffect(()=>{
                                       {i.authors_name}{' '}
                                     </Text>
                                     <Text
+                                     key={Math.random().toString(36)}
                                       style={{
                                         color: '#00415e',
 
@@ -493,6 +489,7 @@ useEffect(()=>{
                 )}
                 
               </ScrollView>
+              </View>
             </View>
             
             </ScrollView>
@@ -501,31 +498,40 @@ useEffect(()=>{
      
 
         </Stack>
-        <Modal
-          isOpen={modalVisible}
-          onClose={() => setModalVisible(false)}
-          avoidKeyboard
-          justifyContent="flex-end"
-          bottom="0"
-          size="full">
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>comments</Modal.Header>
-            <Modal.Body>
-              <ScrollView>
-                {commentItems.reviewd == 1 ? (
+        <RBSheet
+        ref={refRBSheet}
+
+        closeOnPressMask={true}
+        
+        height={522}
+        customStyles={{
+        
+          wrapper: {
+            backgroundColor: "transparent",
+         
+  
+          },
+      
+        }}
+      >
+    <Stack space={3}>
+<View style={styles.cheader}>
+  <Text style={styles.ctext}>
+    Comments
+  </Text>
+</View>
+
+
+<ScrollView style={{height:350}}>
+                {commentItems.length !== 0 ? (
                   commentItems.map(i => (
                     <View style={{marginBottom: 10}}>
                       <View
-                        style={{
-                          padding: 10,
-                          marginVertical: 0,
-                          marginBottom: 0,
-                          Width: wp('80%'),
-                          height: hp('10%'),
-                          borderBottomWidth: 0.2,
-                        }}>
-                        <Text>{i.comments}</Text>
+                        style={styles.cbody}>
+                          <Box bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
+                          <Text style={styles.cbodyHead}>{i.first_name} {i.last_name}</Text>
+                        <Text style={styles.cbodyText}>{i.comments}</Text>
+                        </Box>
                       </View>
                     </View>
                   ))
@@ -548,16 +554,17 @@ useEffect(()=>{
                   </View>
                 )}
               </ScrollView>
-            </Modal.Body>
-            <Modal.Footer>
-              <DocComment docid={items.rowno}/>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
+<Divider  bg={'Darkgray'} />
+<View style={styles.cComment}>
+<Comment  article_id={null}  doc_id={items.rowno}/>
+</View>
 
+    </Stack>
+      </RBSheet>
+       
       </View>
     </>
-  );
+  )};
 };
 export default DocProfile;
 
@@ -612,4 +619,50 @@ const styles = StyleSheet.create({
 
     color: '#E5E5E5',
   },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
+  },
+  cheader:{
+    padding:15,
+    borderBottomWidth:.3,
+    borderColor:'gray'
+      }
+      ,
+      ctext:{
+        color:'#000',
+        fontSize:18,
+      
+
+      },
+      cComment:{
+        padding:6
+      },
+      cbody:{
+      paddingLeft:25,
+      marginTop:8
+      },
+      cbodyHead:{
+        fontWeight:'bold',
+        color:'black'
+      },
+      dbodyHead:{
+        color: '#00415e',
+        fontFamily: 'Raleway-Bold',
+        fontSize: 12,
+ 
+      }
+      ,
+      dbodyText:{
+        color: '#00415e',
+                  fontFamily: 'Raleway-Medium',
+                  fontSize: wp('3.5%'),
+      }
 });

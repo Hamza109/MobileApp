@@ -50,10 +50,13 @@ import {
 import {TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
+import { useStore ,useDispatch} from 'react-redux';
+import { screenName } from '../Redux/Action';
 
 const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const toast = useToast();
-  const Navigation = useNavigation();
+  const user=useStore();
+  const dispatch=useDispatch();
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
   const [primarySpl, setPrimary] = useState();
@@ -84,10 +87,11 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const [nameLoad, setNameLoad] = useState(false);
   const [items, setItems] = useState([]);
   const navigation = useNavigation();
-  const [regId, setRegId] = useState([]);
+
   const [image, setImage] = useState(
     `http://all-cures.com:8280/cures_articleimages/doctors/${items.rowno}.png`,
   );
+
   const [imageUser, setImageUser] = useState(``);
   const [rowno, setRowno] = useState();
   const [mobile, setMobile] = useState();
@@ -119,22 +123,17 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
 
     setRefreshing(true);
 
-    wait(2000).then(() => setRefreshing(false));
+    wait(2000).then(() => setRefreshing(false)).catch(err=>err);;
   };
   const [img, setImg] = useState();
   const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          getProfile(value1);
-          setRegId(value1);
+ 
+        if (user.getState().userId.regId != 0) {
+          getProfile(user.getState().userId.regId);
         } else {
-          navigation.navigate('SignIn');
+          navigation.push('SignIn');
         }
-      });
-    } catch (error) {
-      error;
-    }
+    
   };
 
   const getType = () => {
@@ -143,7 +142,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -188,7 +187,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
               }
             });
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -266,15 +265,15 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     Promise.all([
       fetch(`${backendHost}/article/all/table/specialties`).then(res =>
         res.json(),
-      ),
+      ).catch(err=>err),
       fetch(`${backendHost}/article/all/table/hospital`).then(res =>
         res.json(),
-      ),
-      fetch(`${backendHost}/article/all/table/states`).then(res => res.json()),
-      fetch(`${backendHost}/article/all/table/city`).then(res => res.json()),
+      ).catch(err=>err),
+      fetch(`${backendHost}/article/all/table/states`).then(res => res.json()).catch(err=>err),
+      fetch(`${backendHost}/article/all/table/city`).then(res => res.json()).catch(err=>err),
       fetch(`${backendHost}/article/all/table/countries`).then(res =>
         res.json(),
-      ),
+      ).catch(err=>err),
     ])
       .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
         setDiseaseList(diseaseData);
@@ -284,7 +283,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         setCountryList(countryData);
       })
       .catch(err => {
-        return;
+      err
       });
   };
   const isFocus = useIsFocused();
@@ -293,7 +292,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     if (isFocus) {
       getId();
     }
-  }, [regId]);
+  },[]);
   useEffect(() => {
     if (isFocus) {
       getRow();
@@ -322,7 +321,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         ? (setImage(image), setSelectedFile(b), bs.current.snapTo(1))
         : setImageUser(image.path);
       bs.current.snapTo(1);
-    });
+    }).catch(err=>err);;
   };
   const changeHandler = event => {
     if (photo.name.size > 1048576) {

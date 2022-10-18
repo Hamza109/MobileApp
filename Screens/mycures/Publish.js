@@ -14,6 +14,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { scale,verticalScale } from '../../components/Scale';
 import {
   HStack,
   Stack,
@@ -30,30 +31,23 @@ import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import AllStat from '../search/AllStat';
+import { useStore } from 'react-redux';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 
 const Published = () => {
   const navigation = useNavigation();
-
+const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
+
   const [regType, setRegType] = useState();
   const [status, setStatus] = useState();
 
   const getId = () => {
-    try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setRegId(value1);
-          } else {
+    if(user.getState().userId.regId==0)
             navigation.navigate('SignIn');
-          }
-        }),
-      );
-    } catch (error) {}
+ 
   };
   const getType = () => {
     try {
@@ -61,31 +55,24 @@ const Published = () => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);
+    } catch (error) {error}
   };
   const receivedData = () => {
-    fetch(`${backendHost}/favourite/userid/${regId}/favouritearticle`)
+    fetch(`${backendHost}/favourite/userid/${user.getState().userId.regId}/favouritearticle`)
       .then(res => res.json())
       .then(json => {
         setIsLoaded(true);
         setStatus(json.status);
 
         setItems(json);
-      });
+      }).catch(err=>err);
   };
   const isFocus = useIsFocused();
-  const check = () => {
-    if (regId.length === 0) {
-      // navigation.navigate('Cures',{screen:'My Cures'})
-      navigation.navigate('SignIn');
-    } else {
-      navigation.navigate('CreateScreenHome');
-    }
-  };
+  
   useEffect(() => {
     receivedData();
-  }, [regId]);
+  }, []);
   useEffect(() => {
     if (isFocus) {
       getId();
@@ -141,78 +128,105 @@ const Published = () => {
 
               return i.status === 1 ? (
                 <View>
-                  <View>
-                    <Card
-                      style={{
-                        width: wp('97%'),
-                        height: hp('10.7%'),
-                        backgroundColor: '#fff',
-                        borderRadius: 15,
-                        borderColor: 'aliceblue',
-                        borderWidth: 2,
-                        marginBottom: 5,
-                      }}>
-                      <HStack space={3}>
-                        <TouchableOpacity
-                          activeOpacity={0.8}
-                          onPress={() => {
-                            {
-                              navigation.push(`Disease`, {
-                                ids: `${i.article_id}`,
-                              });
-                            }
-                          }}>
-                          <Image
-                            source={{
-                              uri:
-                                imageLoc +
-                                imgLocation
-                                  .replace('json', 'png')
-                                  .split('/webapps/')[1],
-                            }}
-                            style={{
-                              overflow: 'hidden',
-                              width: wp('42%'),
-                              height: hp('10.5%'),
-                              marginTop: 0,
-                              borderTopLeftRadius: 15,
-                              borderBottomLeftRadius: 15,
-                            }}
-                          />
-                        </TouchableOpacity>
-                        <View>
-                          <View
-                            style={{
-                              width: wp('50%'),
-                              position: 'relative',
-                              right: 5,
-                            }}>
-                            <VStack py="2" space={10}>
-                              <AllStat
-                                id={i.article_id}
-                                title={i.title}
-                                f_title={i.friendly_name}
-                                w_title={i.window_title}
-                                allPostsContent={() => receivedData()}
-                              />
-                            </VStack>
-                          </View>
-
-                          <Text
-                            style={{
-                              color: '#00415e',
-
-                              fontFamily: 'Raleway-Medium',
-                              fontSize: wp('2.5%'),
-                              position: 'absolute',
-                              bottom: 0,
-                            }}>
-                            {i.authors_name}▪️{i.published_date}
-                          </Text>
-                        </View>
-                      </HStack>
-                    </Card>
-                  </View>
+                  <View style={{marginLeft: 6,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
+                              <Card
+  key={Math.random().toString(36)}
+                                style={{
+                                  width: scale(370),
+                                  height: '100%',
+                                  overflow:'hidden',
+                                  backgroundColor: '#f7f7f7',
+                                  borderWidth:1,
+                                  elevation:2,
+                                  borderColor:'#e0e0e0',
+                                 marginBottom:5,
+                                  borderRadius:15,
+                             
+                                }}>
+                                  
+                                <HStack space={1}  key={Math.random().toString(36)}>
+                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                  <Image
+                                key={Math.random().toString(36)}
+                                    source={{
+                                      uri:
+                                        imageLoc +
+                                        imgLocation
+                                          .replace('json', 'png')
+                                          .split('/webapps/')[1],
+                                    }}
+                                    style={{
+                                      position:'relative',
+                                      right:3,
+                                      width: scale(160),
+                                      height: '100%',
+                                      marginTop: 0,
+                                      borderBottomLeftRadius:15,
+                                      borderTopLeftRadius:15
+                                    }}
+                                  />
+                                  </TouchableOpacity>
+                                  <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                                 <View style={{width:'90%'}}>
+                                 <AllPost
+                                        id={i.article_id}
+                                        title={i.title}
+                                        f_title={i.friendly_name}
+                                        w_title={i.window_title}
+                                        allPostsContent={() => receivedData()}
+                                      />
+                                 </View>
+                                 <Text>
+                                          {content
+                                            ? content.map(
+                                                (j, idx) =>
+                                                  idx < 1 && (
+                                                    <CenterWell
+                                                      content={j.data.content}
+                                                      type={j.type}
+                                                      text={
+                                                        j.data.text.substr(
+                                                          0,
+                                                          150,
+                                                        ) + '....'
+                                                      }
+                                                      title={j.data.title}
+                                                      message={j.data.message}
+                                                      source={j.data.source}
+                                                      embed={j.data.embed}
+                                                      caption={j.data.caption}
+                                                      alignment={j.data.alignment}
+                                                      imageUrl={
+                                                        j.data.file
+                                                          ? j.data.file.url
+                                                          : null
+                                                      }
+                                                      url={j.data.url}
+                                                    />
+                                                  ),
+                                              )
+                                            : null}
+                                            </Text>
+                                 <Text
+                                    key={Math.random().toString(36)}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                        style={{
+                                          color: '#00415e',
+                                  
+                                          fontFamily: 'Raleway-Medium',
+                                          fontSize: scale(9),
+                                        }}>
+                                      {i.authors_name}▪️{i.published_date}
+                                      </Text>
+                                      </View>
+                                </HStack>
+                           
+                                
+                             
+                              </Card>
+                            </View>
+                         
                 </View>
               ) : (
                 null
@@ -234,8 +248,6 @@ export default Published;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#fff',
     marginTop: 1,
   },

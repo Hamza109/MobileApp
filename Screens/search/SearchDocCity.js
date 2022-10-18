@@ -5,14 +5,15 @@ import { View, Text, Image, ScrollView, TextInput ,StyleSheet} from 'react-nativ
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/core';
 import { useIsFocused } from "@react-navigation/native";
-import Autocomplete from "../MainTab/Autocomplete";
+
 import { Avatar } from "react-native-paper";
 import { Dimensions } from "react-native";
 import { Card } from "react-native-paper";
 import { HStack, Stack, Center, Heading, NativeBaseProvider, Container,Input } from "native-base"
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import SearchBar from "./SearchBar";
-import SearchBarCity from "./SearchBarCity";
+
+
 
 const SearchDocCity = ()=>{
    const navigation=useNavigation();
@@ -25,7 +26,7 @@ const SearchDocCity = ()=>{
      
 
 
-<SearchBarCity/>
+<SearchBar placeholder='Search by city' doc={0} city={1} />
 
 
 

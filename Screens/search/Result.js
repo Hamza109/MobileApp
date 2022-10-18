@@ -8,28 +8,22 @@ import {
   BackHandler,
   Alert,
   TouchableOpacity,
+  SafeAreaView,
   Image,
 } from 'react-native';
-import {useTheme, Link} from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import AllPost from './AllPost';
 import {Card} from 'react-native-paper';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
-import Autocomplete from '../MainTab/Autocomplete';
 import {backendHost} from '../../components/apiConfig';
 import {ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import SearchArt from './SearchArticle';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import ArticleHeader from './ArticleHeader';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import StarRating from 'react-native-star-rating';
 import {
   HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Box,
   Spinner,
   VStack,
 } from 'native-base';
@@ -42,15 +36,9 @@ import CenterWell from '../Disease/CenterWell';
 
 const Result = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
-  const {s, c} = bootstrapStyleSheet;
 
   const texts = route.params.texts;
   const types = route.params.types;
-  const {colors} = useTheme();
-
-  const theme = useTheme();
-
-  const [value, setValue] = useState();
   // const [params] = useState(props)
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -61,7 +49,7 @@ const Result = ({navigation, route}) => {
     try {
       JSON.parse(str);
     } catch (e) {
-      return [];
+      return e;
     }
     return JSON.parse(str).blocks;
   }
@@ -75,7 +63,7 @@ const Result = ({navigation, route}) => {
         setIsLoaded(true);
         setItems(json);
         
-      });
+      }).catch(err=>err);;
   };
 
   const isearch = () => {
@@ -89,7 +77,7 @@ const Result = ({navigation, route}) => {
         setIsLoaded(true);
         setItems(json);
         setLoading(false)
-      });
+      }).catch(err=>err);;
   };
   const itype = () => {
     setLoading(true)
@@ -100,7 +88,7 @@ const Result = ({navigation, route}) => {
         setIsLoaded(true);
         setItems(json);
         setLoading(false)
-      });
+      }).catch(err=>err);;
   };
 
   const [loading,setLoading]=useState(false)
@@ -113,7 +101,7 @@ const Result = ({navigation, route}) => {
         <TouchableOpacity onPress={()=>setLoading(true)&api()}>
           <HStack>
 
-          <Text style={{fontFamily:'Raleway-Medium',color:'#00415e'}}>Load More</Text>
+          <Text style={{fontFamily:'Raleway-Medium',color:'#00415e',display:loading?'none':'flex'}}>Load More</Text>
        
 
           {loading ? (
@@ -129,7 +117,7 @@ const Result = ({navigation, route}) => {
       </View>
           ) : null}
           </HStack>
-          <Icon name='caret-down'style={{color:'#00415e',position:'relative',left:25,bottom:5}} size={20} />
+          <Icon name='caret-down'style={{color:'#00415e',position:'relative',left:25,bottom:5,display:loading?'none':'flex'}} size={20} />
         </TouchableOpacity>:null
   }
       </View>
@@ -169,30 +157,33 @@ const load = () => {
 };
 
   useEffect(() => {
+    let isMounted=true;
+    if(isMounted)
+    {
    api();
+    }
+    return () => { isMounted = false };
   }, []);
 
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
-        </HStack>
-      </View>
+      <View style={styles.loading}>
+      <HStack space={2} justifyContent="center">
+        <LottieView
+          source={require('../../assets/animation/load.json')}
+          autoPlay
+          loop
+          style={{width: 50, height: 50, justifyContent: 'center'}}
+        />
+      </HStack>
+    </View>
     );
   } else {
     return (
       <>
-        <View style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
           <ArticleHeader />
-          <View style={{margin: 6, flex: 1}}>
+          <View style={{margin: 6 , flex: 1}}>
             <ScrollView style={{width: wp('100%'), height: hp('100%')}}>
               {items.length !== 0 ? (
                 items
@@ -221,73 +212,62 @@ const load = () => {
                       //replace via regex
                       title = title.replace(regex, '-');
                       return (
-                        <View>
-                          <View
-                            style={{
-                              marginRight: 10,
-                              height: 170,
-                              width: wp('100%'),
-                            }}>
+                        <View     key={Math.random().toString(36)}>
+                          <View style={{marginRight: 0,height:scale(170),width:wp('100%'),padding:2}} key={Math.random().toString(36)} >
                             <Card
+key={Math.random().toString(36)}
                               style={{
-                                width: wp('97%'),
-                                height: 168,
-                                backgroundColor: '#fff',
-                                borderWidth: 2,
-                                borderColor: 'aliceblue',
-                                justifyContent: 'center',
-                                paddingHorizontal: 5,
-                                borderRadius: 15,
-                                alignItems: 'center',
+                                width: scale(370),
+                                height: '100%',
+                                overflow:'hidden',
+                                backgroundColor: '#f7f7f7',
+                                borderWidth:1,
+                                elevation:2,
+                                borderColor:'#e0e0e0',
+                               marginBottom:5,
+                                borderRadius:15,
+                           
                               }}>
-                              <HStack space={1}>
-                                <TouchableOpacity
-                                  activeOpacity={0.8}
-                                  onPress={() => {
-                                    {
-                                      navigation.push(`Disease`, {
-                                        ids: `${i.article_id}`,
-                                      });
-                                    }
-                                  }}>
-                                  <Image
-                                    source={{
-                                      uri:
-                                        imageLoc +
-                                        imgLocation
-                                          .replace('json', 'png')
-                                          .split('/webapps/')[1],
-                                    }}
-                                    style={{
-                                      position: 'relative',
-                                      right: 3,
-                                      width: wp('44%'),
-                                      height: 166,
-                                      marginTop: 0,
-                                      borderBottomLeftRadius: 15,
-                                      borderTopLeftRadius: 15,
-                                    }}
-                                  />
+                                
+                              <HStack space={1}  key={Math.random().toString(36)}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
+                                <Image
+                                resizeMode='cover'
+                              key={Math.random().toString(36)}
+                                  source={{
+                                    uri:
+                                      imageLoc +
+                                      imgLocation
+                                        .replace('json', 'png')
+                                        .split('/webapps/')[1],
+                                  }}
+                                  style={{
+                                    position:'relative',
+                                    right:3,
+                                    width: scale(160),
+                                    height: '100%',
+                                    marginTop: 0,
+                                    borderBottomLeftRadius:15,
+                                    borderTopLeftRadius:15
+                                  }}
+                                />
                                 </TouchableOpacity>
-                                <View style={{width: wp('50%')}}>
-                                  <VStack py="2" space={10}>
-                                    <AllPost
-                                      key={key}
+                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View style={{width:'90%'}}>
+                               <AllPost
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
                                       w_title={i.window_title}
                                       allPostsContent={() => receivedData()}
                                     />
-                                    <View style={{width: wp('50%')}}>
-                                      <Text
-                                        style={{position: 'absolute', top: 0}}>
+                               </View>
+                               <Text>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
-                                                    key={j}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={
@@ -312,23 +292,24 @@ const load = () => {
                                                 ),
                                             )
                                           : null}
-                                      </Text>
-                                    </View>
-                                  </VStack>
-                                  <Text
-                                    adjustsFontSizeToFit
-                                    numberOfLines={1}
-                                    style={{
-                                      color: '#00415e',
-                                      position: 'absolute',
-                                      bottom: 7,
-                                      fontFamily: 'Raleway-Medium',
-                                      fontSize: wp('2.5%'),
-                                    }}>
+                                          </Text>
+                               <Text
+                                  key={Math.random().toString(36)}
+                                  adjustsFontSizeToFit
+                                  numberOfLines={1}
+                                      style={{
+                                        color: '#00415e',
+                                
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: scale(9),
+                                      }}>
                                     {i.authors_name}▪️{i.published_date}
-                                  </Text>
-                                </View>
+                                    </Text>
+                                    </View>
                               </HStack>
+                         
+                              
+                           
                             </Card>
                           </View>
                         </View>
@@ -360,7 +341,7 @@ const load = () => {
               }
             </ScrollView>
           </View>
-        </View>
+        </SafeAreaView>
       </>
     );
   }
@@ -399,5 +380,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 0,
     margin: 0,
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

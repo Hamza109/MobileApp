@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useRef} from 'react';
 import {
   View,
   Text,
@@ -24,19 +24,23 @@ import {backendHost} from '../../components/apiConfig';
 import Comment from './comment';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {ScrollView, ImageBackground} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Rating from '../../components/StarRating';
+import { useStore,useDispatch } from 'react-redux';
+import { fav } from '../Redux/Action';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {
   Modal,
   VStack,
   FormControl,
+  Divider,
   Center,
   Stack,
   HStack,
@@ -56,30 +60,79 @@ const Disease = ({navigation, route}) => {
   const [commentItems, setCommentItems] = useState([]);
   const [selected, setSelected] = useState(1);
   const ids = route.params.ids;
+  const flow =route.params.flow
+  const user =useStore();
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
   const [id, setId] = useState(ids);
-  const [regId, setRegId] = useState([]);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
   const [formattedValue, setFormattedValue] = useState('');
   const [disease, setDisease] = useState([]);
   const [condition, setCondition] = useState();
+  const refRBSheet = useRef();
+  const dispatch=useDispatch();
   const check = () => {
-    if (regId.length == 0) {
+    if (user.getState().userId.regId == 0) {
       navigation.navigate('SignIn');
     } else {
-      setModalVisible(!modalVisible);
+      refRBSheet.current.open()
     }
   };
 
-  useEffect(() => {
-    getId();
-  });
+
+ useEffect(()=>{
+  const backAction =()=>{
+    flow!=0?
+    navigation.setOptions({
+      gestureEnabled:false
+    }):null
+  if (flow!=0){
+
+    navigation.push('Main')
+    return true;
+  }
+
+  }
+  const backHandler = BackHandler.addEventListener(
+    "hardwareBackPress",
+    backAction
+  );
+
+  return () => backHandler.remove();
+ },[])
 
   useEffect(() => {
     getRating();
   }, [id]);
+  
+  const comment=()=>{  fetch(`${backendHost}/rating/target/${id}/targettype/2`)
+    .then(res => res.json())
+    .then(json => {
+    var temp=[];
+    json.forEach(i => {
+      if(i.reviewed === 1){
+        temp.push(i)
+      }
+     
+    })
+    console.log(temp)
+    setCommentItems(temp)
+    })
+
+    .catch(err => {
+      err;
+      throw err;
+    });
+  }
+  useEffect(()=>{
+    
+  comment()
+  return ()=>{
+    comment()
+  }
+  },[])
+
   const onShare = () => {
     try {
       const result = Share.share({
@@ -99,19 +152,7 @@ const Disease = ({navigation, route}) => {
     }
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      navigation.push('MainTab');
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
+ 
 
   const fetchTables = () => {
     Promise.all([
@@ -122,25 +163,13 @@ const Disease = ({navigation, route}) => {
       .then(([diseaseData]) => {
         setDisease(diseaseData);
       })
-      .catch(err => {
-        return;
-      });
+      .catch(err => err);
   };
 
   useEffect(() => {
     fetchTables();
   }, []);
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      });
-    } catch (error) {
-      error;
-    }
-  };
+  
   function User() {
     return (
       <Svg
@@ -209,6 +238,7 @@ const Disease = ({navigation, route}) => {
           setIsLoaded(true);
           setData(json);
           setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
+         
           var articleTitle = json.title;
           var regex = new RegExp(' ', 'g');
           title = articleTitle.replace(regex, '-');
@@ -219,13 +249,15 @@ const Disease = ({navigation, route}) => {
         });
     };
     get();
+
     return () => {
       get();
+    
     };
   }, [id]);
 
   useEffect(() => {
-    comments();
+ 
 
     if (data.reg_doc_pat_id !== null) {
       checkIfImageExits(
@@ -248,18 +280,7 @@ const Disease = ({navigation, route}) => {
     return JSON.parse(str).blocks;
   }
 
-  function comments() {
-    // For all available blogs "/blogs"
-    fetch(`${backendHost}/rating/target/${id}/targettype/2`)
-      .then(res => res.json())
-      .then(json => {
-        setCommentItems(json);
-      })
-      .catch(err => {
-        err;
-        throw err;
-      });
-  }
+ 
   const [sItems, setSItems] = useState([]);
   const [result, setResult] = useState();
   const getResult = () => {
@@ -273,8 +294,7 @@ const Disease = ({navigation, route}) => {
         err;
         throw err;
       });
-  };
-  const [like, setLike] = useState(like);
+  }
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [imageExists, setImageExists] = useState(false);
@@ -283,14 +303,16 @@ const Disease = ({navigation, route}) => {
   const [response, setResponse] = useState([]);
   const [stats, setStats] = useState();
   const [cure, setCure] = useState();
+  const like=useStore()
   const stat = async () => {
     await axios
-      .get(`${backendHost}/favourite/userid/${regId}/articleid/${id}/favourite`)
+      .get(`${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/favourite`)
       .then(res => {
         setResponse(res.data);
 
         if (res.data.length != 0) {
-          setStats(res.data[0].status);
+          dispatch(fav(res.data[0].status))
+      
         } else {
           return;
         }
@@ -312,28 +334,15 @@ const Disease = ({navigation, route}) => {
       });
   };
   const [rate, setRate] = useState([]);
-  const getRate = () => {
-    axios
-      .get(
-        `${backendHost}/rating/target/${id}/targettype/2?userid=${
-          regId ? regId : 0
-        }`,
-      )
-      .then(res => {
-        setRate(res.data[0].ratingVal);
-      })
-      .catch(err => {
-        err;
-        throw err;
-      });
-  };
+
   const handlePress = () => {
-    if (stats == 1) {
-      setStats(0);
-      favorite(0);
+    if (like.getState().favourite.stat == 1) {
+     dispatch(fav(0))
+      favorite(like.getState().favourite.stat)
     } else {
-      setStats(1);
-      favorite(1);
+      dispatch(fav(1))
+      favorite(like.getState().favourite.stat)
+      
     }
   };
 
@@ -352,11 +361,11 @@ const Disease = ({navigation, route}) => {
 
   const favorite = async status => {
     if (status != 0) {
-      setStats(1);
+      dispatch(fav(1))
 
       await axios
         .post(
-          `${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${status}/create`,
+          `${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/status/${status}/create`,
         )
         .then(res => {
           if (res.data > 0) {
@@ -368,10 +377,10 @@ const Disease = ({navigation, route}) => {
           throw err;
         });
     } else {
-      setStats(0);
+      dispatch(fav(0));
       axios
         .post(
-          `${backendHost}/favourite/userid/${regId}/articleid/${id}/status/${status}/create`,
+          `${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/status/${status}/create`,
         )
         .then(res => {
           if (res.data > 0) {
@@ -395,7 +404,7 @@ const Disease = ({navigation, route}) => {
     if (isFocus) {
       stat();
     }
-  }, [regId, id]);
+  }, [user.getState().userId.regId,id]);
 
   if (!isLoaded) {
     return (
@@ -417,15 +426,15 @@ const Disease = ({navigation, route}) => {
           <View style={{flex: 1}}>
             <View style={styles.HeadCard}>
               <HStack
-                ml="2"
+                ml={Platform.OS === 'android' ? '3' : '3'}
                 mt={Platform.OS === 'android' ? '2' : '9'}
-                space={2}>
+                space={1}>
                 <Icon
                   name="close-circle-outline"
-                  size={30}
+                  size={Platform.OS==='ios'?35:35}
                   color={'#00415e'}
                   onPress={() => {
-                    navigation.push('MainTab', {Screen: 'Home'});
+                    navigation.push('Main');
                   }}
                 />
                 <View style={{width: wp('75%'), height: 50}}>
@@ -442,9 +451,9 @@ const Disease = ({navigation, route}) => {
                     {data.title}
                   </Text>
                 </View>
-                {regId.length != 0 ? (
+                {user.getState().userId.regId != 0 ? (
                   response.length != 0 ? (
-                    stats == 0 ? (
+                    like.getState().favourite.stat == 0 ? (
                       <Icon
                         name={'heart-outline'}
                         size={30}
@@ -479,7 +488,7 @@ const Disease = ({navigation, route}) => {
                 style={{
                   width: wp('25%'),
                   position: 'relative',
-                  left: 48,
+                  left: 64,
                   marginTop: 5,
                 }}>
                 <StarRating
@@ -666,7 +675,7 @@ const Disease = ({navigation, route}) => {
                     sItems
                       .filter((i, idx) => idx < 9)
                       .map(
-                        i => {
+                        (i,j) => {
                           var content = [];
                           var imgLocation = i.content_location;
                           var imageLoc = '';
@@ -690,113 +699,106 @@ const Disease = ({navigation, route}) => {
 
                           title = title.replace(regex, '-');
                           return (
-                            <View>
-                              <View style={{height: 170, width: wp('100%')}}>
-                                <Card
-                                  style={{
-                                    width: wp('97%'),
-                                    height: 168,
-                                    backgroundColor: '#fff',
-                                    borderWidth: 2,
-                                    borderColor: 'aliceblue',
-                                    justifyContent: 'center',
-                                    paddingHorizontal: 5,
-                                    borderRadius: 15,
-                                    alignItems: 'center',
-                                  }}>
-                                  <HStack space={1}>
-                                    <TouchableOpacity
-                                      activeOpacity={0.8}
-                                      onPress={() => {
-                                        {
-                                          navigation.push(`Disease`, {
-                                            ids: `${i.article_id}`,
-                                          });
-                                        }
-                                      }}>
-                                      <Image
-                                        source={{
-                                          uri:
-                                            imageLoc +
-                                            imgLocation
-                                              .replace('json', 'png')
-                                              .split('/webapps/')[1],
-                                        }}
-                                        style={{
-                                          position: 'relative',
-                                          right: 3,
-                                          width: wp('44%'),
-                                          height: 166,
-                                          marginTop: 0,
-                                          borderBottomLeftRadius: 15,
-                                          borderTopLeftRadius: 15,
-                                        }}
+                            <View     key={Math.random().toString(36)}>
+                            <View style={{marginRight: 0,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
+                              <Card
+  key={Math.random().toString(36)}
+                                style={{
+                                  width: scale(370),
+                                  height: '100%',
+                                  overflow:'hidden',
+                                  backgroundColor: '#f7f7f7',
+                                  borderWidth:1,
+                                  elevation:2,
+                                  borderColor:'#e0e0e0',
+                                 marginBottom:5,
+                                  borderRadius:15,
+                             
+                                }}>
+                                  
+                                <HStack space={1}  key={Math.random().toString(36)}>
+                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                  <Image
+                                key={Math.random().toString(36)}
+                                    source={{
+                                      uri:
+                                        imageLoc +
+                                        imgLocation
+                                          .replace('json', 'png')
+                                          .split('/webapps/')[1],
+                                    }}
+                                    style={{
+                                      position:'relative',
+                                      right:3,
+                                      width: scale(160),
+                                      height: '100%',
+                                      marginTop: 0,
+                                      borderBottomLeftRadius:15,
+                                      borderTopLeftRadius:15
+                                    }}
+                                  />
+                                  </TouchableOpacity>
+                                  <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                                 <View style={{width:'90%'}}>
+                                 <AllPost
+                                        id={i.article_id}
+                                        title={i.title}
+                                        f_title={i.friendly_name}
+                                        w_title={i.window_title}
+                                        allPostsContent={() => receivedData()}
                                       />
-                                    </TouchableOpacity>
-                                    <View style={{width: wp('50%')}}>
-                                      <VStack py="2" space={10}>
-                                        <AllPost
-                                          id={i.article_id}
-                                          title={i.title}
-                                          f_title={i.friendly_name}
-                                          w_title={i.window_title}
-                                          allPostsContent={() => receivedData()}
-                                        />
-                                        <View style={{width: wp('50%')}}>
-                                          <Text
-                                            style={{
-                                              position: 'absolute',
-                                              top: 0,
-                                            }}>
-                                            {content
-                                              ? content.map(
-                                                  (j, idx) =>
-                                                    idx < 1 && (
-                                                      <CenterWell
-                                                        content={j.data.content}
-                                                        type={j.type}
-                                                        text={
-                                                          j.data.text.substr(
-                                                            0,
-                                                            150,
-                                                          ) + '....'
-                                                        }
-                                                        title={j.data.title}
-                                                        message={j.data.message}
-                                                        source={j.data.source}
-                                                        embed={j.data.embed}
-                                                        caption={j.data.caption}
-                                                        alignment={
-                                                          j.data.alignment
-                                                        }
-                                                        imageUrl={
-                                                          j.data.file
-                                                            ? j.data.file.url
-                                                            : null
-                                                        }
-                                                        url={j.data.url}
-                                                      />
-                                                    ),
-                                                )
-                                              : null}
-                                          </Text>
-                                        </View>
-                                      </VStack>
-                                      <Text
+                                 </View>
+                                 <Text>
+                                          {content
+                                            ? content.map(
+                                                (j, idx) =>
+                                                  idx < 1 && (
+                                                    <CenterWell
+                                                      content={j.data.content}
+                                                      type={j.type}
+                                                      text={
+                                                        j.data.text.substr(
+                                                          0,
+                                                          150,
+                                                        ) + '....'
+                                                      }
+                                                      title={j.data.title}
+                                                      message={j.data.message}
+                                                      source={j.data.source}
+                                                      embed={j.data.embed}
+                                                      caption={j.data.caption}
+                                                      alignment={j.data.alignment}
+                                                      imageUrl={
+                                                        j.data.file
+                                                          ? j.data.file.url
+                                                          : null
+                                                      }
+                                                      url={j.data.url}
+                                                    />
+                                                  ),
+                                              )
+                                            : null}
+                                            </Text>
+                                 <Text
+                                    key={Math.random().toString(36)}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
                                         style={{
                                           color: '#00415e',
-                                          position: 'absolute',
-                                          bottom: 0,
+                                  
                                           fontFamily: 'Raleway-Medium',
-                                          fontSize: wp('2.5%'),
+                                          fontSize: scale(9),
                                         }}>
-                                        {i.authors_name}▪️{i.published_date}
+                                      {i.authors_name}▪️{i.published_date}
                                       </Text>
-                                    </View>
-                                  </HStack>
-                                </Card>
-                              </View>
+                                      </View>
+                                </HStack>
+                           
+                                
+                             
+                              </Card>
                             </View>
+                          </View>
                           );
                         },
 
@@ -804,6 +806,7 @@ const Disease = ({navigation, route}) => {
                       )
                   ) : (
                     <Image
+                    key={Math.random().toString(36)}
                       Source={require('../../assets/img/heart.png')}
                       style={{width: wp('10%'), height: hp('10%')}}
                     />
@@ -813,7 +816,7 @@ const Disease = ({navigation, route}) => {
             </ScrollView>
           </View>
 
-          <Box width={wp('100%')} alignSelf="center">
+          <Box width={wp('100%')}  alignSelf="center">
             <Center flex={1}></Center>
             <HStack
               bg="#fff"
@@ -822,7 +825,7 @@ const Disease = ({navigation, route}) => {
               height={hp('8.9%')}
               shadow={6}>
               <Center flex={2}>
-                <Rating article_id={id} />
+                <Rating article_id={id} rowno={null} />
                 <Text
                   style={{
                     fontFamily: 'Raleway',
@@ -908,32 +911,40 @@ const Disease = ({navigation, route}) => {
             </HStack>
           </Box>
         </View>
+        <RBSheet
+        ref={refRBSheet}
 
-        <Modal
-          isOpen={modalVisible}
-          onClose={() => setModalVisible(false)}
-          avoidKeyboard
-          justifyContent="flex-end"
-          bottom="0"
-          size="full">
-          <Modal.Content>
-            <Modal.CloseButton />
-            <Modal.Header>comments</Modal.Header>
-            <Modal.Body>
-              <ScrollView>
-                {commentItems.reviewd == 1 ? (
+        closeOnPressMask={true}
+        
+        height={522}
+        customStyles={{
+        
+          wrapper: {
+            backgroundColor: "transparent",
+         
+  
+          },
+      
+        }}
+      >
+    <Stack space={3}>
+<View style={styles.cheader}>
+  <Text style={styles.ctext}>
+    Comments
+  </Text>
+</View>
+
+
+<ScrollView style={{height:350}}>
+                {commentItems.length !== 0 ? (
                   commentItems.map(i => (
                     <View style={{marginBottom: 10}}>
                       <View
-                        style={{
-                          padding: 10,
-                          marginVertical: 0,
-                          marginBottom: 0,
-                          Width: wp('80%'),
-                          height: hp('10%'),
-                          borderBottomWidth: 0.2,
-                        }}>
-                        <Text>{i.comments}</Text>
+                        style={styles.cbody}>
+                          <Box bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
+                          <Text style={styles.cbodyHead}>{i.first_name} {i.last_name}</Text>
+                        <Text style={styles.cbodyText}>{i.comments}</Text>
+                        </Box>
                       </View>
                     </View>
                   ))
@@ -946,7 +957,7 @@ const Disease = ({navigation, route}) => {
                     }}>
                     <Icon
                       name="chatbubbles"
-                      style={{opacity: 0.3, color: 'grey'}}
+                      style={{opacity: 0.3,color:'grey'}}
                       size={150}
                     />
                     <Text style={{color: 'grey'}}>No comments yet</Text>
@@ -956,13 +967,14 @@ const Disease = ({navigation, route}) => {
                   </View>
                 )}
               </ScrollView>
-            </Modal.Body>
-            <Modal.Footer>
-              <Comment article_id={id} />
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
+<Divider  bg={'Darkgray'} />
+<View style={styles.cComment}>
+<Comment  article_id={id}  doc_id={null}/>
+</View>
 
+    </Stack>
+      </RBSheet>
+       
         <Modal
           isOpen={subModalVisible}
           onClose={() => setSubModalVisible(false)}
@@ -1075,7 +1087,7 @@ const Disease = ({navigation, route}) => {
                   }}
                   withDarkTheme
                   withShadow
-                  autoFocus
+                
                 />
                 <TouchableOpacity
                   style={styles.btn}
@@ -1205,4 +1217,27 @@ const styles = StyleSheet.create({
     zIndex: 999,
     alignItems: 'center',
   },
+  cheader:{
+    padding:15,
+    borderBottomWidth:.3,
+    borderColor:'gray'
+      }
+      ,
+      ctext:{
+        color:'#000',
+        fontSize:18,
+      
+
+      },
+      cComment:{
+        padding:6
+      },
+      cbody:{
+      paddingLeft:25,
+      marginTop:8
+      },
+      cbodyHead:{
+        fontWeight:'bold',
+        color:'black'
+      }
 });

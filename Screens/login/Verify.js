@@ -95,6 +95,23 @@ description:'Check MyCures Tab.',
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
+           <TouchableOpacity
+          style={{  zIndex: 999,color: '#fff'}}
+          backgroundColor="#fff"
+          onPress={() => navigation.goBack()}>
+          <Text
+            style={{
+              color: '#fff',
+              position: 'relative',
+              top: -180,
+              left: Platform.OS === 'android' ? 265 : 285,
+              fontSize: 18,
+              zIndex: 999,
+              fontFamily: 'Raleway-Medium',
+            }}>
+            back
+          </Text>
+        </TouchableOpacity>
         <View style={styles.header}>
           <Text style={styles.text_header}>Verify your email</Text>
         </View>

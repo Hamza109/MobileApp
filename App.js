@@ -11,11 +11,12 @@ import analytics from '@react-native-firebase/analytics';
 import {NativeBaseProvider, Box} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
-import {getUniqueId, getManufacturer} from 'react-native-device-info';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+;
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,                                                  
+  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
@@ -33,17 +34,14 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SSRProvider} from '@react-aria/ssr';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
-const theme = {
-  ...DefaultTheme,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#3498db',
-    accent: '#f1c40f',
-  },
-};
-
+import DrawerMenu from './Screens/MainTab/DrawerMenu';
+import { SplashStack } from './Screens/RootStackScreen';
+import { Provider } from 'react-redux';
+import reduxStore  from './Screens/Redux/Store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { useStore } from 'react-redux';
 const App = () => {
   // const linking = {
   //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
@@ -66,6 +64,7 @@ const App = () => {
     }
   };
   useEffect(() => {
+    
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
 
@@ -86,7 +85,7 @@ const App = () => {
 
         setTimeout(() => {
           navigationRef.current?.navigate('Disease', {ids: `${id}`});
-        }, 4000);
+        }, 3000);
       }
       if (initialUrl.includes('/ResetPass')) {
         const url = initialUrl.split('em=')[1];
@@ -104,14 +103,18 @@ const App = () => {
       getUrl();
     };
   });
-  const isDarkMode = useColorScheme() === 'dark';
+
   const routeNameRef = React.useRef();
   const navigationRef = React.useRef();
-
+  const {Store,persistor}=reduxStore();
   return (
+    <Provider store={Store}>
+<PersistGate loading={null} persistor={persistor}>
+<SSRProvider>
 
     <NativeBaseProvider>
       <PaperProvider>
+        <SafeAreaProvider>
         <NavigationContainer
           // linking={linking}
           ref={navigationRef}
@@ -132,31 +135,18 @@ const App = () => {
             routeNameRef.current = currentRouteName;
           }}>
       
-          <RootStack />
+          <SplashStack />
         </NavigationContainer>
+        </SafeAreaProvider>
       </PaperProvider>
     </NativeBaseProvider>
 
+    </SSRProvider>
+    </PersistGate>
+    </Provider>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+
 
 export default App;

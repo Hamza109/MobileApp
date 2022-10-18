@@ -28,9 +28,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { useStore } from 'react-redux';
 
 const CreateScreenHome = () => {
-  const toast = useToast();
+  const user = useStore();
+  const toast=useToast();
   const navigation = useNavigation();
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
@@ -46,28 +48,15 @@ const CreateScreenHome = () => {
   const [type, setType] = useState([]);
   const [disclaimer, setDisclaimer] = useState(1);
   const [copyright, setCopyright] = useState(11);
-  const [regId, setRegId] = useState([]);
   const [regType, setRegType] = useState();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        } else {
-          navigation.navigate('SignIn');
-        }
-      });
-    } catch (error) {
-      error;
-    }
-  };
+
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
       error;
     }
@@ -79,12 +68,12 @@ const CreateScreenHome = () => {
       getType();
     }
 
-    getId();
-  }, [regId]);
+  
+  }, []);
 
   //   useEffect(()=> {
   //     check()
-  //   }, [regId])
+  //   }, [userId])
   const submitArticleForm = async e => {
     e.preventDefault();
     setLoading(true);
@@ -98,7 +87,7 @@ const CreateScreenHome = () => {
           },
           title: title,
           comments: comment,
-          authById: [regId],
+          authById: [user.getState().userId.regId],
           copyId: copyright,
           disclaimerId: 1,
           articleStatus: 2,
@@ -223,7 +212,7 @@ const CreateScreenHome = () => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff', padding: 10}}>
+    <View style={{flex: 1, backgroundColor: '#fff', padding: 8}}>
       <ScrollView>
         {loading ? (
           <View style={styles.loading}>
@@ -281,8 +270,11 @@ const CreateScreenHome = () => {
               value="test"
               isDisabled
               accessibilityLabel="This is a dummy checkbox"
-              defaultIsChecked>
+              defaultIsChecked
+     >
+                <Text style={{marginLeft:2,fontSize:12}}>
               I certify that i am at least 13years old and I have read and
+              </Text>
             </Checkbox>
             <Checkbox
               shadow={2}
@@ -290,7 +282,9 @@ const CreateScreenHome = () => {
               isDisabled
               accessibilityLabel="This is a dummy checkbox"
               defaultIsChecked>
+             <Text style={{marginLeft:2,fontSize:12}}>
               Accept Terms & Conditions
+              </Text>
             </Checkbox>
             <Checkbox
               shadow={2}
@@ -299,7 +293,9 @@ const CreateScreenHome = () => {
               accessibilityLabel="This is a dummy checkbox"
               defaultIsChecked
               isReadOnly>
+                     <Text style={{marginLeft:2,fontSize:12}}>
               Privacy Policy
+              </Text>
             </Checkbox>
           </VStack>
           <View style={{alignItems: 'center'}}>

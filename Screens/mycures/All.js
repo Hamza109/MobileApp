@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {Card} from 'react-native-paper';
 import {ScrollView} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -28,31 +29,22 @@ import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import AllStat from '../search/AllStat';
-
-const bootstrapStyleSheet = new BootstrapStyleSheet();
-const {s, c} = bootstrapStyleSheet;
-
+import { useStore,useDispatch } from 'react-redux';
+import { screenName } from '../Redux/Action';
 const All = () => {
   const navigation = useNavigation();
-
+  const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
+const dispatch=useDispatch()
   const [regType, setRegType] = useState();
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
-    try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setRegId(value1);
-          } else {
-            navigation.navigate('SignIn');
-          }
-        }),
-      );
-    } catch (error) {}
-  };
+    if(user.getState().userId.regId===0)
+      {
+            navigation.replace('SignIn');
+      }
+    }
 
   const getType = () => {
     try {
@@ -60,8 +52,8 @@ const All = () => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);
+    } catch (error) {error}
   };
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
@@ -70,7 +62,7 @@ const All = () => {
         setPubStatus(json.pubstatus_id);
         setIsLoaded(true);
         setItems(json);
-      });
+      }).catch(err=>err);;
   };
   const isFocus = useIsFocused();
 
@@ -78,7 +70,7 @@ const All = () => {
     if (isFocus) {
       getId();
     }
-  }, [regId]);
+  }, []);
   useEffect(() => {
     if (navigation.isFocused()) {
       getType();
@@ -112,7 +104,10 @@ const All = () => {
     return (
       <View style={styles.container}>
         <ScrollView style={{flex: 1, marginTop: 5}}>
-          {items.map(i => {
+
+          {
+            items.length!==0?
+          items.map(i => {
             var content = [];
             var imgLocation = i.content_location;
             var imageLoc = '';
@@ -131,7 +126,7 @@ const All = () => {
 
             title = title.replace(regex, '-');
 
-            return i.pubstatus_id === 3 && i.edited_by == regId ? (
+            return i.pubstatus_id === 3 && i.edited_by == user.getState().userId.regId ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -207,7 +202,7 @@ const All = () => {
                   </Card>
                 </View>
               </View>
-            ) : i.pubstatus_id === 2 && i.edited_by == regId ? (
+            ) : i.pubstatus_id === 2 && i.edited_by == user.getState().userId ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -283,7 +278,7 @@ const All = () => {
                   </Card>
                 </View>
               </View>
-            ) : i.pubstatus_id === 1 && i.edited_by == regId ? (
+            ) : i.pubstatus_id === 1 && i.edited_by == user.getState().userId ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -360,8 +355,8 @@ const All = () => {
                   </Card>
                 </View>
               </View>
-            ) : null;
-          })}
+            ) :   null;
+          }):  null}
         </ScrollView>
       </View>
     );

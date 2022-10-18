@@ -105,12 +105,12 @@ getMail()
             })
             .then(res => {
                setEmails(res.data)
-            })
+            }).catch(err=>err);
             // eslint-disable-next-line
            
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error;}
   };
   const SignUpForm = () => {
     setClicked(1);
@@ -129,7 +129,7 @@ getMail()
           if (Number(response.data) === 1) {
             Alert.alert('Password Reset Successfully')
             setTimeout(()=>{
-                navigation.navigate('MainTab')
+                navigation.navigate('Main')
             },2000);
           }else if(res.data === "Sorry, the email address you entered does not exist in our database."){
            
@@ -173,7 +173,7 @@ getMail()
         <TouchableOpacity
           style={{marginLeft: 20, color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.navigate('MainTab')}>
+          onPress={() => navigation.navigate('Main')}>
           <Text
             style={{
               color: '#fff',

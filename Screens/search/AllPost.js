@@ -7,32 +7,16 @@ import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import axios from 'axios';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { useIsFocused } from '@react-navigation/native';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const { s, c } = bootstrapStyleSheet;
 
 
 const AllPost = ({ id, title, f_title, w_title}) => {
-  const[showValue,setShowValue]=useState([])
-
-  const getRating = () => {
-
-    axios.get(`${backendHost}/rating/target/${id}/targettype/2/avg`)
-  
-    .then(res => {
-     
-
-      setShowValue(res.data.toFixed(1))
-    })
-    .catch(err => err)
-  }
-
-useEffect(()=>{
 
 
 
-  getRating()
 
-},[])  
 const isFocus=useIsFocused()
  const navigation=useNavigation()
         return (
@@ -71,10 +55,9 @@ const isFocus=useIsFocused()
     title: {
      
         color: '#00415e',
-        position:'absolute',
-        top:0,
         fontFamily:'Raleway-Bold',
-        fontSize: widthPercentageToDP('4%'),
+        fontSize: scale(15),
+        
      
       
         
@@ -87,7 +70,9 @@ const isFocus=useIsFocused()
         right:5,
         padding : 10,
         margin: 0,
-        zIndex:999
+        zIndex:999,
+
+         
       
     
     },

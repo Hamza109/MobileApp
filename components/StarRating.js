@@ -8,26 +8,16 @@ import { ToastAndroid } from 'react-native';
 import { useToast } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
-
-export default function Ratings(props) {
+import { useStore } from 'react-redux';
+export default function Ratings({article_id,rowno}) {
   const [ratingValue, setRatingValue] = useState([]);
-  const [showValue, setShowValue] = useState([]);
-  const [regId, setRegId] = useState([]);
+  const [showValue, setShowValue] = useState();
+
   const [copyId, setCopyId] = useState([]);
   const [disId, setDisId] = useState([]);
   const [regType, setRegType] = useState();
   const toast=useToast();
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-        }
-      });
-    } catch (error) {
- error
-    }
-  };
+  const user=useStore();
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType')
@@ -35,19 +25,21 @@ export default function Ratings(props) {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
   error
     }
   };
-  const rateId=regId.length!=0?(regId):(0)
+  const rateId=user.getState().userId.regId
   const postRating = rating => {
 
     axios
       .post(
-        `${backendHost}/DoctorRatingActionController?ratingVal=${rating}&ratedbyid=${rateId}&ratedbytype=0&targetid=${props.article_id}&targetTypeid=2&cmd=rateAsset`,
+        `${backendHost}/DoctorRatingActionController?ratingVal=${rating}&ratedbyid=${rateId}&ratedbytype=0&targetid=${article_id!==null?article_id:rowno}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
       )
-      .then(res => 
+      .then(res => {
+        if(article_id!==null)
+        {
         setTimeout(()=>{
           toast.show({
             title: "Article Rated Successfully",
@@ -57,12 +49,24 @@ export default function Ratings(props) {
             style:{borderRadius:20,width:widthPercentageToDP('70%'),marginBottom:20}
           })
         },1000)
+      }else{
+        setTimeout(()=>{
+          toast.show({
+            title: "Doctor Rated Successfully",
+            status: "success",
+            placement:"bottom",
+            duration:2000,
+            style:{borderRadius:20,width:widthPercentageToDP('70%'),marginBottom:20}
+          })
+        },1000)
+      }
+    }
         )
+        
       .catch(err => err);
   };
 
   useEffect(() => {
-    getId();
     getType();
   }, []);
 

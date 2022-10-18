@@ -17,12 +17,11 @@ import {
 import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
-import axios from 'axios';
-import Autocomplete from '../MainTab/Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, {Path, Circle} from 'react-native-svg';
 import {Card, Paragraph} from 'react-native-paper';
-
+import axios from 'axios';
 import {HStack} from 'native-base';
 import {backendHost} from '../../components/apiConfig';
 import LottieView from 'lottie-react-native';
@@ -35,12 +34,15 @@ import {useNavigation} from '@react-navigation/native';
 
 import LockedPreview from './LockedArticle';
 import UnlockedPreview from './UnlockedArticle';
-const ProtectedPreview = ({reg_Id}) => {
+import { sub } from '../Redux/Action';
+import { useDispatch,useStore } from 'react-redux';
+const ProtectedPreview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
   const [regId, setRegId] = useState([]);
-
-  const [status, setStatus] = useState();
+  const dispatch = useDispatch();
+  const user=useStore();
+  const [status, setStatus] = useState(user.getState().subStat.subId);
   const [itemStatus, setItemStatus] = useState();
   const navigation = useNavigation();
 
@@ -58,24 +60,30 @@ const ProtectedPreview = ({reg_Id}) => {
       </Svg>
     );
   }
-
+useEffect(()=>{
+  getStatus()
+})
   function getStatus() {
     axios
-      .get(`${backendHost}/subscription/orders/${reg_Id}`)
+      .get(`${backendHost}/subscription/orders/${user.getState().userId.regId}`)
       .then(res => {
-        setStatus(res.data[0].status);
-        console.log(res.data);
+       
+       if(res.data.length!==0)
+       {
+        dispatch(sub(res.data[0].status))
+       }
+        else{
+          dispatch(sub(0))
+        }
       })
       .catch(err => err);
 
     // navigation.navigate('Cures',{screen:'My Cures'})
   }
   useEffect(() => {
-    console.log(reg_Id);
+    console.log('sub',user.getState().subStat.subId);
   });
-  useEffect(() => {
-    getStatus(reg_Id);
-  });
+ 
 
   function allPosts() {
     fetch(`${backendHost}/article/allkvprotected?limit=15`)
@@ -100,31 +108,11 @@ const ProtectedPreview = ({reg_Id}) => {
   }
 
   useEffect(() => {
+
     allPosts();
   }, []);
 
-  function renderItemArt({item, index}) {
-    const {friendly_name, source, content} = item;
 
-    return (
-      <View>
-        <View style={{marginRight: 25, width: wp('100%'), height: hp('20%')}}>
-          <View>
-            <Paragraph>
-              <Card
-                style={{
-                  width: wp('90%'),
-                  height: hp('25%'),
-                  backgroundColor: '#00415e',
-                  borderRadius: 20,
-                  marginRight: 5,
-                }}></Card>
-            </Paragraph>
-          </View>
-        </View>
-      </View>
-    );
-  }
   if (!isLoaded) {
     return (
       <View>
@@ -141,8 +129,8 @@ const ProtectedPreview = ({reg_Id}) => {
   } else {
     return (
       <>
-        {reg_Id != 0 ? (
-          status === 1 ? (
+        {user.getState().userId.regId!== 0 ? (
+        user.getState().subStat.subId === 1 ? (
             <View>
               <UnlockedPreview />
             </View>

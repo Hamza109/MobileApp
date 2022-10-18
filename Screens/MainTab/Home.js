@@ -8,20 +8,19 @@ import {
   FlatList,
   StyleSheet,
   StatusBar,
-  SafeAreaView,
   BackHandler,
   Alert,
+  SafeAreaView,
   TouchableOpacity,
   TouchableHighlight,
   Image,
   RefreshControl,
 } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
-
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Card} from 'react-native-paper';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
+import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
@@ -36,7 +35,6 @@ import {
 import CenterWell from '../Disease/CenterWell';
 import {backendHost} from '../../components/apiConfig';
 import ArticlePreview from './ArticlePreview';
-import ProtectedPreview from '../Subscription/ProtectedArticles';
 import {Paragraph} from 'react-native-paper';
 import {
   widthPercentageToDP as wp,
@@ -46,28 +44,31 @@ import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
 import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import Svg, {Path, Circle} from 'react-native-svg';
+import { useStore,useDispatch } from 'react-redux';
+import { screenName } from '../Redux/Action';
+import ProtectedPreview from '../Subscription/ProtectedArticles'
 const HomeScreen = ({navigation, route}) => {
-  const userId = route.userId;
 
+  const user=useStore();  
   const theme = useTheme();
-  const {colors} = useTheme();
-  const [regId, setRegId] = useState([]);
+ const dispatch=useDispatch();
   const [regType, setRegType] = useState();
   const [backPressed, setBack] = useState(1);
   const [visible, setVisible] = useState(false);
   const [isloaded, setIsLoaded] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(null);
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const containerStyle = {backgroundColor: 'white', padding: 20, height: 400};
-  const canGoBack = () => {
-    navigation.goBack();
-  };
+
   const remove = async () => {
     try {
-      await AsyncStorage.multiRemove(['mail1']);
+      await AsyncStorage.multiRemove([
+     
+        'mail1'
+      ]);
     } catch (error) {
-      error;
+   error
     }
   };
   const backAction = () => {
@@ -78,32 +79,21 @@ const HomeScreen = ({navigation, route}) => {
           onPress: () => null,
           style: 'cancel',
         },
-        {
-          text: 'YES',
-          onPress: () => {
-            BackHandler.exitApp(), remove();
-          },
-        },
+        {text: 'YES', onPress: () =>{ BackHandler.exitApp(),remove()} },
       ]);
       return true;
     }
   };
-
-  const [isSignedIn, setIsSignedIn] = useState();
-
-  const getId = () => {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 == null) {
-          setRegId(0);
-          // navigation.navigate('Cures',{screen:'My Cures'})
-          navigation.navigate('SignIn');
-        } else {
-          setRegId(value1);
-          navigation.navigate('CreateScreenHome');
-        }
-      });
-    } catch (error) {}
+  
+  const getId =  () => {
+  if(user.getState().userId.regId!=0){
+    navigation.navigate('CreateScreenHome')
+  }
+  else{
+    dispatch(screenName('CreateScreenHome'))
+    navigation.navigate('SignIn')
+   
+  }
   };
 
   const getType = () => {
@@ -112,68 +102,44 @@ const HomeScreen = ({navigation, route}) => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error}
   };
   const isFocuss = useIsFocused();
-  const getRegId = async () => {
-    try {
-      const value1 = await AsyncStorage.getItem('author');
-      if (value1 !== null) {
-        setRegId(value1);
-        // navigation.navigate('Cures',{screen:'My Cures'})
-      } else {
-        setRegId(0);
-      }
-    } catch (error) {}
-  };
   useEffect(()=>{
-    getRegId();
-  })
+  
+    console.log('user',user.getState().userId.regId)
+     
+   })
   useEffect(() => {
-    if (isFocuss && regId.length>0) {
-    
-      console.log('prop1', regId);
+  
+    if (isFocuss) {
+     
       getType();
-
+    
       BackHandler.addEventListener('hardwareBackPress', backAction);
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', backAction);
     }
   });
 
-  const DATA1 = [
-    {
-      name: 'Ayurveda',
-      type: 1,
-      source: require('../../assets/img/ayurvedic.jpg'),
-    },
 
-    {name: 'Unani', type: 2, source: require('../../assets/img/unani.jpg')},
-    {name: 'Chinese', type: 4, source: require('../../assets/img/chinese.jpg')},
-    {
-      name: 'Persian',
-      type: 3,
-      source: require('../../assets/img/medicine.jpg'),
-    },
-    {
-      name: 'Scandavian',
-      type: 5,
-      source: require('../../assets/img/herbal.jpg'),
-    },
-    {
-      name: 'Japanese',
-      type: 6,
-      source: require('../../assets/img/homeopathy.jpg'),
-    },
+  const DATA1 = [
+    {name: 'Ayurveda',type:1, source: require('../../assets/img/ayurvedic.jpg')},
+
+    {name: 'Unani',type:2, source: require('../../assets/img/unani.jpg')},
+    {name: 'Chinese',type:4, source: require('../../assets/img/chinese.jpg')},
+    {name: 'Persian', type:3,source: require('../../assets/img/medicine.jpg')},
+    {name: 'Scandavian',type:5, source: require('../../assets/img/herbal.jpg')},
+    {name: 'Japanese', type:6, source: require('../../assets/img/homeopathy.jpg')},
   ];
   const [cont, setCont] = useState([]);
   function Create() {
     return (
       <Svg
         xmlns="http://www.w3.org/2000/svg"
-        width={wp('11%')}
-        height={hp('7%')}
+        width={scale(42)}
+        height={scale(42)}
         fill="none"
         viewBox="0 0 42 42">
         <Circle cx="20.563" cy="20.969" r="20.563" fill="#00415E"></Circle>
@@ -186,19 +152,21 @@ const HomeScreen = ({navigation, route}) => {
   function User() {
     return (
       <Svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="42"
-        height="42"
-        fill="none"
-        viewBox="0 0 42 42">
-        <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
-        <Path
-          stroke="#fff"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="4"
-          d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"></Path>
-      </Svg>
+      xmlns="http://www.w3.org/2000/svg"
+      width={scale(42)}
+      height={scale(42)}
+      fill="none"
+      viewBox="0 0 42 42"
+    >
+      <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
+      <Path
+        stroke="#fff"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="4"
+        d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"
+      ></Path>
+    </Svg>
     );
   }
   const [row, setRow] = useState();
@@ -208,32 +176,35 @@ const HomeScreen = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
-    navigation.push('MainTab');
+    navigation.push('Main');
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    wait(2000).then(() => setRefreshing(false)).catch(err=>err);;
   };
   const getRow = () => {
     try {
       AsyncStorage.getItem('rowno').then(value2 => {
+
         if (value2 != null) {
           setRow(Number(value2));
         }
-      });
+      }).catch(err=>err);;
     } catch (error) {
-      error;
+      error
     }
   };
   const isFocus = useIsFocused();
   useEffect(() => {
     if (isFocus) {
       getRow();
+
+  
     }
   }, [row]);
 
   function renderItemTrend({item, index}) {
     const {name, source, color, type} = item;
     return (
-      <View style={{marginRight: 12}}>
+      <View style={{marginRight: 9,height:verticalScale('165')}}>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
@@ -241,18 +212,19 @@ const HomeScreen = ({navigation, route}) => {
           }}>
           <Card
             style={{
-              width: wp('30%'),
-              height: 120,
+              width: scale(110),
+              height: verticalScale('130'),
               backgroundColor: '#00415e',
-
+              overflow:'hidden',
               borderRadius: 20,
               alignItems: 'center',
             }}
             key={index}>
             <ImageBackground
+            
               style={{
-                width: wp('30%'),
-                height: 120,
+                width: scale(110),
+                height: verticalScale('130'),
                 borderRadius: 20,
                 overflow: 'hidden',
               }}
@@ -266,7 +238,7 @@ const HomeScreen = ({navigation, route}) => {
             color: '#00415e',
             marginTop: 5,
             fontFamily: 'Raleway-Medium',
-            fontSize: 13,
+            fontSize: scale(13),
             position: 'relative',
             bottom: 0,
             textAlign: 'center',
@@ -279,14 +251,11 @@ const HomeScreen = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
         <StatusBar backgroundColor="#00415e" barStyle="light-content" />
-        <Stack
-          space={3}
-          alignItems="center"
-          bg="white"
-          style={{marginTop: Platform.OS === 'android' ? 0 : 20}}>
-          <HStack mt="4" mb="1" space={1} alignItems="center">
+        <View
+          style={{marginTop: Platform.OS === 'android' ? 0 : -15}}>
+          <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:12,marginBottom:10}}>
             <View style={{position: 'relative', top: 2, right: 0}}>
               <TouchableOpacity
                 activeOpacity={0.8}
@@ -308,22 +277,22 @@ const HomeScreen = ({navigation, route}) => {
                     adjustsFontSizeToFit
                     numberOfLines={1}
                     style={{
-                      fontSize: wp('4.5%'),
+                      fontSize: scale(15),
                       color: '#00415e',
                       fontFamily: 'Raleway-Regular',
                       justifyContent: 'center',
                     }}>
                     Search Cures
                   </Text>
-                  <Icon name="search" size={20} style={styles.icon}></Icon>
+                  <Icon name="search" size={scale(20)} style={styles.icon}></Icon>
                 </HStack>
               </View>
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} onPress={() => getId()}>
               <Create />
             </TouchableOpacity>
-          </HStack>
-        </Stack>
+          </View>
+        </View>
         <ScrollView
           style={{width: wp('100%'), backgroundColor: '#fff'}}
           showsVerticalScrollIndicator={false}
@@ -334,17 +303,17 @@ const HomeScreen = ({navigation, route}) => {
             <HStack space={1}>
               <Text
                 style={{
-                  fontSize: wp('5%'),
+                  fontSize: scale(20),
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
                 Cures By Category
               </Text>
               <Icon
-                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                style={{marginTop: Platform.OS === 'android' ? 5 : 5}}
                 name="caret-right"
                 color={'#00415e'}
-                size={25}
+                size={scale(25)}
               />
             </HStack>
             <View
@@ -366,8 +335,8 @@ const HomeScreen = ({navigation, route}) => {
                   <Card
                     resizeMode="stretch"
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: '#f5b6ff',
                       borderRadius: 20,
                       marginRight: 10,
@@ -376,8 +345,8 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '90%',
-                        height: '80%',
+                        width: scale(110),
+                        height: verticalScale(120),
                         position: 'absolute',
                         bottom: 0,
                         left: 5,
@@ -396,7 +365,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Arthritis
                     </Text>
@@ -409,8 +378,8 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   <Card
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: '#ffc672',
                       borderRadius: 20,
                       marginRight: 10,
@@ -419,8 +388,8 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '90%',
-                        height: '50%',
+                        width: scale(110),
+                        height: verticalScale(90),
                         position: 'absolute',
                         bottom: 0,
                         left: 5,
@@ -439,7 +408,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Thyroid
                     </Text>
@@ -452,8 +421,8 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   <Card
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: '#ffa68a',
                       borderRadius: 20,
                       marginRight: 10,
@@ -462,8 +431,8 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '90%',
-                        height: '50%',
+                        width: scale(110),
+                        height: verticalScale(90),
 
                         position: 'absolute',
                         bottom: 0,
@@ -482,7 +451,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Diabetes
                     </Text>
@@ -496,8 +465,8 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   <Card
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: '#cca4ff',
                       borderRadius: 20,
                       marginRight: 10,
@@ -506,8 +475,8 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '90%',
-                        height: '80%',
+                        width: scale(110),
+                        height: verticalScale(120),
                         position: 'absolute',
                         bottom: 0,
                         left: 5,
@@ -526,7 +495,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Insomnia
                     </Text>
@@ -539,8 +508,8 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   <Card
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: '#ffa68a',
                       borderRadius: 20,
                       marginRight: 10,
@@ -549,8 +518,8 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '100%',
-                        height: '80%',
+                        width: scale(110),
+                        height: verticalScale(110),
                         position: 'absolute',
                         bottom: 0,
                         left: 5,
@@ -567,7 +536,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Skin Care
                     </Text>
@@ -580,8 +549,8 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   <Card
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: 'lightblue',
                       borderRadius: 20,
                       marginRight: 10,
@@ -590,8 +559,8 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '90%',
-                        height: '80%',
+                        width: scale(110),
+                        height: verticalScale(120),
                         position: 'absolute',
                         bottom: 0,
                         left: 5,
@@ -609,7 +578,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Hyper Tension
                     </Text>
@@ -622,8 +591,8 @@ const HomeScreen = ({navigation, route}) => {
                   }}>
                   <Card
                     style={{
-                      width: wp('30%'),
-                      height: hp('20%'),
+                      width: scale(125),
+                      height: verticalScale(165),
                       backgroundColor: 'lightgreen',
                       borderRadius: 20,
                       marginRight: 15,
@@ -631,13 +600,13 @@ const HomeScreen = ({navigation, route}) => {
                     <Image
                       style={{
                         alignContent: 'center',
-                        width: '90%',
-                        height: '80%',
+                        width: scale(110),
+                        height: verticalScale(120),
                         position: 'absolute',
                         bottom: 0,
                         left: 5,
                       }}
-                      resizeMode="center"
+                      resizeMode="stretch"
                       source={require('../../assets/img/psorasis.png')}
                     />
 
@@ -649,7 +618,7 @@ const HomeScreen = ({navigation, route}) => {
                         top: 6,
                         left: 6,
                         fontFamily: 'Raleway',
-                        fontSize: wp('3%'),
+                        fontSize: scale(12),
                       }}>
                       Psorasis
                     </Text>
@@ -660,7 +629,7 @@ const HomeScreen = ({navigation, route}) => {
             <HStack space={1}>
               <Text
                 style={{
-                  fontSize: wp('5%'),
+                  fontSize: scale(20),
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
@@ -674,21 +643,17 @@ const HomeScreen = ({navigation, route}) => {
               />
             </HStack>
             <View style={{alignItems: 'center', width: wp('100%')}}>
-              <Carousel
-                data={DATA1}
-                renderItem={renderItemTrend}
-                sliderWidth={370}
-                firstItem={1}
-                loop={true}
-                inactiveSlideOpacity={0.8}
-                itemWidth={125}
-                onSnapToItem={index => setActiveIndex(index)}
-              />
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={DATA1}
+              renderItem={renderItemTrend}
+            />
             </View>
             <HStack space={1}>
               <Text
                 style={{
-                  fontSize: wp('5%'),
+                  fontSize: scale(20),
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
@@ -698,7 +663,7 @@ const HomeScreen = ({navigation, route}) => {
                 style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
                 name="caret-right"
                 color={'#00415e'}
-                size={25}
+                size={scale(25)}
               />
             </HStack>
             <ArticlePreview />
@@ -712,30 +677,32 @@ const HomeScreen = ({navigation, route}) => {
                 Recent Cures
               </Text>
               <Icon
-                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                style={{marginTop: Platform.OS === 'android' ? 5 : 5}}
                 name="caret-right"
                 color={'#00415e'}
-                size={25}
+                size={scale(25)}
               />
             </HStack>
-            <ProtectedPreview reg_Id={regId} />
-            <HStack space={1}>
+            <ProtectedPreview reg_Id={user.getState().userId.regId} />
+            <HStack space={1} >
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: scale(20),
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
                 Top Doctors
               </Text>
               <Icon
-                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                style={{marginTop: Platform.OS === 'android' ? 5 : 5}}
                 name="caret-right"
                 color={'#00415e'}
-                size={25}
+                size={scale(25)}
               />
             </HStack>
+            <View style={{padding:0}}>
             <DocPreview />
+            </View>
           </Stack>
         </ScrollView>
       </SafeAreaView>
@@ -752,8 +719,8 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
-    width: wp('72%'),
-    height: 55,
+    width: scale(270),
+    height: verticalScale('50'),
     fontSize: 20,
     borderRadius: 15,
 

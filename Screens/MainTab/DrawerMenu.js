@@ -15,22 +15,14 @@ import {
 } from 'react-native-responsive-screen';
 import {
   HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Spinner,
-  VStack,
   Divider,
-  Pressable,
-  Modal,
   Box,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {StackActions,DrawerActions} from '@react-navigation/routers';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -40,76 +32,30 @@ import {
 } from '@react-navigation/drawer';
 import MainTabScreen from './MainTab';
 import ProfileScreen from './Profile';
-import {useIsFocused} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView} from 'react-native-gesture-handler';
-import { color } from 'react-native-reanimated';
-import axios from 'axios';
-import { backendHost } from '../../components/apiConfig';
 import Subscribe from '../../components/Subscribe';
 import Feedback from '../../components/FeedBack';
+import { useStore ,useDispatch} from 'react-redux';
+import { reg } from '../Redux/Action';
+import { screenName } from '../Redux/Action';
+
+
 const Drawer = createDrawerNavigator();
 
 const DrawerMenu = () => {
-  const isFocus = useIsFocused();
+
+  const user=useStore();
+const dispatch=useDispatch();
   const Navigation = useNavigation();
-  const [regId, setRegId] = useState([]);
-  const [value, setValue] = useState();
-  const [subModalVisible, setSubModalVisible] = useState(false);
-  const [formattedValue, setFormattedValue] = useState('');
-  const postSubscription = val => {
-    var phoneNumber = val.split('+')[1];
+ 
 
-    var countryCodeLength = phoneNumber.length % 10;
-    var countryCode = phoneNumber.slice(0, countryCodeLength);
-    var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-    if (phoneNumber) {
-      axios
-        .post(`${backendHost}/users/subscribe/${StringValue}`, {
-          nl_subscription_disease_id: '0',
-          nl_sub_type: 1,
-          nl_subscription_cures_id: '0',
-          country_code: `'${countryCode}'`,
-        })
-        .then(res => {
-          if (res.data === 1) {
-            Alert.alert('You have successfully subscribed to our Newsletter');
-          } else {
-            Alert.alert('Some error occured! Please try again later.');
-          }
-        })
-        .catch(err => {
-          Alert.alert('Some error occured! Please try again later.');
-        });
-    } else {
-      Alert.alert('Please enter a valid number!');
-    }
-  };
+  
 
-  const getId = async () => {
-    try {
-      await AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-       
-        }
-      });
-    } catch (error) {}
-  };
   
   useEffect(() => {
-    getId();
-  });
+   console.log('drawer',user.getState().userId.regId)
+  },[]);
   const remove = async () => {
-    try {
-      await AsyncStorage.multiRemove([
-        'author',
-        'rateType',
-        'rowno',
-      ]);
-    } catch (error) {
-      error
-    }
+    dispatch(reg(0))
   };
   const logout = () => {
     Alert.alert('Hold on!', 'Are you sure you want Logout?', [
@@ -168,7 +114,8 @@ const DrawerMenu = () => {
   }
   const login = () => {
 
-    if (regId.length != 0) {
+    if (user.getState().userId.regId != 0) {
+      dispatch(screenName('Main'))
       return (
         <View>
 
@@ -182,7 +129,7 @@ const DrawerMenu = () => {
           }}>
           <TouchableOpacity onPress={() => logout()}>
             <HStack ml='3' space={4}>
-              <Icon name="sign-out" size={28} color="#00415e" />
+              <IonIcons name="log-in-outline" size={28} color="#00415e" />
               <Text
                 style={{
                   color: '#00415e',
@@ -207,9 +154,9 @@ const DrawerMenu = () => {
             padding: 10,
             backgroundColor: '#fff',
           }}>
-          <TouchableOpacity onPress={() => Navigation.navigate('SignIn')}>
+          <TouchableOpacity onPress={() => Navigation.navigate('SignIn',{screen:`Main`})}>
             <HStack ml='3' space={4}>
-              <Icon name="sign-out" size={28} color="#00415e" />
+              <IonIcons name="log-in" size={28} color="#00415e" />
               <Text
                 style={{
                   color: '#00415e',
@@ -250,14 +197,14 @@ const DrawerMenu = () => {
           component={ProfileScreen}
           options={{  headerStyle: {
             backgroundColor: '#fff',
-            height:Platform.OS ==='android'?60:70
+            height:Platform.OS ==='android'?60:90
           },
           headerTintColor: '#00415e',
           headerTitleStyle: {
-            fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+            fontWeight: 'bold',
           },
         headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
-        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:30,marginLeft:10}} />
+        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
       </TouchableOpacity>),
             drawerLabel: 'Profile',
             drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium'},
@@ -272,16 +219,17 @@ const DrawerMenu = () => {
           options={{
             headerStyle: {
               backgroundColor: '#fff',
-              height:Platform.OS ==='android'?60:70
+              height:Platform.OS ==='android'?60:90,
+      
             },
             headerTintColor: '#00415e',
             headerTitleStyle: {
-              fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+              fontWeight: 'bold', 
             },
             drawerLabel: 'Subscribe',
             drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
             headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
-            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:30,marginLeft:10}} />
+            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
           </TouchableOpacity>),
             drawerIcon: ({focused, size}) => (
               <Icon name="bell" color={'#00415e'} size={22} style={{marginLeft:-2}} />
@@ -294,16 +242,16 @@ const DrawerMenu = () => {
           options={{
             headerStyle: {
               backgroundColor: '#fff',
-              height:Platform.OS ==='android'?60:70
+              height:Platform.OS ==='android'?60:90
             },
             headerTintColor: '#00415e',
             headerTitleStyle: {
-              fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+              fontWeight: 'bold', 
             },
             drawerLabel: 'Feedback',
             drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
             headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
-            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:30,marginLeft:10}} />
+            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
           </TouchableOpacity>),
             drawerIcon: ({focused, size}) => (
               <Icon name="paper-plane" color={'#00415e'} size={22} style={{marginLeft:-2}} />

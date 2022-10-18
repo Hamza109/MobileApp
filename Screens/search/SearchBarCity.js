@@ -116,7 +116,7 @@ cityAll();
       <View styles={styles.flex}>
           <Card style={styles.header}>
           <HStack mt="5" ml="10" space={1}alignItems="center">
-        <Icon name="arrow-back-outline" style={{marginTop:4,marginLeft:11}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('MainTab')}}/>
+        <Icon name="arrow-back-outline" style={{marginTop:4,marginLeft:11}}color={'#00415e'} size={35} onPress={()=>{navigation.navigate('Main')}}/>
       <View>
    
           <Input

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useIsFocused} from 'react';
 import {Dimensions, ImageBackground} from 'react-native';
 import {Button} from 'react-native-paper';
 import {
@@ -9,21 +9,18 @@ import {
   StyleSheet,
   StatusBar,
   BackHandler,
+  SafeAreaView,
   Alert,
   TouchableOpacity,
   TouchableHighlight,
   Image,
 } from 'react-native';
-import ArticleHeader from '../search/ArticleHeader';
-import {useRef} from 'react';
-import {useIsFocused, useNavigation, useTheme} from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import Autocomplete from '../MainTab/Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Svg, {Path, Circle} from 'react-native-svg';
+
 import {Card} from 'react-native-paper';
-import AllPost from '../search/AllPost';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   HStack,
@@ -43,9 +40,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Carousel from 'react-native-snap-carousel';
-import {set} from 'react-native-reanimated';
 import RazorpayCheckout from 'react-native-razorpay';
-import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import { useStore,useDispatch} from 'react-redux';
+import { sub } from '../Redux/Action';
 
 const SubPlan = ({route}) => {
   const navigation = useNavigation();
@@ -69,6 +66,8 @@ const SubPlan = ({route}) => {
   const [details3, setDetails3] = useState();
   const [items, setItems] = useState();
   const [status, setStatus] = useState(0);
+  const user=useStore()
+  const dispatch=useDispatch()
 
   const [isLoaded, setIsLoaded] = useState(false);
   function sub() {
@@ -76,7 +75,7 @@ const SubPlan = ({route}) => {
       .get(`${backendHost}/subscription/get`)
 
       .then(res => {
-        console.log(res.data);
+  
 
         setSubId1(res.data[0].subscription_id);
         setSubId2(res.data[1].subscription_id);
@@ -92,56 +91,115 @@ const SubPlan = ({route}) => {
         setSubDetails3(res.data[2].subscription_details);
         setIsLoaded(true);
       });
+      try {
+        AsyncStorage.getItem('author').then(value1 => {
+          if (value1 != null) {
+            setRegId(value1)
+                 }
+        
+        })
+      }catch(error){
 
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          console.log('helloi', value1);
-          setRegId(value1);
-        } else {
-          setRegId(0);
-        }
-      });
-    } catch (error) {}
+      }
+
   }
+
+   
+  useEffect(() => {
+
+      
+   })
+ 
+  
   function postAmount() {
     setLoading(true);
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-          axios
-          .post(`${backendHost}/subscription/create_order`, {
-            amount: `${priceId}`,
-          })
-          .then(res => {
-            if (res.data) {
-              console.log('orderID', JSON.parse(res.data).id);
+    if (user.getState().userId.regId !== 0) {
+      axios
+      .get(`${backendHost}/subscription/orders/${user.getState().userId.regId}`)
+      .then(res => 
+        {
+          if(res.data.length!==0)
+          {
+  if(res.data[0].status===1){
+    dispatch(sub(res.data[0].status))
+   
+          navigation.navigate('Main')
+     
+  
+  }
+  else 
+  {
+    axios
+    .post(`${backendHost}/subscription/create_order`, {
+      amount: `${priceId}`,
+    })
+    .then(res => {
+      if (res.data) {
+        console.log('orderID', JSON.parse(res.data).id);
+
+        postData(
+          JSON.parse(res.data).amount,
+          JSON.parse(res.data).id,
+          JSON.parse(res.data).status,
+        );
+        postsub(
+          JSON.parse(res.data).amount,
+          JSON.parse(res.data).currency,
+          JSON.parse(res.data).id,
+        );
+
+        setLoading(false);
+      }
+    })
+    .catch(err => {
+      setLoading(false);
+      Alert.alert('Something went wrong', 'Please try again.');
+    });
+  }
+}
+else{
+  axios
+    .post(`${backendHost}/subscription/create_order`, {
+      amount: `${priceId}`,
+    })
+    .then(res => {
+      if (res.data) {
+        console.log('orderID', JSON.parse(res.data).id);
+
+        postData(
+          JSON.parse(res.data).amount,
+          JSON.parse(res.data).id,
+          JSON.parse(res.data).status,
+        );
+        postsub(
+          JSON.parse(res.data).amount,
+          JSON.parse(res.data).currency,
+          JSON.parse(res.data).id,
+        );
+
+        setLoading(false);
+      }
+    })
+    .catch(err => {
+      setLoading(false);
+      Alert.alert('Something went wrong', 'Please try again.');
+    });
+}
+   
+      })
     
-              postData(
-                JSON.parse(res.data).amount,
-                JSON.parse(res.data).id,
-                JSON.parse(res.data).status,
-              );
-              postsub(
-                JSON.parse(res.data).amount,
-                JSON.parse(res.data).currency,
-                JSON.parse(res.data).id,
-              );
+      .catch(err => err);
+
+   
+     
+    } else {
     
-              setLoading(false);
-            }
-          })
-          .catch(err => {
-            setLoading(false);
-            Alert.alert('Something went wrong', 'Please try again.');
-          });
-        } else {
-          setRegId(0);
-          navigation.navigate('SignIn');
-        }
-      });
-    } catch (error) {}
+        navigation.navigate('SignIn',{screen:'SubPlan'});
+  
+    }
+
+
+ 
    
   }
   function postUpdate(paymentId, orderID) {
@@ -157,7 +215,7 @@ const SubPlan = ({route}) => {
             {
               text: 'Ok',
               onPress: () => {
-                navigation.push(`Disease`, {ids: `${titleId}`});
+                navigation.push(`Disease`, {ids: `${titleId}`,flow:1});
               },
             },
           ]);
@@ -172,7 +230,7 @@ const SubPlan = ({route}) => {
   function postData(amount, orderId, statusId) {
     axios
       .post(
-        `${backendHost}/subscription/order/userid/${regId}/subsid/${subId}`,
+        `${backendHost}/subscription/order/userid/${user.getState().userId.regId}/subsid/${subId}`,
         {
           amount: amount.toString(),
           order_id: orderId.toString(),
@@ -220,7 +278,7 @@ const SubPlan = ({route}) => {
   }
   useEffect(() => {
     sub();
-  }, []);
+  },[]);
 
   const DATA1 = [
     {
@@ -271,7 +329,7 @@ const SubPlan = ({route}) => {
           paddingBottom: 10,
           paddingLeft: 2,
         }}>
-        <TouchableOpacity activeOpacity={0.9} onPress={() => console.log(id)}>
+        <TouchableOpacity activeOpacity={0.9}>
           <Card
             style={{
               width: wp('28%'),
@@ -342,7 +400,7 @@ const SubPlan = ({route}) => {
     );
   } else {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {loading ? (
           <View style={styles.loading}>
             <LottieView
@@ -395,7 +453,7 @@ const SubPlan = ({route}) => {
             </View>
           </VStack>
         </Stack>
-      </View>
+      </SafeAreaView>
     );
   }
 };

@@ -5,13 +5,14 @@ import {
   StyleSheet,
   StatusBar,
   BackHandler,
+  SafeAreaView,
   Alert,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
 import {useTheme, Link} from '@react-navigation/native';
 import axios from 'axios';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import {Card, Searchbar} from 'react-native-paper';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {ScrollView} from 'react-native';
@@ -19,6 +20,7 @@ import {ScrollView} from 'react-native';
 import {backendHost} from '../../components/apiConfig';
 import ProfileTab from './ProfileTab';
 import SearchBar from './SearchBar';
+import LottieView from 'lottie-react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -38,6 +40,8 @@ import {
   Box,
   NativeBaseProvider,
 } from 'native-base';
+import { scale, verticalScale } from '../../components/Scale';
+import ArticleHeader from './ArticleHeader';
 
 const DocResult = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -53,7 +57,7 @@ const DocResult = ({navigation, route}) => {
   // const [params] = useState(props)
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-
+const [search,setSearch]=useState();
   const [text, setText] = useState(names);
 
   const isearch = () => {
@@ -64,7 +68,7 @@ const DocResult = ({navigation, route}) => {
       .then(json => {
         setIsLoaded(true);
         setItems(json.map.DoctorDetails.myArrayList);
-      });
+      }).catch(err=>err);;
   };
 
   useEffect(() => {
@@ -73,35 +77,36 @@ const DocResult = ({navigation, route}) => {
 
   if (!isLoaded) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <HStack space={2} justifyContent="center">
-          <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-          <Heading color="#00415e" fontSize="lg">
-            Loading
-          </Heading>
-        </HStack>
-      </View>
+      <View style={styles.loading}>
+      <HStack space={2} justifyContent="center">
+        <LottieView
+          source={require('../../assets/animation/load.json')}
+          autoPlay
+          loop
+          style={{width: 50, height: 50, justifyContent: 'center'}}
+        />
+      </HStack>
+    </View>
     );
   } else {
     return (
-      <View style={styles.container}>
-        <SearchBar />
+      <SafeAreaView style={styles.container}>
 
-        <ScrollView style={{marginTop: 10}}>
-          {items.map(i => (
+        <ArticleHeader placeholder='Search by name'   doc={1} city={0}   />
+
+        <ScrollView>
+          {
+            items.length!==0?(
+          items.map((i,j) => (
             <Card
               style={{
                 padding: 5,
                 margin: 5,
-                height: hp('17%'),
-                width: wp('96%'),
-                backgroundColor: '#fff',
-                borderColor:'aliceblue',
-                borderWidth:2,
+                height: verticalScale(150),
+                width: scale(370),
+                backgroundColor: '#f7f7f7',
+                borderColor:'#e0e0e0',
+                borderWidth:1,
                 padding: 9,
               }}>
               {/* <StarRating
@@ -120,6 +125,7 @@ const DocResult = ({navigation, route}) => {
       /> */}
               <View>
                 <ProfileTab
+                key={j.id}
                   rowno={i.map.rowno}
                   firstName={i.map.docname_first}
                   lastName={i.map.docname_last}
@@ -131,11 +137,27 @@ const DocResult = ({navigation, route}) => {
               </View>
               <View style={{position: 'relative', bottom: 0, left: 4}}></View>
             </Card>
-          ))}
+          ))):  (<View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <Icon
+            name="medical-outline"
+            size={50}
+            style={{opacity: 0.5, color: '#00415e'}}
+          />
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 18,
+              color: '#00415e',
+              fontFamily: 'Raleway-Medium',
+            }}>
+            No Doctor Found
+          </Text>
+        </View>)
+        }
         </ScrollView>
 
         <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-      </View>
+      </SafeAreaView>
     );
   }
 };
@@ -145,8 +167,7 @@ export default DocResult;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    width: '100%',
-    height: '100%',
+flex:1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -186,5 +207,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 0,
     margin: 0,
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

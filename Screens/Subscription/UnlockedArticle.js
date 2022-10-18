@@ -18,8 +18,9 @@ import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
-import Autocomplete from '../MainTab/Autocomplete';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import Svg, {Path, Circle} from 'react-native-svg';
 import {
   Card,
@@ -52,15 +53,16 @@ import CenterWell from '../Disease/CenterWell';
 import Heart from '../../assets/img/heart.png';
 import {useNavigation} from '@react-navigation/native';
 import Carousel from 'react-native-snap-carousel';
-
+import { useStore } from 'react-redux';
 const UnlockedPreview = props => {
+  const user=useStore();
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
-  const [regId, setRegId] = useState([]);
+
   const [status, setStatus] = useState(0);
   const navigation = useNavigation();
   useEffect(() => {
-    console.log('prop', regId);
+    console.log('prop', user.getState().userId.regId);
   });
   function Icon() {
     return (
@@ -77,23 +79,7 @@ const UnlockedPreview = props => {
     );
   }
 
-  function getStatus() {
-    try {
-      AsyncStorage.getItem('author').then(value1 => {
-        if (value1 != null) {
-          setRegId(value1);
-          axios
-            .get(`${backendHost}/subscription/orders/${value1}`)
-            .then(res => {
-              setStatus(res.data.status);
-            });
-          // navigation.navigate('Cures',{screen:'My Cures'})
-        } else {
-          null;
-        }
-      });
-    } catch (error) {}
-  }
+
 
   useEffect(() => {});
 
@@ -208,70 +194,58 @@ const UnlockedPreview = props => {
 
                       title = title.replace(regex, '-');
                       return (
-                        <View>
-                          <View
-                            style={{
-                              marginRight: 10,
-                              height: 170,
-                              width: wp('100%'),
-                            }}>
-                            <Card
-                              key={items}
+                        <View     key={Math.random().toString(36)}>
+                          <View style={{marginRight: 0,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
+                             <Card
+key={Math.random().toString(36)}
                               style={{
-                                width: wp('97%'),
-                                height: 168,
-                                backgroundColor: '#fff',
-                                borderWidth: 2,
-                                borderColor: 'aliceblue',
-                                justifyContent: 'center',
-                                paddingHorizontal: 5,
-                                borderRadius: 15,
-                                alignItems: 'center',
+                            
+                                  width: scale(370),
+                                  height: '100%',
+                                  overflow:'hidden',
+                                  backgroundColor: '#f7f7f7',
+                                  borderWidth:1,
+                                  elevation:2,
+                                  borderColor:'#e0e0e0',
+                                 marginBottom:5,
+                                  borderRadius:15,
+                             
+                                borderRadius:15,
+                           
                               }}>
-                              <HStack space={1}>
-                                <TouchableOpacity
-                                  activeOpacity={0.8}
-                                  onPress={() => {
-                                    {
-                                      navigation.push(`Disease`, {
-                                        ids: `${i.article_id}`,
-                                      });
-                                    }
-                                  }}>
-                                  <ImageBackground
-                                    source={{
-                                      uri:
-                                        imageLoc +
-                                        imgLocation
-                                          .replace('json', 'png')
-                                          .split('/webapps/')[1],
-                                    }}
-                                    imageStyle={{
-                                      borderBottomLeftRadius: 15,
-                                      borderTopLeftRadius: 15,
-                                    }}
-                                    style={{
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      position: 'relative',
-                                      right: 3,
-                                      width: wp('44%'),
-                                      height: 166,
-                                      marginTop: 0,
-                                    }}></ImageBackground>
+                              <HStack space={1}  key={Math.random().toString(36)}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                <Image
+                              key={Math.random().toString(36)}
+                                  source={{
+                                    uri:
+                                      imageLoc +
+                                      imgLocation
+                                        .replace('json', 'png')
+                                        .split('/webapps/')[1],
+                                  }}
+                                  style={{
+                                    position:'relative',
+                                    right:3,
+                                    width: scale(160),
+                                    height: '100%',
+                                    marginTop: 0,
+                                    borderBottomLeftRadius:15,
+                                    borderTopLeftRadius:15
+                                  }}
+                                />
                                 </TouchableOpacity>
-                                <View style={{width: wp('50%')}}>
-                                  <VStack py="2" space={10}>
-                                    <AllPost
+                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View style={{width:'90%'}}>
+                               <AllPost
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
                                       w_title={i.window_title}
                                       allPostsContent={() => receivedData()}
                                     />
-                                    <View style={{width: wp('50%')}}>
-                                      <Text
-                                        style={{position: 'absolute', top: 0}}>
+                               </View>
+                               <Text>
                                         {content
                                           ? content.map(
                                               (j, idx) =>
@@ -301,22 +275,20 @@ const UnlockedPreview = props => {
                                                 ),
                                             )
                                           : null}
-                                      </Text>
-                                    </View>
-                                  </VStack>
-                                  <Text
-                                    adjustsFontSizeToFit
-                                    numberOfLines={1}
-                                    style={{
-                                      color: '#00415e',
-                                      position: 'absolute',
-                                      bottom: 7,
-                                      fontFamily: 'Raleway-Medium',
-                                      fontSize: wp('2.5%'),
-                                    }}>
+                                          </Text>
+                               <Text
+                                  key={Math.random().toString(36)}
+                                  adjustsFontSizeToFit
+                                  numberOfLines={1}
+                                      style={{
+                                        color: '#00415e',
+                                
+                                        fontFamily: 'Raleway-Medium',
+                                        fontSize: scale(9),
+                                      }}>
                                     {i.authors_name}▪️{i.published_date}
-                                  </Text>
-                                </View>
+                                    </Text>
+                                    </View>
                               </HStack>
                             </Card>
                           </View>

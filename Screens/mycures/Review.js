@@ -52,7 +52,7 @@ const Review = () => {
           }
         }),
       );
-    } catch (error) {}
+    } catch (error) {error}
   };
   const getType = () => {
     try {
@@ -61,8 +61,8 @@ const Review = () => {
         if (value2 != null) {
           setRegType(value2);
         }
-      });
-    } catch (error) {}
+      }).catch(err=>err);;
+    } catch (error) {error}
   };
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
@@ -71,7 +71,7 @@ const Review = () => {
         setPubStatus(json.pubstatus_id);
         setIsLoaded(true);
         setItems(json);
-      });
+      }).catch(err=>err);;
   };
   const isFocus = useIsFocused();
   const check = () => {
