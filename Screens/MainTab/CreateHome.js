@@ -28,10 +28,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useStore } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const CreateScreenHome = () => {
-  const user = useStore();
+  const user=useSelector((state)=>state.userId.regId) ;
   const toast=useToast();
   const navigation = useNavigation();
   const [comment, setComment] = useState('');
@@ -71,9 +71,6 @@ const CreateScreenHome = () => {
   
   }, []);
 
-  //   useEffect(()=> {
-  //     check()
-  //   }, [userId])
   const submitArticleForm = async e => {
     e.preventDefault();
     setLoading(true);
@@ -87,7 +84,7 @@ const CreateScreenHome = () => {
           },
           title: title,
           comments: comment,
-          authById: [user.getState().userId.regId],
+          authById: [user],
           copyId: copyright,
           disclaimerId: 1,
           articleStatus: 2,

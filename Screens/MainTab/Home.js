@@ -23,14 +23,18 @@ import { moderateScale,verticalScale,scale,scalledPixel } from '../../components
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import MaterialIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import {
   HStack,
   Stack,
   Center,
+  Box,
   Spinner,
   Heading,
   NativeBaseProvider,
   Container,
+  Fab
 } from 'native-base';
 import CenterWell from '../Disease/CenterWell';
 import {backendHost} from '../../components/apiConfig';
@@ -44,12 +48,13 @@ import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
 import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import Svg, {Path, Circle} from 'react-native-svg';
-import { useStore,useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { screenName } from '../Redux/Action';
 
 const HomeScreen = ({navigation, route}) => {
 
-  const user=useStore();  
+
+  const user=useSelector((state)=>state.userId.regId) ;
   const theme = useTheme();
  const dispatch=useDispatch();
   const [regType, setRegType] = useState();
@@ -86,7 +91,7 @@ const HomeScreen = ({navigation, route}) => {
   };
   
   const getId =  () => {
-  if(user.getState().userId.regId!=0){
+  if(user!=0){
     navigation.navigate('CreateScreenHome')
   }
   else{
@@ -96,6 +101,7 @@ const HomeScreen = ({navigation, route}) => {
   }
   };
 
+  
   const getType = () => {
     try {
       AsyncStorage.getItem('rateType').then(value2 => {
@@ -108,7 +114,7 @@ const HomeScreen = ({navigation, route}) => {
   const isFocuss = useIsFocused();
   useEffect(()=>{
   
-    console.log('user',user.getState().userId.regId)
+    console.log('user',user)
      
    })
   useEffect(() => {
@@ -264,7 +270,9 @@ const HomeScreen = ({navigation, route}) => {
                 onPress={() => {
                   navigation.openDrawer();
                 }}>
-                {<User />}
+                
+                  <User />
+                  
               </TouchableOpacity>
             </View>
 

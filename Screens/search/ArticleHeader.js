@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 card: {
 
   backgroundColor: 'rgba(0, 65, 94, 0.2)',
-  width:scale(320),
+  width:scale(300),
     height:verticalScale('52'),
   fontSize: 20,
   paddingTop:13,

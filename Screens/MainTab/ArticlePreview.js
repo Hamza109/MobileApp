@@ -151,25 +151,29 @@ const ArticlePreview = () => {
                       title = title.replace(regex, '-');
                       return (
                         <View     key={Math.random().toString(36)}>
-                          <View style={{marginRight: 0,height:scale(170),width:wp('100%'),padding:2}} key={Math.random().toString(36)} >
+                          <View style={{marginRight: 7,height:scale(170),width:wp('100%'),padding:2}} key={Math.random().toString(36)} >
                             <Card
 key={Math.random().toString(36)}
                               style={{
-                                width: scale(370),
+                                width: scale(360),
                                 height: '100%',
                                 overflow:'hidden',
                                 backgroundColor: '#f7f7f7',
                                 borderWidth:1,
                                 elevation:2,
+                                marginRight:10,
+                                position:'relative',
                                 borderColor:'#e0e0e0',
                                marginBottom:5,
+                            
                                 borderRadius:15,
                            
                               }}>
                                 
                               <HStack space={1}  key={Math.random().toString(36)}>
-                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
                                 <Image
+                                resizeMode='stretch'
                               key={Math.random().toString(36)}
                                   source={{
                                     uri:
@@ -184,8 +188,8 @@ key={Math.random().toString(36)}
                                     width: scale(160),
                                     height: '100%',
                                     marginTop: 0,
-                                    borderBottomLeftRadius:15,
-                                    borderTopLeftRadius:15
+                                    borderBottomLeftRadius:5,
+                                    borderTopLeftRadius:5
                                   }}
                                 />
                                 </TouchableOpacity>

@@ -15,22 +15,14 @@ import {
 } from 'react-native-responsive-screen';
 import {
   HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Spinner,
-  VStack,
   Divider,
-  Pressable,
-  Modal,
   Box,
 } from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {StackActions,DrawerActions} from '@react-navigation/routers';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -40,15 +32,9 @@ import {
 } from '@react-navigation/drawer';
 import MainTabScreen from './MainTab';
 import ProfileScreen from './Profile';
-import {useIsFocused} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView} from 'react-native-gesture-handler';
-import { color } from 'react-native-reanimated';
-import axios from 'axios';
-import { backendHost } from '../../components/apiConfig';
 import Subscribe from '../../components/Subscribe';
 import Feedback from '../../components/FeedBack';
-import { useStore ,useDispatch} from 'react-redux';
+import { useSelector ,useDispatch} from 'react-redux';
 import { reg } from '../Redux/Action';
 import { screenName } from '../Redux/Action';
 
@@ -57,7 +43,7 @@ const Drawer = createDrawerNavigator();
 
 const DrawerMenu = () => {
 
-  const user=useStore();
+  const user=useSelector((state)=>state.userId.regId) ;
 const dispatch=useDispatch();
   const Navigation = useNavigation();
  
@@ -66,7 +52,7 @@ const dispatch=useDispatch();
 
   
   useEffect(() => {
-   console.log('drawer',user.getState().userId.regId)
+   console.log('drawer',user)
   },[]);
   const remove = async () => {
     dispatch(reg(0))
@@ -128,7 +114,7 @@ const dispatch=useDispatch();
   }
   const login = () => {
 
-    if (user.getState().userId.regId != 0) {
+    if (user!= 0) {
       dispatch(screenName('Main'))
       return (
         <View>
@@ -143,7 +129,7 @@ const dispatch=useDispatch();
           }}>
           <TouchableOpacity onPress={() => logout()}>
             <HStack ml='3' space={4}>
-              <Icon name="sign-out" size={28} color="#00415e" />
+              <IonIcons name="log-in-outline" size={28} color="#00415e" />
               <Text
                 style={{
                   color: '#00415e',
@@ -170,7 +156,7 @@ const dispatch=useDispatch();
           }}>
           <TouchableOpacity onPress={() => Navigation.navigate('SignIn',{screen:`Main`})}>
             <HStack ml='3' space={4}>
-              <Icon name="sign-out" size={28} color="#00415e" />
+              <IonIcons name="log-in" size={28} color="#00415e" />
               <Text
                 style={{
                   color: '#00415e',

@@ -16,6 +16,7 @@ import {
   Cell,
 } from 'react-native-table-component';
 import RenderHTML from 'react-native-render-html';
+import { useSelector } from 'react-redux';
 import { color } from 'native-base/lib/typescript/theme/styled-system';
 const CenterWell1 = ({
   content,
@@ -30,6 +31,7 @@ const CenterWell1 = ({
   imageUrl,
   item,
 }) => {
+  const article=useSelector((state)=>state.info.data)
   var textContent;
 
   if(typeof(text) == "string"){

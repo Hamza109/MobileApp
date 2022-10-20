@@ -71,6 +71,7 @@ const Disease = ({navigation, route}) => {
   const [disease, setDisease] = useState([]);
   const [condition, setCondition] = useState();
   const refRBSheet = useRef();
+  const [url,setUrl]=useState()
   const dispatch=useDispatch();
   const check = () => {
     if (user.getState().userId.regId == 0) {
@@ -87,7 +88,7 @@ const Disease = ({navigation, route}) => {
     navigation.setOptions({
       gestureEnabled:false
     }):null
-  if (flow!=0){
+  if (flow!==0){
 
     navigation.push('Main')
     return true;
@@ -248,7 +249,7 @@ const Disease = ({navigation, route}) => {
           throw err;
         });
     };
-    get();
+get();
 
     return () => {
       get();
@@ -704,7 +705,7 @@ const Disease = ({navigation, route}) => {
                               <Card
   key={Math.random().toString(36)}
                                 style={{
-                                  width: scale(370),
+                                  width: scale(350),
                                   height: '100%',
                                   overflow:'hidden',
                                   backgroundColor: '#f7f7f7',
@@ -719,6 +720,7 @@ const Disease = ({navigation, route}) => {
                                 <HStack space={1}  key={Math.random().toString(36)}>
                                   <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                   <Image
+                                  resizeMode='stretch'
                                 key={Math.random().toString(36)}
                                     source={{
                                       uri:
@@ -733,8 +735,8 @@ const Disease = ({navigation, route}) => {
                                       width: scale(160),
                                       height: '100%',
                                       marginTop: 0,
-                                      borderBottomLeftRadius:15,
-                                      borderTopLeftRadius:15
+                                      borderBottomLeftRadius:5,
+                                      borderTopLeftRadius:5
                                     }}
                                   />
                                   </TouchableOpacity>

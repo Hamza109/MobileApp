@@ -31,13 +31,13 @@ import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import AllStat from '../search/AllStat';
-import { useStore } from 'react-redux';
+import { useSelector } from 'react-redux';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 
 const Published = () => {
   const navigation = useNavigation();
-const user=useStore();
+  const user=useSelector((state)=>state.userId.regId) ;
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -45,7 +45,7 @@ const user=useStore();
   const [status, setStatus] = useState();
 
   const getId = () => {
-    if(user.getState().userId.regId==0)
+    if(user==0)
             navigation.navigate('SignIn');
  
   };
@@ -59,7 +59,7 @@ const user=useStore();
     } catch (error) {error}
   };
   const receivedData = () => {
-    fetch(`${backendHost}/favourite/userid/${user.getState().userId.regId}/favouritearticle`)
+    fetch(`${backendHost}/favourite/userid/${user}/favouritearticle`)
       .then(res => res.json())
       .then(json => {
         setIsLoaded(true);
@@ -132,7 +132,7 @@ const user=useStore();
                               <Card
   key={Math.random().toString(36)}
                                 style={{
-                                  width: scale(370),
+                                  width: scale(350),
                                   height: '100%',
                                   overflow:'hidden',
                                   backgroundColor: '#f7f7f7',
@@ -161,8 +161,8 @@ const user=useStore();
                                       width: scale(160),
                                       height: '100%',
                                       marginTop: 0,
-                                      borderBottomLeftRadius:15,
-                                      borderTopLeftRadius:15
+                                      borderBottomLeftRadius:5,
+                                      borderTopLeftRadius:5
                                     }}
                                   />
                                   </TouchableOpacity>

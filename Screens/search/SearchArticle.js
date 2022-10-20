@@ -14,12 +14,12 @@ import {backendHost} from '../../components/apiConfig';
 import { HStack, Stack, Center, Heading, NativeBaseProvider, Container ,Input} from "native-base"
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
-import { useStore } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const SearchArt = ()=>{
    const navigation=useNavigation();
    const [dataSource, setDataSource] = useState([]);
- const user=useStore();
+   const user=useSelector((state)=>state.userId.regId) ;
   const [colors] = useState(['#84DCC6', '#FEC8C8', '#F7E4CF', '#E8DEF3']);
   const [text, setText] = useState('');
   const isearch = texts => {
@@ -62,7 +62,7 @@ const [uniqueId,setUniqueId]=useState()
   const info=()=>{
     axios.post(`${backendHost}/data/create`,{
       'device_id': uniqueId,
-      'user_id':user.getState().userId.regId,
+      'user_id':user,
       'event_type':'search',
       'event_value':text
     })
@@ -149,7 +149,6 @@ const [uniqueId,setUniqueId]=useState()
 <Input
           placeholder="search cures"
           placeholderTextColor="#00415e"
-          bg="#fff"
           onChangeText={onSearch}
           onSubmitEditing={(() => setText(text)& result(text))}
           value={text}
@@ -163,9 +162,9 @@ const [uniqueId,setUniqueId]=useState()
           py="3"
           px="1"
           fontSize="18"
-          autoFocus
+
           InputRightElement={
-            <View style={{position: 'relative', right: 20}}>
+            <View style={{position: 'absolute', right: 20}}>
               <Icon
                 m="2"
                 ml="3"

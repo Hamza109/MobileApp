@@ -103,7 +103,7 @@ const [search,setSearch]=useState();
                 padding: 5,
                 margin: 5,
                 height: verticalScale(150),
-                width: scale(370),
+                width: scale(350),
                 backgroundColor: '#f7f7f7',
                 borderColor:'#e0e0e0',
                 borderWidth:1,

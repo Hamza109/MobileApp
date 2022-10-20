@@ -29,18 +29,18 @@ import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import AllStat from '../search/AllStat';
-import { useStore,useDispatch } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { screenName } from '../Redux/Action';
 const All = () => {
   const navigation = useNavigation();
-  const user=useStore();
+  const user=useSelector((state)=>state.userId.regId) ;
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 const dispatch=useDispatch()
   const [regType, setRegType] = useState();
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
-    if(user.getState().userId.regId===0)
+    if(user===0)
       {
             navigation.replace('SignIn');
       }
@@ -126,7 +126,7 @@ const dispatch=useDispatch()
 
             title = title.replace(regex, '-');
 
-            return i.pubstatus_id === 3 && i.edited_by == user.getState().userId.regId ? (
+            return i.pubstatus_id === 3 && i.edited_by == user ? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -202,7 +202,7 @@ const dispatch=useDispatch()
                   </Card>
                 </View>
               </View>
-            ) : i.pubstatus_id === 2 && i.edited_by == user.getState().userId ? (
+            ) : i.pubstatus_id === 2 && i.edited_by == user? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card
@@ -278,7 +278,7 @@ const dispatch=useDispatch()
                   </Card>
                 </View>
               </View>
-            ) : i.pubstatus_id === 1 && i.edited_by == user.getState().userId ? (
+            ) : i.pubstatus_id === 1 && i.edited_by == user? (
               <View>
                 <View style={{alignItems: 'center'}}>
                   <Card

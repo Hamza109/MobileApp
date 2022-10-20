@@ -171,7 +171,7 @@ const SearchBar = ({placeholder,doc,city}) => {
                   onClear={text => searchFilterFunction('')}
                   onSubmitEditing={(() => setName(name)& docresult(name))}
                   value={name}
-                  width={scale(320)}
+                  width={scale(300)}
           height={verticalScale('52')}
                   color="#00415e"
                   borderRadius="15"

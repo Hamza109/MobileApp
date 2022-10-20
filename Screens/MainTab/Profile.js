@@ -9,6 +9,7 @@ import {
   Image,
   ImageBackground,
   RefreshControl,
+  BackHandler,
   Animated,
 } from 'react-native';
 import {useToast, Divider} from 'native-base';
@@ -50,12 +51,12 @@ import {
 import {TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
-import { useStore ,useDispatch} from 'react-redux';
+import { useSelector ,useDispatch} from 'react-redux';
 import { screenName } from '../Redux/Action';
 
 const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const toast = useToast();
-  const user=useStore();
+  const user=useSelector((state)=>state.userId.regId) ;
   const dispatch=useDispatch();
   const [first, setFirst] = useState();
   const [last, setLast] = useState();
@@ -97,6 +98,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const [mobile, setMobile] = useState();
   const [modalVisible, setModalVisible] = useState(false);
 
+
   const getProfile = userId => {
     axios
       .get(`${backendHost}/profile/${userId}`)
@@ -128,8 +130,8 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const [img, setImg] = useState();
   const getId = () => {
  
-        if (user.getState().userId.regId != 0) {
-          getProfile(user.getState().userId.regId);
+        if (user != 0) {
+          getProfile(user);
         } else {
           navigation.push('SignIn');
         }

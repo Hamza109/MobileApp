@@ -5,7 +5,7 @@ import {
   Text,
 
   StyleSheet,
-
+BackHandler,
   TouchableOpacity,
   ImageBackground,
   Image,
@@ -24,16 +24,15 @@ import {
   
   VStack,
 } from 'native-base';
+import Svg, {Path, Circle} from 'react-native-svg';
 import RBSheet from "react-native-raw-bottom-sheet";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import LottieView from 'lottie-react-native';
 import axios from 'axios';
 import {Card, Checkbox, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
-import ProfileTab from '../search/ProfileTab';
-import DoctorsCard from './DoctorsCard';
 import {backendHost} from '../../components/apiConfig';
 
 import Ratings from '../../components/StarRating';
@@ -47,17 +46,21 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 
 import AllPost from '../search/AllPost';
 import Comment from '../Disease/comment';
-import { useStore } from 'react-redux';
+import { useSelector,useDispatch,useStore } from 'react-redux';
 import { scale, verticalScale } from '../../components/Scale';
+import { fetchRequest,fetchFailure,fetchSuccess } from '../Redux/Action';
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(ids);
-  const user=useStore()
+  const store=useStore();
+  const user=useSelector((state)=>state.userId.regId) ;
   const [items, setItems] = useState([]);
   const [articleItems, setArticleItems] = useState([]);
-
+const dispatch=useDispatch()
+  const doc=useSelector((state)=>state.info.data)
+  const isLoading=useSelector((state)=>state.info.loading)
   const [selected, setSelected] = useState(1);
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -66,15 +69,46 @@ const DocProfile = ({navigation, route}) => {
 
   const [commentItems, setCommentItems] = useState([]);
   const refRBSheet = useRef();
+
+  useEffect(()=>{
+    const backAction =()=>{
+  
+  
+    }
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    ); 
+  
+    return () => backHandler.remove();
+   },[])
+  
+
+
   const check = () => {
-    if (user.getState().userId.regId == 0) {
+    if (user== 0) {
       navigation.navigate('SignIn')
     } else {
      refRBSheet.current.open()
     }
   };
 
- 
+  const [exist,setExist]=useState(false)
+const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${id}.png`)
+
+ const checkIfImage = imageUrl => {
+  fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
+    .then(res => {
+      if (res.ok) {
+        setExist(true);
+      } else {
+        setExist(false);
+      }
+    })
+    .catch(err => err);
+};
+
+
  
 
   
@@ -104,30 +138,37 @@ const DocProfile = ({navigation, route}) => {
   }
   useEffect(()=>{
     comments();
+
   },[id])
   const getDoc = () => {
+      return function(dispatch){
+        dispatch(fetchRequest())
+    axios.get(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
+ 
+      .then(res => res.data)
+      .then(json=>
+        {
+     
+          dispatch(fetchSuccess(json))
+          setIsLoaded(true)
       
-    fetch(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
-      .then(res => res.json())
-      .then(json => {
-    
-
-    
-        setItems(json);
-       
-
-      },[id])
-      .catch(err => {err
-        throw err
         })
+      .catch(err => {err
+   
+          dispatch(fetchFailure(err))
+   
+     
+        })
+      }
   };
+
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
          
     fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`)
       .then(res => res.json())
       .then(json => {
-        setIsLoaded(true)
+
         var temp = [];
         json.forEach(i => {
           if (i.pubstatus_id === 3) {
@@ -136,7 +177,8 @@ const DocProfile = ({navigation, route}) => {
         });
      
         setArticleItems(temp);
-        getDoc()
+     
+     
       },[id])
       .catch(err => {
     err
@@ -150,77 +192,97 @@ const DocProfile = ({navigation, route}) => {
     }
     return JSON.parse(str).blocks;
   }
-// useEffect(()=>{
-//   getDoc();
-// },[id])
+  function User() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={scale(120)}
+        height={verticalScale(120)}
+        fill="none"
+        viewBox="0 0 43 43">
+        <Path
+          fill="#e5e5e5"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
+      </Svg>)
+  }
+
 
 useEffect(()=>{
+ 
   getRating();
+  checkIfImage(url);
+
+
 })
+useEffect(()=>{
+  store.dispatch(getDoc())
+},[id])
   useEffect(() => {
 
     allpost();
 
   }, [id]);
-  if (!isLoaded) {
-    return (
-      <View style={styles.loading}>
-        <HStack space={2} justifyContent="center">
-          <LottieView
-            source={require('../../assets/animation/load.json')}
-            autoPlay
-            loop
-            style={{width: 50, height: 50, justifyContent: 'center'}}
-          />
-        </HStack>
-      </View>
-    );
-  } 
-else{
+  
   return (
     <>
       <View style={{flex: 1, backgroundColor: '#fff'}}>
+        {
+          !isLoaded?(
+            <View style={styles.loading}>
+            <HStack space={2} justifyContent="center">
+              <LottieView
+                source={require('../../assets/animation/load.json')}
+                autoPlay
+                loop
+                style={{width: 50, height: 50, justifyContent: 'center'}}
+              />
+            </HStack>
+          </View>
+  ):null
+        }
+
         <Stack space={5}>
-          <View style={{height:verticalScale(155),width:scale(400)}}>
+          <View style={{height:verticalScale(165),width:scale(400)}}>
           <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center'}}>
             <HStack space={5} p='1'>
               <VStack py='2'>
+                {exist?
               <Card
 
                 style={{
                   width: scale(120),
-                  height: verticalScale(120),
+                  height: scale(120),
                   backgroundColor: '#fff',
                   borderRadius: 200,
-                
+                 marginLeft:-20,
                   justifyContent: 'center',
                   paddingHorizontal: 5,
                   alignItems: 'center',
                 }}>
                 <ImageBackground
                   source={{
-                    uri: `http://all-cures.com:8080/cures_articleimages/doctors/${items.rowno}.png`,
+                    uri: url
                   }}
                   style={{
                     width: scale(120),
-                    height: verticalScale(120),
+                    height: scale(120),
                     borderRadius: 200,
                     overflow: 'hidden',
                   }}
                 />
-              </Card>
+              </Card>: <User/> }
               </VStack>
               <View style={{width:wp('50%') }}>
-                <VStack space={1} py='2'>
+                <VStack space={1} py='1' px='0'>
 
                   <Text
                     style={{
                       color: '#fff',
 
                       fontFamily: 'Raleway-Bold',
-                      fontSize: wp('3.5%'),
+                      fontSize: scale(15),
                     }}>
-                    Dr. {items.docname_first} {items.docname_last}
+                    Dr. {doc.docname_first} {doc.docname_last}
                   </Text>
                   <HStack space={1}>
                     <Icon name="ribbon" size={18} color='#fff' />
@@ -230,10 +292,10 @@ else{
                         color: '#fff',
 
                         fontFamily: 'Raleway-Regular',
-                        fontSize: wp('2.5%'),
-                        width: wp('55%'),
+                        fontSize: scale(10),
+                        width: scale(155),
                       }}>
-                      {items.primary_spl}
+                      {doc.primary_spl}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -243,11 +305,12 @@ else{
                         color: '#fff',
 
                         fontFamily: 'Raleway-Regular',
-                        fontSize: wp('2.5%'),
+                        fontSize: scale(10),
+                        width: scale(155),
                         position: 'relative',
                         bottom: 0,
                       }}>
-                      {items.hospital_affliated}
+                      {doc.hospital_affliated}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -257,12 +320,13 @@ else{
                       color: '#fff',
 
                       fontFamily: 'Raleway-Regular',
-                      fontSize: wp('2.5%'),
+                      fontSize: scale(10),
+                        width: scale(180),
                       position: 'relative',
                      
                     }}>
                   
-                    {items.state} {items.country_code}
+                    {doc.state} {doc.country_code}
                   </Text>
                   </HStack>
                   <View
@@ -298,7 +362,7 @@ else{
               
               shadow={5}>
               <Center mr='10' flex={1}>
-                <Ratings rowno={items.rowno} article_id={null} />
+                <Ratings rowno={doc.rowno} article_id={null} />
                 <Text
                   style={{
                     fontFamily: 'Raleway',
@@ -344,7 +408,7 @@ else{
               </Text>
               <Text
                 style={styles.dbodyText}>
-                {items.about}
+                {doc.about}
               </Text>
               <Text
                   style={styles.dbodyHead}>
@@ -352,7 +416,7 @@ else{
               </Text>
               <Text
                 style={styles.dbodyText}>
-                {items.edu_training}
+                {doc.edu_training}
               </Text>
               <Text
                   style={styles.dbodyHead}>
@@ -361,7 +425,7 @@ else{
 
               <Text
                  style={styles.dbodyText}>
-                {items.primary_spl}
+                {doc.primary_spl}
               </Text>
               <Text
                    style={styles.dbodyHead}>
@@ -404,7 +468,7 @@ else{
                           <View  key={Math.random().toString(36)}>
                             <Card
                               style={{
-                                width: scale(400),
+                                width: scale(350),
                                 height: verticalScale(85),
                                 backgroundColor: '#f7f7f7',
                                 overflow:'hidden',
@@ -556,7 +620,7 @@ else{
               </ScrollView>
 <Divider  bg={'Darkgray'} />
 <View style={styles.cComment}>
-<Comment  article_id={null}  doc_id={items.rowno}/>
+<Comment  article_id={null}  doc_id={doc.rowno}/>
 </View>
 
     </Stack>
@@ -565,7 +629,7 @@ else{
       </View>
     </>
   )};
-};
+
 export default DocProfile;
 
 const width = Dimensions.get('screen').width;
@@ -621,7 +685,7 @@ const styles = StyleSheet.create({
   },
   loading: {
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF88',
+    backgroundColor: '#e5e5e5',
     position: 'absolute',
     left: 0,
     right: 0,
