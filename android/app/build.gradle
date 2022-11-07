@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.firebase-perf'
 import com.android.build.OutputFile
 
 /**
@@ -135,8 +136,8 @@ android {
         applicationId "com.allcures"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 5
+        versionName "4.0"
         vectorDrawables.useSupportLibrary = true
     }
     splits {
@@ -200,6 +201,8 @@ dependencies {
 implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 implementation 'com.google.firebase:firebase-analytics'
+implementation 'com.google.firebase:firebase-perf'
+implementation 'com.google.firebase:firebase-messaging'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }
