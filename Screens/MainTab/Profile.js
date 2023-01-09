@@ -223,7 +223,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   };
 
   const formSubmit = e => {
-    setafterSubmitLoad(true);
+
 
     axios
       .post(
@@ -259,7 +259,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         }
       })
       .catch(res => {
-        setafterSubmitLoad(false);
+      
         Alert(`Some error occured. Try again later ${res}`);
       });
   };
@@ -792,7 +792,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                             <Input
                               value={website}
                               onChangeText={text => setWebsite(text)}
-                              keyboardType="numeric"
+                              keyboardType="text"
                             />
                           </FormControl>
                           <FormControl isRequired>
@@ -1069,7 +1069,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                     style={styles.btn}
                     onPress={() => {
                       formSubmit();
-                      changeHandler();
+                  
                     }}>
                     <Text style={{color: 'white', fontWeight: 'bold'}}>
                       Submit

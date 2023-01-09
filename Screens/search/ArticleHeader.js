@@ -34,11 +34,12 @@ return(
 <SafeAreaView style={styles.container}>
   
   <View styles={styles.flex}>
-    <Card style={styles.header}>
-<HStack space={2} >
-<Icon name="arrow-back-outline" style={{marginTop:7,marginLeft:7}}color={'#00415e'} size={35} onPress={()=>{doc===1||city===1?navigation.navigate('DocTab'):navigation.navigate('Main')}}/>
+    <View style={styles.header}>
+    <View style={styles.headBar}>
+<Icon name="arrow-back-outline" style={{marginTop:7,marginRight:15,marginLeft:-15}}color={'#00415e'} size={35} onPress={()=>{doc===1||city===1?navigation.navigate('DocTab'):navigation.navigate('Main')}}/>
 <TouchableOpacity
             activeOpacity={0.8}
+            style={{width:'100%',paddingHorizontal:0}}
             onPress={() => {
               if(doc==1)
               {
@@ -51,8 +52,9 @@ return(
                 navigation.navigate('searchArt');
               }
             }}>
+              
             <View style={styles.card}>
-              <HStack ml="2" space={110} alignItems="center">
+              <HStack ml='2' >
               {
                     doc?(
                <Text  style={{
@@ -79,8 +81,8 @@ return(
               </HStack>
             </View>
           </TouchableOpacity>
-</HStack>
-</Card>
+</View>
+</View>
 
 
 
@@ -102,12 +104,11 @@ const styles = StyleSheet.create({
 card: {
 
   backgroundColor: 'rgba(0, 65, 94, 0.2)',
-  width:scale(300),
-    height:verticalScale('52'),
+  width:'100%',
+    height:52,
   fontSize: 20,
-  paddingTop:13,
+  justifyContent:'center',
   borderRadius: 15,
-  position: 'relative',
   },
   inCard: {
   
@@ -119,23 +120,30 @@ card: {
    
 // },
 header:{
-flexDirection:'row',
-padding: 0,
+
 marginTop: Platform.OS === 'ios' ? -17 : 0,
-marginLeft:0,
 borderColor: '#fff',
 borderWidth: 0.1,
 alignItems: 'center',
-width: wp('100%'),
-height: 85,
+width: '100%',
+
 backgroundColor:'#fff'
 
 },
 icon: {
-  padding: 3,
+  justifyContent:'center',
   position: 'absolute',
   right: 10,
   color: '#00415e',
+},
+headBar:
+{
+  width:'100%',
+  flexDirection:'row',
+justifyContent:'space-evenly',
+marginTop:12,
+paddingHorizontal:35,
+marginBottom:10
 },
 
 })

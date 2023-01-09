@@ -27,7 +27,7 @@ import {
 import axios from 'axios';
 import Home from '../MainTab/Home';
 import * as Animatable from 'react-native-animatable';
-
+import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import {useTheme} from 'react-native-paper';
@@ -41,6 +41,10 @@ import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {usePasswordValidation} from '../../components/usePasswordValidation';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch,useStore } from 'react-redux';
+import { reg } from '../Redux/Action';
+import { screenName } from '../Redux/Action';
+
 const SignUpScreen = ({props}) => {
   const [emails, setEmails] = useState('');
 const navigation=useNavigation()
@@ -48,7 +52,9 @@ const navigation=useNavigation()
     firstPassword: '',
     secondPassword: '',
   });
-
+  const user=useStore()
+  const dispatch=useDispatch();
+  const routeName = useStore()
   const [firstName, setFname] = useState('');
   const [lastName, setLname] = useState('');
   const [userType, setUserType] = useState('other');
@@ -60,7 +66,7 @@ const navigation=useNavigation()
   const [isError, setError] = useState(false);
   const [status, setStatus] = useState('');
 
-  const [buttonClick, setClicked] = useState('');
+
 
   const [number, setMname] = useState('');
   const toast = useToast();
@@ -91,21 +97,36 @@ const navigation=useNavigation()
       error;
     }
   };
+  const spinner = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        <HStack space={2} justifyContent="center">
+          <LottieView
+            source={require('../../assets/animation/pulse.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50}}
+          />
+          {/* <Spinner
+            accessibilityLabel="Loading posts"
+            color="#fff"
+            size="lg"
+          /> */}
+        </HStack>
+      </View>
+    );
+  }
   const SignUpForm = () => {
     setLoading(true);
-    setClicked(1);
-    setTimeout(() => {
-      if(!validEmail)
-      {
-      setClicked(0)
-      setLoading(false);
-      }
-     
-    }, 2000);
+   
+    
     var res;
 
+
+
+
     if (validEmail && upperCase && lowerCase && match) {
-      axios.defaults.withCredentials = true;
+     
       axios
         .post(
           `${backendHost}/RegistrationActionController?firstname=${firstName}&lastname=${lastName}&email=${emails}&psw=${password.firstPassword}&psw-repeat=${password.secondPassword}&rempwd=on&doc_patient=${userType}&acceptTnc=${terms}&number=${number}`,
@@ -113,7 +134,10 @@ const navigation=useNavigation()
         )
         .then(response => {
           if (response.data.registration_id) {
-            setLoading(false);
+           setTimeout(()=>{
+               navigation.push(routeName.getState().name.screen)
+          
+            user.dispatch(reg(response.data.registration_id))
             toast.show({
               title: 'Signup Successful',
               description: 'Welcome To All Cures',
@@ -122,14 +146,14 @@ const navigation=useNavigation()
               style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
             });
             
-            navigation.navigate('Main'),
-            setId(response.data.registration_id),
             setType(response.data.registration_type),
             setFirst(response.data.first_name),
             setLast(response.data.last_name),
             setRow(response.data.rowno);
           setEmail(response.data.email_address);
-
+           },3000)
+           
+       
           } else if (response.data == 'Email Address already Exists in the System') {
             setLoading(false);
             toast.show({
@@ -144,11 +168,15 @@ const navigation=useNavigation()
           }
         })
         .catch(res => {
-          setLoading(false);
-          Alert.alert('some error occured');
+      console.log('error')
+         
         });
     } else {
-      return;
+      setTimeout(()=>{
+        setLoading(false);
+    
+      },2000)
+  
     }
   };
 
@@ -251,7 +279,7 @@ const navigation=useNavigation()
        <TouchableOpacity
           style={{marginLeft: 20,   zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.push('Main')}>
+          onPress={() => dispatch(screenName('Main'))& navigation.replace('Main')}>
           <Text
             style={{
               color: '#fff',
@@ -275,6 +303,7 @@ const navigation=useNavigation()
               <TextInput
                 placeholder="Enter first name"
                 placeholderTextColor="#fff"
+                
                 style={[
                   styles.textInput,
                   {
@@ -362,7 +391,7 @@ const navigation=useNavigation()
                 onChangeText={e => setFirstP(e)}
               />
 
-              {buttonClick === 1 ? (
+              {loading ? (
                 <View>
                   {!validEmail && Alert.alert('Enter Valid Email')}
                   {!validLength &&
@@ -438,17 +467,10 @@ const navigation=useNavigation()
                   ]}>
                   Sign Up
                 </Text>
-                {loading ? (
-                  <View>
-                    <Spinner
-                      accessibilityLabel="Loading posts"
-                      color="#00415e"
-                      size="lg"
-                    />
-                  </View>
-                ) : null}
+                
               </HStack>
             </TouchableOpacity>
+            {loading?spinner():null}
             <VStack space={50}>
               <TouchableOpacity>
                 <Text

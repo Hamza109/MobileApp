@@ -16,18 +16,22 @@ import ProfileScreen from './MainTab/Profile';
 import DocTab from './MainTab/DocTab';
 import DocResult from './search/DocResult';
 import SearchDoc from './search/SearchDoc';
-
+import Settings from './Privacy/settings'
 import SearchDocCity from './search/SearchDocCity';
 import DocResultCity from './search/DocResultCity';
 import DocProfile from './MainTab/DocProfile';
 import SignUpScreen from './login/SignUp';
 import DrawerMenu from './MainTab/DrawerMenu';
-
 import Subscribe from '../components/Subscribe';
 import Feedback from '../components/FeedBack';
 import Forgetpass from './login/ForgetPass';
 import MyCures from './MainTab/MyCures';
 import HomeScreen from './MainTab/Home';
+import Legal from './Privacy/legal';
+import Privacy from './Privacy/privacy';
+import Terms from './Privacy/terms';
+import About from './Privacy/about';
+import Contact from './Privacy/contact';
 
 
 
@@ -48,9 +52,7 @@ return(
         },
         
         headerTintColor: '#00415e',
-        headerTitleStyle: {
-          fontWeight: 'raleway-medium',
-        },
+       
       }}>
 <Stack.Screen
         name="SplashScreen"
@@ -66,6 +68,7 @@ return(
  <Stack.Screen
         name="SignIn"
         component={SignInScreen}
+        
         options={{headerShown: false,gestureEnabled:false}}
       />
       <Stack.Screen
@@ -110,7 +113,7 @@ return(
       <Stack.Screen
         name="searchArt"
         component={SearchArt}
-        options={{headerShown: false}}
+        options={{headerShown: false,}}
       />
     
       <Stack.Screen
@@ -134,13 +137,31 @@ return(
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('Main')}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
       />
      
 </Stack.Navigator>
 
 )
 }
+const SettingStack=()=>{
+  return(
+  <Stack.Navigator
+  initialRouteName="settings"
+  screenOptions={{
+   headerShown:false
+  }}>
+<Stack.Screen name='settings' component={Settings}  />
+<Stack.Screen name='legal' component={Legal} />
+<Stack.Screen name='privacy' component={Privacy}  />
+<Stack.Screen name='terms' component={Terms}  />
+<Stack.Screen name='about' component={About}  />
+<Stack.Screen name='contact' component={Contact}  />
+
+  </Stack.Navigator>
+  )
+}
+
 const HomeStack = () => {
   const navigation = useNavigation();
 
@@ -181,12 +202,12 @@ return(
   screenOptions={{
     headerStyle: {
       backgroundColor: '#fff',
-     height:Platform.OS ==='android'?60:70,
+     height:Platform.OS ==='android'?60:80,
 
     },
     headerTintColor: '#00415e',
     headerTitleStyle: {
-      fontWeight: 'raleway-medium', marginTop:Platform.OS === 'android'?0:30
+       marginTop:Platform.OS === 'android'?0:40
       
     },
   }}>
@@ -196,7 +217,7 @@ return(
         options={{
       headerTitle:'Doctor',
           headerLeft: () => (
-  
+        
             <Icon
               name="user-md"
               size={30}
@@ -245,7 +266,7 @@ return(
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('Main')}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
       />
       <Stack.Screen
         name="SearchDoc"
@@ -280,7 +301,7 @@ return(
       screenOptions={{
         headerStyle: {
           backgroundColor: '#fff',
-          height:Platform.OS ==='android'?60:70,
+          height:Platform.OS ==='android'?60:80,
      
   
         },
@@ -316,4 +337,4 @@ return(
 )
 }
 
-export {DocStack, SplashStack,CuresStack,HomeStack}
+export {DocStack, SplashStack,CuresStack,HomeStack,SettingStack}

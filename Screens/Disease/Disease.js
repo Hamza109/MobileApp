@@ -12,6 +12,8 @@ import {
   ToastAndroid,
   Share,
   BackHandler,
+  SafeAreaView,
+  Linking,
   Platform,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
@@ -52,6 +54,7 @@ import {useIsFocused} from '@react-navigation/native';
 import Svg, {Path, Circle} from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 import {block} from 'react-native-reanimated';
+import RenderHTML from 'react-native-render-html';
 const Disease = ({navigation, route}) => {
   const toast = useToast();
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -73,6 +76,9 @@ const Disease = ({navigation, route}) => {
   const refRBSheet = useRef();
   const [url,setUrl]=useState()
   const dispatch=useDispatch();
+  const [isVisible, setIsVisible] = useState(false);
+
+
   const check = () => {
     if (user.getState().userId.regId == 0) {
       navigation.navigate('SignIn');
@@ -84,13 +90,15 @@ const Disease = ({navigation, route}) => {
 
  useEffect(()=>{
   const backAction =()=>{
-    flow!=0?
+    Platform.OS=='ios'?
+    flow===1?
     navigation.setOptions({
       gestureEnabled:false
     }):null
-  if (flow!==0){
+    :null
+  if (flow===1){
 
-    navigation.push('Main')
+ navigation.push('Main')
     return true;
   }
 
@@ -105,6 +113,7 @@ const Disease = ({navigation, route}) => {
 
   useEffect(() => {
     getRating();
+    console.log('flow',flow)
   }, [id]);
   
   const comment=()=>{  fetch(`${backendHost}/rating/target/${id}/targettype/2`)
@@ -231,13 +240,16 @@ const Disease = ({navigation, route}) => {
       .catch(err => err);
   };
   const isFocus = useIsFocused();
+
   useEffect(() => {
+    
     const get = () => {
-      fetch(`${backendHost}/article/${id}`)
+      const getArticle = new Promise((resolve,reject)=>{
+        fetch(`${backendHost}/article/${id}`)
         .then(res => res.json())
         .then(json => {
-          setIsLoaded(true);
-          setData(json);
+          
+         resolve(setData(json));
           setItems(JSON.parse(decodeURIComponent(json.content)).blocks);
          
           var articleTitle = json.title;
@@ -248,7 +260,13 @@ const Disease = ({navigation, route}) => {
           err;
           throw err;
         });
+      })
+      getArticle.then(()=>{
+        setIsLoaded(true);
+      })
+   
     };
+   
 get();
 
     return () => {
@@ -262,7 +280,7 @@ get();
 
     if (data.reg_doc_pat_id !== null) {
       checkIfImageExits(
-        `http://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
+        `https://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
       );
     }
   }, []);
@@ -288,7 +306,7 @@ get();
     fetch(`${backendHost}/isearch/${data.dc_name}`)
       .then(res => res.json())
       .then(json => {
-        setIsLoaded(true);
+        
         setSItems(json);
       })
       .catch(err => {
@@ -334,7 +352,7 @@ get();
         throw err;
       });
   };
-  const [rate, setRate] = useState([]);
+  
 
   const handlePress = () => {
     if (like.getState().favourite.stat == 1) {
@@ -402,10 +420,10 @@ get();
     }
   };
   useEffect(() => {
-    if (isFocus) {
+ 
       stat();
-    }
-  }, [user.getState().userId.regId,id]);
+   
+  }, [user.getState().userId.regId]);
 
   if (!isLoaded) {
     return (
@@ -425,39 +443,37 @@ get();
       <View style={styles.container}>
         <View>
           <View style={{flex: 1}}>
-            <View style={styles.HeadCard}>
-              <HStack
-                ml={Platform.OS === 'android' ? '3' : '3'}
-                mt={Platform.OS === 'android' ? '2' : '9'}
-                space={1}>
+            <SafeAreaView style={styles.HeadCard}>
+              <View style={styles.headerMain} >
                 <Icon
                   name="close-circle-outline"
-                  size={Platform.OS==='ios'?35:35}
+                  size={35}
                   color={'#00415e'}
                   onPress={() => {
                     navigation.push('Main');
                   }}
                 />
-                <View style={{width: wp('75%'), height: 50}}>
+               <View style={{marginTop:6,paddingHorizontal:25}}>
                   <Text
                     adjustsFontSizeToFit
                     numberOfLines={2}
                     style={{
                       color: '#00415e',
-
+                    
                       fontFamily: 'Raleway-Bold',
-                      fontSize: wp('4%'),
-                      textAlign: 'left',
+                      fontSize: 13,
+                      textAlign: 'auto',
                     }}>
                     {data.title}
                   </Text>
-                </View>
+                  </View>
+               
                 {user.getState().userId.regId != 0 ? (
                   response.length != 0 ? (
                     like.getState().favourite.stat == 0 ? (
                       <Icon
                         name={'heart-outline'}
-                        size={30}
+                        size={32}
                         color={'#00415e'}
                         onPress={() => {
                           handlePress();
@@ -466,7 +482,7 @@ get();
                     ) : (
                       <Icon
                         name={'heart'}
-                        size={30}
+                        size={32}
                         color={'red'}
                         onPress={() => {
                           handlePress();
@@ -484,13 +500,15 @@ get();
                     />
                   )
                 ) : null}
-              </HStack>
+              </View>
               <View
                 style={{
-                  width: wp('25%'),
-                  position: 'relative',
-                  left: 64,
-                  marginTop: 5,
+                  width: '100%',
+                 alignItems:'center',
+                  flexDirection:'row',
+                  justifyContent:'space-evenly'
+                 
+                  
                 }}>
                 <StarRating
                   disabled={false}
@@ -500,8 +518,18 @@ get();
                   emptyStarColor={'#00415e'}
                   fullStarColor={'orange'}
                 />
+                <Text
+                    style={{
+                      color: '#00415e',
+
+                      fontFamily: 'Raleway-Light',
+                      fontSize: 16,
+                      textAlign: 'left',
+                    }}>
+                    {data.authors_name} ▪️ {data.published_date}
+                  </Text>
               </View>
-            </View>
+            </SafeAreaView>
             <ScrollView
               style={{
                 width: wp('100%'),
@@ -512,19 +540,10 @@ get();
                 marginRight: 5,
                 paddingRight: 5,
               }}>
-              <VStack space={3} ml="1">
-                <HStack>
-                  <Text
-                    style={{
-                      color: '#00415e',
-
-                      fontFamily: 'Raleway-Light',
-                      fontSize: 16,
-                      textAlign: 'left',
-                    }}>
-                    {data.authors_name} ▪️ {data.published_date}
-                  </Text>
-                </HStack>
+              <VStack space={3} ml="1" mb='2'>
+                
+                  
+                
 
                 {items.map((i, key) => (
                   <View>
@@ -544,56 +563,69 @@ get();
                     />
                   </View>
                 ))}
+
+              <TouchableOpacity
+        style={styles.button}
+        onPress={() => setIsVisible(!isVisible)}
+      >
+      
+        <Icon color='#00415e' name={isVisible ? 'ios-remove-circle-outline' : 'ios-add-circle-outline'} size={22}  />
+        <Text style={styles.buttonText}>Sources</Text>
+      </TouchableOpacity>
+              {isVisible && (
+                <View style={{width:'100%',justifyContent:'center'}}>
+        <Text style={styles.text}>{data.window_title}</Text>
+        </View>
+      )}
               </VStack>
+
+
+   
+
               <View style={{marginTop: 5}}>
                 <VStack space={2}>
                   {data.reg_type == 1 ? (
-                    <Card
-                      style={{
-                        width: wp('94%'),
-                        height: hp('12%'),
-                        backgroundColor: '#E5E5E5',
-                        padding: 10,
-                        marginTop: 10,
-                        marginLeft: 5,
-                        marginBottom: 5,
-                      }}>
-                      <HStack space={2}>
+                    <View
+                    style={styles.author}>
+       
                         <Card
                           style={{
-                            width: wp('20%'),
-                            height: hp('10%'),
+                            width: 80,
+                            height: 80,
                             borderRadius: 200,
-
                             backgroundColor: '#fff',
+                            overflow: 'hidden',
+                            marginLeft:-25
                           }}>
                           <ImageBackground
                             source={{
-                              uri: `http://all-cures.com:8080/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
+                              uri: `https://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
                             }}
                             style={{
-                              width: wp('20%'),
-                              height: hp('10%'),
+                              width: 80,
+                              height: 80,
                               borderRadius: 200,
-                              overflow: 'hidden',
+                       
                             }}
                           />
                         </Card>
-                        <VStack py="5">
+                        <View style={styles.detailAuthor}>
                           <Text
                             style={{
                               color: '#00415e',
                               fontFamily: 'Raleway-Medium',
-                              fontSize: wp('4%'),
+                              fontSize: 15,
+                              marginBottom:0
                             }}>
                             AUTHOR
                           </Text>
-                          <HStack space={4}>
+                        
                             <Text
                               style={{
                                 color: '#00415e',
                                 fontFamily: 'Raleway-Light',
-                                fontSize: wp('3%'),
+                                fontSize: 18,
+                                marginBottom:5
                               }}>
                               {data.authors_name}
                             </Text>
@@ -606,68 +638,103 @@ get();
                               }}>
                               <View
                                 style={{
-                                  width: wp('15%'),
+                
                                   backgroundColor: '#00415e',
-                                  borderRadius: 20,
-                                  alignItems: 'center',
-                                  flex: 1,
-                                  height: hp('2.5%'),
+                                  borderRadius: 5,
+                                  justifyContent:'center',
+                                  height: 25,
+                                  width:80,
+                                 
+                                
                                 }}>
                                 <Text
+                                numberOfLines={2}
                                   style={{
                                     color: '#fff',
                                     fontFamily: 'Raleway-Light',
-                                    fontSize: wp('2%'),
+                                    alignSelf:'center',
+                                    fontSize:12,
                                     textDecorationLine: 'underline',
                                   }}>
                                   View Profile
                                 </Text>
                               </View>
                             </TouchableOpacity>
-                          </HStack>
-                        </VStack>
-                      </HStack>
-                    </Card>
+                        
+                        </View>
+               
+                    </View>
                   ) : data.reg_type == 2 || data.reg_type == 3 ? (
                     <VStack>
-                      <Card
-                        style={{
-                          width: wp('94%'),
-                          height: hp('12%'),
-                          backgroundColor: '#E5E5E5',
-                          padding: 10,
-                          marginLeft: 5,
-                          marginTop: 10,
-                          marginBottom: 5,
-                        }}>
-                        <HStack space={2}>
+                      <View style={styles.author}>
+                  
+                       <View style={{marginLeft:-25}}>
                           <User />
-                          <VStack py="5">
+                          </View>
+                          <View style={styles.detailAuthor}>
                             <Text
                               adjustsFontSizeToFit
-                              numberOfLines={1}
                               style={{
                                 color: '#00415e',
-                                fontFamily: 'Raleway-Medium',
-                                fontSize: wp('4%'),
+                              fontFamily: 'Raleway-Medium',
+                              fontSize: 16,
+                              marginBottom:0
                               }}>
                               AUTHOR
                             </Text>
                             <Text
                               style={{
                                 color: '#00415e',
+                                fontSize: 20,
                                 fontFamily: 'Raleway-Light',
                               }}>
                               {data.authors_name}
                             </Text>
-                          </VStack>
-                        </HStack>
-                      </Card>
+                          </View>
+                      
+                      </View>
+                      
                     </VStack>
                   ) : null}
-                  <View style={{backgroundColor: 'lightgrey', padding: 10}}>
+                    <Card
+                                style={{
+                                  width: '100%',
+                                  overflow:'hidden',
+                                  backgroundColor: '#f0f8ff',
+                                  borderWidth:1,
+                                  elevation:2,
+                                  borderColor:'#e6f7ff',
+                                 alignItems:'center',
+                                 flexDirection:'row',
+                                 justifyContent:'center',
+                                 padding:8,
+                                  borderRadius:15,
+                                }}
+                              >
+                               
+                              
+
+                              
+                                <Text style={[styles.disclaimer,{fontFamily:'Raleway-Bold'}]}>
+                                  Disclaimer :                        
+                                </Text>
+                                <Text style={styles.disclaimer}>Content available on All Cures website is not intended to 
+                                  be a substitute for professional medical advice, diagnosis, or treatment. 
+                                  It is strongly recommended to consult your physician or other qualified medical practitioner with 
+                                  any questions you may have regarding a medical condition. The website should not be used as 
+                                  a source for treatment of any medical condition.
+                                  </Text> 
+
+
+                            
+                               
+                           
+
+                              </Card>
+
+                  <View style={{backgroundColor: '#00415e', padding: 10,borderRadius:5}}>
                     <Text
-                      style={{fontFamily: 'Raleway-Medium', color: '#00415e'}}>
+                      style={{fontFamily: 'Raleway-Medium', color: '#fff',alignSelf:'center'}}>
                       Recommended Articles
                     </Text>
                   </View>
@@ -705,13 +772,13 @@ get();
                               <Card
   key={Math.random().toString(36)}
                                 style={{
-                                  width: scale(350),
+                                  width: scale(wp('97%')),
                                   height: '100%',
                                   overflow:'hidden',
-                                  backgroundColor: '#f7f7f7',
+                                  backgroundColor: '#f0f8ff',
                                   borderWidth:1,
                                   elevation:2,
-                                  borderColor:'#e0e0e0',
+                                  borderColor:'#e6f7ff',
                                  marginBottom:5,
                                   borderRadius:15,
                              
@@ -799,6 +866,7 @@ get();
                                 
                              
                               </Card>
+                             
                             </View>
                           </View>
                           );
@@ -1116,6 +1184,14 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
   },
+  headerMain:{
+    
+    marginTop:Platform.OS=='android'?0:-13,
+   flexDirection:'row',
+   justifyContent:'space-evenly' ,
+   paddingHorizontal:20,
+   
+  },
   card: {
     padding: 10,
     margin: 0,
@@ -1127,9 +1203,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#00415e',
   },
   HeadCard: {
+    
     backgroundColor: '#fff',
     width: wp('100%'),
-    height: Platform.OS === 'android' ? 80 : 110,
+     justifyContent:'space-between',
+    height: Platform.OS === 'android' ? 70 : 110,
     fontSize: 20,
   },
 
@@ -1145,9 +1223,11 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    backgroundColor: '#00415e',
-    color: '#fff',
-    textAlign: 'center',
+
+    color: '#00415e',
+    textAlign: 'left',
+    fontFamily:'Raleway-Regular',
+    marginLeft:10
   },
   h1: {
     position: 'relative',
@@ -1238,8 +1318,41 @@ const styles = StyleSheet.create({
       paddingLeft:25,
       marginTop:8
       },
+      author:{
+        width: '100%',
+        height: 92,
+        overflow:'hidden',
+        backgroundColor: '#f0f8ff',
+        borderWidth:1,
+        elevation:2,
+        borderColor:'#e6f7ff',
+       borderRadius:15,
+        flexDirection:'row',
+        justifyContent:'space-evenly',
+       alignItems:'center',
+       paddingHorizontal:25
+
+      },
+      detailAuthor:{
+       justifyContent:'center',
+       
+      },
+      button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
+      buttonText:{
+       color:'#00415e',
+       alignSelf:'center',
+       textDecorationLine:'underline',
+       fontSize:15
+  
+      },
       cbodyHead:{
         fontWeight:'bold',
         color:'black'
-      }
+      },
+    disclaimer:{color:'#00415e',
+    fontFamily:'Raleway-Medium',
+    fontSize:14}
 });

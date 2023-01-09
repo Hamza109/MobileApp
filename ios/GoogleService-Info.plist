@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>24954865850-6810t5r10o1khck0p8a3453b4hev9nme.apps.googleusercontent.com</string>
+	<string>24954865850-7ufcqocsfi20apf5opkk7t80e16r9ep9.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.24954865850-6810t5r10o1khck0p8a3453b4hev9nme</string>
+	<string>com.googleusercontent.apps.24954865850-7ufcqocsfi20apf5opkk7t80e16r9ep9</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>24954865850-4r0ars4opmaffqutq2sb6tgar3nrlqt8.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.example.AllCures</string>
+	<string>org.etherium.AllCures</string>
 	<key>PROJECT_ID</key>
 	<string>all-cures007</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:24954865850:ios:94c48018a14d2a5fac9a83</string>
+	<string>1:24954865850:ios:952cb1903ba8311aac9a83</string>
 </dict>
 </plist>

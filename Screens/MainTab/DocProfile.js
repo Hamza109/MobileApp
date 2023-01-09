@@ -49,6 +49,9 @@ import Comment from '../Disease/comment';
 import { useSelector,useDispatch,useStore } from 'react-redux';
 import { scale, verticalScale } from '../../components/Scale';
 import { fetchRequest,fetchFailure,fetchSuccess } from '../Redux/Action';
+import DocInfo from './DocProfile/DocInfo';
+import DocCures from './DocProfile/DocCures';
+import DocProfileTab from './DocProfile/DocProfileTab';
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
@@ -225,8 +228,8 @@ useEffect(()=>{
   
   return (
     <>
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
-        {
+    
+       {
           !isLoaded?(
             <View style={styles.loading}>
             <HStack space={2} justifyContent="center">
@@ -240,38 +243,42 @@ useEffect(()=>{
           </View>
   ):null
         }
-
-        <Stack space={5}>
-          <View style={{height:verticalScale(165),width:scale(400)}}>
-          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center'}}>
-            <HStack space={5} p='1'>
-              <VStack py='2'>
+      <View>
+        
+      <View style={{height:165,width:'100%'}}>
+          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center',justifyContent:'center'}}>
+            <View style={styles.row}>
+              
                 {exist?
-              <Card
+              <View
 
                 style={{
-                  width: scale(120),
-                  height: scale(120),
+                  width: 130,
+                  height: 130,
                   backgroundColor: '#fff',
                   borderRadius: 200,
-                 marginLeft:-20,
+                 marginLeft:20,
                   justifyContent: 'center',
                   paddingHorizontal: 5,
                   alignItems: 'center',
+                  
                 }}>
                 <ImageBackground
+                
+              
                   source={{
                     uri: url
                   }}
                   style={{
-                    width: scale(120),
-                    height: scale(120),
-                    borderRadius: 200,
-                    overflow: 'hidden',
+                    width: 130,
+                    height: 130,
+                    overflow:'hidden',
+                  borderRadius:100
+                    
                   }}
                 />
-              </Card>: <User/> }
-              </VStack>
+              </View>: <User/> }
+             
               <View style={{width:wp('50%') }}>
                 <VStack space={1} py='1' px='0'>
 
@@ -348,11 +355,14 @@ useEffect(()=>{
                 </VStack>
                 
               </View>
-            </HStack>
+            </View>
             </View>
           </View>
-          <View>
-          <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:20}}>
+      </View>
+
+{/* Rating and comment */}
+
+      <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:0}}>
             <Center flex={1}></Center>
             <HStack
               bg="#fff"
@@ -400,169 +410,15 @@ useEffect(()=>{
              
             </HStack>
           </Box>
-            <ScrollView scrollEnabled={true}  style={{width: wp('100%'), height: hp('100%')}}>
-            <VStack ml="2" space={1}>
-              <Text
-                style={styles.dbodyHead}>
-                About
-              </Text>
-              <Text
-                style={styles.dbodyText}>
-                {doc.about}
-              </Text>
-              <Text
-                  style={styles.dbodyHead}>
-                Education
-              </Text>
-              <Text
-                style={styles.dbodyText}>
-                {doc.edu_training}
-              </Text>
-              <Text
-                  style={styles.dbodyHead}>
-                Specialities
-              </Text>
 
-              <Text
-                 style={styles.dbodyText}>
-                {doc.primary_spl}
-              </Text>
-              <Text
-                   style={styles.dbodyHead}>
-                Cures
-              </Text>
-            </VStack>
-            <View style={{margin: 6,height:430}}>
-            <View style={{height:140,padding:3}}>
-              <ScrollView nestedScrollEnabled={true}
-                style={{width: wp('100%'), height: hp('100%'),marginBottom:10}}
-                >
-              
-                {articleItems.length !== 0 ? (
-                  articleItems
-                    .filter((i, idx) => idx < 9)
-                    .map((i,j) => {
-                      var content = [];
-                      var imgLocation = i.content_location;
-                      var imageLoc = '';
-                      if (i.content) {
-                        content = IsJsonValid(decodeURIComponent(i.content));
-                      }
-                      if (
-                        imgLocation &&
-                        imgLocation.includes('cures_articleimages')
-                      ) {
-                        imageLoc = 'http://all-cures.com:8080/';
-                      } else {
-                        imageLoc =
-                          'https://all-cures.com:444/cures_articleimages//299/default.png';
-                      }
+          {/* tabs */}
+          
+          <DocProfileTab/>
 
-                      var title = i.title;
-                      var regex = new RegExp(' ', 'g');
 
-                      //replace via regex
-                      title = title.replace(regex, '-');
-                      return (
-                        <View  key={Math.random().toString(36)}>
-                          <View  key={Math.random().toString(36)}>
-                            <Card
-                              style={{
-                                width: scale(350),
-                                height: verticalScale(85),
-                                backgroundColor: '#f7f7f7',
-                                overflow:'hidden',
-                                borderRadius: 15,
-                                borderColor:'#e0e0e0',
-                                borderWidth:1,
-                                marginBottom: 5,
-                              }}>
-                              <HStack space={1}  key={Math.random().toString(36)}>
-                              <TouchableOpacity  key={Math.random().toString(36)} activeOpacity={0.8} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
-                                <Image
-                                 key={Math.random().toString(36)}
-                                  source={{
-                                    uri:
-                                      imageLoc +
-                                      imgLocation
-                                        .replace('json', 'png')
-                                        .split('/webapps/')[1],
-                                  }}
-                                  style={{
-                                    overflow:'hidden',
-                                    width: wp('40%'),
-                                    height: verticalScale(85),
-                                    marginTop: 0,
-                                   borderTopLeftRadius:15,
-                                   borderBottomLeftRadius:15
-                                  }}
-                                />
-                                </TouchableOpacity>
-                                <View  key={Math.random().toString(36)} style={{width:wp('50%')}}>
-                                  <AllPost
-                                   key={Math.random().toString(36)}
-                                    id={i.article_id}
-                                    title={i.title}
-                                    f_title={i.friendly_name}
-                                    w_title={i.window_title}
-                                    allPostsContent={() => receivedData()}
-                                  />
-                                  <View style={{flex: 1}}  key={Math.random().toString(36)}>
-                                    <Text
-                                     key={Math.random().toString(36)}
-                                      style={{
-                                        color: '#00415e',
-                                        position: 'absolute',
-                                        bottom: 15,
-                                        fontFamily: 'Raleway-Bold',
-                                        fontSize: 10,
-                                      }}>
-                                      {i.authors_name}{' '}
-                                    </Text>
-                                    <Text
-                                     key={Math.random().toString(36)}
-                                      style={{
-                                        color: '#00415e',
+{/** comments sheet */}
 
-                                        fontFamily: 'Raleway-Bold',
-                                        fontSize: 10,
-                                        position: 'absolute',
-                                        bottom: 3,
-                                      }}>
-                                      {i.published_date}
-                                    </Text>
-                                  </View>
-                                </View>
-                              </HStack>
-                            </Card>
-                          </View>
-                        </View>
-                      );
-                    })
-                ) : (
-                  <View style={{alignItems: 'center'}}>
-                    <Icon
-                      name="medical-outline"
-                      size={50}
-                      style={{opacity: 0.5}}
-                    />
-                    <Text style={{textAlign: 'center', fontSize: 18}}>
-                      No cures yet
-                    </Text>
-                  </View>
-                )}
-                
-              </ScrollView>
-              </View>
-            </View>
-            
-            </ScrollView>
-          </View>
-     
-     
-
-        </Stack>
-        <RBSheet
+<RBSheet
         ref={refRBSheet}
 
         closeOnPressMask={true}
@@ -625,8 +481,11 @@ useEffect(()=>{
 
     </Stack>
       </RBSheet>
-       
-      </View>
+
+
+
+
+      
     </>
   )};
 
@@ -668,9 +527,9 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    padding: 0,
+ 
     marginTop: Platform.OS === 'ios' ? 0 : -7,
-    marginLeft: 0,
+  
     borderColor: '#fff',
     borderWidth: 0.1,
     alignItems: 'center',
@@ -728,5 +587,13 @@ const styles = StyleSheet.create({
         color: '#00415e',
                   fontFamily: 'Raleway-Medium',
                   fontSize: wp('3.5%'),
+      },
+      row:{
+        flexDirection:'row',
+        justifyContent:'space-evenly',
+        width:'100%',
+        height:'100%',
+        alignItems:'center',
+        marginLeft:10,
       }
 });

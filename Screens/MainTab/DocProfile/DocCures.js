@@ -1,134 +1,70 @@
-import React, {useState, useEffect} from 'react';
-import {Dimensions, ImageBackground} from 'react-native';
-import {
-  View,
-  ScrollView,
-  Text,
-  Button,
-  FlatList,
-  StyleSheet,
-  StatusBar,
-  BackHandler,
-  Alert,
-  TouchableOpacity,
-  TouchableHighlight,
-  Image,
-} from 'react-native';
-import ArticleHeader from '../search/ArticleHeader';
-import {useRef} from 'react';
-import {useIsFocused, useTheme} from '@react-navigation/native';
+import React,{useEffect,useState} from 'react'
+import { View ,ScrollView,Text,StyleSheet,TouchableOpacity,Image} from 'react-native';
+import { VStack,HStack } from 'native-base';
 import axios from 'axios';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  Card,
-  Checkbox,
-  Modal,
-  Paragraph,
-  Portal,
-  Provider,
-} from 'react-native-paper';
-import AllPost from '../search/AllPost';
-import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import PhoneInput from 'react-native-phone-number-input';
-import { useResponsiveFontSize } from 'react-native-responsive-dimensions';
-import {
-  HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Box,
-  Spinner,
-  VStack,
-} from 'native-base';
-import {backendHost} from '../../components/apiConfig';
-import LottieView from 'lottie-react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import CenterWell from '../Disease/CenterWell';
-import Heart from '../../assets/img/heart.png';
+import { backendHost } from '../../../components/apiConfig';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useSelector,useStore,useDispatch } from 'react-redux';
+import { fetchRequest,fetchSuccess,fetchFailure } from '../../Redux/Action';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {Card} from 'react-native-paper';
+import AllPost from '../../search/AllPost';
+import CenterWell from '../../Disease/CenterWell';
 import { useNavigation } from '@react-navigation/native';
-import Carousel from 'react-native-snap-carousel';
+import { moderateScale,scale,verticalScale } from '../../../components/Scale';
 
-const ArticlePreview = () => {
-  const [items, setItems] = useState([]);
-  const [isLoaded, setLoaded] = useState(false);
- const navigation=useNavigation();
-  function diseasePosts(type) {
-   
-    fetch(`${backendHost}/isearch/${type}`)
-      .then(res => res.json())
-      .then(json => {
-        setLoaded(true);
-        setItems(json);
-      })
-      .catch(err => {err
-        throw err
-        })
-  }
+const DocCures = () => {
+    const [articleItems, setArticleItems] = useState([]);
+    const doc=useSelector((state)=>state.info.data)
+    const dispatch=useDispatch()
+    const store=useStore();
+    const navigation=useNavigation();
 
-  function allPosts() {
-    fetch(`${backendHost}/article/allkv?limit=15`)
-      .then(res => res.json())
-      .then(json => {
-        var temp = [];
+    function IsJsonValid(str) {
+        try {
+          JSON.parse(str);
+        } catch (e) {
+          return [];
+        }
+        return JSON.parse(str).blocks;
+      }
 
-        json.forEach(i => {
-          if (i.pubstatus_id === 3 && i.type.includes(2)) {
-            temp.push(i);
-          }
-        });
-        setItems(temp);
 
-        setLoaded(true);
-      })
-      .catch(err => {err
-        throw err
-        })
-  }
+    const allpost = () => {
+         
+        fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${doc.rowno}`)
+          .then(res => res.json())
+          .then(json => {
+    
+            var temp = [];
+            json.forEach(i => {
+              if (i.pubstatus_id === 3) {
+                temp.push(i);
+              }
+            });
+         
+            setArticleItems(temp);
+         
+         
+          })
+          .catch(err => {
+        err
+          });
+      };
 
-  function IsJsonValid(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return [];
-    }
-    return JSON.parse(str).blocks;
-  }
+      useEffect(() => {
 
-  useEffect(() => {
-    allPosts();
-  }, []);
-  
-  
-    if (!isLoaded) {
-   
-    return (
-      <View>
-      <HStack space={2} justifyContent="center">
-        <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
-  
-      </HStack>
-     
-      
-      </View>
-    );
-  } else {
-    return (
-      <>
-        <View style={{flex: 1,paddingVertical:5}} key={Math.random().toString(36)}>
-          <View style={{flexDirection: 'row'}}>
-            <ScrollView  key={Math.random().toString(36)}  style={{width: wp('100%')}}  horizontal  showsHorizontalScrollIndicator={false}>
-              {items.length !== 0 ? (
-                items
-                  .filter((i, idx) => idx < 9)
-                  .map(
-                    (i,j) => {
+        allpost();
+    
+      }, [doc.rowno]);
+
+  return (
+  <View style={styles.container}>
+    <ScrollView style={{flex:1}}>
+ {articleItems.length !== 0 ? (
+                  articleItems
+                    .filter((i, idx) => idx < 9)
+                    .map((i,j) => {
                       var content = [];
                       var imgLocation = i.content_location;
                       var imageLoc = '';
@@ -148,12 +84,12 @@ const ArticlePreview = () => {
                       var title = i.title;
                       var regex = new RegExp(' ', 'g');
 
+                      //replace via regex
                       title = title.replace(regex, '-');
                       return (
-                        <View     key={Math.random().toString(36)}>
-                          <View style={{marginRight: 7,height:170,width:wp('100%'),paddingHorizontal:10,paddingVertical:5}} key={Math.random().toString(36)} >
+                        <View  key={Math.random().toString(36)}>
+                          <View style={{height:scale(170),width:wp('100%'),paddingHorizontal:10,paddingVertical:5}} key={Math.random().toString(36)} >
                             <Card
-key={Math.random().toString(36)}
                               style={{
                                 width: '100%',
                                 height: '100%',
@@ -162,11 +98,8 @@ key={Math.random().toString(36)}
                                 borderWidth:1,
                                 elevation:2,
                                 marginLeft:-5,
-                                position:'relative',
-                               
                                 borderColor:'#e6f7ff',
                                marginBottom:5,
-                            
                                 borderRadius:15,
                            
                               }}>
@@ -245,7 +178,7 @@ key={Math.random().toString(36)}
                                         fontFamily: 'Raleway-Medium',
                                         fontSize: scale(9),
                                       }}>
-                                    {i.authors_name}▪️{i.published_date}
+                                    Dr. {doc.docname_first} {doc.docname_last}▪️{i.published_date}
                                     </Text>
                                     </View>
                               </HStack>
@@ -256,23 +189,33 @@ key={Math.random().toString(36)}
                           </View>
                         </View>
                       );
-                    },
+                    })
+                ) : (
+                  <View style={{alignItems: 'center'}}>
+                    <Icon
+                      name="medical-outline"
+                      size={50}
+                      style={{opacity: 0.5}}
+                    />
+                    <Text style={{textAlign: 'center', fontSize: 18}}>
+                      No cures yet
+                    </Text>
+                  </View>
+                )}
+                </ScrollView>
+  </View>
+  )
+  
+}
 
-                  )
-              ) : (
-                <Text>
-                  We do not have any cures for this condition yet but our
-                  editorial team is working on it. In the meantime, if you have
-                  a cure, Please Click Here to add the cure to our site.
-                </Text>
-              )}
-            </ScrollView>
-          </View>
-       
-        </View>
-      </>
-    );
-  }
-};
+export default DocCures
 
-export default ArticlePreview;
+const styles=StyleSheet.create({
+    container:{
+        flex:1,
+        backgroundColor:'#fff',
+        alignItems:'center',
+        justifyContent:'center',
+        padding:5
+    }
+})

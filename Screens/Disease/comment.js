@@ -15,7 +15,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useToast} from 'native-base';
-import { useStore } from 'react-redux';
+import { useStore,useSelector } from 'react-redux';
 const Comment = ({article_id,doc_id}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
@@ -52,7 +52,7 @@ const Comment = ({article_id,doc_id}) => {
     if (cmtText !== '') {
       axios
         .post(
-          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${user.getState().userId}&ratedbytype=${regType}&targetid=${article_id!==null?article_id:doc_id}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
+          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${user.getState().userId.regId}&ratedbytype=${regType}&targetid=${article_id!==null?article_id:doc_id}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
         )
         .then(res => {
           goto();

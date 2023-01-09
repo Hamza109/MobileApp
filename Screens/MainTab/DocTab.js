@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#00415e',
-    fontWeight: 'bold',
+   
     textAlign: 'center',
     alignSelf: 'center',
   },

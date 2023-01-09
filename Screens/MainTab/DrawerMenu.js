@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -37,6 +38,8 @@ import Feedback from '../../components/FeedBack';
 import { useSelector ,useDispatch} from 'react-redux';
 import { reg } from '../Redux/Action';
 import { screenName } from '../Redux/Action';
+import Settings from '../Privacy/settings';
+import { SettingStack } from '../RootStackScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -106,12 +109,15 @@ const dispatch=useDispatch();
         </View>
         <DrawerItemList {...props} />
       
+       
         </SafeAreaView>
         {login()}
         
       </DrawerContentScrollView>
     );
   }
+
+
   const login = () => {
 
     if (user!= 0) {
@@ -134,6 +140,7 @@ const dispatch=useDispatch();
                 style={{
                   color: '#00415e',
                   fontFamily: 'Raleway-Medium',
+                  marginTop:Platform.OS==='ios'?3:0,
                   fontSize: wp('4.5%'),
                 }}>
                 Logout
@@ -160,6 +167,7 @@ const dispatch=useDispatch();
               <Text
                 style={{
                   color: '#00415e',
+                  marginTop:Platform.OS==='ios'?3:0,
                   fontFamily: 'Raleway-Medium',
                   fontSize: wp('4.5%'),
                 }}>
@@ -172,11 +180,12 @@ const dispatch=useDispatch();
       );
     }
   };
+ 
 
   return (
     <Box flex={1}>
       <Drawer.Navigator
-        drawerContent={props => <CustomDrawerContent {...props} />}>
+        drawerContent={props => <CustomDrawerContent {...props} />  }  >
         <Drawer.Screen
           name="Home"
           component={MainTabScreen}
@@ -203,6 +212,7 @@ const dispatch=useDispatch();
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          unmountOnBlur:true,
         headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
         <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
       </TouchableOpacity>),
@@ -213,6 +223,7 @@ const dispatch=useDispatch();
             ),
           }}
         />
+        
           <Drawer.Screen
           name="Subscribe"
           component={Subscribe}
@@ -231,9 +242,11 @@ const dispatch=useDispatch();
             headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
             <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
           </TouchableOpacity>),
+         
             drawerIcon: ({focused, size}) => (
               <Icon name="bell" color={'#00415e'} size={22} style={{marginLeft:-2}} />
             ),
+            
           }}
         />
            <Drawer.Screen
@@ -255,6 +268,28 @@ const dispatch=useDispatch();
           </TouchableOpacity>),
             drawerIcon: ({focused, size}) => (
               <Icon name="paper-plane" color={'#00415e'} size={22} style={{marginLeft:-2}} />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="Settings"
+          component={SettingStack}
+          options={{
+            headerStyle: {
+              backgroundColor: '#fff',
+              height:Platform.OS ==='android'?60:90
+            },
+            headerTintColor: '#00415e',
+            headerTitleStyle: {
+              fontWeight: 'bold', 
+            },
+            drawerLabel: 'Settings',
+            drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+            headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
+          </TouchableOpacity>),
+            drawerIcon: () => (
+              <IonIcons name="md-settings" color={'#00415e'} size={22} style={{marginLeft:-2}} />
             ),
           }}
         />

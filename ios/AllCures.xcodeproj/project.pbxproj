@@ -13,6 +13,8 @@
 		180872B928EB221700799A26 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC3D27F45B91003F34C0 /* Feather.ttf */; };
 		180872BA28EB221700799A26 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC3F27F45B91003F34C0 /* FontAwesome.ttf */; };
 		180872BB28EB221700799A26 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC4027F45B91003F34C0 /* Ionicons.ttf */; };
+		183E35692959A6C3006940B3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBA0EC4327F45B91003F34C0 /* MaterialIcons.ttf */; };
+		183E356A2959A6CF006940B3 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD6A19855E9F4FB894F124D5 /* MaterialCommunityIcons.ttf */; };
 		1855521C28B37B1A0086E8B2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		1855521E28B610AE0086E8B2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1855521D28B610AE0086E8B2 /* GoogleService-Info.plist */; };
 		1855521F28C72BAB0086E8B2 /* Raleway.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B7E13DEE8A34C9F83B28390 /* Raleway.ttf */; };
@@ -272,6 +274,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				33FD50CB2A4A7EB89D4C8BD1 /* [CP] Embed Pods Frameworks */,
 				042D97D678BB57FA9A00B3FF /* [CP-User] [RNFB] Core Configuration */,
+				B9056B81E936DFE2F5F307AB /* [CP-User] [RNFB] Crashlytics Configuration */,
 			);
 			buildRules = (
 			);
@@ -288,7 +291,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1330;
+				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -330,6 +333,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				183E356A2959A6CF006940B3 /* MaterialCommunityIcons.ttf in Resources */,
+				183E35692959A6C3006940B3 /* MaterialIcons.ttf in Resources */,
 				180872B928EB221700799A26 /* Feather.ttf in Resources */,
 				180872BA28EB221700799A26 /* FontAwesome.ttf in Resources */,
 				180872BB28EB221700799A26 /* Ionicons.ttf in Resources */,
@@ -376,7 +381,7 @@
 		};
 		33FD50CB2A4A7EB89D4C8BD1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -452,6 +457,20 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B9056B81E936DFE2F5F307AB /* [CP-User] [RNFB] Crashlytics Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "[CP-User] [RNFB] Crashlytics Configuration";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec FirebaseCrashlytics Run from Pods\"\n  \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n  echo \"info: Exec FirebaseCrashlytics Run from framework\"\n  \"${PROJECT_DIR}/FirebaseCrashlytics.framework/run\"\nfi\n";
+		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -506,7 +525,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B3980CC7A85487AAC0885F0C /* Pods-AllCures-AllCuresTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEVELOPMENT_TEAM = J6C8R2478Z;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -533,8 +555,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F78EB89DF369ED9687F0E25A /* Pods-AllCures-AllCuresTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = J6C8R2478Z;
 				INFOPLIST_FILE = AllCuresTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -563,10 +588,13 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3LV8H5VM9T;
+				DEVELOPMENT_TEAM = J6C8R2478Z;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = J6C8R2478Z;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = AllCures/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				INFOPLIST_KEY_CFBundleDisplayName = "All Cures";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -577,9 +605,13 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.etherium.AllCures;
 				PRODUCT_NAME = AllCures;
-				PROVISIONING_PROFILE_SPECIFIER = etherium;
+				PROVISIONING_PROFILE_SPECIFIER = "All cures";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "All cures";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -597,9 +629,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3LV8H5VM9T;
+				DEVELOPMENT_TEAM = J6C8R2478Z;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = J6C8R2478Z;
 				INFOPLIST_FILE = AllCures/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				INFOPLIST_KEY_CFBundleDisplayName = "All Cures";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -610,9 +645,13 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.etherium.AllCures;
 				PRODUCT_NAME = AllCures;
-				PROVISIONING_PROFILE_SPECIFIER = etherium;
+				PROVISIONING_PROFILE_SPECIFIER = "All cures";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "All cures";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -739,6 +778,7 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

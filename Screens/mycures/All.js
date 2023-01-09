@@ -133,11 +133,11 @@ const dispatch=useDispatch()
                     style={{
                       width: wp('97%'),
                       height: 83,
-                      backgroundColor: 'lightgrey',
+                      backgroundColor: '#f0f8ff',
                       borderRadius: 15,
                       marginBottom: 5,
                       justifyContent: 'center',
-
+                      borderColor:'#e6f7ff',
                       paddingHorizontal: 6,
                       alignItems: 'center',
                     }}>
@@ -209,10 +209,11 @@ const dispatch=useDispatch()
                     style={{
                       width: wp('97%'),
                       height: 83,
-                      backgroundColor: 'lightgrey',
+                      backgroundColor: '#f0f8ff',
                       borderRadius: 15,
                       marginBottom: 5,
                       justifyContent: 'center',
+                      borderColor:'#e6f7ff',
                       paddingHorizontal: 5,
                       alignItems: 'center',
                     }}>
@@ -285,10 +286,11 @@ const dispatch=useDispatch()
                     style={{
                       width: wp('97%'),
                       height: 83,
-                      backgroundColor: 'lightgrey',
+                      backgroundColor: '#f0f8ff',
                       borderRadius: 15,
                       marginBottom: 5,
                       justifyContent: 'center',
+                      borderColor:'#e6f7ff',
 
                       paddingHorizontal: 5,
                       alignItems: 'center',

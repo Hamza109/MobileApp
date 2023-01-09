@@ -101,8 +101,8 @@ const DocResultCity = ({navigation, route}) => {
                 margin: 5,
                 height: verticalScale(150),
                 width: scale(350),
-                backgroundColor: '#f7f7f7',
-                borderColor:'#e0e0e0',
+                backgroundColor: '#f0f8ff',
+                borderColor:'#e6f7ff',
                 borderWidth:1,
                 padding: 9,
               }}>

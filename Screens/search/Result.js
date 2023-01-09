@@ -39,6 +39,7 @@ const Result = ({navigation, route}) => {
 
   const texts = route.params.texts;
   const types = route.params.types;
+  const id=route.params.id
   // const [params] = useState(props)
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -90,6 +91,17 @@ const Result = ({navigation, route}) => {
         setLoading(false)
       }).catch(err=>err);;
   };
+  const idisease = () => {
+    setLoading(true)
+    fetch(`${backendHost}/isearch/diseases/${id}`)
+      .then(res => res.json())
+      .then(json => {
+    setInitial(initial+6)
+        setIsLoaded(true);
+        setItems(json);
+        setLoading(false)
+      }).catch(err=>err);;
+  };
 
   const [loading,setLoading]=useState(false)
   const footer = () => {
@@ -131,7 +143,10 @@ const api =()=>{
     setText(null);
 
     itype();
-  } else {
+  }else if(id){
+    idisease();
+  }
+   else {
 
     receivedData();
   }
@@ -213,17 +228,17 @@ const load = () => {
                       title = title.replace(regex, '-');
                       return (
                         <View     key={Math.random().toString(36)}>
-                          <View style={{marginRight: 0,height:scale(170),width:wp('100%'),padding:2}} key={Math.random().toString(36)} >
+                          <View style={{height:scale(170),width:wp('100%'),paddingHorizontal:10,paddingVertical:5}} key={Math.random().toString(36)} >
                             <Card
-key={Math.random().toString(36)}
                               style={{
-                                width: moderateScale(350),
+                                width: '100%',
                                 height: '100%',
                                 overflow:'hidden',
-                                backgroundColor: '#f7f7f7',
+                                backgroundColor: '#f0f8ff',
                                 borderWidth:1,
                                 elevation:2,
-                                borderColor:'#e0e0e0',
+                                marginLeft:-5,
+                                borderColor:'#e6f7ff',
                                marginBottom:5,
                                 borderRadius:15,
                            

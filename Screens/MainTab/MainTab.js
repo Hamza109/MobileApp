@@ -24,7 +24,7 @@ const MainTabScreen = () => {
  
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Home1"
       screenOptions={{
         tabBarStyle: {padding: 0},
         tabBarInactiveTintColor: 'grey',
@@ -32,10 +32,9 @@ const MainTabScreen = () => {
         tabBarLabelStyle: {fontFamily: 'Raleway-Medium',fontWeight:'bold'},
       }}>
       <Tab.Screen
-        name="Home"
+        name="Home1"
         component={HomeStack}
         options={{
-          unmountOnBlur:true,
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
         
@@ -54,7 +53,7 @@ const MainTabScreen = () => {
         name="ArticleTab"
         component={DocStack}
         options={{
-          unmountOnBlur:true,
+  
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Doctor',

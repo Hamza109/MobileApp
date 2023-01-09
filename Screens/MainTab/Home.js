@@ -16,12 +16,15 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
+import Category from '../Category/Category';
+import { Header } from '@rneui/themed';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import System from '../Category/System';
 
 import MaterialIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -259,14 +262,16 @@ const HomeScreen = ({navigation, route}) => {
   return (
     
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <SafeAreaView style={{flex:1}}>
-        <StatusBar backgroundColor="#00415e" barStyle="light-content" />
-        <View
-          style={{marginTop: Platform.OS === 'android' ? 0 : -15}}>
-          <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:12,marginBottom:10}}>
-            <View style={{position: 'relative', top: 2, right: 0}}>
+      <View style={{flex:1}}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <View>
+
+          <View style={styles.headBar}>
+
+            <View>
               <TouchableOpacity
                 activeOpacity={0.8}
+                style={{zIndex:1}}
                 onPress={() => {
                   navigation.openDrawer();
                 }}>
@@ -278,11 +283,12 @@ const HomeScreen = ({navigation, route}) => {
 
             <TouchableOpacity
               activeOpacity={0.8}
+              style={{width:'100%',paddingHorizontal:30}}
               onPress={() => {
                 navigation.navigate('searchArt');
               }}>
               <View style={styles.card}>
-                <HStack ml="2" space={110} alignItems="center">
+                <HStack ml="2"  alignItems="center">
                   <Text
                     adjustsFontSizeToFit
                     numberOfLines={1}
@@ -298,11 +304,15 @@ const HomeScreen = ({navigation, route}) => {
                 </HStack>
               </View>
             </TouchableOpacity>
+
             <TouchableOpacity activeOpacity={0.8} onPress={() => getId()}>
               <Create />
             </TouchableOpacity>
+
           </View>
         </View>
+   
+
         <ScrollView
           style={{width: wp('100%'), backgroundColor: '#fff'}}
           showsVerticalScrollIndicator={false}
@@ -328,11 +338,18 @@ const HomeScreen = ({navigation, route}) => {
             </HStack>
             <View
               style={{
-                alignItems: 'center',
-                marginLeft: 0,
-                width: wp('100%'),
-                flex: 1,
+              justifyContent:'center',
+                width: '100%',
+                marginLeft:-4,
+                paddingHorizontal:5
+              
               }}>
+                {/* <View
+                style={styles.category}
+                >
+
+                <Category/>
+                </View> */}
               <ScrollView
                 style={{width: wp('100%')}}
                 horizontal
@@ -340,7 +357,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Arthritis'});
+                    navigation.navigate('Result', {id:1});
                   }}>
                   <Card
                     resizeMode="stretch"
@@ -364,7 +381,7 @@ const HomeScreen = ({navigation, route}) => {
                       }}
                       resizeMode="stretch"
                       resizeMethod="resize"
-                      source={require('../../assets/img/arthritis.png')}
+                      source={require('../../assets/img/1.png')}
                     />
 
                     <Text
@@ -384,7 +401,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Thyroid'});
+                    navigation.navigate('Result', {id: 87});
                   }}>
                   <Card
                     style={{
@@ -427,7 +444,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Diabetes'});
+                    navigation.navigate('Result', {id:74});
                   }}>
                   <Card
                     style={{
@@ -471,7 +488,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Insomnia'});
+                    navigation.navigate('Result', {id:164});
                   }}>
                   <Card
                     style={{
@@ -514,7 +531,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Skin Care'});
+                    navigation.navigate('Result', {id:155});
                   }}>
                   <Card
                     style={{
@@ -555,7 +572,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Blood Pressure'});
+                    navigation.navigate('Result', {id:50});
                   }}>
                   <Card
                     style={{
@@ -597,7 +614,7 @@ const HomeScreen = ({navigation, route}) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {texts: 'Psorasis'});
+                    navigation.navigate('Result', {id:160});
                   }}>
                   <Card
                     style={{
@@ -652,9 +669,25 @@ const HomeScreen = ({navigation, route}) => {
                 size={25}
               />
             </HStack>
+            {/* <View
+              style={{
+              justifyContent:'center',
+                width: '100%',
+                marginLeft:-4,
+                paddingHorizontal:5
+              
+              }}>
+            <View
+                style={[styles.category,{paddingVertical:10,height:180}]}
+                >
+
+                <System/>
+                </View>
+                </View> */}
             <View style={{alignItems: 'center', width: wp('100%')}}>
             <FlatList
               horizontal
+              keyExtractor={(item)=>item.name}
               showsHorizontalScrollIndicator={false}
               data={DATA1}
               renderItem={renderItemTrend}
@@ -676,7 +709,9 @@ const HomeScreen = ({navigation, route}) => {
                 size={scale(25)}
               />
             </HStack>
+
           <ArticlePreview />
+          
           <HStack space={1}>
           <Text
         
@@ -692,7 +727,7 @@ const HomeScreen = ({navigation, route}) => {
           <DocPreview />
         </Stack>
       </ScrollView>
-      </SafeAreaView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -706,10 +741,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  category:{
+   width:'100%' ,
+   backgroundColor:'#f0f8ff',
+   borderWidth:1,
+   borderColor:'#e6f7ff',
+   alignItems:'center',
+   height:170,
+   justifyContent:'center',
+   paddingHorizontal:10,
+   borderRadius:15,
+   paddingVertical:15,
+   
+  },
   card: {
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
-    width: scale(255),
-    height: verticalScale(52),
+    width: '100%',
+    height: 52,
     fontSize: 20,
     borderRadius: 15,
     
@@ -766,7 +814,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 12,
   },
+headBar:
+{
+  width:'100%',
+  flexDirection:'row',
+justifyContent:'space-evenly',
+marginTop:12,
 
+paddingHorizontal:30,
+marginBottom:10
+},
   image: {
     padding: 20,
     marginTop: 5,

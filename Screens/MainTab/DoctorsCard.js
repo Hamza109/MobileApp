@@ -87,6 +87,7 @@ const DoctorsCard = ({
     <View>
       <View>
       <TouchableOpacity
+      activeOpacity={.8}
             onPress={() => {
               navigation.push('DocProfile', {ids: `${rowno}`});
             }}>
@@ -106,7 +107,7 @@ const DoctorsCard = ({
             <ImageBackground
             resizeMode='stretch'
               source={{
-                uri: `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
+                uri: `https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`,
               }}
               style={{
                 width: scale(110),

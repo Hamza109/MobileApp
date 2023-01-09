@@ -145,14 +145,14 @@ const [uniqueId,setUniqueId]=useState()
 
 <Icon name="arrow-back-outline" style={{alignItems:'center',marginLeft:10,}}color={'#00415e'} size={scale(35)} onPress={()=>{navigation.navigate('Main')}}/>
 
-
+<View style={{width:'100%'}}>
 <Input
           placeholder="search cures"
           placeholderTextColor="#00415e"
           onChangeText={onSearch}
           onSubmitEditing={(() => setText(text)& result(text))}
           value={text}
-          width={scale(320)}
+          width='100%'
           height={verticalScale('52')}
           fontFamily="Raleway-Regular"
           color="#00415e"
@@ -176,6 +176,7 @@ const [uniqueId,setUniqueId]=useState()
             </View>
           }
         />
+        </View>
 
 
 
@@ -246,12 +247,11 @@ header:{
 borderColor: '#fff',
 borderWidth: 0.1,
 justifyContent:'flex-start',
-
+paddingRight:60,
 alignItems:'center',
 flexDirection:'row',
-width: scale(400),
-height: verticalScale(80),
-elevation: 1,
+width:'100%',
+height: 80,
 backgroundColor:'#fff'
 
 }

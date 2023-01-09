@@ -168,10 +168,10 @@ const SearchBar = ({placeholder,doc,city}) => {
                   fontFamily="Raleway-Regular"
                   bg="#fff"
                   onChangeText={text => searchFilterFunction(text)}
-                  onClear={text => searchFilterFunction('')}
+                  onClear={() => searchFilterFunction('')}
                   onSubmitEditing={(() => setName(name)& docresult(name))}
                   value={name}
-                  width={scale(300)}
+                  width={scale(wp('80%'))}
           height={verticalScale('52')}
                   color="#00415e"
                   borderRadius="15"
@@ -183,7 +183,17 @@ const SearchBar = ({placeholder,doc,city}) => {
                   fontSize="18"
                
                   InputRightElement={
+                    searching?(
                     <View style={{position: 'relative', right: 20}}>
+                      <Icon
+                        m="2"
+                        ml="3"
+                        color="#00415e"
+                        name="close"
+                        onPress={(() => searchFilterFunction(''))}
+                        size={20}
+                      />
+                    </View>):  ( <View style={{position: 'relative', right: 20}}>
                       <Icon
                         m="2"
                         ml="3"
@@ -192,8 +202,9 @@ const SearchBar = ({placeholder,doc,city}) => {
                         onPress={(() => setName(name)& docresult(name))}
                         size={20}
                       />
-                    </View>
+                    </View>)
                   }
+                  
                 />
               </View>
      

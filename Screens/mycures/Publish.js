@@ -128,19 +128,20 @@ const Published = () => {
 
               return i.status === 1 ? (
                 <View>
-                  <View style={{marginLeft: 6,height:scale(170),width:wp('100%')}} key={Math.random().toString(36)} >
+                  <View style={{height:scale(170),width:'100%', paddingHorizontal:10,paddingVertical:5}} key={Math.random().toString(36)} >
                               <Card
   key={Math.random().toString(36)}
                                 style={{
-                                  width: scale(350),
+                                  width: '100%',
                                   height: '100%',
                                   overflow:'hidden',
-                                  backgroundColor: '#f7f7f7',
+                                  backgroundColor: '#f0f8ff',
                                   borderWidth:1,
                                   elevation:2,
-                                  borderColor:'#e0e0e0',
+                                  borderColor:'#e6f7ff',
                                  marginBottom:5,
                                   borderRadius:15,
+                                 
                              
                                 }}>
                                   

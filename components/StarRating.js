@@ -30,8 +30,8 @@ export default function Ratings({article_id,rowno}) {
   error
     }
   };
-  const rateId=user.getState().userId
-  const postRating = rating => {
+  const rateId=user.getState().userId.regId
+  const postRating = rating => {  
 
     axios
       .post(

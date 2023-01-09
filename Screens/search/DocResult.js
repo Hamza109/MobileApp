@@ -101,12 +101,13 @@ const [search,setSearch]=useState();
             <Card
               style={{
                 padding: 5,
-                margin: 5,
+                marginVertical:5,
                 height: verticalScale(150),
-                width: scale(350),
-                backgroundColor: '#f7f7f7',
-                borderColor:'#e0e0e0',
+                width: '100%',
+                backgroundColor: '#f0f8ff',
+                borderColor:'#e6f7ff',
                 borderWidth:1,
+
                 padding: 9,
               }}>
               {/* <StarRating

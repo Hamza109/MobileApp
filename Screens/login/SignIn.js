@@ -8,21 +8,14 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
-
   ImageBackground,
   ToastAndroid,
   BackHandler,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   HStack,
   Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
   VStack,
-  Spinner,
 } from 'native-base';
 import axios from 'axios';
 import Home from '../MainTab/Home';
@@ -31,14 +24,13 @@ import {useToast} from 'native-base';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import {useTheme} from 'react-native-paper';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {backendHost} from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -46,6 +38,7 @@ import { useDispatch } from 'react-redux';
 import { reg } from '../Redux/Action';
 import { useStore } from 'react-redux';
 import { screenName } from '../Redux/Action';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 
 const SignInScreen = ({ props,route}) => {
@@ -125,8 +118,10 @@ const dispatch=useDispatch();
 
       .then(res => {
         if (res.data.registration_id) {
+         
           setTimeout(() => {
             navigation.push(routeName.getState().name.screen);
+            crashlytics().log(`User has signed in`);
             analytics().setUserProperty(
               'Reg_Id',
               JSON.stringify(res.data.registration_id),
@@ -211,7 +206,7 @@ const dispatch=useDispatch();
 
   return (
     <View style={styles.container}>
-    
+      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
       <ImageBackground
         source={require('../../assets/img/backheart.png')}
         resizeMode="stretch"
