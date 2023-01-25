@@ -15,9 +15,16 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { scale,verticalScale } from '../../components/Scale';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {
   HStack,
+  Stack,
+  Center,
+  Heading,
+  NativeBaseProvider,
+  Container,
+  Box,
+  VStack,
+  Spinner,
 } from 'native-base';
 import CenterWell from '../Disease/CenterWell';
 import {useIsFocused} from '@react-navigation/native';
@@ -28,13 +35,13 @@ import { useSelector } from 'react-redux';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 
-const Published = () => {
+const Favourites = () => {
   const navigation = useNavigation();
   const user=useSelector((state)=>state.userId.regId) ;
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-
+  const [regType, setRegType] = useState();
   const [status, setStatus] = useState();
 
   const getId = () => {
@@ -42,7 +49,15 @@ const Published = () => {
             navigation.navigate('SignIn');
  
   };
-
+  const getType = () => {
+    try {
+      AsyncStorage.getItem('rateType').then(value2 => {
+        if (value2 != null) {
+          setRegType(value2);
+        }
+      }).catch(err=>err);
+    } catch (error) {error}
+  };
   const receivedData = () => {
     fetch(`${backendHost}/favourite/userid/${user}/favouritearticle`)
       .then(res => res.json())
@@ -61,7 +76,7 @@ const Published = () => {
   useEffect(() => {
     if (isFocus) {
       getId();
-
+      getType();
     }
   });
   function IsJsonValid(str) {
@@ -89,7 +104,7 @@ const Published = () => {
   } else {
     return (
       <View style={styles.container}>
-        <View style={{flex: 1, marginTop: 5}}>
+        <ScrollView style={{flex: 1, marginTop: 5}}>
           {items.length !== 0 ? (
             items.map(i => {
               var content = [];
@@ -112,7 +127,7 @@ const Published = () => {
               title = title.replace(regex, '-');
 
               return i.status === 1 ? (
-                <ScrollView style={{flex: 1, marginTop: 5}}>
+                <View>
                   <View style={{height:scale(170),width:'100%', paddingHorizontal:10,paddingVertical:5}} key={Math.random().toString(36)} >
                               <Card
   key={Math.random().toString(36)}
@@ -213,32 +228,23 @@ const Published = () => {
                               </Card>
                             </View>
                          
-                </ScrollView>
+                </View>
               ) : (
                 null
               );
             })
           ) : (
-       <View style={{justifyContent:'center',alignItems:'center',height:'100%',width:'100%'}} >
-              <Icon
-                      name="medical-outline"
-                      size={50}
-                      color={'#00415e'}
-                      style={{opacity: 0.5}}
-                    />
-                    <Text style={{textAlign: 'center', fontSize: 18,color:'#00415e',fontFamily:'Raleway-Medium'}}>
-                      No cures yet
-                    </Text>
-              </View>
+       
+              <Text style={{color: '#00415e'}}>No Cures Yet</Text>
      
           )}
-        </View>
+        </ScrollView>
       </View>
     );
   }
 };
 
-export default Published;
+export default Favourites;
 
 const styles = StyleSheet.create({
   container: {

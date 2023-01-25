@@ -17,7 +17,7 @@ import {
   Platform,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import {useToast} from 'native-base';
+import {Button, useToast} from 'native-base';
 import {Card} from 'react-native-paper';
 import AllPost from '../search/AllPost';
 import CenterWell1 from './CenterWell1';
@@ -36,7 +36,7 @@ import {
 } from 'react-native-responsive-screen';
 import Rating from '../../components/StarRating';
 import { useStore,useDispatch } from 'react-redux';
-import { fav } from '../Redux/Action';
+import { fav, screenName } from '../Redux/Action';
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {
   Modal,
@@ -53,8 +53,8 @@ import PhoneInput from 'react-native-phone-number-input';
 import {useIsFocused} from '@react-navigation/native';
 import Svg, {Path, Circle} from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
-import {block} from 'react-native-reanimated';
-import RenderHTML from 'react-native-render-html';
+import NetInfo from '@react-native-community/netinfo';
+import NoInternet from '../../components/NoInternet';
 const Disease = ({navigation, route}) => {
   const toast = useToast();
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -77,11 +77,23 @@ const Disease = ({navigation, route}) => {
   const [url,setUrl]=useState()
   const dispatch=useDispatch();
   const [isVisible, setIsVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [subModalVisible, setSubModalVisible] = useState(false);
+  const [imageExists, setImageExists] = useState(false);
+  const [showValue, setShowValue] = useState();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [response, setResponse] = useState([]);
+  const [stats, setStats] = useState();
+  const [cure, setCure] = useState();
+  const like=useStore()
+  const [sItems, setSItems] = useState([]);
+  const [result, setResult] = useState();
+  const [isConnected, setIsConnected] = useState(true);
 
 
   const check = () => {
     if (user.getState().userId.regId == 0) {
-      navigation.navigate('SignIn');
+    dispatch(screenName('LOGIN'))
     } else {
       refRBSheet.current.open()
     }
@@ -242,9 +254,17 @@ const Disease = ({navigation, route}) => {
   const isFocus = useIsFocused();
 
   useEffect(() => {
+
+   
+   
     
     const get = () => {
+      console.log(isConnected)
       const getArticle = new Promise((resolve,reject)=>{
+        if(isConnected)
+        { 
+          setIsLoaded(false)
+       
         fetch(`${backendHost}/article/${id}`)
         .then(res => res.json())
         .then(json => {
@@ -260,7 +280,10 @@ const Disease = ({navigation, route}) => {
           err;
           throw err;
         });
-      })
+      }
+      }
+      
+      )
       getArticle.then(()=>{
         setIsLoaded(true);
       })
@@ -273,7 +296,7 @@ get();
       get();
     
     };
-  }, [id]);
+  }, [isConnected]);
 
   useEffect(() => {
  
@@ -299,9 +322,6 @@ get();
     return JSON.parse(str).blocks;
   }
 
- 
-  const [sItems, setSItems] = useState([]);
-  const [result, setResult] = useState();
   const getResult = () => {
     fetch(`${backendHost}/isearch/${data.dc_name}`)
       .then(res => res.json())
@@ -314,15 +334,7 @@ get();
         throw err;
       });
   }
-  const [modalVisible, setModalVisible] = useState(false);
-  const [subModalVisible, setSubModalVisible] = useState(false);
-  const [imageExists, setImageExists] = useState(false);
-  const [showValue, setShowValue] = useState();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [response, setResponse] = useState([]);
-  const [stats, setStats] = useState();
-  const [cure, setCure] = useState();
-  const like=useStore()
+  
   const stat = async () => {
     await axios
       .get(`${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/favourite`)
@@ -420,12 +432,31 @@ get();
     }
   };
   useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [])
+  useEffect(() => {
  
       stat();
    
   }, [user.getState().userId.regId]);
 
+ 
+  if (!isConnected) {
+
+    return (
+      <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
+    );
+  }
+
+
   if (!isLoaded) {
+  
     return (
       <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
@@ -435,10 +466,11 @@ get();
             loop
             style={{width: 50, height: 50, justifyContent: 'center'}}
           />
+          
         </HStack>
       </View>
     );
-  } else {
+  } 
     return (
       <View style={styles.container}>
         <View>
@@ -548,7 +580,7 @@ get();
                 {items.map((i, key) => (
                   <View>
                     <CenterWell1
-                      key={key}
+                       key={Math.random().toString(36)}
                       pageTitle={i.title}
                       content={i.data.content}
                       type={i.type}
@@ -565,6 +597,7 @@ get();
                 ))}
 
               <TouchableOpacity
+                     key={Math.random().toString(36)}
         style={styles.button}
         onPress={() => setIsVisible(!isVisible)}
       >
@@ -702,7 +735,7 @@ get();
                                   overflow:'hidden',
                                   backgroundColor: '#f0f8ff',
                                   borderWidth:1,
-                                  elevation:2,
+                                  elevation:0,
                                   borderColor:'#e6f7ff',
                                  alignItems:'center',
                                  flexDirection:'row',
@@ -734,7 +767,7 @@ get();
 
                   <View style={{backgroundColor: '#00415e', padding: 10,borderRadius:5}}>
                     <Text
-                      style={{fontFamily: 'Raleway-Medium', color: '#fff',alignSelf:'center'}}>
+                      style={{fontFamily: 'Raleway-Medium', color: '#fff'}}>
                       Recommended Articles
                     </Text>
                   </View>
@@ -1005,7 +1038,7 @@ get();
 </View>
 
 
-<ScrollView style={{height:350}}>
+<ScrollView style={{height:'70%'}}>
                 {commentItems.length !== 0 ? (
                   commentItems.map(i => (
                     <View style={{marginBottom: 10}}>
@@ -1173,7 +1206,7 @@ get();
       </View>
     );
   }
-};
+
 
 export default Disease;
 
@@ -1324,7 +1357,7 @@ const styles = StyleSheet.create({
         overflow:'hidden',
         backgroundColor: '#f0f8ff',
         borderWidth:1,
-        elevation:2,
+        elevation:0,
         borderColor:'#e6f7ff',
        borderRadius:15,
         flexDirection:'row',
@@ -1350,7 +1383,9 @@ const styles = StyleSheet.create({
       },
       cbodyHead:{
         fontWeight:'bold',
-        color:'black'
+        color:'black',
+        alignSelf:'center'
+        
       },
     disclaimer:{color:'#00415e',
     fontFamily:'Raleway-Medium',

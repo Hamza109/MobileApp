@@ -20,8 +20,7 @@ import {ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import ArticleHeader from './ArticleHeader';
-
-// import StarRating from 'react-native-star-rating';
+import NetInfo from '@react-native-community/netinfo';
 import {
   HStack,
   Spinner,
@@ -33,6 +32,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import CenterWell from '../Disease/CenterWell';
+import NoInternet from '../../components/NoInternet';
 
 const Result = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -43,6 +43,7 @@ const Result = ({navigation, route}) => {
   // const [params] = useState(props)
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
 
   const [text, setText] = useState(texts);
   const [medtype, setMedType] = useState(types);
@@ -57,29 +58,66 @@ const Result = ({navigation, route}) => {
   const [initial, setInitial] = useState(9);
   const [showMore, setShowMore] = useState(true);
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+      console.log('state',state.isConnected)
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [isConnected])
+
   const receivedData = () => {
+   const receive= new Promise((resolve,reject)=>{
+if(isConnected)
+{
+  setIsLoaded(false)
     fetch(`${backendHost}/article/allkv`)
-      .then(res => res.json())
-      .then(json => {
-        setIsLoaded(true);
-        setItems(json);
-        
-      }).catch(err=>err);;
-  };
+    .then(res => res.json())
+    .then(json => {
+
+     
+     resolve(setItems(json));
+      
+    }).catch(err=>err);;
+  }
+   })
+   receive.then(()=>{
+    setIsLoaded(true);
+
+   })
+    
+  }
+
+
 
   const isearch = () => {
-    setLoading(true)
+const searchData = new Promise((resolve,reject)=>{
+
+if(isConnected)
+{   
+  setLoading(true)
+  setIsLoaded(false)
+
     fetch(`${backendHost}/isearch/${text}`)
       .then(res => res.json())
       .then(json => {
         setInitial(initial+6)
-  
-    
-        setIsLoaded(true);
-        setItems(json);
+       resolve(setItems(json));
         setLoading(false)
-      }).catch(err=>err);;
-  };
+      }).catch(err=>err);
+    }
+
+})
+searchData.then(()=>{
+  setIsLoaded(true);
+
+})
+
+    
+  }
   const itype = () => {
     setLoading(true)
     fetch(`${backendHost}/isearch/medicinetype/${medtype}`)
@@ -92,15 +130,26 @@ const Result = ({navigation, route}) => {
       }).catch(err=>err);;
   };
   const idisease = () => {
-    setLoading(true)
-    fetch(`${backendHost}/isearch/diseases/${id}`)
-      .then(res => res.json())
-      .then(json => {
-    setInitial(initial+6)
-        setIsLoaded(true);
-        setItems(json);
-        setLoading(false)
-      }).catch(err=>err);;
+    const disease=new Promise((resolve,reject)=>{
+      if(isConnected)
+      {
+      setLoading(true)
+      setIsLoaded(false)
+      fetch(`${backendHost}/isearch/diseases/${id}`)
+        .then(res => res.json())
+        .then(json => {
+      setInitial(initial+6)
+     
+         resolve(setItems(json))
+          setLoading(false)
+        }).catch(err=>err)
+      }
+    })
+    disease.then(()=>{
+      setIsLoaded(true)
+    })
+  
+   
   };
 
   const [loading,setLoading]=useState(false)
@@ -178,7 +227,14 @@ const load = () => {
    api();
     }
     return () => { isMounted = false };
-  }, []);
+  }, [isConnected]);
+
+
+  if(!isConnected){
+    return (
+      <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
+    );
+  }
 
   if (!isLoaded) {
     return (
@@ -193,7 +249,8 @@ const load = () => {
       </HStack>
     </View>
     );
-  } else {
+  } 
+
     return (
       <>
         <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
@@ -360,7 +417,7 @@ const load = () => {
       </>
     );
   }
-};
+
 
 export default Result;
 

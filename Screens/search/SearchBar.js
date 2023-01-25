@@ -161,7 +161,7 @@ const SearchBar = ({placeholder,doc,city}) => {
                   navigation.navigate('DocTab');
                 }}
               />
-              <View>
+              <View style={{paddingRight:0,width:'75%'}}>
                 <Input
                   placeholder={placeholder}
                   placeholderTextColor="#00415e"
@@ -171,16 +171,16 @@ const SearchBar = ({placeholder,doc,city}) => {
                   onClear={() => searchFilterFunction('')}
                   onSubmitEditing={(() => setName(name)& docresult(name))}
                   value={name}
-                  width={scale(wp('80%'))}
-          height={verticalScale('52')}
+                  width={'100%'}
+          height={52}
                   color="#00415e"
-                  borderRadius="15"
+                  borderRadius="25"
                   _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
                   backgroundColor="rgba(0, 65, 94, 0.2)"
                   borderColor="lightgrey"
                   py="3"
                   px="1"
-                  fontSize="18"
+                  fontSize="16"
                
                   InputRightElement={
                     searching?(
@@ -239,9 +239,10 @@ const styles = StyleSheet.create({
     
     alignItems:'center',
     flexDirection:'row',
-    width: scale(400),
-    height: verticalScale(80),
+    width: 400,
+    height:80,
     elevation: 1,
+  
     backgroundColor:'#fff'
   },
 

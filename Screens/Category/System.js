@@ -83,6 +83,16 @@ function renderItemTrend({item, index}) {
     medicine();
 },[])
 
+if (!isLoaded) {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <HStack space={2} justifyContent="center">
+      <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
+      </HStack>
+    </View>
+  );
+} else {
+
   return (
     <FlatList
               horizontal
@@ -92,6 +102,7 @@ function renderItemTrend({item, index}) {
               renderItem={renderItemTrend}
             />
   )
+}
 }
 
 export default System

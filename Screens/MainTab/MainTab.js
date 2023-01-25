@@ -3,37 +3,37 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import HomeScreen from './Home';
-import MyCures from './MyCures';
-import SearchArt from '../search/SearchArticle';
-import DocProfile from '../MainTab/DocProfile';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HomeStack,DocStack,CuresStack } from '../RootStackScreen';
 import {useState} from 'react';
 import { SplashStack } from '../RootStackScreen';
 import DocTab from './DocTab';
 import { Platform } from 'react-native';
+import HomeScreen from './Home';
+import { useDispatch } from 'react-redux';
 
 
 const MyCuresStack = createStackNavigator();
 const ArticleStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const MainTabScreen = () => {
 
+const MainTabScreen = () => {
+  const dispatch=useDispatch()
  
   return (
     <Tab.Navigator
       initialRouteName="Home1"
       screenOptions={{
-        tabBarStyle: {padding: 0},
+      
         tabBarInactiveTintColor: 'grey',
         tabBarActiveBackgroundColor:'aliceblue',
         tabBarLabelStyle: {fontFamily: 'Raleway-Medium',fontWeight:'bold'},
       }}>
       <Tab.Screen
         name="Home1"
-        component={HomeStack}
+        component={HomeScreen}
         options={{
           headerShown: false,
           tabBarActiveTintColor: '#00415e',

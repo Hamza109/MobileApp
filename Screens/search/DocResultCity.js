@@ -42,6 +42,8 @@ import {
 } from 'native-base';
 import ArticleHeader from './ArticleHeader';
 import { scale, verticalScale } from '../../components/Scale';
+import NetInfo from '@react-native-community/netinfo';
+import NoInternet from '../../components/NoInternet';
 
 
 const DocResultCity = ({navigation, route}) => {
@@ -55,26 +57,59 @@ const DocResultCity = ({navigation, route}) => {
   const theme = useTheme();
 
   const [value, setValue] = useState();
-  // const [params] = useState(props)
+ 
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [text, setText] = useState(names);
+  const [isConnected, setIsConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+      console.log('state',state.isConnected)
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [isConnected])
 
   const isearch = () => {
-    fetch(
-      `${backendHost}/SearchActionController?cmd=getResults&city=${text}=&doctors=&Latitude=32.7266&Longitude=74.8570`,
-    )
-      .then(res => res.json())
-      .then(json => {
-        setIsLoaded(true);
-        setItems(json.map.DoctorDetails.myArrayList);
-      }).catch(err=>err);;
+
+    const searchData=new Promise((resolve,reject)=>{
+      if(isConnected)
+      {
+        setIsLoaded(false);
+      fetch(
+        `${backendHost}/SearchActionController?cmd=getResults&city=${text}=&doctors=&Latitude=32.7266&Longitude=74.8570`,
+      )
+        .then(res => res.json())
+        .then(json => {
+        
+         resolve(setItems(json.map.DoctorDetails.myArrayList));
+        }).catch(err=>err);
+      }
+    })
+    searchData.then(()=>{
+      setIsLoaded(true)
+    })
+  
+
+    
   };
 
   useEffect(() => {
     isearch();
-  }, []);
+  }, [isConnected]);
+
+  if (!isConnected) {
+
+    return (
+      <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
+    );
+  }
+
 
   if (!isLoaded) {
     return (
@@ -89,7 +124,7 @@ const DocResultCity = ({navigation, route}) => {
       </HStack>
     </View>
     );
-  } else {
+  } 
     return (
       <SafeAreaView style={styles.container}>
             <ArticleHeader placeholder='Search by city'   doc={0} city={1}   />
@@ -106,20 +141,7 @@ const DocResultCity = ({navigation, route}) => {
                 borderWidth:1,
                 padding: 9,
               }}>
-              {/* <StarRating
-        disabled={false}
-      
-        emptyStar={'ios-star'}
-        fullStar={'ios-star'}
-    
-        iconSet={'Ionicons'}
-        starSize={23}
-        maxStars={1}
-         rating={1}
-       fullStarColor={'orange'}
-      
-      
-      /> */}
+            
               <View>
                 <ProfileTab
                   rowno={i.map.rowno}
@@ -140,7 +162,7 @@ const DocResultCity = ({navigation, route}) => {
       </SafeAreaView>
     );
   }
-};
+
 
 export default DocResultCity;
 

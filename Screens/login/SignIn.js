@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,16 +11,19 @@ import {
   ImageBackground,
   ToastAndroid,
   BackHandler,
+  SafeAreaView,
+  Pressable
 } from 'react-native';
 import {
   HStack,
+  Input,
   Stack,
   VStack,
 } from 'native-base';
 import axios from 'axios';
-import Home from '../MainTab/Home';
+
 import * as Animatable from 'react-native-animatable';
-import {useToast} from 'native-base';
+import { useToast } from 'native-base';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -29,26 +32,28 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {backendHost} from '../../components/apiConfig';
+import { backendHost } from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import analytics from '@react-native-firebase/analytics';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { reg } from '../Redux/Action';
+import { reg, type, row } from '../Redux/Action';
 import { useStore } from 'react-redux';
 import { screenName } from '../Redux/Action';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 
-const SignInScreen = ({ props,route}) => {
+
+const SignInScreen = ({ props, route }) => {
   const [status, setStatus] = useState('');
-  const navigation=useNavigation()
+  const navigation = useNavigation()
   const [buttonClick, setClicked] = useState('');
-  const [isSignedIn, setIsSignedIn] = useState(props);
   const [loginSuccess, setLoginSuccess] = useState(true);
+  const[passwordSecured,setPasswordSecured]=useState(false)
   const routeName = useStore()
-  const user=useStore()
+
+  const user = useStore()
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -59,7 +64,7 @@ const SignInScreen = ({ props,route}) => {
   const verify = () => {
     navigation.navigate('Verify');
   };
-const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
 
   const toast = useToast();
@@ -69,35 +74,24 @@ const dispatch=useDispatch();
       secureTextEntry: !data.secureTextEntry,
     });
   };
-  const backAction = () => {
-  
-      navigation.push('Main');
-    
-  };
-  useEffect(()=>{
-    console.log('screen:',routeName.getState().name.screen)
-  })
+
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', backAction);
-  });
+    console.log('screen:', routeName.getState().name.screen)
+  })
+
 
   const loading = () => {
     return (
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <HStack space={2} justifyContent="center">
           <LottieView
             source={require('../../assets/animation/pulse.json')}
             autoPlay
             loop
-            style={{width: 50, height: 50}}
+            style={{ width: 50, height: 50 }}
           />
-          {/* <Spinner
-            accessibilityLabel="Loading posts"
-            color="#fff"
-            size="lg"
-          /> */}
+    
+       
         </HStack>
       </View>
     );
@@ -118,20 +112,21 @@ const dispatch=useDispatch();
 
       .then(res => {
         if (res.data.registration_id) {
-         
+
           setTimeout(() => {
-            navigation.push(routeName.getState().name.screen);
+            dispatch(screenName('MAIN'));
             crashlytics().log(`User has signed in`);
             analytics().setUserProperty(
               'Reg_Id',
               JSON.stringify(res.data.registration_id),
             );
             analytics().setUserId(JSON.stringify(res.data.registration_id));
-            analytics().logEvent('login', {reg_id: res.data.registration_id});
+            analytics().logEvent('login', { reg_id: res.data.registration_id });
             setStatus(res.status);
             user.dispatch(reg(res.data.registration_id))
-            setType(res.data.registration_type);
-            setRow(res.data.rowno);
+            user.dispatch(type(res.data.registration_type))
+            console.log('r', res.data.rowno)
+            user.dispatch(row(res.data.rowno))
             setClicked(0);
           }, 3000);
         }
@@ -150,7 +145,7 @@ const dispatch=useDispatch();
                 description: 'Please enter a valid email address',
                 duration: 2000,
 
-                style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+                style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
               });
             }, 1000);
           } else {
@@ -171,127 +166,56 @@ const dispatch=useDispatch();
       });
   };
 
-  const setId = async id => {
-    try {
-      await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {
-      error;
-    }
-  };
-  const setType = async type => {
-    try {
-      await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {
-      error;
-    }
-  };
 
-  const setRow = async row => {
-    try {
-      await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {
-      error;
-    }
-  };
 
-  const setEmail = async email => {
-    try {
-      await AsyncStorage.setItem('email', email);
-    } catch (error) {
-      error;
-    }
-  };
-  const [borderWidth, setborderWidth] = useState(1);
-  const [pBorderWidth, setPborderWidth] = useState(1);
+
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+
       <ImageBackground
         source={require('../../assets/img/backheart.png')}
         resizeMode="stretch"
         style={styles.image}>
-        <TouchableOpacity
-          style={{  zIndex: 999,color: '#fff'}}
-          backgroundColor="#fff"
-          onPress={() => dispatch(screenName('Main'))& navigation.replace('Main')}>
-          <Text
-            style={{
-              color: '#fff',
-              position: 'relative',
-              top: Platform.OS === 'android' ? 30 : 60,
-              left: Platform.OS === 'android' ? 265 : 285,
-              fontSize: 18,
-              zIndex: 999,
-              fontFamily: 'Raleway-Medium',
-            }}>
-            Skip
-          </Text>
-        </TouchableOpacity>
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <Stack space={1}>
-            <View style={styles.header}>
-              <Text style={styles.text_header}>Sign In</Text>
-            </View>
 
-            <VStack space={3}>
-              <View style={[styles.action, {borderWidth: borderWidth}]}>
-                <TextInput
-                  placeholder="Enter your email"
-                  onFocus={() => setborderWidth(2)}
-                  onBlur={() => setborderWidth(1)}
-                  placeholderTextColor="#fff"
-                  style={[
-                    styles.textInput,
-                    {
-                      color: '#fff',
-                    },
-                  ]}
-                  onfo
-                  autoCapitalize="none"
+<Pressable onPress={() => dispatch(screenName('MAIN'))}><Text  style={styles.skip}>Skip</Text></Pressable>
+
+        <View style={styles.body}>
+
+
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Sign In</Text>
+          </View>
+
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter email' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+            autoCapitalize="none"
                   value={data.email}
                   returnKeyType="done"
                   onChangeText={e => setData({...data, email: e})}
-                />
-                {data.check_textInputChange ? (
-                  <Animatable.View animation="bounceIn">
-                    <Feather name="check-circle" color="green" size={20} />
-                  </Animatable.View>
-                ) : null}
-              </View>
+            />
+          </View>
 
-              <View style={[styles.action, {borderWidth: pBorderWidth}]}>
-                <TextInput
-                  placeholder="Enter your password"
-                  placeholderTextColor="#fff"
-                  onFocus={() => setPborderWidth(2)}
-                  onBlur={() => setPborderWidth(1)}
-                  secureTextEntry={data.secureTextEntry ? true : false}
-                  style={[
-                    styles.textInput,
-                    {
-                      color: '#fff',
-                    },
-                  ]}
-                  autoCapitalize="none"
-                  returnKeyType="go"
-                  value={data.password}
-                  onSubmitEditing={loginForm}
-                  onChangeText={e => setData({...data, password: e})}
-                />
-                <TouchableOpacity onPress={updateSecureTextEntry}>
-                  <View style={{position: 'relative', right: 20, top: 10}}>
-                    {data.secureTextEntry ? (
-                      <Feather name="eye-off" color="grey" size={20} />
-                    ) : (
-                      <Feather name="eye" color="grey" size={20} />
-                    )}
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </VStack>
-            <View style={styles.button}>
-              <TouchableOpacity style={styles.signIn} onPress={loginForm}>
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter password' 
+             color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }}
+            secureTextEntry={passwordSecured}
+            autoCapitalize="none"
+            returnKeyType="go"
+            value={data.password}
+            onSubmitEditing={loginForm}
+            onChangeText={e => setData({...data, password: e})}
+            InputRightElement={<View><TouchableOpacity onPress={()=>setPasswordSecured(!passwordSecured)}><Feather name={passwordSecured?'eye-off':'eye'} color="grey" size={20} style={{marginRight:10}} /></TouchableOpacity></View>}
+             />
+          </View>
+
+          <TouchableOpacity style={styles.signIn} onPress={loginForm}>
                 <Text
                   style={[
                     styles.textSign,
@@ -304,13 +228,12 @@ const dispatch=useDispatch();
                 </Text>
               </TouchableOpacity>
 
-              <VStack space={50}>
-                <TouchableOpacity>
+              <TouchableOpacity>
                   <Text
                     style={{
                       color: '#fff',
                       textAlign: 'center',
-                      marginTop: 5,
+                      marginTop: 10,
                       fontFamily: 'Raleway',
                     }}
                     onPress={verify}>
@@ -330,12 +253,16 @@ const dispatch=useDispatch();
                     Don't have an account? Sign Up
                   </Text>
                 </TouchableOpacity>
-              </VStack>
-            </View>
-          </Stack>
+
+
         </View>
-      </ImageBackground>
-    </View>
+
+
+
+
+
+              </ImageBackground>
+    </SafeAreaView>
   );
 };
 
@@ -346,9 +273,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#00415e',
   },
+  body: {
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
+  },
+  skip: {
+    color: '#fff',
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    fontSize: 18,
+    fontFamily: 'Raleway-Bold',
+  },
   header: {
-    paddingHorizontal: 20,
-    paddingBottom: 50,
+    width: '100%',
+    marginBottom:10
+  },
+
+  headerText: {
+    fontSize: 25,
+    fontFamily: 'Raleway-Bold',
+    color: '#fff',
+    alignSelf: 'center'
+
   },
 
   text_header: {
@@ -397,10 +345,10 @@ const styles = StyleSheet.create({
 
   signIn: {
     width: '100%',
-    height: hp('6%'),
+    height: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 25,
     backgroundColor: '#fff',
   },
   textSign: {
@@ -408,9 +356,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width:wp('100%'),
-    height:hp('100%'),
-  zIndex:999,
+    width: '100%',
+    height: '100%',
     padding: 15,
   },
 });

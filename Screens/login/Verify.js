@@ -13,14 +13,15 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-import * as Animatable from 'react-native-animatable';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
+import LottieView from 'lottie-react-native'
 import { backendHost } from '../../components/apiConfig';
 import {useTheme} from 'react-native-paper';
-import { HStack, Spinner,useToast } from 'native-base';
+import { HStack, Input, Spinner,useToast } from 'native-base';
+import { useDispatch } from 'react-redux';
+import { screenName } from '../Redux/Action';
 const Verify = ({navigation}) => {
   const [email, setEmail] = useState('');
+  const dispatch=useDispatch();
 
   const [buttonClick, setClicked] = useState('');
   const [data, setData] = useState([]);
@@ -28,7 +29,7 @@ const Verify = ({navigation}) => {
   const [submitAlert, setAlert] = useState(false);
   const [notAlert, noAlert] = useState(false);
   const [errAlert, erAlert] = useState(false);
-
+  const [validEmail, setValidEmail] = useState(false);
   const [alert, setSubmitAlert] = useState(false);
 const toast=useToast()
 const [loading,setLoading]=useState(false)
@@ -45,20 +46,36 @@ const [loading,setLoading]=useState(false)
     });
   };
   
-  const goto = () => {
-
-    toast.show({
-      title: "Added to cures",
-description:'Check MyCures Tab.',
-      status: "success",
-      placement:"bottom",
-      duration:2000,
-      style:{borderRadius:20,width:wp('70%'),marginBottom:20}
-    })
-
-
-  return true;
-};
+  const validate = text => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      setEmail(text);
+      setValidEmail(true);
+      return false;
+    } else {
+      setEmail(text);
+     
+    }
+  };
+  const spinner = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        <HStack space={2} justifyContent="center">
+          <LottieView
+            source={require('../../assets/animation/pulse.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50}}
+          />
+          {/* <Spinner
+            accessibilityLabel="Loading posts"
+            color="#fff"
+            size="lg"
+          /> */}
+        </HStack>
+      </View>
+    );
+  }
 
   const submitForm = async e => {
   setLoading(true)
@@ -95,7 +112,62 @@ description:'Check MyCures Tab.',
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
+
+
+<TouchableOpacity
+          style={{ zIndex: 1 }}
+          backgroundColor="#fff"
+          onPress={() => dispatch(screenName('MAIN'))}>
+          <Text
+            style={styles.skip}>
+            Skip
+          </Text>
+        </TouchableOpacity>
+
+        <View style={styles.body}>
+
         <View style={styles.header}>
+            <Text style={styles.headerText}>Verify Your Email</Text>
+          </View>
+
+          <View style={{marginBottom:15}}>
+          <Input 
+            placeholder='enter email' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+            autoCapitalize="none"
+             value={email}
+            returnKeyType="done"
+            onChangeText={e => validate(e)}
+            />
+          </View>
+
+          <View style={styles.button}>
+          {buttonClick === 1 ? submitForm() : null}
+          <TouchableOpacity style={styles.signIn} onPress={submitForm}>
+         
+
+            {notAlert ? Alert.alert('Email not found!') : null}
+            {errAlert ? Alert.alert('error in resetting') : null}
+<HStack space={2}>
+            <Text
+              style={[
+                styles.textSign,
+                {
+                  color: '#00415e',
+                },
+              ]}>
+              Submit
+            </Text>
+            
+          </HStack>
+          </TouchableOpacity>
+        </View>
+
+        {loading?spinner():null}
+
+          </View>
+        {/* <View style={styles.header}>
           <Text style={styles.text_header}>Verify your email</Text>
         </View>
 
@@ -151,7 +223,7 @@ description:'Check MyCures Tab.',
           ) : null}
           </HStack>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ImageBackground>
     </View>
   );
@@ -164,10 +236,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#00415e',
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 50,
+  body: {
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
   },
+  skip: {
+    color: '#fff',
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    fontSize: 18,
+    fontFamily: 'Raleway-Bold',
+  },
+  header: {
+    width: '100%',
+    marginBottom:10
+  },
+
+  headerText: {
+    fontSize: 25,
+    fontFamily: 'Raleway-Bold',
+    color: '#fff',
+    alignSelf: 'center'
+
+  },
+
 
   text_header: {
     color: '#fff',

@@ -37,24 +37,16 @@ const All = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 const dispatch=useDispatch()
-  const [regType, setRegType] = useState();
+;
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
     if(user===0)
       {
-            navigation.replace('SignIn');
+           dispatch(screenName('LOGIN'));
       }
     }
 
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);
-    } catch (error) {error}
-  };
+
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
       .then(res => res.json())
@@ -73,7 +65,7 @@ const dispatch=useDispatch()
   }, []);
   useEffect(() => {
     if (navigation.isFocused()) {
-      getType();
+
 
       receivedData();
     }

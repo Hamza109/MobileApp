@@ -108,7 +108,7 @@ card: {
     height:52,
   fontSize: 20,
   justifyContent:'center',
-  borderRadius: 15,
+  borderRadius: 25,
   },
   inCard: {
   

@@ -194,9 +194,10 @@ key={Math.random().toString(36)}
                                   }}
                                 />
                                 </TouchableOpacity>
-                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
-                               <View style={{width:'90%'}}>
+                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}  key={Math.random().toString(36)}>
+                               <View style={{width:'90%'}} key={Math.random().toString(36)}>
                                <AllPost
+                               key={Math.random().toString(36)}
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
@@ -210,6 +211,7 @@ key={Math.random().toString(36)}
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
+                                                  key={Math.random().toString(36)}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={

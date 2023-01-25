@@ -11,21 +11,17 @@ import {
   ImageBackground,
   SafeAreaView,
   ToastAndroid,
+  Pressable,
 } from 'react-native';
 import {
   HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  VStack,
+ Input,
   useToast,
   Spinner,
   Checkbox,
 } from 'native-base';
 import axios from 'axios';
-import Home from '../MainTab/Home';
+
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -48,6 +44,7 @@ import { screenName } from '../Redux/Action';
 const SignUpScreen = ({props}) => {
   const [emails, setEmails] = useState('');
 const navigation=useNavigation()
+const[passwordSecured,setPasswordSecured]=useState(false)
   const [password, setPassword] = useState({
     firstPassword: '',
     secondPassword: '',
@@ -72,7 +69,7 @@ const navigation=useNavigation()
   const toast = useToast();
   const [emailExists, setExists] = useState(false);
   const [promo, setPromo] = useState(null);
-  const [validEmail, setValidEmail] = useState();
+  const [validEmail, setValidEmail] = useState(false);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] =
@@ -135,7 +132,7 @@ const navigation=useNavigation()
         .then(response => {
           if (response.data.registration_id) {
            setTimeout(()=>{
-               navigation.push(routeName.getState().name.screen)
+            dispatch(screenName('MAIN'))
           
             user.dispatch(reg(response.data.registration_id))
             toast.show({
@@ -195,11 +192,11 @@ const navigation=useNavigation()
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
       setEmails(text);
-      setValidEmail(false);
+      setValidEmail(true);
       return false;
     } else {
       setEmails(text);
-      setValidEmail(true);
+    ;
     }
   };
 
@@ -276,7 +273,169 @@ const navigation=useNavigation()
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
-       <TouchableOpacity
+
+<Pressable onPress={() => dispatch(screenName('MAIN'))}><Text  style={styles.skip}>Skip</Text></Pressable>
+
+{/* <TouchableOpacity
+          style={{ zIndex: 1 }}
+          backgroundColor="#fff"
+          onPress={() => dispatch(screenName('MAIN'))}>
+          <Text
+            style={styles.skip}>
+            Skip
+          </Text>
+        </TouchableOpacity> */}
+
+        <View style={styles.body}>
+
+
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Sign Up</Text>
+          </View>
+
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter first name' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+            autoCapitalize="none"
+            value={firstName}
+            returnKeyType="done"
+            onChangeText={e => setFname(e)}
+
+            />
+          </View>
+
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter last name' 
+             color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }}
+            secureTextEntry={passwordSecured}
+            autoCapitalize="none"
+            value={lastName}
+            returnKeyType="done"
+            onChangeText={e => setLname(e)}
+           
+             />
+          </View>
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter mobile number' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+            value={number}
+            returnKeyType="done"
+            keyboardType="numeric"
+            onChangeText={e => setMname(e)}
+
+            />
+
+                </View>
+
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter email' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+            autoCapitalize="none"
+             value={emails}
+            returnKeyType="done"
+            onChangeText={e => validate(e)}
+            />
+          </View>
+          
+      
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='enter password' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+            autoCapitalize="none"
+            returnKeyType="go"
+            value={password}
+            onChangeText={e => setFirstP(e)}
+
+            />
+          </View>
+
+          <View style={{marginBottom:15}}>
+            <Input 
+            placeholder='confirm password' 
+            color={'#fff'}
+            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
+               autoCapitalize="none"
+                returnKeyType="go"
+                value={password}
+                onChangeText={e => setSecond(e)}
+                InputRightElement={<View><TouchableOpacity onPress={()=>setPasswordSecured(!passwordSecured)}><Feather name={passwordSecured?'eye-off':'eye'} color="grey" size={20} style={{marginRight:10}} /></TouchableOpacity></View>}
+
+            />
+          </View>
+
+          <TouchableOpacity
+              style={styles.signIn}
+              onPress={
+                (() => {
+                  handleEmail(emails);
+                },
+                SignUpForm)
+              }>
+              <HStack space={2}>
+                <Text
+                  style={[
+                    styles.textSign,
+                    {
+                      fontFamily: 'Raleway-Bold',
+                      color: '#00415e',
+                    },
+                  ]}>
+                  Sign Up
+                </Text>
+                
+              </HStack>
+            </TouchableOpacity>
+
+            {loading?spinner():null}
+
+            {loading ? (
+                <View>
+                  {!validEmail && Alert.alert('Enter Valid Email')}
+                  {!validLength &&
+                    Alert.alert(
+                      'Password should contain at least 8 characters!',
+                    )}
+                  {!upperCase &&
+                    Alert.alert(
+                      ' Password should contain at least 1 uppercase character!',
+                    )}
+                  {!lowerCase &&
+                    Alert.alert(
+                      'Password should contain at least 1 lowercase character!',
+                    )}
+                  {!match && Alert.alert("Passwords don't match!")}
+                </View>
+              ) : null}
+
+            <TouchableOpacity>
+                <Text
+                  style={{
+                    color: '#fff',
+                    textAlign: 'center',
+                    marginTop: 25,
+                    fontFamily: 'Raleway',
+                  }}
+                  onPress={() => navigation.navigate('SignIn')}>
+                  Already have an account? Sign In
+                </Text>
+              </TouchableOpacity>
+          
+
+
+
+
+          </View>
+       {/* <TouchableOpacity
           style={{marginLeft: 20,   zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
           onPress={() => dispatch(screenName('Main'))& navigation.replace('Main')}>
@@ -486,7 +645,7 @@ const navigation=useNavigation()
               </TouchableOpacity>
             </VStack>
           </View>
-        </Stack>
+        </Stack> */}
       </ImageBackground>
     </View>
   );
@@ -499,9 +658,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#00415e',
   },
+  body: {
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
+  },
+  skip: {
+    color: '#fff',
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    fontSize: 18,
+    fontFamily: 'Raleway-Bold',
+  },
   header: {
-    paddingHorizontal: 20,
-    paddingBottom: 50,
+    width: '100%',
+    marginBottom:10
+  },
+
+  headerText: {
+    fontSize: 25,
+    fontFamily: 'Raleway-Bold',
+    color: '#fff',
+    alignSelf: 'center'
+
   },
 
   text_header: {
@@ -549,10 +729,10 @@ padding:Platform.OS=='ios'?10:0,
 
   signIn: {
     width: '100%',
-    height: hp('6%'),
+    height: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 25,
     backgroundColor: '#fff',
   },
   textSign: {

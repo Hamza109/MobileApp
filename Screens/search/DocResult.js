@@ -42,10 +42,13 @@ import {
 } from 'native-base';
 import { scale, verticalScale } from '../../components/Scale';
 import ArticleHeader from './ArticleHeader';
+import NetInfo from '@react-native-community/netinfo';
+import NoInternet from '../../components/NoInternet';
 
 const DocResult = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
+
 
   const names = route.params.names;
 
@@ -59,21 +62,53 @@ const DocResult = ({navigation, route}) => {
   const [isLoaded, setIsLoaded] = useState(false);
 const [search,setSearch]=useState();
   const [text, setText] = useState(names);
+  const [isConnected, setIsConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+      console.log('state',state.isConnected)
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [isConnected])
 
   const isearch = () => {
-    fetch(
-      `${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}&Latitude=32.7266&Longitude=74.8570`,
-    )
-      .then(res => res.json())
-      .then(json => {
-        setIsLoaded(true);
-        setItems(json.map.DoctorDetails.myArrayList);
-      }).catch(err=>err);;
+
+    const searchData= new Promise((resolve,reject)=>{
+      if(isConnected){
+        setIsLoaded(false)
+      fetch(
+        `${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}&Latitude=32.7266&Longitude=74.8570`,
+      )
+        .then(res => res.json())
+        .then(json => {
+      ;
+         resolve(setItems(json.map.DoctorDetails.myArrayList))
+        }).catch(err=>err);;
+      }
+
+    })
+
+    searchData.then(()=>{
+      setIsLoaded(true)
+    })
+  
+    
   };
 
   useEffect(() => {
     isearch();
-  }, []);
+  }, [isConnected]);
+
+  if (!isConnected) {
+
+    return (
+      <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
+    );
+  }
 
   if (!isLoaded) {
     return (
@@ -88,7 +123,7 @@ const [search,setSearch]=useState();
       </HStack>
     </View>
     );
-  } else {
+  } 
     return (
       <SafeAreaView style={styles.container}>
 
@@ -161,7 +196,7 @@ const [search,setSearch]=useState();
       </SafeAreaView>
     );
   }
-};
+
 
 export default DocResult;
 

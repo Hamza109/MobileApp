@@ -20,7 +20,7 @@ const SearchDoc = ()=>{
 
   
 
-      <View style={{width: scale(500)}} >
+      <View>
     
      
 

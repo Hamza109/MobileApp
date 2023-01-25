@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
     width: wp('86%'),
-    height: 58,
-    borderRadius: 20,
+    height: 52,
+    borderRadius: 25,
    
   },
   inCard: {

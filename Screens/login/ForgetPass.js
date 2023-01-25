@@ -22,7 +22,7 @@ import {
   Checkbox,
 } from 'native-base';
 import axios from 'axios';
-import Home from '../MainTab/Home';
+
 import * as Animatable from 'react-native-animatable';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';

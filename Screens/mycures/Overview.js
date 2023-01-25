@@ -38,7 +38,7 @@ const Overview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const [regType, setRegType] = useState();
+
   const [pubStatus, setPubStatus] = useState();
   const getId = () => {
     try {
@@ -53,15 +53,7 @@ const Overview = () => {
       );
     } catch (error) {error}
   };
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);
-    } catch (error) {error}
-  };
+
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
       .then(res => res.json())
@@ -83,7 +75,7 @@ const Overview = () => {
   useEffect(() => {
     if (isFocus) {
       getId();
-      getType();
+
 
       receivedData();
     }

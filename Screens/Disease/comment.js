@@ -5,8 +5,10 @@ import axios from 'axios';
 import {backendHost} from '../../components/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native';
+
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Octicons'
 import {View, Text, StyleSheet} from 'react-native';
 import {useEffect} from 'react';
 import {Alert} from 'react-native';
@@ -14,7 +16,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useToast} from 'native-base';
+import {Input, useToast} from 'native-base';
 import { useStore,useSelector } from 'react-redux';
 const Comment = ({article_id,doc_id}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -23,22 +25,10 @@ const Comment = ({article_id,doc_id}) => {
   const user= useStore()
   const [cmtText, setCmtText] = useState('');
 
-  const [regType, setRegType] = useState();
 
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);;
-    } catch (error) {
-      error;
-    }
-  };
-  useEffect(() => {
-    getType();
-  }, []);
+  const type= useSelector((state)=>state.userType.typeId)
+
+
 
   const goto = () => {
     Alert.alert(
@@ -52,9 +42,10 @@ const Comment = ({article_id,doc_id}) => {
     if (cmtText !== '') {
       axios
         .post(
-          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${user.getState().userId.regId}&ratedbytype=${regType}&targetid=${article_id!==null?article_id:doc_id}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
+          `${backendHost}/DoctorRatingActionController?comments=${cmtText}&ratedbyid=${user.getState().userId.regId}&ratedbytype=${type}&targetid=${article_id!==null?article_id:doc_id}&targetTypeid=${article_id!==null?2:1}&cmd=rateAsset`,
         )
         .then(res => {
+         
           goto();
           setCmtText('');
         })
@@ -70,10 +61,27 @@ const Comment = ({article_id,doc_id}) => {
 
   return (
     <View style={{flex: 1}}>
-      <View style={{height: hp('8%'), width: wp('100%'), padding: 3}}>
-        <View style={{flex: 1}}>
+      <View style={{height: 50, width: '100%', padding: 3}}>
+    
           <View style={{flexDirection: 'row'}}>
-            <TextInput
+            <View style={{width:'90%',paddingHorizontal:5}}>
+            <Input
+            width={'100%'}
+            backgroundColor='lightgrey'
+            rounded={'3xl'}
+            placeholder='comment'
+            borderColor={'lightgrey'}
+            _focus={{borderColor:'grey'}}
+            autoFocus
+            value={cmtText}
+            placeholderTextColor="grey"
+            onChangeText={e => {
+              setCmtText(e);
+            }}
+            
+            />
+            </View>
+            {/* <TextInput
               style={[
                 styles.textInput,
                 {
@@ -91,16 +99,15 @@ const Comment = ({article_id,doc_id}) => {
               onChangeText={e => {
                 setCmtText(e);
               }}
-            />
+            /> */}
 
             <TouchableOpacity
-              style={[s.btnTouchable, s.btn, s.btnSecondary, styles.button]}
+            style={{marginTop:7}}
               onPress={e => postComment(e)}>
-              <Text style={[s.btnText, s.btnPrimaryText]}>post</Text>
+            <Icon  name='paper-airplane' size={33}/>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
     </View>
   );
 };
@@ -124,4 +131,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
+
 });

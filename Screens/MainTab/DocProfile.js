@@ -9,6 +9,7 @@ BackHandler,
   TouchableOpacity,
   ImageBackground,
   Image,
+  SafeAreaView
 } from 'react-native';
 import {
   HStack,
@@ -48,10 +49,13 @@ import AllPost from '../search/AllPost';
 import Comment from '../Disease/comment';
 import { useSelector,useDispatch,useStore } from 'react-redux';
 import { scale, verticalScale } from '../../components/Scale';
-import { fetchRequest,fetchFailure,fetchSuccess } from '../Redux/Action';
+import { fetchRequest,fetchFailure,fetchSuccess, screenName } from '../Redux/Action';
 import DocInfo from './DocProfile/DocInfo';
 import DocCures from './DocProfile/DocCures';
 import DocProfileTab from './DocProfile/DocProfileTab';
+import NetInfo from '@react-native-community/netinfo';
+import NoInternet from '../../components/NoInternet';
+
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
@@ -71,6 +75,7 @@ const dispatch=useDispatch()
   const [showValue, setShowValue] = useState();
 
   const [commentItems, setCommentItems] = useState([]);
+  const [isConnected, setIsConnected] = useState(true);
   const refRBSheet = useRef();
 
   useEffect(()=>{
@@ -87,10 +92,21 @@ const dispatch=useDispatch()
    },[])
   
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+      console.log('state',state.isConnected)
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [isConnected])
+
 
   const check = () => {
     if (user== 0) {
-      navigation.navigate('SignIn')
+dispatch(screenName('LOGIN'))
     } else {
      refRBSheet.current.open()
     }
@@ -144,24 +160,33 @@ const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/docto
 
   },[id])
   const getDoc = () => {
+
       return function(dispatch){
         dispatch(fetchRequest())
-    axios.get(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
+
+const docData=new Promise ((resolve,reject)=>{
+  setIsLoaded(false)
+  axios.get(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
  
-      .then(res => res.data)
-      .then(json=>
-        {
+  .then(res => res.data)
+  .then(json=>
+    {
+ 
+      resolve(dispatch(fetchSuccess(json)))
      
-          dispatch(fetchSuccess(json))
-          setIsLoaded(true)
-      
-        })
-      .catch(err => {err
-   
-          dispatch(fetchFailure(err))
-   
-     
-        })
+  
+    })
+  .catch(err => {err
+
+      dispatch(fetchFailure(err))
+
+ 
+    })
+})
+docData.then(()=>{
+  setIsLoaded(true)
+})
+    
       }
   };
 
@@ -219,12 +244,19 @@ useEffect(()=>{
 })
 useEffect(()=>{
   store.dispatch(getDoc())
-},[id])
+},[id,isConnected])
   useEffect(() => {
 
     allpost();
 
   }, [id]);
+
+  if (!isConnected) {
+
+    return (
+      <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
+    );
+  }
   
   return (
     <>
@@ -243,7 +275,7 @@ useEffect(()=>{
           </View>
   ):null
         }
-      <View>
+      <SafeAreaView>
         
       <View style={{height:165,width:'100%'}}>
           <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center',justifyContent:'center'}}>
@@ -358,7 +390,7 @@ useEffect(()=>{
             </View>
             </View>
           </View>
-      </View>
+      </SafeAreaView>
 
 {/* Rating and comment */}
 
@@ -442,7 +474,7 @@ useEffect(()=>{
 </View>
 
 
-<ScrollView style={{height:350}}>
+<ScrollView style={{height:'70%'}}>
                 {commentItems.length !== 0 ? (
                   commentItems.map(i => (
                     <View style={{marginBottom: 10}}>
@@ -574,6 +606,9 @@ const styles = StyleSheet.create({
       },
       cbodyHead:{
         fontWeight:'bold',
+        color:'black'
+      },
+      cbodyText:{
         color:'black'
       },
       dbodyHead:{

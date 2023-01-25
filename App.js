@@ -23,6 +23,7 @@ import {
   View,
   Linking,
   Alert,
+  AppState,
 } from 'react-native';
 import RootStack from './Screens/RootStackScreen';
 import {
@@ -37,17 +38,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SSRProvider} from '@react-aria/ssr';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import DrawerMenu from './Screens/MainTab/DrawerMenu';
-import { SplashStack } from './Screens/RootStackScreen';
+import { SplashStack,Navigator } from './Screens/RootStackScreen';
 import { Provider } from 'react-redux';
 import reduxStore  from './Screens/Redux/Store';
 import { PersistGate } from 'redux-persist/integration/react';
-import { useStore } from 'react-redux';
+import { useStore,useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { screenName } from './Screens/Redux/Action';
 const App = () => {
   // const linking = {
   //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
   // };
   const [url, setUrl] = useState(null);
   const [processing, setProcessing] = useState(true);
+
   const setMail = async mail => {
     try {
       await AsyncStorage.setItem('mail1', mail);
@@ -56,6 +60,8 @@ const App = () => {
     }
   };
 
+  
+
   const setDeviceInfo = async dev => {
     try {
       await AsyncStorage.setItem('device', dev);
@@ -63,8 +69,13 @@ const App = () => {
       error;
     }
   };
+
+
   useEffect(() => {
-    
+
+
+
+
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
 
@@ -100,8 +111,9 @@ const App = () => {
     getUrl();
 
     return () => {
-      getUrl();
+      getUrl()
     };
+    
   });
 
   const routeNameRef = React.useRef();
@@ -134,8 +146,8 @@ const App = () => {
             }
             routeNameRef.current = currentRouteName;
           }}>
-      
-          <SplashStack />
+     
+         <Navigator/>
         </NavigationContainer>
         </SafeAreaProvider>
       </PaperProvider>

@@ -108,7 +108,7 @@ const [uniqueId,setUniqueId]=useState()
         <View>
           <FlatList
             data={item}
-            keyExtractor={(item)=>item}
+            keyExtractor={(item,idx)=>idx}
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>setText(item) & result(item)}>
@@ -153,15 +153,16 @@ const [uniqueId,setUniqueId]=useState()
           onSubmitEditing={(() => setText(text)& result(text))}
           value={text}
           width='100%'
-          height={verticalScale('52')}
+          height={52}
           fontFamily="Raleway-Regular"
           color="#00415e"
-          borderRadius="15"
+          borderRadius="25"
           _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
           backgroundColor="rgba(0, 65, 94, 0.2)"
           py="3"
           px="1"
-          fontSize="18"
+          fontSize="16"
+       
 
           InputRightElement={
             <View style={{position: 'absolute', right: 20}}>

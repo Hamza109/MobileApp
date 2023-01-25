@@ -1,5 +1,5 @@
 import { State } from "react-native-gesture-handler"
-import { FAV_ARTICLE, REG_ID ,FETCH_FAILURE,FETCH_REQUEST,FETCH_SUCCESS,FETCH_ARTICLE} from "./Action"
+import { FAV_ARTICLE, REG_ID ,FETCH_FAILURE,FETCH_REQUEST,FETCH_SUCCESS,REG_TYPE,ROW_NO,FETCH_FAILURE_PROFILE,FETCH_REQUEST_PROFILE,FETCH_SUCCESS_PROFILE} from "./Action"
 import { SCREEN_NAME } from "./Action"
 
 const initialFetchState={
@@ -7,17 +7,30 @@ const initialFetchState={
     data:[],
     error:''
 }
-
+const initialProfileState={
+    loading:false,
+    data:[],
+    error:''
+}
 const initialState={
     regId:0,
  
 }
 const initialScreenState={
-    screen:'Main'
+    screen:'SPLASH'
 }
 const initialFavState={
     stat:0
 }
+
+const initialTypeState={
+    typeId:0
+}
+
+const initialRowState={
+    rowId:0
+}
+
 export const FavReducer=(state=initialFavState,action)=>{
     switch(action.type){
         case FAV_ARTICLE:{
@@ -56,6 +69,31 @@ export const screenReducer=(state=initialScreenState,action)=>{
     }
  }
 
+ export  const typeReducer = (state=initialTypeState,action)=>{
+    switch(action.type){
+        case REG_TYPE:{
+            return{
+                ...state,
+                typeId:action.payload
+            }
+           
+        }
+        default: return state
+    }
+ }
+
+ export  const rowReducer = (state=initialRowState,action)=>{
+    switch(action.type){
+        case ROW_NO:{
+            return{
+                ...state,
+                rowId:action.payload
+            }
+           
+        }
+        default: return state
+    }
+ }
  export const dataReducer=(state=initialFetchState,action)=>{
     switch(action.type){
         case FETCH_REQUEST:{
@@ -74,6 +112,35 @@ export const screenReducer=(state=initialScreenState,action)=>{
         }
        
         case FETCH_FAILURE:{
+            return {
+              loading:false,
+              data:[],
+              error:action.payload
+            }
+        }
+        default:return state
+    }
+    
+ }
+
+ export const profileReducer=(state=initialProfileState,action)=>{
+    switch(action.type){
+        case FETCH_REQUEST_PROFILE:{
+            return{
+                ...state,
+                loading:true
+            }
+        }
+        case FETCH_SUCCESS_PROFILE:{
+            return {
+             
+              loading:false,
+              data:action.payload,
+              error:''
+            }
+        }
+       
+        case FETCH_FAILURE_PROFILE:{
             return {
               loading:false,
               data:[],

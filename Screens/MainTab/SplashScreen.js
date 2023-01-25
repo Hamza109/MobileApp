@@ -18,23 +18,26 @@ import * as Animatable from 'react-native-animatable';
 import {useIsFocused, useNavigation, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from 'lottie-react-native';
+import { useDispatch,useSelector } from 'react-redux';
+import { screenName } from '../Redux/Action';
 
 const SplashScreen = () => {
-  const navigate=useNavigation()
+  const dispatch=useDispatch();
+  const screen=useSelector((state)=>state.name.screen)
 
   useEffect(()=>{
     
-    setTimeout(() => {
-      navigate.navigate('Main')
-    },1000);
+
+   const id= setTimeout(() => {
+     dispatch(screenName('MAIN'))
+    },3000);
+
+    return()=>(
+      clearTimeout(id)
+    )
   })
 
 
-
-
-  const {colors} = useTheme();
-  const[visible,setVisible]=useState(false)
-  const isFocus = useIsFocused();
   
   return (
     <View style={styles.container}>

@@ -29,41 +29,22 @@ import CenterWell from '../Disease/CenterWell';
 import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import AllStat from '../search/AllStat';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 
 const Review = () => {
   const navigation = useNavigation();
+  const user = useSelector((state) => state.userId.regId);
 
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const [regType, setRegType] = useState();
+;
   const [pubStatus, setPubStatus] = useState();
-  const getId = () => {
-    try {
-      Promise.all(
-        AsyncStorage.getItem('author').then(value1 => {
-          if (value1 != null) {
-            setuserId(value1);
-          } else {
-            navigation.navigate('SignIn');
-          }
-        }),
-      );
-    } catch (error) {error}
-  };
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType')
-      .then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);;
-    } catch (error) {error}
-  };
+  
+
   const receivedData = () => {
     fetch(`${backendHost}/article/allkv`)
       .then(res => res.json())
@@ -77,8 +58,8 @@ const Review = () => {
  
   useEffect(() => {
     if (isFocus) {
-      getId();
-      getType();
+   
+ 
 
       receivedData();
     }
@@ -92,11 +73,7 @@ const Review = () => {
     return JSON.parse(str).blocks;
   }
 
-  useEffect(() => {
-    if (isFocus) {
-      // check()
-    }
-  }, [userId]);
+ 
 
   if (!isLoaded) {
     return (
@@ -137,7 +114,7 @@ const Review = () => {
             //replace via regex
             title = title.replace(regex, '-');
 
-            return i.pubstatus_id === 2 && i.edited_by == userId ? (
+            return i.pubstatus_id === 2 && i.edited_by == user ? (
               <View>
               <View>
                 <Card

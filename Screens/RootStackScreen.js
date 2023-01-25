@@ -32,19 +32,102 @@ import Privacy from './Privacy/privacy';
 import Terms from './Privacy/terms';
 import About from './Privacy/about';
 import Contact from './Privacy/contact';
+import EditProfile from './MainTab/UserProfile/EditProfile';
+import { useSelector } from 'react-redux';
 
 
 
 const Stack = createStackNavigator();
+const Login=createStackNavigator();
+
+const LoginStack=()=>{
+  return(
+  <Login.Navigator
+  initialRouteName="SignIn"
+  screenOptions={{
+   
+
+    headerStyle: {
+      backgroundColor: '#fff',
+    
+      
+    },
+    
+    headerTintColor: '#00415e',
+   
+  }}>
+    <Login.Screen
+        name="SignIn"
+        component={SignInScreen}
+        
+        options={{headerShown: false,gestureEnabled:false}}
+      />
+      <Login.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={{headerShown: false,gestureEnabled:false}}
+      />
+      <Login.Screen
+        name="Forgetpass"
+        component={Forgetpass}
+        options={{headerShown: false}}
+      />
+
+<Login.Screen
+        name="Verify"
+        component={Verify}
+        options={{headerShown: false}}
+      />
+
+  </Login.Navigator>
+  )
+}
+
+
+
+
+
 
 const SplashStack=()=>{
-  const navigation=useNavigation()
 return(
   <Stack.Navigator
-      initialRouteName="SplashScreen"
+      initialRouteName="SplashScreen">
+<Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{headerShown: false}}
+      />
+        
+     
+</Stack.Navigator>
+
+)
+}
+const SettingStack=()=>{
+  return(
+  <Stack.Navigator
+  initialRouteName="settings"
+  screenOptions={{
+   headerShown:false
+  }}>
+<Stack.Screen name='settings' component={Settings}  />
+<Stack.Screen name='legal' component={Legal} />
+<Stack.Screen name='privacy' component={Privacy}  />
+<Stack.Screen name='terms' component={Terms}  />
+<Stack.Screen name='about' component={About}  />
+<Stack.Screen name='contact' component={Contact}  />
+
+  </Stack.Navigator>
+  )
+}
+
+const HomeStack = () => {
+  const navigation = useNavigation();
+
+  return (
+    <Stack.Navigator
+      initialRouteName="Main"
       screenOptions={{
-       
-    
         headerStyle: {
           backgroundColor: '#fff',
         
@@ -52,20 +135,17 @@ return(
         },
         
         headerTintColor: '#00415e',
-       
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
       }}>
-<Stack.Screen
-        name="SplashScreen"
-        component={SplashScreen}
-        options={{headerShown: false}}
-      />
-          <Stack.Screen
+        
+     <Stack.Screen
         name="Main"
-        key={'main'}
         component={DrawerMenu}
         options={{headerShown: false}}
       />
- <Stack.Screen
+ {/* <Stack.Screen
         name="SignIn"
         component={SignInScreen}
         
@@ -80,7 +160,7 @@ return(
         name="Forgetpass"
         component={Forgetpass}
         options={{headerShown: false}}
-      />
+      /> */}
 
      
       <Stack.Screen
@@ -128,64 +208,14 @@ return(
         component={ProfileScreen}
         options={{headerShown: true,headerLeft:()=>(<Icon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('Main')}}/>)}}
       />
-      <Stack.Screen
-        name="Verify"
-        component={Verify}
-        options={{headerShown: false}}
-      />
+
+   
   
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
         options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
       />
-     
-</Stack.Navigator>
-
-)
-}
-const SettingStack=()=>{
-  return(
-  <Stack.Navigator
-  initialRouteName="settings"
-  screenOptions={{
-   headerShown:false
-  }}>
-<Stack.Screen name='settings' component={Settings}  />
-<Stack.Screen name='legal' component={Legal} />
-<Stack.Screen name='privacy' component={Privacy}  />
-<Stack.Screen name='terms' component={Terms}  />
-<Stack.Screen name='about' component={About}  />
-<Stack.Screen name='contact' component={Contact}  />
-
-  </Stack.Navigator>
-  )
-}
-
-const HomeStack = () => {
-  const navigation = useNavigation();
-
-  return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#fff',
-        
-          
-        },
-        
-        headerTintColor: '#00415e',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}>
-           <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{headerShown: false}}
-      />
-   
       
       
       
@@ -226,11 +256,7 @@ return(
           ),
         }}
       />
-          <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{headerShown: false}}
-      />
+        
       
         <Stack.Screen
         name="docResult"
@@ -266,7 +292,7 @@ return(
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
       />
       <Stack.Screen
         name="SearchDoc"
@@ -292,6 +318,51 @@ return(
   
   </Stack.Navigator>
 )
+}
+
+
+const ProfileStack=()=>{
+  const navigation=useNavigation()
+  return(
+  <Stack.Navigator
+      initialRouteName="profile"
+      
+      screenOptions={{
+     
+        headerStyle: {
+          backgroundColor: '#fff',
+          height:Platform.OS ==='android'?60:80,
+        
+     
+  
+        },
+        headerTintColor: '#00415e',
+        headerTitleStyle: {
+          fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+        },
+      }}>
+<Stack.Screen
+        name='profile'
+        component={ProfileScreen}
+        options={{headerShown: false, headerLeft: null}}
+        />
+        <Stack.Screen
+        name='editprofile'
+        component={EditProfile}
+        
+        options={{
+          headerTitle: 'Edit Profile',
+          headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} 
+          onPress={()=>{navigation.push('profile')}}/>),
+          presentation:'modal',
+          
+          
+        }}
+        />
+
+      </Stack.Navigator>
+  )
+
 }
 const CuresStack =()=>{
 return(
@@ -335,6 +406,26 @@ return(
   
   </Stack.Navigator>
 )
+
+
+
+
+
 }
 
-export {DocStack, SplashStack,CuresStack,HomeStack,SettingStack}
+
+const Navigator = () => {
+  const navigation = useSelector((state) => state.name.screen);
+  switch (navigation) {
+      case 'LOGIN':
+          return <LoginStack />
+      case 'MAIN':
+          return <HomeStack/>
+      case 'SPLASH':
+          return <SplashStack />
+      default:
+          return <SplashStack />
+  }
+}
+
+export {DocStack,SplashStack,CuresStack,SettingStack,ProfileStack,LoginStack,Navigator,HomeStack}

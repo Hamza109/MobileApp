@@ -24,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import System from '../Category/System';
 
 import MaterialIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -53,21 +54,57 @@ import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import Svg, {Path, Circle} from 'react-native-svg';
 import { useDispatch,useSelector } from 'react-redux';
 import { screenName } from '../Redux/Action';
+import NetInfo from '@react-native-community/netinfo';
+import { useToast } from 'native-base';
+import * as Animatable from 'react-native-animatable';
+import { position } from 'native-base/lib/typescript/theme/styled-system';
 
 const HomeScreen = ({navigation, route}) => {
 
-
+const toast=useToast()
   const user=useSelector((state)=>state.userId.regId) ;
+  const screen=useSelector((state)=>state.name.screen)
   const theme = useTheme();
- const dispatch=useDispatch();
-  const [regType, setRegType] = useState();
-  const [backPressed, setBack] = useState(1);
-  const [visible, setVisible] = useState(false);
-  const [isloaded, setIsLoaded] = useState(false);
+  const [isConnected, setIsConnected] = useState(true);
 
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20, height: 400};
+ const dispatch=useDispatch();
+
+  const [visible, setVisible] = useState(false);
+
+  function Reload(){
+  
+    return(
+      <TouchableOpacity onPress={onRefresh} >
+      <Animatable.View  style={{width:'100%',height:55,justifyContent:'center',alignItems:'center',backgroundColor:'#ffedd5'}}  animation='slideInDown' iterationCount={1} >
+      <View style={{position:'absolute',left:12}}>
+        <IonIcon name='information-circle' size={30} color={'#f27938'} />
+        </View>
+
+     <Text style={{color:'black',fontFamily:'Raleway-Medium',fontSize:15}}> Check your connection</Text>
+      <Text style={{color:'black',fontFamily:'Raleway-Regular',fontSize:12}}> you are offline</Text>
+
+   
+      
+    </Animatable.View>
+      </TouchableOpacity>
+    )
+  }
+
+  useEffect(() => {
+    
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [])
+
+  
+
+
+
 
   const remove = async () => {
     try {
@@ -98,33 +135,26 @@ const HomeScreen = ({navigation, route}) => {
     navigation.navigate('CreateScreenHome')
   }
   else{
-    dispatch(screenName('CreateScreenHome'))
-    navigation.navigate('SignIn')
+    dispatch(screenName("LOGIN"))
+  
    
   }
   };
 
   
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);;
-    } catch (error) {error}
-  };
+  
   const isFocuss = useIsFocused();
   useEffect(()=>{
   
     console.log('user',user)
+    console.log('screen',screen)
      
    })
   useEffect(() => {
   
     if (isFocuss) {
      
-      getType();
+
     
       BackHandler.addEventListener('hardwareBackPress', backAction);
       return () =>
@@ -187,8 +217,8 @@ const HomeScreen = ({navigation, route}) => {
   const onRefresh = () => {
     navigation.push('Main');
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false)).catch(err=>err);;
-  };
+    wait(2000).then(() => setRefreshing(false)).catch(err=>err)
+  }
   const getRow = () => {
     try {
       AsyncStorage.getItem('rowno').then(value2 => {
@@ -264,6 +294,11 @@ const HomeScreen = ({navigation, route}) => {
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={{flex:1}}>
         <StatusBar backgroundColor="white" barStyle="dark-content" />
+        {
+          !isConnected?(
+          <Reload/>
+          ):null
+        }
         <View>
 
           <View style={styles.headBar}>
@@ -759,7 +794,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 52,
     fontSize: 20,
-    borderRadius: 15,
+    borderRadius: 25,
     
     justifyContent:'center'
   },

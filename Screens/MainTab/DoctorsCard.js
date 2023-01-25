@@ -67,9 +67,9 @@ const DoctorsCard = ({
     fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
       .then(res => {
         if (res.ok) {
-          setImageExists(true);
+          setImageExists(true)
         } else {
-          setImageExists(false);
+          setImageExists(false)
         }
       })
       .catch(err => err);
@@ -81,7 +81,8 @@ const DoctorsCard = ({
   useEffect(() => {
     checkIfImageExits(
       `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
-    );
+    )
+    
   }, []);
   return (
     <View>

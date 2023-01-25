@@ -1,6 +1,6 @@
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import {useRef} from 'react';
+import { useRef } from 'react';
 import {
   View,
   Text,
@@ -12,18 +12,18 @@ import {
   BackHandler,
   Animated,
 } from 'react-native';
-import {useToast, Divider} from 'native-base';
-import {useNavigation} from '@react-navigation/core';
+import { useToast, Divider } from 'native-base';
+import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackActions} from '@react-navigation/routers';
+import { StackActions } from '@react-navigation/routers';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Alert} from 'react-native';
-import Svg, {Path, Circle} from 'react-native-svg';
-import {useState, useEffect} from 'react';
-import {useIsFocused} from '@react-navigation/native';
-import {Dimensions} from 'react-native';
-import {Card} from 'react-native-paper';
-import {backendHost} from '../../components/apiConfig';
+import { Alert } from 'react-native';
+import Svg, { Path, Circle } from 'react-native-svg';
+import { useState, useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { Dimensions } from 'react-native';
+import { Card } from 'react-native-paper';
+import { backendHost } from '../../components/apiConfig';
 
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -48,71 +48,97 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {TouchableOpacity} from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
-import { useSelector ,useDispatch} from 'react-redux';
-import { screenName } from '../Redux/Action';
+import { useSelector, useDispatch,useStore } from 'react-redux';
+import { fetchFailureProfile, fetchRequestProfile, fetchSuccess, fetchSuccessProfile, screenName } from '../Redux/Action';
+import UserProfile from './UserProfile/UserProfile';
+import NetInfo from '@react-native-community/netinfo';
+import NoInternet from '../../components/NoInternet';
 
-const ProfileScreen = ({sheetRef, onFileSelected}) => {
+const ProfileScreen = ({ sheetRef, onFileSelected }) => {
+
   const toast = useToast();
-  const user=useSelector((state)=>state.userId.regId) ;
-  const dispatch=useDispatch();
-  const [first, setFirst] = useState();
-  const [last, setLast] = useState();
-  const [primarySpl, setPrimary] = useState();
-  const [secondarySpl, setSecondary] = useState();
-  const [otherSpl, setOther] = useState();
-  const [education, setEducation] = useState();
-  const [awards, setAwards] = useState();
-  const [num, setNum] = useState();
-  const [hospital, setHospital] = useState();
-  const [acceptInsurance, setInsurance] = useState();
-  const [gender, setGender] = useState();
-  const [about, setAbout] = useState();
-  const [diseaseList, setDiseaseList] = useState([]);
-  const [stateList, setStateList] = useState([]);
-  const [cityList, setCityList] = useState([]);
+  const user = useSelector((state) => state.userId.regId);
+  const row=useSelector((state)=>state.docRow.rowId)
+  const type= useSelector((state)=>state.userType.typeId)
+const store=useStore()
+const dispatch=useDispatch()
+const userProfile=useSelector((state)=>state.profileInfo.data)
+const doc=useSelector((state)=>state.info.data)
 
-  const [countryList, setCountryList] = useState([]);
-  const [hospitalList, setHospitalList] = useState([]);
-  const [states, setStates] = useState();
-  const [city, setCity] = useState();
-  const [countries, setCountries] = useState();
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState('');
-  const [regType, setRegType] = useState();
   const [website, setWebsite] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
-  const [nameLoad, setNameLoad] = useState(false);
-  const [items, setItems] = useState([]);
   const navigation = useNavigation();
-
   const [image, setImage] = useState(
-    `http://all-cures.com:8280/cures_articleimages/doctors/${items.rowno}.png`,
+    `http://all-cures.com:8280/cures_articleimages/doctors/${userProfile.rowno}.png`,
   );
-
-  const [imageUser, setImageUser] = useState(``);
+  const [img,setImg]=useState()
   const [rowno, setRowno] = useState();
   const [mobile, setMobile] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [exist,setExist]=useState(false)
+  const [isConnected, setIsConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+      console.log('state',state.isConnected)
+     
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [isConnected])
+
+  
+
+ const checkIfImage = imageUrl => {
+  fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
+    .then(res => {
+      if (res.ok) {
+    
+        setExist(true);
+      } else {
+      
+        setExist(false);
+      }
+    })
+    .catch(err => err);
+};
+
 
 
   const getProfile = userId => {
-    axios
+
+    const data=new Promise((resolve,reject)=>{
+      if(isConnected)
+      {
+        setIsLoaded(false)
+      axios
       .get(`${backendHost}/profile/${userId}`)
       .then(res => {
-        setIsLoaded(true)
-        setFirstName(res.data.first_name);
-        setLastName(res.data.last_name);
-        setEmail(res.data.email_address);
-        setMobile(res.data.mobile_number);
-        // setRegType(res.data.registration_type)
+     
+       resolve (setFirstName(res.data.first_name))
+       resolve( setLastName(res.data.last_name));
+       resolve( setEmail(res.data.email_address));
+        resolve(setMobile(res.data.mobile_number));
+    
       })
       .catch(err => {
         return;
       });
+    }
+
+    })
+    data.then(()=>{
+      setIsLoaded(true)
+    })
+    
   };
 
   const wait = timeout => {
@@ -121,90 +147,118 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () => {
-    getRow();
+ 
 
     setRefreshing(true);
 
-    wait(2000).then(() => setRefreshing(false)).catch(err=>err);;
-  };
-  const [img, setImg] = useState();
-  const getId = () => {
- 
-        if (user != 0) {
-          getProfile(user);
-        } else {
-          navigation.push('SignIn');
-        }
-    
+    wait(2000).then(() => setRefreshing(false)).catch(err => err);;
   };
 
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);;
-    } catch (error) {
-      error;
+
+
+
+  const getUser=()=>{
+     
+return function(dispatch){
+const userData= new Promise ((resolve,reject)=>{
+
+if(isConnected)
+{
+
+  dispatch(fetchRequestProfile())
+    if(row!=0){
+
+
+     
+        axios.get(
+          `${backendHost}/DoctorsActionController?rowno=${Number(
+            row
+          )}&cmd=getProfile`,
+        )
+          .then(res => res.data)
+          .then(json => {
+            if (json == null) {
+              setIsLoaded(true)
+              Alert.alert('No details found','Please add your information',[
+                {
+                  text:'OK',
+                  onPress:()=>{
+                    navigation.navigate('editprofile')
+                  }
+                }
+              ])
+  
+             
+            } else {
+             
+           resolve(dispatch(fetchSuccessProfile(json)))
+           console.log(json.rowno)
+           setImg(`http://all-cures.com:8280/cures_articleimages/doctors/${json.rowno}.png?d=${parseInt(Math.random()*1000)}`)
+           setIsLoaded(true)
+       
+  
+             
+            }
+          }).catch(err => {err
+   
+            dispatch(fetchFailureProfile(err))
+     
+       
+          })
+  
+
+     
+      
     }
-  };
-  const getRow = () => {
-    try {
-      AsyncStorage.getItem('rowno').then(value2 => {
-        if (value2 != null) {
-          fetch(
-            `${backendHost}/DoctorsActionController?rowno=${Number(
-              value2,
-            )}&cmd=getProfile`,
-          )
-            .then(res => res.json())
-            .then(json => {
-              if (json == null) {
-                setIsLoaded(true)
-                setNameLoad(true)
-                setModalVisible(true);
-              } else {
-                setIsLoaded(true);
-                setRowno(Number(value2));
-                setItems(json);
-                setFirst(json.docname_first);
-                setLast(json.docname_last);
-                setPrimary(json.primary_spl_code);
-                setHospital(json.hospital_affliated_code);
-                setAbout(json.about);
-                setGender(json.gender);
-                setEducation(json.edu_training);
-                setWebsite(json.website_url);
-                setNum(json.telephone_nos);
-                setStates(json.state_code);
-                setCountries(json.countries_code);
-                setCity(json.city_code);
-                setInsurance(json.insurance_accept);
-                setImg(
-                  `http://all-cures.com:8280/cures_articleimages/doctors/${
-                    json.rowno
-                  }.png?d=${parseInt(Math.random() * 1000)}`,
-                );
-              }
-            });
-        }
-      }).catch(err=>err);;
-    } catch (error) {
-      error;
+
+
+    else{
+getProfile(user)
     }
+  }
+  
+
+})
+userData.then(()=>{
+  setIsLoaded(true)
+})
+
+      
+  }
+}
+
+  const getId = () => {
+
+    if (user != 0) {
+
+    store.dispatch(getUser())
+}
+
+    else {
+      dispatch(screenName('LOGIN'));
+    }
+
   };
+    useEffect(() => {
+
+      getId();
+      checkIfImage(img);
+     
+  }, [isConnected]);
+
+
+
 
   function User() {
     return (
       <Svg
         xmlns="http://www.w3.org/2000/svg"
-        width={wp('30%')}
-        height={hp('15%')}
+        width={130}
+        height={130}
         fill="none"
         viewBox="0 0 43 43">
         <Path
-          fill="#00415E"
+          fill="#fff"
           d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
       </Svg>
     );
@@ -216,99 +270,29 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       status: 'success',
       placement: 'bottom',
       duration: 2000,
-      style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+      style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
     });
 
     return true;
   };
 
-  const formSubmit = e => {
+  
 
 
-    axios
-      .post(
-        `${backendHost}/doctors/updateprofile?d=${parseInt(
-          Math.random() * 1000,
-        )}`,
-        {
-          docid: items.docid,
-          rowno: rowno,
-          docname_first: firstName,
-          docname_last: lastName,
-          primary_spl: primarySpl,
-          sub_spls: secondarySpl,
-          other_spls: otherSpl,
-          edu_training: education,
-          telephone_nos: num,
-          hospital_affliated: hospital,
-          insurance_accept: acceptInsurance,
-          gender: gender,
-          about: about,
-          awards: awards,
-          city: city,
-          state: states,
-          country_code: countries,
-          website_url: website,
-        },
-      )
-      .then(res => {
-        if (res.data === 1) {
-          goto();
-        } else {
-          Alert.alert('Some error occured. Try again later');
-        }
-      })
-      .catch(res => {
-      
-        Alert(`Some error occured. Try again later ${res}`);
-      });
-  };
-  const fetchTables = () => {
-    Promise.all([
-      fetch(`${backendHost}/article/all/table/specialties`).then(res =>
-        res.json(),
-      ).catch(err=>err),
-      fetch(`${backendHost}/article/all/table/hospital`).then(res =>
-        res.json(),
-      ).catch(err=>err),
-      fetch(`${backendHost}/article/all/table/states`).then(res => res.json()).catch(err=>err),
-      fetch(`${backendHost}/article/all/table/city`).then(res => res.json()).catch(err=>err),
-      fetch(`${backendHost}/article/all/table/countries`).then(res =>
-        res.json(),
-      ).catch(err=>err),
-    ])
-      .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
-        setDiseaseList(diseaseData);
-        setHospitalList(hospitalData);
-        setStateList(stateData);
-        setCityList(cityData);
-        setCountryList(countryData);
-      })
-      .catch(err => {
-      err
-      });
-  };
-  const isFocus = useIsFocused();
 
-  useEffect(() => {
-    if (isFocus) {
-      getId();
-    }
-  },[]);
-  useEffect(() => {
-    if (isFocus) {
-      getRow();
-    }
-  }, [rowno]);
-  useEffect(() => {
-    if (isFocus) {
-      getType();
-    }
-  }, [regType]);
 
-  useEffect(() => {
-    fetchTables();
-  }, []);
+useEffect(()=>{
+  const backAction=()=>{
+    navigation.push('profile')
+  }
+  const backHandler=BackHandler.addEventListener(
+    "hardwareBackPress",
+    backAction
+  );
+  return () => backHandler.remove();
+})
+
+
   const choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
       width: 300,
@@ -319,11 +303,11 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       const a = image.path.split('/');
       const b = a[a.length - 1];
 
-      regType == 1
-        ? (setImage(image), setSelectedFile(b), bs.current.snapTo(1))
+      type == 1
+        ? (console.log(b), setSelectedFile(b), bs.current.snapTo(1))
         : setImageUser(image.path);
       bs.current.snapTo(1);
-    }).catch(err=>err);;
+    }).catch(err => err);;
   };
   const changeHandler = event => {
     if (photo.name.size > 1048576) {
@@ -368,6 +352,12 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
         return;
       });
   };
+  if (!isConnected) {
+
+    return (
+      <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
+    );
+  }
 
   if (!isLoaded) {
     return (
@@ -377,763 +367,193 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
             source={require('../../assets/animation/load.json')}
             autoPlay
             loop
-            style={{width: 50, height: 50, justifyContent: 'center'}}
+            style={{ width: 50, height: 50, justifyContent: 'center' }}
           />
         </HStack>
       </View>
     );
-  } else {
+  } 
     return (
       <View style={styles.container}>
-        {regType == 1 ? (
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
-            <Stack mt="0" space={5}>
-              <View
-                style={{
-                  backgroundColor: '#00415e',
-                  width: wp('100%'),
-                  height: 140,
-                }}>
-                <HStack>
-                  <VStack py="2">
-                    <Card
-                      style={{
-                        width: wp('30%'),
-                        height: hp('15%'),
-                        backgroundColor: 'grey',
-                        borderRadius: 200,
-                        position: 'relative',
-                        left: 20,
-                        justifyContent: 'center',
-                        paddingHorizontal: 5,
-                        alignItems: 'center',
-                      }}>
-                      <ImageBackground
-                        source={{uri: img}}
-                        style={{
-                          width: wp('30%'),
-                          height: hp('15%'),
-                          borderRadius: 200,
-                          overflow: 'hidden',
-                        }}></ImageBackground>
-                    </Card>
-                  </VStack>
-                  <View style={{position: 'relative', left: 30}}>
-                    <VStack space={1} py="2">
-                      <HStack>
-                        <Text
-                          style={{
-                            color: '#fff',
+        {type == 1 ? (
+          <View style={{height:165,width:'100%'}}>
 
-                            fontFamily: 'Raleway-Bold',
-                            fontSize: wp('3.5%'),
-                          }}>
-                          Dr. {items.docname_first} {items.docname_last}
-                        </Text>
-                        {nameLoad ? (
-                          <Text
-                            style={{
-                              color: '#fff',
 
-                              fontFamily: 'Raleway-Bold',
-                              fontSize: wp('4%'),
-                            }}>
-                            {firstName} {lastName}
-                          </Text>
-                        ) : null}
-                        <TouchableOpacity
-                          style={{position: 'absolute', right: 0}}>
+        
+          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%'}}>
+          <TouchableOpacity
+                          style={{ position: 'absolute', right: 5 }}>
                           <Icon
                             name="create"
                             size={25}
                             color="#fff"
-                            onPress={() => setModalVisible(!modalVisible)}
+                            onPress={() => navigation.navigate('editprofile',
+                            {data:{first:userProfile.docname_first,
+                              last:userProfile.docname_last,
+                              gender_code:userProfile.gender,
+                              city_code:userProfile.city_code,
+                              state_code:userProfile.state_code,
+                              country_code:userProfile.countries_code,
+                              primary_spl:userProfile.primary_spl_code,
+                              secondary_spl:userProfile.secondary_spl_code,
+                              other_code:userProfile.other_spls_code,
+                              edu_training:userProfile.edu_training,
+                              telephone_nos:userProfile.telephone_nos,website_url:userProfile.website_url,hospital_affliated:userProfile.hospital_affliated_code,insurance_accept:userProfile.insurance_accept,about:userProfile.about,img:img}})}
                           />
+          </TouchableOpacity>
+            <View  style={styles.row}>
+           
+              
+                {exist?
+              <View
 
-                          <Text
-                            style={{color: '#00415e', fontSize: wp('2.5%')}}>
-                            Edit
-                          </Text>
-                        </TouchableOpacity>
-                      </HStack>
-                      <HStack space={1}>
-                        <Icon name="ribbon" size={20} color="#fff" />
-
-                        <Text
-                          style={{
-                            color: '#fff',
-
-                            fontFamily: 'Raleway-Regular',
-                            fontSize: wp('2.5%'),
-                            width: wp('55%'),
-                          }}>
-                          {items.primary_spl}
-                        </Text>
-                      </HStack>
-                      <HStack space={1}>
-                        <Icon name="business" size={20} color="#fff" />
-                        <Text
-                          style={{
-                            color: '#fff',
-
-                            fontFamily: 'Raleway-Regular',
-                            fontSize: wp('2.5%'),
-                            position: 'relative',
-                            bottom: 0,
-                          }}>
-                          {items.hospital_affliated}
-                        </Text>
-                      </HStack>
-                      <Text
-                        style={{
-                          color: '#fff',
-
-                          fontFamily: 'Raleway-Regular',
-                          fontSize: wp('2.5%'),
-                          position: 'relative',
-                          bottom: 0,
-                          right: 4,
-                        }}>
-                        {items.state} {items.country_code}
-                      </Text>
-                      <HStack space={1}>
-                        <Icon name="mail" size={20} color="#fff" />
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontFamily: 'Raleway-Regular',
-                            fontSize: wp('2.5%'),
-                          }}>
-                          {email}
-                        </Text>
-                      </HStack>
-                    </VStack>
-                  </View>
-                </HStack>
-              </View>
-
-              <View>
-                <VStack ml="2" space={1}>
-                  <Text
-                    style={{
-                      color: '#00415e',
-                      fontFamily: 'Raleway-Bold',
-                      fontSize: 12,
-                    }}>
-                    About
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'Raleway-Medium',
-                      fontSize: 12,
-                      color: '#00415e',
-                    }}>
-                    {items.about}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#00415e',
-                      fontFamily: 'Raleway-Bold',
-                      fontSize: 12,
-                    }}>
-                    Education
-                  </Text>
-                  <Text
-                    style={{
-                      fontFamily: 'Raleway-Medium',
-                      fontSize: 12,
-                      color: '#00415e',
-                    }}>
-                    {items.edu_training}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#00415e',
-                      fontFamily: 'Raleway-Bold',
-                      fontSize: 12,
-                    }}>
-                    Specialities
-                  </Text>
-
-                  <Text
-                    style={{
-                      color: '#00415e',
-                      fontFamily: 'Raleway-Medium',
-                      fontSize: 12,
-                    }}>
-                    {items.primary_spl}
-                  </Text>
-                </VStack>
-              </View>
-            </Stack>
-
-            <Modal
-              isOpen={modalVisible}
-              onClose={() => setModalVisible(false)}
-              avoidKeyboard
-              justifyContent="center"
-              bottom="0"
-              size="full">
-              <Modal.Content>
-                <Modal.CloseButton />
-                <Modal.Header style={{backgroundColor: 'aliceblue'}}>
-                  Edit Profile
-                </Modal.Header>
-                <Modal.Body>
-                  <ScrollView>
-                    <Card
-                      style={{
-                        width: wp('30%'),
-                        height: hp('15%'),
-                        backgroundColor: 'grey',
-                        borderRadius: 200,
-                        position: 'relative',
-                        left: 20,
-                        justifyContent: 'center',
-                        paddingHorizontal: 5,
-                        alignItems: 'center',
-                      }}>
-                      <TouchableOpacity onPress={choosePhotoFromLibrary}>
-                        <ImageBackground
-                          source={{uri: img}}
-                          style={{
-                            width: wp('30%'),
-                            height: hp('15%'),
-                            borderRadius: 200,
-                            overflow: 'hidden',
-                          }}>
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}>
-                            <Icon
-                              name="camera"
-                              size={35}
-                              color="#fff"
-                              style={{
-                                opacity: 0.7,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderWidth: 1,
-                                borderColor: '#fff',
-                                borderRadius: 10,
-                              }}
-                            />
-                          </View>
-                        </ImageBackground>
-                      </TouchableOpacity>
-                    </Card>
-
-                    {nameLoad ? (
-                      <View>
-                        <FormControl mb="5">
-                          <FormControl.Label>First Name</FormControl.Label>
-                          <Input
-                            value={firstName}
-                            onChangeText={text => setFirstName(text)}
-                          />
-                        </FormControl>
-                        <FormControl mb="5">
-                          <FormControl.Label>Last Name</FormControl.Label>
-                          <Input
-                            value={lastName}
-                            onChangeText={text => setLastName(text)}
-                          />
-                        </FormControl>
-
-                        <VStack space={2}>
-                          <Radio.Group
-                            defaultValue={gender}
-                            value={gender}
-                            onChange={val => setGender(val)}
-                            name="myRadioGroup">
-                            <HStack space={1}>
-                              <Radio value={1} my={0}>
-                                Female
-                              </Radio>
-                              <Radio value={2} mx={1}>
-                                Male
-                              </Radio>
-                              <Radio value={3} mx={1}>
-                                Other
-                              </Radio>
-                            </HStack>
-                          </Radio.Group>
-                          <HStack space={2}>
-                            <VStack space={1}>
-                              <FormControl w="3/4" maxW="300" isRequired>
-                                <FormControl.Label>City</FormControl.Label>
-                                <Select
-                                  width={wp('46%')}
-                                  onValueChange={value => setCity(value)}
-                                  selectedValue={city}
-                                  isRequired
-                                  placeholder="Select city">
-                                  {cityList.map(i => (
-                                    <Select.Item
-                                      value={i[0]}
-                                      label={i[1]}></Select.Item>
-                                  ))}
-                                </Select>
-                                <FormControl.ErrorMessage>
-                                  Please make a selection!
-                                </FormControl.ErrorMessage>
-                              </FormControl>
-                            </VStack>
-                            <VStack space={1}>
-                              <FormControl w="3/4" maxW="300" isRequired>
-                                <FormControl.Label>State</FormControl.Label>
-
-                                <Select
-                                  width={wp('46%')}
-                                  onValueChange={value => setStates(value)}
-                                  selectedValue={states}
-                                  placeholder="Select State">
-                                  {stateList.map(i => (
-                                    <Select.Item
-                                      value={i[0]}
-                                      label={i[1]}></Select.Item>
-                                  ))}
-                                </Select>
-                                <FormControl.ErrorMessage>
-                                  Please make a selection!
-                                </FormControl.ErrorMessage>
-                              </FormControl>
-                            </VStack>
-                          </HStack>
-                          <FormControl w="3/4" maxW="300" isRequired>
-                            <FormControl.Label>Country</FormControl.Label>
-                            <Select
-                              onValueChange={value => setCountries(value)}
-                              selectedValue={countries}
-                              placeholder="Select country">
-                              {countryList.map(i => (
-                                <Select.Item
-                                  value={i[0]}
-                                  label={i[1]}></Select.Item>
-                              ))}
-                            </Select>
-                            <FormControl.ErrorMessage>
-                              Please make a selection!
-                            </FormControl.ErrorMessage>
-                          </FormControl>
-                          <HStack space={2}>
-                            <VStack space={1}>
-                              <Text style={styles.text}>
-                                Primary speciality
-                              </Text>
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setPrimary(value)}
-                                selectedValue={primarySpl}
-                                placeholder="Select primary speciality">
-                                {diseaseList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                            </VStack>
-                            <VStack space={1}>
-                              <Text style={styles.text}>
-                                Secondary speciality
-                              </Text>
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setSecondary(value)}
-                                selectedValue={secondarySpl}
-                                placeholder="Select secondary speciality">
-                                {diseaseList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                            </VStack>
-                          </HStack>
-                          <Text style={styles.text}>Additional speciality</Text>
-                          <Select
-                            onValueChange={value => setOther(value)}
-                            selectedValue={otherSpl}
-                            placeholder="Select additional speciality">
-                            {diseaseList.map(i => (
-                              <Select.Item
-                                value={i[0]}
-                                label={i[1]}></Select.Item>
-                            ))}
-                          </Select>
-                          <FormControl mb="5">
-                            <FormControl.Label>Education</FormControl.Label>
-                            <Input
-                              value={education}
-                              onChangeText={education =>
-                                setEducation(education)
-                              }
-                            />
-                          </FormControl>
-
-                          <FormControl mb="5">
-                            <FormControl.Label>Mobile Number</FormControl.Label>
-                            <Input
-                              value={num}
-                              onChangeText={num => setNum(num)}
-                              keyboardType="numeric"
-                            />
-                          </FormControl>
-                          <FormControl mb="5">
-                            <FormControl.Label>
-                              Doctor website url
-                            </FormControl.Label>
-                            <Input
-                              value={website}
-                              onChangeText={text => setWebsite(text)}
-                              keyboardType="text"
-                            />
-                          </FormControl>
-                          <FormControl isRequired>
-                            <FormControl.Label>
-                              hospital_affliated
-                            </FormControl.Label>
-                            <Select
-                              onValueChange={value => setHospital(value)}
-                              selectedValue={hospital}
-                              placeholder="select hospital affiliated">
-                              {hospitalList.map(i => (
-                                <Select.Item
-                                  value={i[0]}
-                                  label={i[1]}></Select.Item>
-                              ))}
-                            </Select>
-                            <FormControl.ErrorMessage>
-                              Please make a selection!
-                            </FormControl.ErrorMessage>
-                          </FormControl>
-                          <Text style={styles.text}>
-                            Do you accept insurance?
-                          </Text>
-                          <Radio.Group
-                            defaultValue={acceptInsurance}
-                            value={acceptInsurance}
-                            onChange={val => setInsurance(val)}
-                            name="myRadioGroup"
-                            accessibilityLabel="Pick your favorite number">
-                            <HStack space={1}>
-                              <Radio value={1} my={0}>
-                                Yes
-                              </Radio>
-                              <Radio value={0} my={0}>
-                                No
-                              </Radio>
-                            </HStack>
-                          </Radio.Group>
-                          <Text style={styles.text}>
-                            Tell Us About Yourself
-                          </Text>
-                          <TextArea
-                            h={20}
-                            placeholder="Text Area Placeholder"
-                            w="100%"
-                            onChangeText={text => setAbout(text)}
-                          />
-                          <Text style={{fontSize: 10, color: 'black'}}>
-                            We never share your details without your consent.
-                          </Text>
-                        </VStack>
-                      </View>
-                    ) : (
-                      <View>
-                        <FormControl mb="5">
-                          <FormControl.Label>First Name</FormControl.Label>
-                          <Input
-                            value={first}
-                            onChangeText={text => setFirst(text)}
-                          />
-                        </FormControl>
-                        <FormControl mb="5">
-                          <FormControl.Label>Last Name</FormControl.Label>
-                          <Input
-                            value={last}
-                            onChangeText={text => setLast(text)}
-                          />
-                        </FormControl>
-                        <VStack space={2}>
-                          <Radio.Group
-                            defaultValue={gender}
-                            value={gender}
-                            onChange={val => setGender(val)}
-                            name="myRadioGroup">
-                            <HStack space={1}>
-                              <Radio value={1} my={0}>
-                                Female
-                              </Radio>
-                              <Radio value={2} mx={1}>
-                                Male
-                              </Radio>
-                              <Radio value={3} mx={1}>
-                                Other
-                              </Radio>
-                            </HStack>
-                          </Radio.Group>
-                          <HStack space={2}>
-                            <VStack space={1}>
-                              <FormControl w="3/4" maxW="300" isRequired>
-                                <FormControl.Label>City</FormControl.Label>
-                                <Select
-                                  width={wp('46%')}
-                                  onValueChange={value => setCity(value)}
-                                  selectedValue={city}
-                                  isRequired
-                                  placeholder="Select city">
-                                  {cityList.map(i => (
-                                    <Select.Item
-                                      value={i[0]}
-                                      label={i[1]}></Select.Item>
-                                  ))}
-                                </Select>
-                                <FormControl.ErrorMessage>
-                                  Please make a selection!
-                                </FormControl.ErrorMessage>
-                              </FormControl>
-                            </VStack>
-                            <VStack space={1}>
-                              <FormControl w="3/4" maxW="300" isRequired>
-                                <FormControl.Label>State</FormControl.Label>
-
-                                <Select
-                                  width={wp('46%')}
-                                  onValueChange={value => setStates(value)}
-                                  selectedValue={states}
-                                  placeholder="Select State">
-                                  {stateList.map(i => (
-                                    <Select.Item
-                                      value={i[0]}
-                                      label={i[1]}></Select.Item>
-                                  ))}
-                                </Select>
-                                <FormControl.ErrorMessage>
-                                  Please make a selection!
-                                </FormControl.ErrorMessage>
-                              </FormControl>
-                            </VStack>
-                          </HStack>
-                          <FormControl isRequired>
-                            <FormControl.Label>Country</FormControl.Label>
-                            <Select
-                              onValueChange={value => setCountries(value)}
-                              selectedValue={countries}
-                              placeholder="Select country">
-                              {countryList.map(i => (
-                                <Select.Item
-                                  value={i[0]}
-                                  label={i[1]}></Select.Item>
-                              ))}
-                            </Select>
-                            <FormControl.ErrorMessage>
-                              Please make a selection!
-                            </FormControl.ErrorMessage>
-                          </FormControl>
-                          <HStack space={2}>
-                            <VStack space={1}>
-                              <Text style={styles.text}>
-                                Primary speciality
-                              </Text>
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setPrimary(value)}
-                                selectedValue={primarySpl}
-                                placeholder="select primary speciality">
-                                {diseaseList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                            </VStack>
-                            <VStack space={1}>
-                              <Text style={styles.text}>
-                                Secondary speciality
-                              </Text>
-                              <Select
-                                width={wp('46%')}
-                                onValueChange={value => setSecondary(value)}
-                                selectedValue={secondarySpl}
-                                placeholder="select secondary speciality">
-                                {diseaseList.map(i => (
-                                  <Select.Item
-                                    value={i[0]}
-                                    label={i[1]}></Select.Item>
-                                ))}
-                              </Select>
-                            </VStack>
-                          </HStack>
-                          <Text style={styles.text}>Additional speciality</Text>
-                          <Select
-                            onValueChange={value => setOther(value)}
-                            selectedValue={otherSpl}
-                            placeholder="select Additional speciality">
-                            {diseaseList.map(i => (
-                              <Select.Item
-                                value={i[0]}
-                                label={i[1]}></Select.Item>
-                            ))}
-                          </Select>
-                          <FormControl mb="5">
-                            <FormControl.Label>Education</FormControl.Label>
-                            <Input
-                              value={education}
-                              onChangeText={education =>
-                                setEducation(education)
-                              }
-                            />
-                          </FormControl>
-
-                          <FormControl mb="5">
-                            <FormControl.Label>Mobile Number</FormControl.Label>
-                            <Input
-                              value={num}
-                              onChangeText={num => setNum(num)}
-                              keyboardType="numeric"
-                            />
-                          </FormControl>
-                          <FormControl mb="5">
-                            <FormControl.Label>
-                              Doctor website url
-                            </FormControl.Label>
-                            <Input
-                              value={website}
-                              onChangeText={text => setWebsite(text)}
-                              keyboardType="numeric"
-                            />
-                          </FormControl>
-                          <FormControl isRequired>
-                            <FormControl.Label>
-                              hospital_affliated
-                            </FormControl.Label>
-                            <Select
-                              onValueChange={value => setHospital(value)}
-                              selectedValue={hospital}
-                              placeholder="select hospital affiliated">
-                              {hospitalList.map(i => (
-                                <Select.Item
-                                  value={i[0]}
-                                  label={i[1]}></Select.Item>
-                              ))}
-                            </Select>
-                            <FormControl.ErrorMessage>
-                              Please make a selection!
-                            </FormControl.ErrorMessage>
-                          </FormControl>
-                          <Text style={styles.text}>
-                            Do you accept insurance?
-                          </Text>
-                          <Radio.Group
-                            defaultValue={acceptInsurance}
-                            value={acceptInsurance}
-                            onChange={val => setInsurance(val)}
-                            name="myRadioGroup"
-                            accessibilityLabel="Pick your favorite number">
-                            <HStack space={1}>
-                              <Radio value={1} my={0}>
-                                Yes
-                              </Radio>
-                              <Radio value={0} my={0}>
-                                No
-                              </Radio>
-                            </HStack>
-                          </Radio.Group>
-                          <Text style={styles.text}>
-                            Tell Us About Yourself
-                          </Text>
-                          <TextArea
-                            h={20}
-                            placeholder="Text Area Placeholder"
-                            w="100%"
-                            defaultValue={about ? about : ''}
-                            onChangeText={text => setAbout(text)}
-                          />
-                          <Text style={{fontSize: 10, color: 'black'}}>
-                            We never share your details without your consent.
-                          </Text>
-                        </VStack>
-                      </View>
-                    )}
-                  </ScrollView>
-                </Modal.Body>
-                <Modal.Footer>
-                  <TouchableOpacity
-                    style={styles.btn}
-                    onPress={() => {
-                      formSubmit();
+                style={{
+                  width: 130,
+                  height: 130,
+                  backgroundColor: '#fff',
+                  borderRadius: 200,
+                 marginLeft:20,
+                  justifyContent: 'center',
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
                   
-                    }}>
-                    <Text style={{color: 'white', fontWeight: 'bold'}}>
-                      Submit
-                    </Text>
-                  </TouchableOpacity>
-                </Modal.Footer>
-              </Modal.Content>
-            </Modal>
-          </ScrollView>
-        ) : (
-          <View>
-            <View>
-              <VStack space={5} ml="0" mt="3">
-                <View>
-                  <View style={{alignItems: 'center'}}>
-                    <User
-                      style={{
-                        borderRadius: 10,
-                      }}
-                    />
-                    <HStack space={1}>
-                      <Text style={styles.margin}>{firstName}</Text>
-                      <Text style={styles.margin}>{lastName}</Text>
-                    </HStack>
-                  </View>
-                  <View style={{marginTop: 5}}>
-                    <Divider />
-                    <VStack space={2} ml="5" mt="2">
-                      <HStack space={1}>
-                        <Icon name="mail" size={25} color="grey" />
+                }}>
+                <ImageBackground
+                
+              
+                  source={{
+                    uri: img
+                  }}
+                  style={{
+                    width: 130,
+                    height: 130,
+                    overflow:'hidden',
+                  borderRadius:100
+                    
+                  }}
+                />
+              </View>: <User/> }
+             
+              <View style={{width:wp('50%') }}>
+                <VStack space={1} py='1' px='0'>
 
-                        <Text
-                          style={{
-                            color: '#00415e',
-                            fontFamily: 'Raleway-Regular',
-                            fontSize: 15,
-                          }}>
-                          {email}
-                        </Text>
-                      </HStack>
-                      <HStack>
-                        <Icon name="phone-portrait" size={25} color="grey" />
-                        <Text
-                          style={{
-                            color: '#00415e',
-                            fontFamily: 'Raleway-Regular',
-                            fontSize: 15,
-                          }}>
-                          {mobile}
-                        </Text>
-                      </HStack>
-                    </VStack>
-                  </View>
-                </View>
-              </VStack>
+                  <Text
+                    style={{
+                      color: '#fff',
+
+                      fontFamily: 'Raleway-Bold',
+                      fontSize: 15,
+                    }}>
+                    Dr. {userProfile.docname_first} {userProfile.docname_last}
+                  </Text>
+                  <HStack space={1}>
+                    <Icon name="ribbon" size={18} color='#fff' />
+
+                    <Text
+                      style={{
+                        color: '#fff',
+
+                        fontFamily: 'Raleway-Regular',
+                        fontSize:10,
+                        width: 155,
+                      }}>
+                      {userProfile.primary_spl}
+                    </Text>
+                  </HStack>
+                  <HStack space={1}>
+                    <Icon name="business" size={18} color='#fff'/>
+                    <Text
+                      style={{
+                        color: '#fff',
+
+                        fontFamily: 'Raleway-Regular',
+                        fontSize: 10,
+                        width: 155,
+                        position: 'relative',
+                        bottom: 0,
+                      }}>
+                      {userProfile.hospital_affliated}
+                    </Text>
+                  </HStack>
+                  <HStack space={1}>
+                  <Icon name="globe" size={18} color='#fff'/>
+                  <Text
+                    style={{
+                      color: '#fff',
+
+                      fontFamily: 'Raleway-Regular',
+                      fontSize: 10,
+                        width: 180,
+                      position: 'relative',
+                     
+                    }}>
+                  
+                    {userProfile.state} {userProfile.country_code}
+                  </Text>
+                  </HStack>
+                  <View
+                style={{
+                  width: wp('25%'),
+                           
+                }}>
+               
+
+              </View>
+              
+                </VStack>
+                
+              </View>
+         
             </View>
           </View>
+             
+          
+          
+          </View>
+        ) : (
+
+         <UserProfile first={firstName} last={lastName} number={mobile} mail={email}  />
+
         )}
+<ScrollView  scrollEnabled={true}  style={{width: wp('100%'), height: hp('100%')}}>
+            <VStack ml="2" mt='2' p='1' space={1}>
+              <Text
+                style={styles.dbodyHead}>
+                About
+              </Text>
+              <Text
+                style={styles.dbodyText}>
+                {userProfile.about}
+              </Text>
+              <Text
+                  style={styles.dbodyHead}>
+                Education
+              </Text>
+              <Text
+                style={styles.dbodyText}>
+                {userProfile.edu_training?userProfile.edu_training: '-- not available --'}
+              </Text>
+              <Text
+                  style={styles.dbodyHead}>
+                Specialities
+              </Text>
+
+              <Text
+                 style={[styles.dbodyText,{display:userProfile.primary_spl?'flex':'none'}]}>
+                {userProfile.primary_spl}
+              </Text>
+              
+              
+              </VStack>
+              </ScrollView>
+
       </View>
     );
   }
-};
+
 
 export default ProfileScreen;
+
 const width = Dimensions.get('screen').width;
 const styles = StyleSheet.create({
   container: {
@@ -1144,48 +564,50 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  margin: {
-    fontFamily: 'Raleway-Bold',
-    fontSize: 23,
-    color: '#00415e',
-  },
-  header: {
-    padding: 0,
-    marginTop: Platform.OS === 'ios' ? 0 : -7,
-    marginLeft: 0,
-    borderColor: '#fff',
-    borderWidth: 0.1,
-    alignItems: 'center',
-    width: wp('100%'),
-  },
-  panelButton: {
-    padding: 13,
-    borderRadius: 10,
-    backgroundColor: '#FF6347',
-    alignItems: 'center',
-    marginVertical: 7,
-  },
-  panelButtonTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  text: {
-    color: 'black',
-    fontFamily: 'Raleway-medium',
-  },
-  btn: {
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#343a40',
+  profileHeader: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: wp('30%'),
-    height: hp('4.5%'),
-    backgroundColor: '#343a40',
-    color: 'white',
-    fontFamily: 'Raleway-Bold',
+    paddingBottom: 20,
   },
+
+  profileName: {
+    color: '#00415e',
+    fontFamily: 'Raleway-Bold',
+    fontSize: 25,
+    marginTop: 7
+  },
+headerTitle:{
+marginLeft:12,
+padding:10
+},
+
+headerText:{
+  color:'#00415e',
+  fontFamily:'Raleway-Medium',
+ fontSize:25
+}
+,
+
+  infoContainer:{
+paddingHorizontal:7
+  },
+
+ 
+
+  dbodyHead:{
+    color: '#00415e',
+    fontFamily: 'Raleway-Bold',
+    fontSize: 12,
+
+  }
+  ,
+  dbodyText:{
+    color: '#00415e',
+              fontFamily: 'Raleway-Medium',
+              fontSize: wp('3.5%'),
+  },
+
+
   loading: {
     justifyContent: 'center',
     backgroundColor: '#F5FCFF88',
@@ -1197,4 +619,15 @@ const styles = StyleSheet.create({
     zIndex: 999,
     alignItems: 'center',
   },
+  row:{
+    flexDirection:'row',
+    justifyContent:'space-evenly',
+    width:'100%',
+    height:'100%',
+    alignItems:'center',
+    marginLeft:10,
+  }
 });
+
+
+ 

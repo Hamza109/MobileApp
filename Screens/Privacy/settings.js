@@ -62,6 +62,7 @@ const Navigation=useNavigation()
           </View>
          
           </TouchableOpacity>
+          <Divider/>
           <TouchableOpacity onPress={() => Navigation.navigate('contact')}>
           <View style={styles.item}>
             <View >

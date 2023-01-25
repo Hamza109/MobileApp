@@ -18,7 +18,7 @@ import {useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from 'lottie-react-native';
 import {backendHost} from './apiConfig';
-
+import { useSelector } from 'react-redux';
 import {VStack, Stack, Container, HStack, Checkbox} from 'native-base';
 import {
   widthPercentageToDP as wp,
@@ -37,28 +37,7 @@ const FeedBack = () => {
   const [email, setEmail] = useState('');
   const [num, setNum] = useState('');
 
-  const [regType, setRegType] = useState();
 
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);
-    } catch (error) {
-      error;
-    }
-  };
-  const isFocus = useIsFocused();
-
-  useEffect(() => {
-    if (isFocus) {
-      getType();
-    }
-
-  
-  });
 
   const [loading, setLoading] = useState(false);
   const submitFeedbackForm = e => {

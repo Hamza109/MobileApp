@@ -38,8 +38,8 @@ import Feedback from '../../components/FeedBack';
 import { useSelector ,useDispatch} from 'react-redux';
 import { reg } from '../Redux/Action';
 import { screenName } from '../Redux/Action';
-import Settings from '../Privacy/settings';
-import { SettingStack } from '../RootStackScreen';
+import { ProfileStack, SettingStack } from '../RootStackScreen';
+
 
 
 const Drawer = createDrawerNavigator();
@@ -70,7 +70,7 @@ const dispatch=useDispatch();
       {
         text: 'YES',
         onPress: () => {
-          Navigation.dispatch(StackActions.popToTop()), remove();
+       dispatch(screenName('SPLASH')), remove();
         },
       },
     ]);
@@ -121,7 +121,7 @@ const dispatch=useDispatch();
   const login = () => {
 
     if (user!= 0) {
-      dispatch(screenName('Main'))
+      dispatch(screenName('MAIN'))
       return (
         <View>
 
@@ -161,7 +161,7 @@ const dispatch=useDispatch();
             padding: 10,
             backgroundColor: '#fff',
           }}>
-          <TouchableOpacity onPress={() => Navigation.navigate('SignIn',{screen:`Main`})}>
+          <TouchableOpacity onPress={() => dispatch(screenName('LOGIN'))}>
             <HStack ml='3' space={4}>
               <IonIcons name="log-in" size={28} color="#00415e" />
               <Text
@@ -203,7 +203,7 @@ const dispatch=useDispatch();
 
         <Drawer.Screen
           name="Profile"
-          component={ProfileScreen}
+          component={ProfileStack}
           options={{  headerStyle: {
             backgroundColor: '#fff',
             height:Platform.OS ==='android'?60:90
