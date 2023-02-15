@@ -9,6 +9,7 @@ import {
   Alert,
   SafeAreaView,
   Platform,
+  StatusBar,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -38,7 +39,8 @@ import Feedback from '../../components/FeedBack';
 import { useSelector ,useDispatch} from 'react-redux';
 import { reg } from '../Redux/Action';
 import { screenName } from '../Redux/Action';
-import { ProfileStack, SettingStack } from '../RootStackScreen';
+import { HomeStack, ProfileStack, SettingStack } from '../RootStackScreen';
+import HomeScreen from './Home';
 
 
 
@@ -85,6 +87,7 @@ const dispatch=useDispatch();
           justifyContent: 'space-between',
         }}
         {...props}>
+              <StatusBar backgroundColor="#fff" barStyle="dark-content" />
         <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
    
         <View style={{backgroundColor:'#fff'}}>
@@ -111,75 +114,14 @@ const dispatch=useDispatch();
       
        
         </SafeAreaView>
-        {login()}
+   
         
       </DrawerContentScrollView>
     );
   }
 
 
-  const login = () => {
-
-    if (user!= 0) {
-      dispatch(screenName('MAIN'))
-      return (
-        <View>
-
-<Divider/>      
-        <View
-          style={{
-            width: wp('100%'),
-            height: hp('7%'),
-            padding: 10,
-            backgroundColor: '#fff',
-          }}>
-          <TouchableOpacity onPress={() => logout()}>
-            <HStack ml='3' space={4}>
-              <IonIcons name="log-in-outline" size={28} color="#00415e" />
-              <Text
-                style={{
-                  color: '#00415e',
-                  fontFamily: 'Raleway-Medium',
-                  marginTop:Platform.OS==='ios'?3:0,
-                  fontSize: wp('4.5%'),
-                }}>
-                Logout
-              </Text>
-            </HStack>
-          </TouchableOpacity>
-        </View>
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <Divider/>
-        <View
-          style={{
-            width: wp('100%'),
-            height: hp('7%'),
-            padding: 10,
-            backgroundColor: '#fff',
-          }}>
-          <TouchableOpacity onPress={() => dispatch(screenName('LOGIN'))}>
-            <HStack ml='3' space={4}>
-              <IonIcons name="log-in" size={28} color="#00415e" />
-              <Text
-                style={{
-                  color: '#00415e',
-                  marginTop:Platform.OS==='ios'?3:0,
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: wp('4.5%'),
-                }}>
-                Login
-              </Text>
-            </HStack>
-          </TouchableOpacity>
-        </View>
-        </View>
-      );
-    }
-  };
+  
  
 
   return (
@@ -188,7 +130,7 @@ const dispatch=useDispatch();
         drawerContent={props => <CustomDrawerContent {...props} />  }  >
         <Drawer.Screen
           name="Home"
-          component={MainTabScreen}
+          component={HomeScreen}
       
           options={{
             headerShown: null,
@@ -201,28 +143,7 @@ const dispatch=useDispatch();
           }}
         />
 
-        <Drawer.Screen
-          name="Profile"
-          component={ProfileStack}
-          options={{  headerStyle: {
-            backgroundColor: '#fff',
-            height:Platform.OS ==='android'?60:90
-          },
-          headerTintColor: '#00415e',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          unmountOnBlur:true,
-        headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
-        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
-      </TouchableOpacity>),
-            drawerLabel: 'Profile',
-            drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium'},
-            drawerIcon: ({focused, size}) => (
-              <Icon name="user" color={'#00415e'} size={22} />
-            ),
-          }}
-        />
+       
         
           <Drawer.Screen
           name="Subscribe"

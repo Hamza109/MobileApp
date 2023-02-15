@@ -9,6 +9,36 @@ export const FETCH_FAILURE='FETCH_FAILURE'
 export const FETCH_REQUEST_PROFILE='FETCH_REQUEST_PROFILE'
 export const FETCH_SUCCESS_PROFILE='FETCH_SUCCESS_PROFILE'
 export const FETCH_FAILURE_PROFILE='FETCH_FAILURE_PROFILE'
+export const USER_EMAIL='USER_EMAIL'
+export const USER_PASS='USER_PASS'
+export const RECENT_CURES='RECENT_CURES'
+export const TOP_DOCTORS='TOP_DOCTORS'
+
+export function recentCures(cures){
+    return{
+        type:'RECENT_CURES',
+        payload:cures
+    }
+}
+export function topDoctors(top){
+    return{
+        type:'TOP_DOCTORS',
+        payload:top
+    }
+}
+
+export function getEmail(userEmail){
+    return{
+        type:'USER_EMAIL',
+        payload:userEmail
+    }
+}
+export function getPass(pass){
+    return{
+        type:'USER_PASS',
+        payload:pass
+    }
+}
 
 export function screenName(name){
     return {

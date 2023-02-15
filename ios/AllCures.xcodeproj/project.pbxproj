@@ -25,6 +25,7 @@
 		1855522228C72BAB0086E8B2 /* Raleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678188BBF59945578B2D9034 /* Raleway-Bold.ttf */; };
 		1855522328C72BAB0086E8B2 /* Raleway-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A08B717B1C04C5DAB5F77B2 /* Raleway-Light.ttf */; };
 		1855522428C72BAB0086E8B2 /* Raleway-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65C79C6E4E7C4011A75BA0B3 /* Raleway-Medium.ttf */; };
+		18D3D23929939186000626D7 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2B5C8D81C524578AC9CBF18 /* AntDesign.ttf */; };
 		43B314CDA8A452E2CF712FF2 /* Pods_AllCures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BD8E66C803D826AA70238F0 /* Pods_AllCures.framework */; };
 		EC83B636DC09021DD971B31F /* Pods_AllCures_AllCuresTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73E5BB2312101C93492C6F9C /* Pods_AllCures_AllCuresTests.framework */; };
 /* End PBXBuildFile section */
@@ -342,6 +343,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18D3D23929939186000626D7 /* AntDesign.ttf in Resources */,
 				183E356E298134D3006940B3 /* Octicons.ttf in Resources */,
 				183E356A2959A6CF006940B3 /* MaterialCommunityIcons.ttf in Resources */,
 				183E35692959A6C3006940B3 /* MaterialIcons.ttf in Resources */,

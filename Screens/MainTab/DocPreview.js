@@ -40,37 +40,18 @@ import {
 } from 'react-native-responsive-screen';
 import CenterWell from '../Disease/CenterWell';
 import DoctorsCard from './DoctorsCard';
+import { useSelector } from 'react-redux';
 
 const DocPreview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-
-  useEffect((lat, lon, city) => {
+  const  topDoc=useSelector((state)=>state.top.Data)
 
 
   
-
-    fetch(
-      `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=871,872,873,874,875,876,877,878,879,880,881,882`,
-    )
-      .then(res => res.json())
-      .then(json => {
-        setIsLoaded(true);
-        setItems(json.map.DoctorDetails.myArrayList);
-      })
-      .catch(err => err);
-  }, []);
   
-  if (!isLoaded) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <HStack space={2} justifyContent="center">
-        <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
-        </HStack>
-      </View>
-    );
-  } else {
+
     return (
       <>
         <View style={{flex: 1}}>
@@ -80,7 +61,7 @@ const DocPreview = () => {
               horizontal
               
               showsHorizontalScrollIndicator={false}>
-              {items.map((i,j) => (
+              {topDoc.map((i,j) => (
                 <DoctorsCard
                key={j}
                   rowno={i.map.rowno}
@@ -99,6 +80,6 @@ const DocPreview = () => {
       </>
     );
   }
-};
+
 
 export default DocPreview;

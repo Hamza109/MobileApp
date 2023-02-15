@@ -1,5 +1,5 @@
 import { State } from "react-native-gesture-handler"
-import { FAV_ARTICLE, REG_ID ,FETCH_FAILURE,FETCH_REQUEST,FETCH_SUCCESS,REG_TYPE,ROW_NO,FETCH_FAILURE_PROFILE,FETCH_REQUEST_PROFILE,FETCH_SUCCESS_PROFILE} from "./Action"
+import { FAV_ARTICLE, REG_ID ,FETCH_FAILURE,FETCH_REQUEST,FETCH_SUCCESS,REG_TYPE,ROW_NO,FETCH_FAILURE_PROFILE,FETCH_REQUEST_PROFILE,FETCH_SUCCESS_PROFILE, USER_EMAIL, USER_PASS, RECENT_CURES, TOP_DOCTORS} from "./Action"
 import { SCREEN_NAME } from "./Action"
 
 const initialFetchState={
@@ -31,6 +31,75 @@ const initialRowState={
     rowId:0
 }
 
+const initialEmailState={
+    mailId:null
+}
+
+const initialPassState={
+    passId:null
+}
+
+const initialRecentCures={
+    Data:[]
+}
+const initialTopDoc={
+   Data:[]
+}
+
+
+
+export const topDocReducer=(state=initialTopDoc,action)=>{
+    switch(action.type){
+        case TOP_DOCTORS:{
+            return{
+                ...state,
+                Data:action.payload
+            }
+           
+        }
+        default: return state
+}
+}
+
+
+export const recentCuresReducer=(state=initialRecentCures,action)=>{
+    switch(action.type){
+        case RECENT_CURES:{
+            return{
+                ...state,
+                Data:action.payload
+            }
+           
+        }
+        default: return state
+}
+}
+
+export const mailReducer=(state=initialEmailState,action)=>{
+    switch(action.type){
+        case USER_EMAIL:{
+            return{
+                ...state,
+                mailId:action.payload
+            }
+           
+        }
+        default: return state
+}
+}
+
+export const passReducer=(state=initialPassState,action)=>{
+    switch(action.type){
+        case USER_PASS:{
+            return{
+                ...state,
+                passId:action.payload
+            }
+           
+        }
+        default: return state
+}
+}
 export const FavReducer=(state=initialFavState,action)=>{
     switch(action.type){
         case FAV_ARTICLE:{

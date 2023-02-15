@@ -324,6 +324,7 @@ const navigation=useNavigation()
                                   placeholder="Select city">
                                   {cityList.map(i => (
                                     <Select.Item
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}
@@ -347,6 +348,7 @@ const navigation=useNavigation()
                                   placeholder="Select state">
                                   {stateList.map(i => (
                                     <Select.Item
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}
@@ -369,6 +371,7 @@ const navigation=useNavigation()
                                   placeholder="Select country">
                                   {countryList.map(i => (
                                     <Select.Item
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}
@@ -392,6 +395,7 @@ const navigation=useNavigation()
                                   placeholder="Select primary speciality">
                                   {diseaseList.map((i) => (
                                     <Select.Item
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}
@@ -414,6 +418,7 @@ const navigation=useNavigation()
                                   placeholder="Select secondary speciality">
                                   {diseaseList.map(i => (
                                     <Select.Item
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}
@@ -436,7 +441,7 @@ const navigation=useNavigation()
                                   placeholder="Select additional speciality">
                                   {diseaseList.map(i => (
                                     <Select.Item
-                                    
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}
@@ -496,7 +501,9 @@ const navigation=useNavigation()
                                   isRequired
                                   placeholder="Select hospital affiliated">
                                   {hospitalList.map(i => (
+                                    
                                     <Select.Item
+                                    key={Math.random().toString(36)}
                                       value={i[0]}
                                       label={i[1]}></Select.Item>
                                   ))}

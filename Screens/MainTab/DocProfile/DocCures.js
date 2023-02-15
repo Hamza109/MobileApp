@@ -90,6 +90,7 @@ const DocCures = () => {
                         <View  key={Math.random().toString(36)}>
                           <View style={{height:scale(170),width:wp('100%'),paddingHorizontal:10,paddingVertical:5}} key={Math.random().toString(36)} >
                             <Card
+                                  key={Math.random().toString(36)}
                               style={{
                                 width: '100%',
                                 height: '100%',
@@ -127,9 +128,10 @@ const DocCures = () => {
                                   }}
                                 />
                                 </TouchableOpacity>
-                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
-                               <View style={{width:'90%'}}>
+                                <View       key={Math.random().toString(36)} style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View       key={Math.random().toString(36)} style={{width:'90%'}}>
                                <AllPost
+                                     key={Math.random().toString(36)}
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
@@ -143,6 +145,7 @@ const DocCures = () => {
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
+                                                  key={Math.random().toString(36)}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={
@@ -191,7 +194,7 @@ const DocCures = () => {
                       );
                     })
                 ) : (
-                  <View style={{alignItems: 'center'}}>
+                  <View       key={Math.random().toString(36)} style={{alignItems: 'center'}}>
                     <Icon
                       name="medical-outline"
                       size={50}

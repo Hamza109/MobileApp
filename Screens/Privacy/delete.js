@@ -19,6 +19,8 @@ import {
   Input,
   Stack,
   VStack,
+  Modal,
+  Select
 } from 'native-base';
 import axios from 'axios';
 
@@ -39,21 +41,25 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { reg, type, row, getEmail, getPass } from '../Redux/Action';
-import { useStore } from 'react-redux';
+import { useStore,useSelector } from 'react-redux';
 import { screenName } from '../Redux/Action';
 import crashlytics from '@react-native-firebase/crashlytics';
+import { set } from 'react-native-reanimated';
 
 
 
-const SignInScreen = ({ props, route }) => {
+const Delete = ({ props, route }) => {
+    const email=useSelector((state)=>state.mail.mailId)
+    const pass =useSelector((state)=>state.pass.passId)
   const [status, setStatus] = useState('');
   const navigation = useNavigation()
-  const [buttonClick, setClicked] = useState(false);
+  const [buttonClick, setClicked] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(true);
   const[passwordSecured,setPasswordSecured]=useState(false)
   const routeName = useStore()
-
-  const user = useStore()
+  const [visible,setVisible]=useState(false)
+ const[reason,setReason]=useState(null)
+  const user = useSelector((state)=>state.userId.regId)
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -75,8 +81,10 @@ const SignInScreen = ({ props, route }) => {
     });
   };
 
+//   const showModal=()=>setVisible(true)
+//   const hideModal=()=>setVisible(false)
   useEffect(() => {
-    console.log('screen:', routeName.getState().name.screen)
+    console.log('screen:', reason)
   })
 
 
@@ -97,135 +105,73 @@ const SignInScreen = ({ props, route }) => {
     );
   };
 
-  const loginForm = () => {
-console.log('email',data.email)
-console.log('pass',data.password)
-if(data.email!=''&&data.password!=''){
-  setClicked(true)
-   
-      axios.get(`${backendHost}/data/delete/${data.email}`)
-      .then((res)=>{
- console.log('delete',res.data)
-
-        if(res.data.includes('deleted')){
-          console.log('true')
-          setClicked(false)
-          toast.show({
-            title: 'Invalid email/password',
-            status: 'warning',
-            description: 'Please enter a valid email/password',
-            duration: 2000,
-
-            style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
-          });
-
-        }
-        else{
-  
-console.log('false')
-          axios
-      .post(
-        `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
-        {
-          headers: {
-            'Access-Control-Allow-Credentials': true,
-          },
-        },
-      )
-
-      .then(res => {
-        if (res.data.registration_id) {
-         console.log(res.data)
-          setTimeout(() => {
-           dispatch(getEmail(res.data.email_address))
-          dispatch(getPass(data.password))
-            dispatch(screenName('MAIN'));
-            crashlytics().log(`User has signed in`);
-            analytics().setUserProperty(
-              'Reg_Id',
-              JSON.stringify(res.data.registration_id),
-            );
-            analytics().setUserId(JSON.stringify(res.data.registration_id));
-            analytics().logEvent('login', { reg_id: res.data.registration_id });
-            setStatus(res.status);
-            user.dispatch(reg(res.data.registration_id))
-            user.dispatch(type(res.data.registration_type))
-            console.log('r', res.data.rowno)
-            user.dispatch(row(res.data.rowno))
-            setClicked(false);
-          }, 3000);
-        }
-        return true;
-      })
-
-      .catch(err => {
-        setLoginSuccess(false);
-        if (err.response) {
-          if (err.response.data.includes('Incorrect email')) {
-            setTimeout(() => {
-              setClicked(false);
-              toast.show({
-                title: 'Invalid email/password',
-                status: 'warning',
-                description: 'Please enter a valid email/password',
-                duration: 2000,
-
-                style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
-              });
-            }, 1000);
-          } else {
-            setTimeout(() => {
-              setClicked(false);
-              toast.show({
-                title: 'Some Error Occured',
-                status: 'warning',
-                description: 'Please try again',
-                duration: 2000,
-    
-                style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
-              });
-            }, 2000);
-          }
-        } else {
-          return;
-        }
-      })
-          
-        }
-      })
+  const onConfirm=()=>{
+ 
+    if(data.password === pass && data.email === email ){
+      setVisible(!visible)
     }
     else{
-      setClicked(false)
-      Alert.alert('enter details')
+     Alert.alert('email or password invalid')
     }
+  }
 
-    
-  };
+  const deleted=()=>{
+    if(reason!=null){
+      console.log(reason)
+     
+axios.post(`${backendHost}/data/deactivate/${user}/${reason}`).then((res)=>{
+if(res.data==1){
+  Alert.alert('Account Deactivated Successfully','your acoount will be delted permanently after 30 days,login under 30 days to activate your account', [
+           
+    {
+      text: 'OK',
+      onPress: () => {
+     dispatch(screenName('SPLASH')),dispatch(reg(0))
+      }
+    },
+  ]
+  )
+}
+else{
+  Alert.alert('Some error occured,try again later')
+}
 
+})
 
+     
+        
+        }
 
+    else{
+        Alert.alert('Please select a reason!')
+    }
+  
+   
+ 
+  }
 
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+
 
       <ImageBackground
         source={require('../../assets/img/backheart.png')}
         resizeMode="stretch"
         style={styles.image}>
 
-<Pressable onPress={() => dispatch(screenName('MAIN'))}><Text  style={styles.skip}>Skip</Text></Pressable>
+
 
         <View style={styles.body}>
 
 
           <View style={styles.header}>
-            <Text style={styles.headerText}>Sign In</Text>
+            <Text style={styles.headerText}>Account Deletion</Text>
+            <Text style={{color:'#fff',textAlign:'center',fontSize:10,marginTop:2}} >Please confirm your account details.</Text>
           </View>
 
           <View style={{marginBottom:15}}>
-            <Input 
+          <Input 
             placeholder='enter email' 
             height={12}
             color={'#fff'}
@@ -247,13 +193,13 @@ console.log('false')
             autoCapitalize="none"
             returnKeyType="go"
             value={data.password}
-            onSubmitEditing={loginForm}
+            onSubmitEditing={onConfirm}
             onChangeText={e => setData({...data, password: e})}
             InputRightElement={<View><TouchableOpacity onPress={()=>setPasswordSecured(!passwordSecured)}><Feather name={passwordSecured?'eye-off':'eye'} color="grey" size={20} style={{marginRight:10}} /></TouchableOpacity></View>}
              />
           </View>
 
-          <TouchableOpacity style={styles.signIn} onPress={loginForm}>
+          <TouchableOpacity style={styles.signIn} onPress={onConfirm}>
                 <Text
                   style={[
                     styles.textSign,
@@ -262,49 +208,54 @@ console.log('false')
                       color: '#00415e',
                     },
                   ]}>
-                  Sign In
+                Confirm
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      textAlign: 'center',
-                      marginTop: 10,
-                      fontFamily: 'Raleway',
-                    }}
-                    onPress={verify}>
-                    Forgot password?
-                  </Text>
-                </TouchableOpacity>
-                {buttonClick == true? loading() : null}
-                <TouchableOpacity>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      textAlign: 'center',
-                      marginTop: 25,
-                      fontFamily: 'Raleway',
-                    }}
-                    onPress={() => navigation.navigate('SignUp')}>
-                    Don't have an account? Sign Up
-                  </Text>
-                </TouchableOpacity>
-
+           
+                {buttonClick ? loading() : null}
+              
 
         </View>
-
-
-
-
-
+     
               </ImageBackground>
+              <Modal
+          isOpen={visible}
+          onClose={()=>setVisible(false)}
+          avoidKeyboard
+          justifyContent="center"
+          size='xl'
+          >
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header>Reason for account deletion</Modal.Header>
+            <Modal.Body padding={4} marginBottom={2}>
+                <Text style={{color:'#00415e'}} >Please select a reason.</Text>
+                <Select marginTop='2' _item={{color:'#00415e',}}  marginBottom={'2'} selectedValue={reason} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Service" _selectedItem={{
+        bg: "aliceblue", 
+        color:'#00415e'
+    
+      }} mt={1} onValueChange={itemValue => setReason(itemValue)}>
+          <Select.Item  label="Content is not great" value={1} />
+          <Select.Item label="I got cured" value={2} />
+          <Select.Item label="Not enjoying All Cures" value={3} />
+          <Select.Item label="Do not use All Cures" value={4} />
+
+        </Select>
+<TouchableOpacity style={styles.submit} onPress={deleted}>
+    <Text style={styles.textSign}>Submit</Text>
+
+</TouchableOpacity>
+
+            </Modal.Body>
+            
+          </Modal.Content>
+        </Modal>
     </SafeAreaView>
   );
 };
 
-export default SignInScreen;
+export default Delete;
 
 const styles = StyleSheet.create({
   container: {
@@ -314,9 +265,7 @@ const styles = StyleSheet.create({
   body: {
     justifyContent: 'center',
     width: '100%',
-    height: '90%',
-    marginTop:40,
-
+    height: '100%'
   },
   skip: {
     color: '#fff',
@@ -394,10 +343,19 @@ const styles = StyleSheet.create({
   textSign: {
     fontSize: 18,
     textAlign: 'center',
+    fontFamily:'Raleway-Medium',
+    color:'#fff',
   },
   image: {
     width: '100%',
     height: '100%',
     padding: 15,
   },
+  submit:{
+    backgroundColor:'#00415e',
+    alignItems:'center',
+    padding:5,
+    borderRadius:25,
+    marginBottom:0
+  }
 });

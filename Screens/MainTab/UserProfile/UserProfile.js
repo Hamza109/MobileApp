@@ -11,18 +11,22 @@ import {
   RefreshControl,
   BackHandler,
   Animated,
+  StatusBar,
+  Alert
 } from 'react-native';
-import { useToast, Divider } from 'native-base';
+import { useToast, Divider,HStack } from 'native-base';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from '@react-navigation/routers';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { screenName } from '../Redux/Action';
+import { screenName,reg } from '../../Redux/Action';
 import { backendHost } from '../../../components/apiConfig';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
@@ -30,12 +34,33 @@ const UserProfile = ({first,last,number,mail}) => {
 
 
     const user = useSelector((state) => state.userId.regId);
+    const dispatch=useDispatch()
+    const remove = async () => {
+      dispatch(reg(0))
+    }
+    const logout = () => {
+      Alert.alert('Hold on!', 'Are you sure you want Logout?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => {
+         dispatch(screenName('SPLASH')), remove()
+          },
+        },
+      ]);
+      return true;
+    };
+
   function User() {
     return (
       <Svg
         xmlns="http://www.w3.org/2000/svg"
-        width={200}
-        height={150}
+        width={90}
+        height={90}
         fill="none"
         viewBox="0 0 43 43">
         <Path
@@ -45,11 +70,12 @@ const UserProfile = ({first,last,number,mail}) => {
     );
   }
 
-
+const navigation=useNavigation()
 
 
   return (
-    <View>
+    <View style={{height:'100%'}}>
+       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
     <View style={styles.profileHeader}>
       <User
         style={{
@@ -58,41 +84,123 @@ const UserProfile = ({first,last,number,mail}) => {
       />
       <View>
         <Text style={styles.profileName} >{first} {last}</Text>
+        <Text
+            style={styles.infoText}>
+            {mail}
+          </Text>
+
+      
       </View>
 
     </View>
     <Divider />
 
     <View>
-      <View style={styles.headerTitle}>
-        <Text style={styles.headerText}>Account Info</Text>
-      </View>
+  
       <View style={styles.infoContainer}>
       <View style={styles.info}>
 
+        <View>
+          <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('cures')} >
         <View style={styles.infoDetails}>
-          <Icon name="mail" size={30} color="#00415e" />
+        
+          <View style={styles.icon}>
+        <Icon
+                      name="medical-outline"
+                      size={22}
+                      color='aliceblue'
+                    />
+                    </View>
 
           <Text
             style={styles.infoText}>
-            {mail}
+            My Cures
           </Text>
+          <View style={{position:'absolute',right:20}}>
+          <AntDesign name='right' size={15} color={'#00415e'} />
+          </View>
         </View>
-
+        </TouchableOpacity>
+        <Divider/>
+        <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('favourite')} >
         <View style={styles.infoDetails}>
 
-          <Icon name="phone-portrait" size={30} color="#00415e" />
-          <Text
+        <View style={styles.icon}>
+        <Icon
+                      name="heart"
+                      size={22}
+                      color='aliceblue'
+                    />
+                    </View>
+
+                    <Text
             style={styles.infoText}>
-            {number}
+            Favourites
           </Text>
+          <View style={{position:'absolute',right:20}}>
+          <AntDesign name='right' size={15} color={'#00415e'} />
+          </View>
 
         </View>
+        </TouchableOpacity>
+  
+
+        {/* <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.push('inbox')} >
+        <View style={styles.infoDetails}>
+
+<View style={styles.icon}>
+<Icon
+              name="chatbubble"
+              size={21}
+              color='aliceblue'
+            />
+            </View>
+
+            <Text
+    style={styles.infoText}>
+   Inbox
+  </Text>
+  <View style={{position:'absolute',right:20}}>
+          <AntDesign name='right' size={15} color={'#00415e'} />
+          </View>
+
+</View>
+</TouchableOpacity> */}
+       
+        </View>
+
+      
 
       </View>
+
       </View>
+
+      <View>
+
+
+</View>
 
     </View>
+    <View style={styles.logout}>
+    <View
+          style={styles.infoLog}>
+          <TouchableOpacity onPress={() => logout()}>
+            <HStack ml='3' space={4}>
+              <Icon name="log-in-outline" size={28} color="#00415e" />
+              <Text
+                style={{
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Medium',
+                  marginTop:Platform.OS==='ios'?3:0,
+                  fontSize:17,
+                }}>
+                Logout
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        </View>
+        </View>
+    
     </View>
   )
 }
@@ -101,16 +209,18 @@ export default UserProfile
 
 const styles=StyleSheet.create({
     profileHeader: {
-        justifyContent: 'center',
+      flexDirection:'row',
+  
         alignItems: 'center',
-        paddingBottom: 20,
+        padding:25
       },
     
       profileName: {
         color: '#00415e',
         fontFamily: 'Raleway-Bold',
         fontSize: 25,
-        marginTop: 7
+        marginLeft:14,
+        marginTop: -10
       },
     headerTitle:{
     marginLeft:12,
@@ -125,19 +235,19 @@ const styles=StyleSheet.create({
     ,
     
       infoContainer:{
-    paddingHorizontal:7
+       padding:10
       },
     info:{
       backgroundColor:'#f0f8ff',
       borderRadius:15,
-      height:'100%',
+      justifyContent:'space-between'
     },
     infoDetails:{
       flexDirection:'row',
       alignItems:'center',
       height:80,
     padding:15,
-      borderBottomWidth:.2,
+    
       borderBottomColor:'grey'
     
       
@@ -145,11 +255,29 @@ const styles=StyleSheet.create({
     },
       infoText: {
         color: '#00415e',
-        fontFamily: 'Raleway-Regular',
-        fontSize: 21,
+        fontFamily: 'Raleway-Medium',
+        fontSize: 14,
         marginBottom:5,
-        marginLeft:10
+        marginLeft:15,
       },
-    
+    icon:{
+      backgroundColor:'#00415e',
+      width:35,
+      height:35,
+      justifyContent:'center',
+      borderRadius:50,
+      alignItems:'center'
+    },
+    logout:{
+      position:'absolute',
+      bottom:0,
+      width:'100%',
+
+
+    },
+    infoLog:{
+      backgroundColor:'aliceblue',
+      padding:10
+    }
     
 })

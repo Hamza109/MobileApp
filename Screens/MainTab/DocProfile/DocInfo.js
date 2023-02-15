@@ -21,6 +21,8 @@ const DocInfo = () => {
   return (
    <View style={styles.container} >
       <ScrollView scrollEnabled={true}  style={{width: wp('100%'), height: hp('100%')}}>
+        {
+          
             <VStack ml="2" space={1}>
               <Text
                 style={styles.dbodyHead}>
@@ -49,6 +51,7 @@ const DocInfo = () => {
               </Text>
               
               </VStack>
+}
               </ScrollView>
    </View>
 

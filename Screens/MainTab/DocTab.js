@@ -46,7 +46,9 @@ import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 const DocTab = ({navigation, route}) => {
   return (
     <View style={styles.container}>
+       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
       <View>
+     
         <Stack space={3} alignItems="center">
           <ImageBackground
             source={require('../../assets/img/LandingMainImg.jpg')}
@@ -57,7 +59,7 @@ const DocTab = ({navigation, route}) => {
               style={{
                 color: '#00415e',
                 fontFamily: 'Raleway-Bold',
-                fontSize: wp('7%'),
+                fontSize: 20,
                 position: 'absolute',
                 bottom: 65,
                 left: 30,
@@ -151,20 +153,9 @@ const styles = StyleSheet.create({
     color: '#00415e',
   },
 
-  b2: {
-    justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: '#00415e',
-    backgroundColor: '#fff',
-    padding: 10,
-    width: wp('90%'),
-    height: hp('6%'),
-    position: 'relative',
-    bottom: 440,
-  },
+  
   text: {
     color: '#00415e',
-   
     textAlign: 'center',
     alignSelf: 'center',
   },
@@ -189,10 +180,5 @@ const styles = StyleSheet.create({
     height: hp('5%'),
     width: wp('5%'),
   },
-  imageModal: {
-    padding: 20,
-    marginTop: 5,
-    height: hp('7%'),
-    width: wp('16%'),
-  },
+
 });

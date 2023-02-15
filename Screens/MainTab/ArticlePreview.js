@@ -54,43 +54,17 @@ import CenterWell from '../Disease/CenterWell';
 import Heart from '../../assets/img/heart.png';
 import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-snap-carousel';
-
+import { useSelector,useStore } from 'react-redux';
 const ArticlePreview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
+  const store=useStore()
+  const articles=store.getState().recent.Data
+
  const navigation=useNavigation();
-  function diseasePosts(type) {
-   
-    fetch(`${backendHost}/isearch/${type}`)
-      .then(res => res.json())
-      .then(json => {
-        setLoaded(true);
-        setItems(json);
-      })
-      .catch(err => {err
-        throw err
-        })
-  }
+  
 
-  function allPosts() {
-    fetch(`${backendHost}/article/allkv?limit=15`)
-      .then(res => res.json())
-      .then(json => {
-        var temp = [];
-
-        json.forEach(i => {
-          if (i.pubstatus_id === 3 && i.type.includes(2)) {
-            temp.push(i);
-          }
-        });
-        setItems(temp);
-
-        setLoaded(true);
-      })
-      .catch(err => {err
-        throw err
-        })
-  }
+ 
 
   function IsJsonValid(str) {
     try {
@@ -101,31 +75,18 @@ const ArticlePreview = () => {
     return JSON.parse(str).blocks;
   }
 
-  useEffect(() => {
-    allPosts();
-  }, []);
+  // useEffect(() => {
+  //   allPosts();
+  // }, []);
   
-  
-    if (!isLoaded) {
-   
-    return (
-      <View>
-      <HStack space={2} justifyContent="center">
-        <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
-  
-      </HStack>
-     
-      
-      </View>
-    );
-  } else {
+ 
     return (
       <>
         <View style={{flex: 1,paddingVertical:5}} key={Math.random().toString(36)}>
           <View style={{flexDirection: 'row'}}>
             <ScrollView  key={Math.random().toString(36)}  style={{width: wp('100%')}}  horizontal  showsHorizontalScrollIndicator={false}>
-              {items.length !== 0 ? (
-                items
+              {articles.length !== 0 ? (
+                articles
                   .filter((i, idx) => idx < 9)
                   .map(
                     (i,j) => {
@@ -142,7 +103,7 @@ const ArticlePreview = () => {
                         imageLoc = 'http://all-cures.com:8080/';
                       } else {
                         imageLoc =
-                          'https://all-cures.com:444/cures_articleimages//299/default.png';
+                          'https://all-cures.com:8080/cures_articleimages//299/default.png';
                       }
 
                       var title = i.title;
@@ -275,6 +236,6 @@ key={Math.random().toString(36)}
       </>
     );
   }
-};
+
 
 export default ArticlePreview;

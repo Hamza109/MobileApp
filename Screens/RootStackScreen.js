@@ -5,6 +5,7 @@ import SignInScreen from './login/SignIn';
 import SplashScreen from './MainTab/SplashScreen';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import SearchArt from './search/SearchArticle';
 import Result from './search/Result';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -34,6 +35,12 @@ import About from './Privacy/about';
 import Contact from './Privacy/contact';
 import EditProfile from './MainTab/UserProfile/EditProfile';
 import { useSelector } from 'react-redux';
+import Delete from './Privacy/delete';
+import Favourites from './MainTab/UserProfile/Favourites';
+import All from './mycures/All';
+import Inbox from './Inbox/Inbox';
+import { Touchable } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
@@ -116,6 +123,7 @@ const SettingStack=()=>{
 <Stack.Screen name='terms' component={Terms}  />
 <Stack.Screen name='about' component={About}  />
 <Stack.Screen name='contact' component={Contact}  />
+<Stack.Screen name='delete'  component={Delete} options={{presentation:'modal'}} />
 
   </Stack.Navigator>
   )
@@ -142,7 +150,7 @@ const HomeStack = () => {
         
      <Stack.Screen
         name="Main"
-        component={DrawerMenu}
+        component={MainTabScreen}
         options={{headerShown: false}}
       />
  {/* <Stack.Screen
@@ -203,12 +211,7 @@ const HomeStack = () => {
       />
      
      
-      <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{headerShown: true,headerLeft:()=>(<Icon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('Main')}}/>)}}
-      />
-
+    
    
   
       <Stack.Screen
@@ -232,12 +235,12 @@ return(
   screenOptions={{
     headerStyle: {
       backgroundColor: '#fff',
-     height:Platform.OS ==='android'?60:80,
+     height:Platform.OS ==='android'?60:90,
 
     },
     headerTintColor: '#00415e',
     headerTitleStyle: {
-       marginTop:Platform.OS === 'android'?0:40
+       marginTop:Platform.OS === 'android'?0:0
       
     },
   }}>
@@ -245,13 +248,15 @@ return(
         name="DocTab"
         component={DocTab}
         options={{
+          headerStyle:{backgroundColor:'#00415e'},
       headerTitle:'Doctor',
+      headerTintColor:'#fff',
           headerLeft: () => (
         
             <Icon
               name="user-md"
               size={30}
-              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:30}}
+              style={{marginLeft: 20, color: '#fff', marginTop:Platform.OS === 'android'?0:0}}
               backgroundColor="#fff"></Icon>
           ),
         }}
@@ -279,12 +284,13 @@ return(
         component={SearchDocCity}
         options={{headerShown: true,
           headerTitle:'Doctor Finder',
+    
           headerLeft: () => (
   
             <Icon
               name="user-md"
               size={30}
-              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:30}}
+              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:0}}
               backgroundColor="#fff"></Icon>
           ),
         }}
@@ -292,7 +298,7 @@ return(
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:0}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
       />
       <Stack.Screen
         name="SearchDoc"
@@ -304,7 +310,7 @@ return(
             <Icon
               name="user-md"
               size={30}
-              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:30}}
+              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:0}}
               backgroundColor="#fff"></Icon>
           ),
         }}
@@ -331,20 +337,50 @@ const ProfileStack=()=>{
      
         headerStyle: {
           backgroundColor: '#fff',
-          height:Platform.OS ==='android'?60:80,
+          height:Platform.OS ==='android'?60:90,
         
      
   
         },
         headerTintColor: '#00415e',
         headerTitleStyle: {
-          fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:30
+          fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:0
         },
       }}>
 <Stack.Screen
         name='profile'
         component={ProfileScreen}
-        options={{headerShown: false, headerLeft: null}}
+       
+        options={{
+          headerStyle:{backgroundColor:'#00415e'},
+          headerTintColor:'#fff',
+          headerTitle:'Profile',
+          headerLeft:()=> 
+          (
+          <Icon  
+          style={{marginLeft: 20, marginTop:Platform.OS === 'android'?0:0}}
+           name="heartbeat"    
+           color={'#fff'} 
+           size={26} />
+          )}}
+        />
+        <Stack.Screen
+        name='favourite'
+        component={Favourites}
+        options={{title:'Favourite Articles'}}
+        />
+         <Stack.Screen
+        name='cures'
+        component={All}
+        options={{title:'My Cures',      headerLeftLabelVisible:false,}}
+        />
+          <Stack.Screen
+        name='inbox'
+        component={Inbox}
+        options={{title:'Inbox',
+        headerStyle:{backgroundColor:'#00415e'},
+        headerTintColor:'#fff', 
+          }}
         />
         <Stack.Screen
         name='editprofile'
@@ -352,7 +388,8 @@ const ProfileStack=()=>{
         
         options={{
           headerTitle: 'Edit Profile',
-          headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} 
+          headerLeft:()=>(  
+          <  IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} 
           onPress={()=>{navigation.push('profile')}}/>),
           presentation:'modal',
           
@@ -392,7 +429,7 @@ return(
               name="heartbeat"
               size={30}
               style={{marginLeft: 20, color: '#00415e',marginTop:Platform.OS === 'android'?0:30}}
-              backgroundColor="#fff"></Icon>
+              backgroundColor="#fff"/>
           ),
           
         }}

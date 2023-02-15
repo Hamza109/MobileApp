@@ -477,10 +477,11 @@ useEffect(()=>{
 <ScrollView style={{height:'70%'}}>
                 {commentItems.length !== 0 ? (
                   commentItems.map(i => (
-                    <View style={{marginBottom: 10}}>
+                    <View  key={Math.random().toString(36)} style={{marginBottom: 10}}>
                       <View
+                       key={Math.random().toString(36)}
                         style={styles.cbody}>
-                          <Box bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
+                          <Box  key={Math.random().toString(36)} bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
                           <Text style={styles.cbodyHead}>{i.first_name} {i.last_name}</Text>
                         <Text style={styles.cbodyText}>{i.comments}</Text>
                         </Box>

@@ -7,6 +7,7 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const About = () => {
 
     const Navigation=useNavigation()
@@ -56,6 +57,10 @@ const About = () => {
       
         
 </View>
+
+
+
+
  </View>
   )
 }
@@ -66,25 +71,65 @@ const styles=StyleSheet.create({
     setting:{
         backgroundColor:'aliceblue',
         borderRadius:15,
-        height:'25%',
         width:'100%',
         padding:10,
         marginBottom:10
     },
     item:{
    paddingVertical:17,
-   marginRight:20,
    flexDirection:'row',
    justifyContent:'space-evenly'
     },
     header:{
-        padding:15
+        padding:10
           },
           headerText:{
               fontFamily:'Raleway-Bold',
-         fontSize:wp('5.5%'),
+         fontSize:25,
          marginTop:5,
+         padding:5,
          color:'#00415e'
             
+          },
+          infoDetails:{
+           
+            alignSelf:'flex-start',
+        
+          padding:10,
+          position:'absolute',
+          bottom:0,
+            borderBottomColor:'grey'
+          
+            
+            
+          },
+          delete:{
+            backgroundColor:'aliceblue',
+            borderRadius:15,
+            width:'100%',
+            padding:10,
+            position:'absolute',
+            marginBottom:10,
+            bottom:0,
+            left:8
+  
+     
+        },
+          infoText: {
+            color: '#00415e',
+            fontFamily: 'Raleway-Regular',
+            fontSize: 10,
+            marginBottom:3,
+            marginLeft:5
+          },
+    
+          deleteButton:{
+            flexDirection:'row',
+            backgroundColor:'#00415e',
+            alignItems:'center',
+            padding:5,
+            borderRadius:25,
+            justifyContent:'center'
+
           }
 })

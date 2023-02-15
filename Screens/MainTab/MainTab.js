@@ -3,15 +3,16 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-
+import { View,StyleSheet,StatusBar} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { HomeStack,DocStack,CuresStack } from '../RootStackScreen';
+import { HomeStack,DocStack,CuresStack, ProfileStack } from '../RootStackScreen';
 import {useState} from 'react';
 import { SplashStack } from '../RootStackScreen';
 import DocTab from './DocTab';
 import { Platform } from 'react-native';
 import HomeScreen from './Home';
 import { useDispatch } from 'react-redux';
+import DrawerMenu from './DrawerMenu';
 
 
 const MyCuresStack = createStackNavigator();
@@ -24,16 +25,17 @@ const MainTabScreen = () => {
  
   return (
     <Tab.Navigator
-      initialRouteName="Home1"
+      initialRouteName="drawer"
       screenOptions={{
-      
+        tabBarStyle:{justifyContent:'center',alignItems:'center',height:Platform.OS==='android'?55:85},
         tabBarInactiveTintColor: 'grey',
-        tabBarActiveBackgroundColor:'aliceblue',
-        tabBarLabelStyle: {fontFamily: 'Raleway-Medium',fontWeight:'bold'},
+       tabBarActiveBackgroundColor:'aliceblue',
+        tabBarLabelStyle: {fontFamily: 'Raleway-Medium'},
       }}>
+   
       <Tab.Screen
-        name="Home1"
-        component={HomeScreen}
+        name="drawer"
+        component={DrawerMenu}
         options={{
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
@@ -42,15 +44,16 @@ const MainTabScreen = () => {
           tabBarLabel: 'Home',
           tabBarColor: '#fff',
           tabBarIcon: ({focused}) => (
-            
-            <Icon name="home" color={'#00415e'} size={26} />
+            <View style={[styles.tab,{backgroundColor:focused?'#00415e':null}]}>
+            <Icon name="home" color={focused?'#fff':'#00415e'} size={26} />
+            </View>
            
             
           ),
         }}
       />
       <Tab.Screen
-        name="ArticleTab"
+        name="DoctorTab"
         component={DocStack}
         options={{
   
@@ -58,22 +61,27 @@ const MainTabScreen = () => {
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Doctor',
           tabBarColor: '#fff',
-          tabBarIcon: ({color}) => (
-            <Icon name="user-md" color={'#00415e'} size={26} />
+          tabBarIcon: ({color,focused}) => (
+            <View style={[styles.tab,{backgroundColor:focused?'#00415e':null}]}>
+            <Icon name="user-md" color={focused?'#fff':'#00415e'} size={26} />
+            </View>
+           
           ),
         }}
       />
       <Tab.Screen
-        name="Cures"
-        component={CuresStack}
+        name="Profile"
+        component={ProfileStack}
         options={{
           unmountOnBlur:true,
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
-          tabBarLabel: 'My Cures',
+          tabBarLabel: 'Profile',
           tabBarColor: '#fff',
           tabBarIcon: ({color,focused}) => (
-            <Icon name="heartbeat"    color={'#00415e'} size={26} />
+           <View style={[styles.tab,{backgroundColor:focused?'#00415e':null}]}>
+            <Icon name="heartbeat" color={focused?'#fff':'#00415e'} size={25} />
+            </View>
           ),
         }}
       />
@@ -83,5 +91,16 @@ const MainTabScreen = () => {
 };
 
 export default MainTabScreen;
+
+const styles=StyleSheet.create({
+tab:{
+  borderRadius:25,
+  marginTop:10,
+  justifyContent:'center',
+  width:35,
+  height:35,
+  alignItems:'center'
+}
+})
 
 

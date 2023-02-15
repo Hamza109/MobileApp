@@ -52,12 +52,14 @@ import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
 import {Item} from 'react-native-paper/lib/typescript/components/List/List';
 import Svg, {Path, Circle} from 'react-native-svg';
-import { useDispatch,useSelector } from 'react-redux';
-import { screenName } from '../Redux/Action';
+import { useDispatch,useSelector,useStore } from 'react-redux';
+import { reg, screenName } from '../Redux/Action';
 import NetInfo from '@react-native-community/netinfo';
 import { useToast } from 'native-base';
 import * as Animatable from 'react-native-animatable';
 import { position } from 'native-base/lib/typescript/theme/styled-system';
+import { topDoctors,recentCures } from '../Redux/Action';
+import LottieView from 'lottie-react-native';
 
 const HomeScreen = ({navigation, route}) => {
 
@@ -65,6 +67,9 @@ const toast=useToast()
   const user=useSelector((state)=>state.userId.regId) ;
   const screen=useSelector((state)=>state.name.screen)
   const theme = useTheme();
+  const  articles=useStore()
+  const  topDoc=useSelector((state)=>state.top.Data)
+  const [isLoaded, setIsLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
 
  const dispatch=useDispatch();
@@ -90,15 +95,65 @@ const toast=useToast()
     )
   }
 
+
   useEffect(() => {
+
+
+    console.log('user',user)
+  console.log('screen',screen)
+
+  const unsubscribe = NetInfo.addEventListener(state => {
+    setIsConnected(state.isConnected);
+   
+  });
+  unsubscribe();
     
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected);
+ Promise.all([  
+    fetch(`${backendHost}/article/allkv?limit=15`)
+      .then(res => res.json())
+      .catch(err=>err),
+    fetch(
+      `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=871,872,873,874,875,876,877,878,879,880,881,882`,
+    )
+      .then(res => res.json())
      
-    });
-    return () => {
-      unsubscribe();
-    };
+      .catch(err=>err)
+    ] ).then(([recentCuresData,topDoctorsData])=>{
+      var temp = [];
+      recentCuresData.forEach(i => {
+        if (i.pubstatus_id === 3 && i.type.includes(2)) {
+          temp.push(i);
+     
+        }
+   
+      });
+      dispatch(recentCures(temp))
+      console.log('top',topDoctorsData.map.DoctorDetails.myArrayList)
+      dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList))
+
+    }).then(([])=>{
+     
+    })
+   .then()
+    {
+       setIsLoaded(true)
+       console.log('art',articles.getState().recent.Data)
+
+    }
+        
+  
+
+
+ 
+
+
+
+
+
+
+
+
+   
   }, [])
 
   
@@ -106,16 +161,7 @@ const toast=useToast()
 
 
 
-  const remove = async () => {
-    try {
-      await AsyncStorage.multiRemove([
-     
-        'mail1'
-      ]);
-    } catch (error) {
-   error
-    }
-  };
+
   const backAction = () => {
     if (navigation.isFocused()) {
       Alert.alert('Hold on!', 'Are you sure you want to Exit?', [
@@ -124,7 +170,7 @@ const toast=useToast()
           onPress: () => null,
           style: 'cancel',
         },
-        {text: 'YES', onPress: () =>{ BackHandler.exitApp(),remove()} },
+        {text: 'YES', onPress: () =>{ BackHandler.exitApp()} },
       ]);
       return true;
     }
@@ -144,12 +190,7 @@ const toast=useToast()
   
   
   const isFocuss = useIsFocused();
-  useEffect(()=>{
-  
-    console.log('user',user)
-    console.log('screen',screen)
-     
-   })
+
   useEffect(() => {
   
     if (isFocuss) {
@@ -208,7 +249,6 @@ const toast=useToast()
     </Svg>
     );
   }
-  const [row, setRow] = useState();
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -219,26 +259,8 @@ const toast=useToast()
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false)).catch(err=>err)
   }
-  const getRow = () => {
-    try {
-      AsyncStorage.getItem('rowno').then(value2 => {
-
-        if (value2 != null) {
-          setRow(Number(value2));
-        }
-      }).catch(err=>err);;
-    } catch (error) {
-      error
-    }
-  };
-  const isFocus = useIsFocused();
-  useEffect(() => {
-    if (isFocus) {
-      getRow();
-
   
-    }
-  }, [row]);
+  
 
   function renderItemTrend({item, index}) {
     const {name, source, color, type} = item;
@@ -292,8 +314,26 @@ const toast=useToast()
   return (
     
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+
+{
+  !isLoaded?
+  (
+    <View style={styles.loading}>
+      <HStack space={2} justifyContent="center">
+        <LottieView
+          source={require('../../assets/animation/load.json')}
+          autoPlay
+          loop
+          style={{width: 50, height: 50, justifyContent: 'center'}}
+        />
+      </HStack>
+    </View>
+  ):null
+}
+      
       <View style={{flex:1}}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
+       
         {
           !isConnected?(
           <Reload/>
@@ -870,5 +910,16 @@ marginBottom:10
     marginTop: 5,
     height: hp('7%'),
     width: wp('16%'),
+  },
+  loading: {
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 999,
+    alignItems: 'center',
   },
 });

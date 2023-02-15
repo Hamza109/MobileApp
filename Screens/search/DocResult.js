@@ -130,6 +130,9 @@ const [search,setSearch]=useState();
         <ArticleHeader placeholder='Search by name'   doc={1} city={0}   />
 
         <ScrollView>
+
+
+          
           {
             items.length!==0?(
           items.map((i,j) => (

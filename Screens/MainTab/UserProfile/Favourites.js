@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Button, StyleSheet, Image} from 'react-native';
 import {useState} from 'react';
 import {useEffect} from 'react';
-import AllPost from '../search/AllPost';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {Card} from 'react-native-paper';
@@ -14,7 +14,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { scale,verticalScale } from '../../components/Scale';
+import { scale } from '../../../components/Scale';
 import {
   HStack,
   Stack,
@@ -26,11 +26,12 @@ import {
   VStack,
   Spinner,
 } from 'native-base';
-import CenterWell from '../Disease/CenterWell';
+import CenterWell from '../../Disease/CenterWell';
 import {useIsFocused} from '@react-navigation/native';
-import {backendHost} from '../../components/apiConfig';
+import { backendHost } from '../../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
-import AllStat from '../search/AllStat';
+import AllPost from '../../search/AllPost';
+;
 import { useSelector } from 'react-redux';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
@@ -40,8 +41,6 @@ const Favourites = () => {
   const user=useSelector((state)=>state.userId.regId) ;
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-
-  const [regType, setRegType] = useState();
   const [status, setStatus] = useState();
 
   const getId = () => {
@@ -49,15 +48,7 @@ const Favourites = () => {
             navigation.navigate('SignIn');
  
   };
-  const getType = () => {
-    try {
-      AsyncStorage.getItem('rateType').then(value2 => {
-        if (value2 != null) {
-          setRegType(value2);
-        }
-      }).catch(err=>err);
-    } catch (error) {error}
-  };
+ 
   const receivedData = () => {
     fetch(`${backendHost}/favourite/userid/${user}/favouritearticle`)
       .then(res => res.json())
@@ -76,7 +67,7 @@ const Favourites = () => {
   useEffect(() => {
     if (isFocus) {
       getId();
-      getType();
+      
     }
   });
   function IsJsonValid(str) {
@@ -93,7 +84,7 @@ const Favourites = () => {
       <View style={styles.loading}>
         <HStack space={2} justifyContent="center">
           <LottieView
-            source={require('../../assets/animation/load.json')}
+            source={require('../../../assets/animation/load.json')}
             autoPlay
             loop
             style={{width: 50, height: 50, justifyContent: 'center'}}
@@ -167,9 +158,10 @@ const Favourites = () => {
                                     }}
                                   />
                                   </TouchableOpacity>
-                                  <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
-                                 <View style={{width:'90%'}}>
+                                  <View  key={Math.random().toString(36)} style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                                 <View  key={Math.random().toString(36)} style={{width:'90%'}}>
                                  <AllPost
+                                  key={Math.random().toString(36)}
                                         id={i.article_id}
                                         title={i.title}
                                         f_title={i.friendly_name}
@@ -183,6 +175,7 @@ const Favourites = () => {
                                                 (j, idx) =>
                                                   idx < 1 && (
                                                     <CenterWell
+                                                    key={Math.random().toString(36)}
                                                       content={j.data.content}
                                                       type={j.type}
                                                       text={

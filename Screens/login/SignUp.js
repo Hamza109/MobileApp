@@ -295,7 +295,8 @@ const[passwordSecured,setPasswordSecured]=useState(false)
 
           <View style={{marginBottom:15}}>
             <Input 
-            placeholder='enter first name' 
+            placeholder='enter first name'
+            height={12} 
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             autoCapitalize="none"
@@ -309,6 +310,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           <View style={{marginBottom:15}}>
             <Input 
             placeholder='enter last name' 
+            height={12}
              color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }}
             secureTextEntry={passwordSecured}
@@ -322,6 +324,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           <View style={{marginBottom:15}}>
             <Input 
             placeholder='enter mobile number' 
+            height={12}
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             value={number}
@@ -336,6 +339,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           <View style={{marginBottom:15}}>
             <Input 
             placeholder='enter email' 
+            height={12}
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             autoCapitalize="none"
@@ -349,6 +353,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           <View style={{marginBottom:15}}>
             <Input 
             placeholder='enter password' 
+            height={12}
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             autoCapitalize="none"
@@ -362,6 +367,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           <View style={{marginBottom:15}}>
             <Input 
             placeholder='confirm password' 
+            height={12}
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
                autoCapitalize="none"
@@ -661,7 +667,8 @@ const styles = StyleSheet.create({
   body: {
     justifyContent: 'center',
     width: '100%',
-    height: '100%'
+    height: '90%',
+    marginTop:40
   },
   skip: {
     color: '#fff',
@@ -680,7 +687,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontFamily: 'Raleway-Bold',
     color: '#fff',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginBottom:5,
+    marginTop:-10
 
   },
 

@@ -52,8 +52,9 @@ import { TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
 import { useSelector, useDispatch,useStore } from 'react-redux';
-import { fetchFailureProfile, fetchRequestProfile, fetchSuccess, fetchSuccessProfile, screenName } from '../Redux/Action';
+import { fetchFailureProfile, fetchRequestProfile, fetchSuccess, fetchSuccessProfile, screenName,reg } from '../Redux/Action';
 import UserProfile from './UserProfile/UserProfile';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
 
@@ -253,12 +254,12 @@ userData.then(()=>{
     return (
       <Svg
         xmlns="http://www.w3.org/2000/svg"
-        width={130}
-        height={130}
+        width={90}
+        height={90}
         fill="none"
         viewBox="0 0 43 43">
         <Path
-          fill="#fff"
+          fill="#00415e"
           d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
       </Svg>
     );
@@ -308,6 +309,26 @@ useEffect(()=>{
         : setImageUser(image.path);
       bs.current.snapTo(1);
     }).catch(err => err);;
+  };
+
+  const remove = async () => {
+    dispatch(reg(0))
+  }
+  const logout = () => {
+    Alert.alert('Hold on!', 'Are you sure you want Logout?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+       dispatch(screenName('SPLASH')), remove()
+        },
+      },
+    ]);
+    return true;
   };
   const changeHandler = event => {
     if (photo.name.size > 1048576) {
@@ -376,17 +397,17 @@ useEffect(()=>{
     return (
       <View style={styles.container}>
         {type == 1 ? (
-          <View style={{height:165,width:'100%'}}>
+          <View style={{height:145,width:'100%'}}>
 
 
         
-          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%'}}>
+          <View style={{backgroundColor:'#fff',height:'100%',width:'100%'}}>
           <TouchableOpacity
                           style={{ position: 'absolute', right: 5 }}>
                           <Icon
                             name="create"
                             size={25}
-                            color="#fff"
+                            color="#00415e"
                             onPress={() => navigation.navigate('editprofile',
                             {data:{first:userProfile.docname_first,
                               last:userProfile.docname_last,
@@ -439,7 +460,7 @@ useEffect(()=>{
 
                   <Text
                     style={{
-                      color: '#fff',
+                      color: '#00415e',
 
                       fontFamily: 'Raleway-Bold',
                       fontSize: 15,
@@ -447,11 +468,11 @@ useEffect(()=>{
                     Dr. {userProfile.docname_first} {userProfile.docname_last}
                   </Text>
                   <HStack space={1}>
-                    <Icon name="ribbon" size={18} color='#fff' />
+                    <Icon name="ribbon" size={18} color='#00415e' />
 
                     <Text
                       style={{
-                        color: '#fff',
+                        color: '#00415e',
 
                         fontFamily: 'Raleway-Regular',
                         fontSize:10,
@@ -461,10 +482,10 @@ useEffect(()=>{
                     </Text>
                   </HStack>
                   <HStack space={1}>
-                    <Icon name="business" size={18} color='#fff'/>
+                    <Icon name="business" size={18} color='#00415e'/>
                     <Text
                       style={{
-                        color: '#fff',
+                        color: '#00415e',
 
                         fontFamily: 'Raleway-Regular',
                         fontSize: 10,
@@ -476,10 +497,10 @@ useEffect(()=>{
                     </Text>
                   </HStack>
                   <HStack space={1}>
-                  <Icon name="globe" size={18} color='#fff'/>
+                  <Icon name="globe" size={18} color='#00415e'/>
                   <Text
                     style={{
-                      color: '#fff',
+                      color: '#00415e',
 
                       fontFamily: 'Raleway-Regular',
                       fontSize: 10,
@@ -491,20 +512,14 @@ useEffect(()=>{
                     {userProfile.state} {userProfile.country_code}
                   </Text>
                   </HStack>
-                  <View
-                style={{
-                  width: wp('25%'),
-                           
-                }}>
                
-
-              </View>
               
                 </VStack>
-                
+              
               </View>
          
             </View>
+            <Divider/>
           </View>
              
           
@@ -515,8 +530,11 @@ useEffect(()=>{
          <UserProfile first={firstName} last={lastName} number={mobile} mail={email}  />
 
         )}
-<ScrollView  scrollEnabled={true}  style={{width: wp('100%'), height: hp('100%')}}>
-            <VStack ml="2" mt='2' p='1' space={1}>
+        <View style={{padding:8}}>
+<View style={[styles.info,{height:160,padding:5}]}>
+  <ScrollView>
+  {  row!=0?
+            <VStack ml="2" mt='1' p='1' space={1}>
               <Text
                 style={styles.dbodyHead}>
                 About
@@ -538,15 +556,122 @@ useEffect(()=>{
                 Specialities
               </Text>
 
+             
+
               <Text
                  style={[styles.dbodyText,{display:userProfile.primary_spl?'flex':'none'}]}>
                 {userProfile.primary_spl}
               </Text>
-              
-              
-              </VStack>
-              </ScrollView>
 
+              </VStack>:null
+} 
+</ScrollView>
+              </View>
+              </View>
+              <View style={styles.infoContainer}>
+      <View style={styles.info}>
+
+        <View>
+          <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('cures')} >
+        <View style={styles.infoDetails}>
+        
+          <View style={styles.icon}>
+        <Icon
+                      name="medical-outline"
+                      size={22}
+                      color='aliceblue'
+                    />
+                    </View>
+
+          <Text
+            style={styles.infoText}>
+            My Cures
+          </Text>
+          <View style={{position:'absolute',right:20}}>
+          <AntDesign name='right' size={15} color={'#00415e'} />
+          </View>
+        </View>
+        </TouchableOpacity>
+        <Divider/>
+        <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('favourite')} >
+        <View style={styles.infoDetails}>
+
+        <View style={styles.icon}>
+        <Icon
+                      name="heart"
+                      size={22}
+                      color='aliceblue'
+                    />
+                    </View>
+
+                    <Text
+            style={styles.infoText}>
+            Favourites
+          </Text>
+          <View style={{position:'absolute',right:20}}>
+          <AntDesign name='right' size={15} color={'#00415e'} />
+          </View>
+
+        </View>
+        </TouchableOpacity>
+     
+{/* 
+        <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.push('inbox')} >
+        <View style={styles.infoDetails}>
+
+<View style={styles.icon}>
+<Icon
+              name="chatbubble"
+              size={21}
+              color='aliceblue'
+            />
+            </View>
+
+            <Text
+    style={styles.infoText}>
+   Inbox
+  </Text>
+  <View style={{position:'absolute',right:20}}>
+          <AntDesign name='right' size={15} color={'#00415e'} />
+          </View>
+
+</View>
+</TouchableOpacity> */}
+       
+        </View>
+
+      
+
+      </View>
+
+      </View>
+
+      <View>
+
+
+</View>
+
+
+              <View style={styles.logout}>
+    <View
+          style={styles.infoLog}>
+          <TouchableOpacity onPress={() => logout()}>
+            <HStack ml='3' space={4}>
+              <Icon name="log-in-outline" size={28} color="#00415e" />
+              <Text
+                style={{
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Medium',
+                  marginTop:Platform.OS==='ios'?3:0,
+                  fontSize:17,
+                }}>
+                Logout
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+        </View>
+        </View>
+              
       </View>
     );
   }
@@ -626,7 +751,52 @@ paddingHorizontal:7
     height:'100%',
     alignItems:'center',
     marginLeft:10,
-  }
+  },
+  logout:{
+    position:'absolute',
+    bottom:0,
+    width:'100%',
+
+
+  },
+  infoLog:{
+    backgroundColor:'aliceblue',
+    padding:10
+  },
+  infoContainer:{
+    paddingHorizontal:10
+   },
+ info:{
+   backgroundColor:'#f0f8ff',
+   borderRadius:15,
+   justifyContent:'space-between'
+ },
+ infoDetails:{
+   flexDirection:'row',
+   alignItems:'center',
+   height:80,
+ padding:15,
+ 
+   borderBottomColor:'grey'
+ 
+   
+   
+ },
+   infoText: {
+     color: '#00415e',
+     fontFamily: 'Raleway-Medium',
+     fontSize: 14,
+     marginBottom:5,
+     marginLeft:15,
+   },
+ icon:{
+   backgroundColor:'#00415e',
+   width:35,
+   height:35,
+   justifyContent:'center',
+   borderRadius:50,
+   alignItems:'center'
+ },
 });
 
 

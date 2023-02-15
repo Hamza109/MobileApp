@@ -133,6 +133,7 @@ const [loading,setLoading]=useState(false)
           <View style={{marginBottom:15}}>
           <Input 
             placeholder='enter email' 
+                        height={12}
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             autoCapitalize="none"
@@ -239,7 +240,8 @@ const styles = StyleSheet.create({
   body: {
     justifyContent: 'center',
     width: '100%',
-    height: '100%'
+    height: '90%',
+    marginTop:40
   },
   skip: {
     color: '#fff',

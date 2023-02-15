@@ -21,6 +21,7 @@ import LottieView from 'lottie-react-native';
 import { useDispatch,useSelector } from 'react-redux';
 import { screenName } from '../Redux/Action';
 
+
 const SplashScreen = () => {
   const dispatch=useDispatch();
   const screen=useSelector((state)=>state.name.screen)
@@ -35,7 +36,7 @@ const SplashScreen = () => {
     return()=>(
       clearTimeout(id)
     )
-  })
+  },[])
 
 
   
@@ -43,10 +44,19 @@ const SplashScreen = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
       <View style={styles.header}>
+        <Animatable.View
+        animation='zoomIn'
+        >
       <Image source={require('../../assets/img/whitelogo.png')} autoPlay resizeMethod='resize' resizeMode='cover' loop style={{width:80,height:80}} />
-        <Text  style={styles.head}>
+      </Animatable.View>
+      <Animatable.View
+      animation='zoomIn'
+      >
+      <Text  style={styles.head}>
           All Cures
         </Text>
+      </Animatable.View>
+        
       </View>
     </View>
   );

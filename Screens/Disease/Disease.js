@@ -578,7 +578,7 @@ get();
                 
 
                 {items.map((i, key) => (
-                  <View>
+                  <View   key={Math.random().toString(36)}>
                     <CenterWell1
                        key={Math.random().toString(36)}
                       pageTitle={i.title}
@@ -602,12 +602,12 @@ get();
         onPress={() => setIsVisible(!isVisible)}
       >
       
-        <Icon color='#00415e' name={isVisible ? 'ios-remove-circle-outline' : 'ios-add-circle-outline'} size={22}  />
-        <Text style={styles.buttonText}>Sources</Text>
+        <Icon       key={Math.random().toString(36)} color='#00415e' name={isVisible ? 'ios-remove-circle-outline' : 'ios-add-circle-outline'} size={22}  />
+        <Text       key={Math.random().toString(36)} style={styles.buttonText}>Sources</Text>
       </TouchableOpacity>
               {isVisible && (
-                <View style={{width:'100%',justifyContent:'center'}}>
-        <Text style={styles.text}>{data.window_title}</Text>
+                <View       key={Math.random().toString(36)} style={{width:'100%',justifyContent:'center'}}>
+        <Text       key={Math.random().toString(36)} style={styles.text}>{data.window_title}</Text>
         </View>
       )}
               </VStack>
@@ -615,13 +615,14 @@ get();
 
    
 
-              <View style={{marginTop: 5}}>
-                <VStack space={2}>
+              <View       key={Math.random().toString(36)} style={{marginTop: 5}}>
+                <VStack       key={Math.random().toString(36)} space={2}>
                   {data.reg_type == 1 ? (
                     <View
                     style={styles.author}>
        
                         <Card
+                              key={Math.random().toString(36)}
                           style={{
                             width: 80,
                             height: 80,
@@ -631,6 +632,7 @@ get();
                             marginLeft:-25
                           }}>
                           <ImageBackground
+                                key={Math.random().toString(36)}
                             source={{
                               uri: `https://all-cures.com:444/cures_articleimages/doctors/${data.reg_doc_pat_id}.png`,
                             }}
@@ -642,7 +644,7 @@ get();
                             }}
                           />
                         </Card>
-                        <View style={styles.detailAuthor}>
+                        <View       key={Math.random().toString(36)} style={styles.detailAuthor}>
                           <Text
                             style={{
                               color: '#00415e',
@@ -654,6 +656,7 @@ get();
                           </Text>
                         
                             <Text
+                                  key={Math.random().toString(36)}
                               style={{
                                 color: '#00415e',
                                 fontFamily: 'Raleway-Light',
@@ -670,6 +673,7 @@ get();
                                 });
                               }}>
                               <View
+                                    key={Math.random().toString(36)}
                                 style={{
                 
                                   backgroundColor: '#00415e',
@@ -681,6 +685,7 @@ get();
                                 
                                 }}>
                                 <Text
+                                      key={Math.random().toString(36)}
                                 numberOfLines={2}
                                   style={{
                                     color: '#fff',
@@ -699,13 +704,14 @@ get();
                     </View>
                   ) : data.reg_type == 2 || data.reg_type == 3 ? (
                     <VStack>
-                      <View style={styles.author}>
+                      <View       key={Math.random().toString(36)} style={styles.author}>
                   
-                       <View style={{marginLeft:-25}}>
+                       <View       key={Math.random().toString(36)} style={{marginLeft:-25}}>
                           <User />
                           </View>
-                          <View style={styles.detailAuthor}>
+                          <View       key={Math.random().toString(36)} style={styles.detailAuthor}>
                             <Text
+                                  key={Math.random().toString(36)}
                               adjustsFontSizeToFit
                               style={{
                                 color: '#00415e',
@@ -716,6 +722,7 @@ get();
                               AUTHOR
                             </Text>
                             <Text
+                                  key={Math.random().toString(36)}
                               style={{
                                 color: '#00415e',
                                 fontSize: 20,
@@ -820,6 +827,7 @@ get();
                                 <HStack space={1}  key={Math.random().toString(36)}>
                                   <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
                                   <Image
+                                  
                                   resizeMode='stretch'
                                 key={Math.random().toString(36)}
                                     source={{
@@ -840,9 +848,10 @@ get();
                                     }}
                                   />
                                   </TouchableOpacity>
-                                  <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
-                                 <View style={{width:'90%'}}>
+                                  <View       key={Math.random().toString(36)} style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                                 <View       key={Math.random().toString(36)} style={{width:'90%'}}>
                                  <AllPost
+                                       key={Math.random().toString(36)}
                                         id={i.article_id}
                                         title={i.title}
                                         f_title={i.friendly_name}
@@ -856,6 +865,7 @@ get();
                                                 (j, idx) =>
                                                   idx < 1 && (
                                                     <CenterWell
+                                                    key={Math.random().toString(36)}
                                                       content={j.data.content}
                                                       type={j.type}
                                                       text={
@@ -1038,11 +1048,12 @@ get();
 </View>
 
 
-<ScrollView style={{height:'70%'}}>
+<ScrollView style={{height:'70%'}}  >
                 {commentItems.length !== 0 ? (
                   commentItems.map(i => (
-                    <View style={{marginBottom: 10}}>
+                    <View style={{marginBottom: 10}}     key={Math.random().toString(36)} >
                       <View
+                            key={Math.random().toString(36)}
                         style={styles.cbody}>
                           <Box bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
                           <Text style={styles.cbodyHead}>{i.first_name} {i.last_name}</Text>
@@ -1053,12 +1064,14 @@ get();
                   ))
                 ) : (
                   <View
+                  key={Math.random().toString(36)}
                     style={{
                       flex: 1,
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
                     <Icon
+                          key={Math.random().toString(36)}
                       name="chatbubbles"
                       style={{opacity: 0.3,color:'grey'}}
                       size={150}
