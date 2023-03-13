@@ -70,7 +70,6 @@ const styles=StyleSheet.create({
     setting:{
         backgroundColor:'aliceblue',
         borderRadius:15,
-        height:'16%',
         width:'100%'
     },
     item:{

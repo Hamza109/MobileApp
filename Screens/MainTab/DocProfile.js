@@ -9,6 +9,7 @@ BackHandler,
   TouchableOpacity,
   ImageBackground,
   Image,
+  Alert,
   SafeAreaView
 } from 'react-native';
 import {
@@ -55,6 +56,8 @@ import DocCures from './DocProfile/DocCures';
 import DocProfileTab from './DocProfile/DocProfileTab';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
+import { Fab } from 'native-base';
+import { v4 as uuidv4 } from 'uuid';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -62,6 +65,7 @@ const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(ids);
   const store=useStore();
+  const row=useSelector((state)=>state.docRow.rowId)
   const user=useSelector((state)=>state.userId.regId) ;
   const [items, setItems] = useState([]);
   const [articleItems, setArticleItems] = useState([]);
@@ -69,7 +73,7 @@ const dispatch=useDispatch()
   const doc=useSelector((state)=>state.info.data)
   const isLoading=useSelector((state)=>state.info.loading)
   const [selected, setSelected] = useState(1);
-
+  
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [showValue, setShowValue] = useState();
@@ -95,13 +99,12 @@ const dispatch=useDispatch()
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
-      console.log('state',state.isConnected)
      
     });
     return () => {
       unsubscribe();
     };
-  }, [isConnected])
+  }, [])
 
 
   const check = () => {
@@ -220,6 +223,24 @@ docData.then(()=>{
     }
     return JSON.parse(str).blocks;
   }
+  function Chat() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="36"
+        height="36"
+        fill="none"
+        viewBox="0 0 51 49"
+      >
+        <Path
+          fill="#A8D3E7"
+          fillRule="evenodd"
+          d="M12.593 44.574L.34 47.953l5.827-8.731C2.625 35.085 1 29.818 1 24.083 1 10.783 11.92 0 26 0c14.082 0 25 10.784 25 24.083 0 13.3-10.918 24.084-25 24.084a26.498 26.498 0 01-13.407-3.593z"
+          clipRule="evenodd"
+        ></Path>
+      </Svg>
+    );
+  }
   function User() {
     return (
       <Svg
@@ -233,6 +254,65 @@ docData.then(()=>{
           d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
       </Svg>)
   }
+
+  const createChat=()=>{
+
+      axios.post(`${backendHost}/chat/start/${user}/${id}`)
+      .then(res=>{
+        if(res.data===1){
+          navigation.navigate('chat',{id:id})
+        }
+        else{
+          Alert.alert('Something went wrong,please try again')
+        }
+      }
+        
+        ).catch(err=>Alert.alert(err))
+
+
+  
+  }
+  
+
+const initiateChat=()=>{
+
+    axios.get(`${backendHost}/chat/${row===0?18:18}/${row===0?3:3}`)
+  .then(res=>{
+
+    console.log(res.data)
+    if(res.data[0].chat_id === null){
+      createChat()
+    }
+    else{
+      console.log('get',res.data)
+      const transformedMessages = res.data.map(message => {
+        return {
+          _id: Math.random().toString(36).substring(2,9),
+          text: message.Message,
+          createdAt: new Date(message.Time),
+          user: {
+            _id: message.From_id,
+            name: message.From,
+         
+          },
+        };
+      });
+
+
+    navigation.navigate('chat',{id:id,messages:transformedMessages.reverse()})
+    }
+    
+      }
+).catch(err=>err)
+
+
+  
+  
+
+}
+
+
+
 
 
 useEffect(()=>{
@@ -275,7 +355,7 @@ useEffect(()=>{
           </View>
   ):null
         }
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
         
       <View style={{height:165,width:'100%'}}>
           <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center',justifyContent:'center'}}>
@@ -312,6 +392,7 @@ useEffect(()=>{
               </View>: <User/> }
              
               <View style={{width:wp('50%') }}>
+          
                 <VStack space={1} py='1' px='0'>
 
                   <Text
@@ -389,11 +470,10 @@ useEffect(()=>{
               </View>
             </View>
             </View>
+            
           </View>
-      </SafeAreaView>
-
-{/* Rating and comment */}
-
+        
+         
       <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:0}}>
             <Center flex={1}></Center>
             <HStack
@@ -443,9 +523,51 @@ useEffect(()=>{
             </HStack>
           </Box>
 
+
+      <DocProfileTab/>
+
+      <TouchableOpacity activeOpacity={0.9} style={styles.chat} onPress={initiateChat} >
+   
+         <ImageBackground
+                
+              resizeMode='contain'
+                  source={require('../../assets/img/chat.png')}
+                  style={{
+                    width: 45,
+                    height: 45,
+                    overflow:'hidden',
+                    justifyContent:'center',
+                    alignItems:'center'
+                    
+                
+                    
+                  }}
+                >
+                  <ImageBackground
+                
+              
+                source={{
+                  uri: url
+                }}
+                style={{
+                  width: 38,
+                  height: 38,
+                  overflow:'hidden',
+                borderRadius:100
+                  
+                }}
+              />
+                  </ImageBackground>
+         </TouchableOpacity>
+        
+      </SafeAreaView>
+
+{/* Rating and comment */}
+
+
           {/* tabs */}
           
-          <DocProfileTab/>
+  
 
 
 {/** comments sheet */}
@@ -631,5 +753,17 @@ const styles = StyleSheet.create({
         height:'100%',
         alignItems:'center',
         marginLeft:10,
+      },
+      chat:{
+     position:'absolute',
+     bottom:16,
+     right:16,
+     zIndex:20,
+     backgroundColor:'#fff',
+     borderRadius:50,
+     width:52,
+     alignItems:'center',
+     justifyContent:'center',
+     height:52
       }
 });

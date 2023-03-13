@@ -73,7 +73,6 @@ const MainTabScreen = () => {
         name="Profile"
         component={ProfileStack}
         options={{
-          unmountOnBlur:true,
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Profile',
