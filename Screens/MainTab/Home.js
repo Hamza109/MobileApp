@@ -50,7 +50,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
-import {Item} from 'react-native-paper/lib/typescript/components/List/List';
+
 import Svg, {Path, Circle} from 'react-native-svg';
 import { useDispatch,useSelector,useStore } from 'react-redux';
 import { reg, screenName } from '../Redux/Action';

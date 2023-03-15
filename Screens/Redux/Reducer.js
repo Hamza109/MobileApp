@@ -1,5 +1,5 @@
 import { State } from "react-native-gesture-handler"
-import { FAV_ARTICLE, REG_ID ,FETCH_FAILURE,FETCH_REQUEST,FETCH_SUCCESS,REG_TYPE,ROW_NO,FETCH_FAILURE_PROFILE,FETCH_REQUEST_PROFILE,FETCH_SUCCESS_PROFILE, USER_EMAIL, USER_PASS, RECENT_CURES, TOP_DOCTORS} from "./Action"
+import { CHAT_INFO, FAV_ARTICLE, REG_ID ,FETCH_FAILURE,FETCH_REQUEST,FETCH_SUCCESS,REG_TYPE,ROW_NO,FETCH_FAILURE_PROFILE,FETCH_REQUEST_PROFILE,FETCH_SUCCESS_PROFILE, USER_EMAIL, USER_PASS, RECENT_CURES, TOP_DOCTORS} from "./Action"
 import { SCREEN_NAME } from "./Action"
 
 const initialFetchState={
@@ -46,7 +46,21 @@ const initialTopDoc={
    Data:[]
 }
 
+const initialChatInfo={
+    chat:{}
+}
 
+export const chatInfoReducer=(state=initialChatInfo,action)=>{
+switch(action.type){
+    case CHAT_INFO:{
+        return{
+            ...state,
+            chat:action.payload
+        }
+    }
+    default: return state
+}
+}
 
 export const topDocReducer=(state=initialTopDoc,action)=>{
     switch(action.type){

@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useLayoutEffect} from 'react';
 import { View,Image,Text } from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainTabScreen from './MainTab/MainTab';
@@ -43,6 +43,8 @@ import Inbox from './Inbox/Inbox';
 import { Touchable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Chat from './Inbox/Chat';
+import Svg, { Path, Circle } from 'react-native-svg';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 
 
@@ -277,6 +279,42 @@ useEffect(()=>{
 
 const DocStack =()=>{
   const navigation=useNavigation()
+  const doc=useSelector((state)=>state.info.data)
+  const [exist,setExist]=useState(false)
+  const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
+
+useEffect(()=>{
+  console.log(doc.rowno)
+  setUrl(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
+  
+  checkIfImage(url)
+},[doc.rowno])
+
+  const checkIfImage = imageUrl => {
+    fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
+      .then(res => {
+        if (res.ok) {
+          setExist(true);
+        } else {
+          setExist(false);
+        }
+      })
+      .catch(err => err);
+  };
+
+  function User() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={40}
+        height={40}
+        fill="none"
+        viewBox="0 0 43 43">
+        <Path
+          fill="#e5e5e5"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
+      </Svg>)
+  }
 return(
   <Stack.Navigator
   initialRouteName="DocTab"
@@ -349,10 +387,13 @@ return(
         options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:0}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
       />
 
-         <Stack.Screen
+<Stack.Screen
         name='chat'
         component={Chat}
-        options={{title:'chat',
+        
+        options={{
+          headerTitle:`Dr. ${doc.docname_first} ${doc.docname_last}`,
+        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.goBack()}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
         headerStyle:{backgroundColor:'#00415e'},
         headerTintColor:'#fff', 
           }}
@@ -386,7 +427,47 @@ return(
 
 
 const ProfileStack=()=>{
+
+  
   const navigation=useNavigation()
+  const doc=useSelector((state)=>state.info.data)
+  const row=useSelector((state)=>state.docRow.rowId)
+  const chatInfo=useSelector((state)=>state.chatUser.chat)
+  const [exist,setExist]=useState(false)
+  const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
+
+useEffect(()=>{
+  console.log('chat',chatInfo)
+  setUrl(`http://all-cures.com:8080/cures_articleimages/doctors/${chatInfo.rowno}.png`)
+  
+  checkIfImage(url)
+},[doc.rowno])
+
+  const checkIfImage = imageUrl => {
+    fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
+      .then(res => {
+        if (res.ok) {
+          setExist(true);
+        } else {
+          setExist(false);
+        }
+      })
+      .catch(err => err);
+  };
+
+  function User() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={40}
+        height={40}
+        fill="none"
+        viewBox="0 0 43 43">
+        <Path
+          fill="#e5e5e5"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
+      </Svg>)
+  }
   return(
   <Stack.Navigator
       initialRouteName="profile"
@@ -443,9 +524,26 @@ const ProfileStack=()=>{
            <Stack.Screen
         name='chat'
         component={Chat}
-        options={{title:'chat',
+        
+        options={{
+        headerTitle:()=>(
+           row!=0?<Text style={{color:'#fff'}}>Dr {chatInfo.first_name} {chatInfo.last_name}</Text>:<Text style={{color:'#fff',fontWeight:'bold',fontSize:20}}>{chatInfo.first_name} {chatInfo.last_name}</Text>
+        ),
+        headerLeft:()=>(
+          chatInfo.rowno!=null?(
+        <View style={{flexDirection:'row'}}>
+          <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.navigate('inbox')}}/>
+          {exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}
+          </View>):(
+   <View style={{flexDirection:'row'}}>
+   <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.navigate('inbox')}}/>
+<User/>
+   </View>)
+        ),
         headerStyle:{backgroundColor:'#00415e'},
         headerTintColor:'#fff', 
+        
+      
           }}
         />
         <Stack.Screen

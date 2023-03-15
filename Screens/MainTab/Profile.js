@@ -195,7 +195,7 @@ if(isConnected)
            resolve(dispatch(fetchSuccessProfile(json)))
            console.log(json.rowno)
            setImg(`http://all-cures.com:8280/cures_articleimages/doctors/${json.rowno}.png?d=${parseInt(Math.random()*1000)}`)
-           setIsLoaded(true)
+          
        
   
              
@@ -531,9 +531,10 @@ useEffect(()=>{
 
         )}
         <View style={{padding:8}}>
+        {  row!=0?
 <View style={[styles.info,{height:160,padding:5}]}>
   <ScrollView>
-  {  row!=0?
+
             <VStack ml="2" mt='1' p='1' space={1}>
               <Text
                 style={styles.dbodyHead}>
@@ -563,11 +564,15 @@ useEffect(()=>{
                 {userProfile.primary_spl}
               </Text>
 
-              </VStack>:null
-} 
+              </VStack>
+
 </ScrollView>
               </View>
+              :null}
               </View>
+              
+   
+            
               <View style={styles.infoContainer}>
       <View style={styles.info}>
 
@@ -614,9 +619,10 @@ useEffect(()=>{
 
         </View>
         </TouchableOpacity>
+        <Divider/>
      
-{/* 
-        <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.push('inbox')} >
+
+        <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('inbox')} >
         <View style={styles.infoDetails}>
 
 <View style={styles.icon}>
@@ -636,7 +642,7 @@ useEffect(()=>{
           </View>
 
 </View>
-</TouchableOpacity> */}
+</TouchableOpacity>
        
         </View>
 
@@ -645,6 +651,7 @@ useEffect(()=>{
       </View>
 
       </View>
+
 
       <View>
 
@@ -671,8 +678,10 @@ useEffect(()=>{
           </TouchableOpacity>
         </View>
         </View>
+
               
       </View>
+      
     );
   }
 

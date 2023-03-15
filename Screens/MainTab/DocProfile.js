@@ -227,19 +227,14 @@ docData.then(()=>{
     return (
       <Svg
         xmlns="http://www.w3.org/2000/svg"
-        width="36"
-        height="36"
+        width={scale(40)}
+        height={verticalScale(40)}
         fill="none"
-        viewBox="0 0 51 49"
-      >
+        viewBox="0 0 43 43">
         <Path
-          fill="#A8D3E7"
-          fillRule="evenodd"
-          d="M12.593 44.574L.34 47.953l5.827-8.731C2.625 35.085 1 29.818 1 24.083 1 10.783 11.92 0 26 0c14.082 0 25 10.784 25 24.083 0 13.3-10.918 24.084-25 24.084a26.498 26.498 0 01-13.407-3.593z"
-          clipRule="evenodd"
-        ></Path>
-      </Svg>
-    );
+          fill="#e5e5e5"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
+      </Svg>)
   }
   function User() {
     return (
@@ -257,10 +252,11 @@ docData.then(()=>{
 
   const createChat=()=>{
 
-      axios.post(`${backendHost}/chat/start/${user}/${id}`)
+      axios.post(`${backendHost}/chat/start/${user}/${doc.docid}`)
       .then(res=>{
+        console.log('create',res.data)
         if(res.data===1){
-          navigation.navigate('chat',{id:id})
+          navigation.navigate('chat',{id:id,messages:[]})
         }
         else{
           Alert.alert('Something went wrong,please try again')
@@ -275,16 +271,17 @@ docData.then(()=>{
   
 
 const initiateChat=()=>{
-
-    axios.get(`${backendHost}/chat/${row===0?18:18}/${row===0?3:3}`)
+if(user!=0)
+{
+    axios.get(`${backendHost}/chat/${user}/${doc.docid}`)
   .then(res=>{
 
-    console.log(res.data)
-    if(res.data[0].chat_id === null){
+
+    if(res.data[0].Chat_id === null){
       createChat()
     }
     else{
-      console.log('get',res.data)
+      console.log('get',res.data[0].chat_id)
       const transformedMessages = res.data.map(message => {
         return {
           _id: Math.random().toString(36).substring(2,9),
@@ -304,6 +301,10 @@ const initiateChat=()=>{
     
       }
 ).catch(err=>err)
+
+    }else{
+      dispatch(screenName('LOGIN'))
+    }
 
 
   
@@ -525,9 +526,12 @@ useEffect(()=>{
 
 
       <DocProfileTab/>
-
+      
+      {
+        
+row===0?(
       <TouchableOpacity activeOpacity={0.9} style={styles.chat} onPress={initiateChat} >
-   
+   {exist?(
          <ImageBackground
                 
               resizeMode='contain'
@@ -558,8 +562,28 @@ useEffect(()=>{
                 }}
               />
                   </ImageBackground>
+):
+<ImageBackground
+                
+resizeMode='contain'
+    source={require('../../assets/img/chat.png')}
+    style={{
+      width: 45,
+      height: 45,
+      overflow:'hidden',
+      justifyContent:'center',
+      alignItems:'center'
+      
+  
+      
+    }}
+  >
+<Chat/>
+</ImageBackground>
+              }
          </TouchableOpacity>
-        
+):null
+}
       </SafeAreaView>
 
 {/* Rating and comment */}

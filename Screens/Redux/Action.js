@@ -12,7 +12,15 @@ export const FETCH_FAILURE_PROFILE='FETCH_FAILURE_PROFILE'
 export const USER_EMAIL='USER_EMAIL'
 export const USER_PASS='USER_PASS'
 export const RECENT_CURES='RECENT_CURES'
+export const CHAT_INFO='CHAT_INFO'
 export const TOP_DOCTORS='TOP_DOCTORS'
+
+export function chatInfo(info){
+    return {
+        type:'CHAT_INFO',
+        payload:info
+    }
+}
 
 export function recentCures(cures){
     return{

@@ -12,6 +12,7 @@ import {
   BackHandler,
   Animated,
   StatusBar,
+  Pressable,
   Alert
 } from 'react-native';
 import { useToast, Divider,HStack } from 'native-base';
@@ -74,7 +75,7 @@ const navigation=useNavigation()
 
 
   return (
-    <View style={{height:'100%'}}>
+    <View>
        <StatusBar backgroundColor="#00415e" barStyle="light-content" />
     <View style={styles.profileHeader}>
       <User
@@ -95,13 +96,13 @@ const navigation=useNavigation()
     </View>
     <Divider />
 
-    <View>
+    {/* <View>
   
       <View style={styles.infoContainer}>
       <View style={styles.info}>
 
         <View>
-          <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('cures')} >
+          <Pressable activeOpacity={.7} onPress={()=>navigation.navigate('cures')} >
         <View style={styles.infoDetails}>
         
           <View style={styles.icon}>
@@ -120,9 +121,9 @@ const navigation=useNavigation()
           <AntDesign name='right' size={15} color={'#00415e'} />
           </View>
         </View>
-        </TouchableOpacity>
+        </Pressable>
         <Divider/>
-        <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.navigate('favourite')} >
+        <Pressable activeOpacity={.7} onPress={()=>navigation.navigate('favourite')} >
         <View style={styles.infoDetails}>
 
         <View style={styles.icon}>
@@ -142,10 +143,10 @@ const navigation=useNavigation()
           </View>
 
         </View>
-        </TouchableOpacity>
-  
+        </Pressable>
+  <Divider/>
 
-        {/* <TouchableOpacity activeOpacity={.7} onPress={()=>navigation.push('inbox')} >
+        <Pressable activeOpacity={.7} onPress={()=>navigation.push('inbox')} >
         <View style={styles.infoDetails}>
 
 <View style={styles.icon}>
@@ -165,7 +166,7 @@ const navigation=useNavigation()
           </View>
 
 </View>
-</TouchableOpacity> */}
+</Pressable>
        
         </View>
 
@@ -184,7 +185,7 @@ const navigation=useNavigation()
     <View style={styles.logout}>
     <View
           style={styles.infoLog}>
-          <TouchableOpacity onPress={() => logout()}>
+          <Pressable onPress={() => logout()}>
             <HStack ml='3' space={4}>
               <Icon name="log-in-outline" size={28} color="#00415e" />
               <Text
@@ -197,10 +198,10 @@ const navigation=useNavigation()
                 Logout
               </Text>
             </HStack>
-          </TouchableOpacity>
+          </Pressable>
         </View>
         </View>
-    
+     */}
     </View>
   )
 }

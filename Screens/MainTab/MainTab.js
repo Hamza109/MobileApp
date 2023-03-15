@@ -13,7 +13,7 @@ import { Platform } from 'react-native';
 import HomeScreen from './Home';
 import { useDispatch } from 'react-redux';
 import DrawerMenu from './DrawerMenu';
-
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const MyCuresStack = createStackNavigator();
 const ArticleStack = createStackNavigator();
@@ -26,11 +26,24 @@ const MainTabScreen = () => {
   return (
     <Tab.Navigator
       initialRouteName="drawer"
-      screenOptions={{
-        tabBarStyle:{justifyContent:'center',alignItems:'center',height:Platform.OS==='android'?55:85},
+      screenOptions={({route})=>{
+        console.log(route)
+        return {
+        tabBarStyle:{
+          justifyContent:'center',
+          alignItems:'center',
+          height:Platform.OS==='android'?55:85,
+          display:
+          getFocusedRouteNameFromRoute(route) === "chat"
+            ? "none"
+            : "flex",
+        }
+        ,
         tabBarInactiveTintColor: 'grey',
        tabBarActiveBackgroundColor:'aliceblue',
         tabBarLabelStyle: {fontFamily: 'Raleway-Medium'},
+        }
+        
       }}>
    
       <Tab.Screen
@@ -72,10 +85,12 @@ const MainTabScreen = () => {
       <Tab.Screen
         name="Profile"
         component={ProfileStack}
+        
         options={{
           headerShown: false,
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Profile',
+          
           tabBarColor: '#fff',
           tabBarIcon: ({color,focused}) => (
            <View style={[styles.tab,{backgroundColor:focused?'#00415e':null}]}>

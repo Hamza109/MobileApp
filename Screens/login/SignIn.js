@@ -125,7 +125,7 @@ if(data.email!=''&&data.password!=''){
 console.log('false')
           axios
       .post(
-        `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
+        `${backendHost}/login?cmd=login&email=${data.email.replace(/\s/g, '')}&psw=${data.password}&rempwd=on`,
         {
           headers: {
             'Access-Control-Allow-Credentials': true,
@@ -231,7 +231,8 @@ console.log('false')
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             autoCapitalize="none"
-                  value={data.email}
+                  value={data.email.replace(/\s/g, '')}
+                
                   returnKeyType="done"
                   onChangeText={e => setData({...data, email: e})}
             />
