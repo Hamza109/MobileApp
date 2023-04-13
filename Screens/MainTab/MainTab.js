@@ -27,7 +27,7 @@ const MainTabScreen = () => {
     <Tab.Navigator
       initialRouteName="drawer"
       screenOptions={({route})=>{
-        console.log(route)
+      
         return {
         tabBarStyle:{
           justifyContent:'center',

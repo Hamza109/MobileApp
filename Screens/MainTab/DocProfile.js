@@ -255,8 +255,8 @@ docData.then(()=>{
       axios.post(`${backendHost}/chat/start/${user}/${doc.docid}`)
       .then(res=>{
         console.log('create',res.data)
-        if(res.data===1){
-          navigation.navigate('chat',{id:id,messages:[]})
+        if(res.data[0].Chat_id!=null){
+          navigation.navigate('chat',{id:doc.docid,messages:[],chatId:res.data[0].Chat_id})
         }
         else{
           Alert.alert('Something went wrong,please try again')
@@ -275,29 +275,35 @@ if(user!=0)
 {
     axios.get(`${backendHost}/chat/${user}/${doc.docid}`)
   .then(res=>{
-
-
+    console.log('data->',res.data)
+  
+  if(res.status===200){
     if(res.data[0].Chat_id === null){
       createChat()
     }
-    else{
-      console.log('get',res.data[0].chat_id)
-      const transformedMessages = res.data.map(message => {
-        return {
-          _id: Math.random().toString(36).substring(2,9),
-          text: message.Message,
-          createdAt: new Date(message.Time),
-          user: {
-            _id: message.From_id,
-            name: message.From,
-         
-          },
-        };
-      });
+    else {
+      console.log('data->',res.data)
+      console.log(res.status)
 
-
-    navigation.navigate('chat',{id:id,messages:transformedMessages.reverse()})
+        const transformedMessages = res.data.map(message => {
+          return {
+            _id: Math.random().toString(36).substring(2,9),
+            text: message.Message,
+            createdAt: new Date(message.Time),
+            user: {
+              _id: message.From_id,
+              name: message.From,
+           
+            },
+          };
+        });
+      
+      navigation.navigate('chat',{messages:res.data[0].Message!=""?transformedMessages.reverse():[],id:doc.docid,chatId:res.data[0].Chat_id,first_name:doc.docname_first,last_name:doc.docname_last})
+      
     }
+  }else{
+Alert.alert('Please Try again','something went wrong')
+  }
     
       }
 ).catch(err=>err)
@@ -528,7 +534,8 @@ useEffect(()=>{
       <DocProfileTab/>
       
       {
-        
+  
+  doc.subscription===1?(
 row===0?(
       <TouchableOpacity activeOpacity={0.9} style={styles.chat} onPress={initiateChat} >
    {exist?(
@@ -582,7 +589,7 @@ resizeMode='contain'
 </ImageBackground>
               }
          </TouchableOpacity>
-):null
+):null):null
 }
       </SafeAreaView>
 

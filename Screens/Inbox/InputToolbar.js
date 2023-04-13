@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image ,View,Text} from 'react-native';
+import { Image ,View,Text, Platform} from 'react-native';
 import { InputToolbar, Actions, Composer, Send } from 'react-native-gifted-chat';
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -8,9 +8,10 @@ export const renderInputToolbar = (props) => (
     {...props}
 
     containerStyle={{
-      backgroundColor: '#fff',
+      backgroundColor: 'white',
       paddingTop: 6,
-     paddingHorizontal:5
+     paddingHorizontal:5,
+     marginBottom:Platform.OS ==='ios'?3:0
 
     
   
@@ -21,6 +22,7 @@ export const renderInputToolbar = (props) => (
   >
     <Composer
     {...props}
+    textInputStyle={{ backgroundColor: 'white' }}
     />
     </InputToolbar>
 );

@@ -44,6 +44,7 @@ import { Touchable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Chat from './Inbox/Chat';
 import Svg, { Path, Circle } from 'react-native-svg';
+import { StackActions } from '@react-navigation/native'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 
@@ -108,6 +109,7 @@ return(
         component={SplashScreen}
         options={{headerShown: false}}
       />
+      
         
      
 </Stack.Navigator>
@@ -259,7 +261,7 @@ useEffect(()=>{
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)}}
       />
       
       <Stack.Screen
@@ -268,7 +270,7 @@ useEffect(()=>{
         
         options={{
           headerTitle:`Dr. ${doc.docname_first} ${doc.docname_last}`,
-        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.goBack()}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
+        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
         headerStyle:{backgroundColor:'#00415e'},
         headerTintColor:'#fff', 
           }}
@@ -384,7 +386,7 @@ return(
       <Stack.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:0}} color={'#00415e'} size={28} onPress={()=>{navigation.goBack()}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:0}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)}}
       />
 
 <Stack.Screen
@@ -393,7 +395,7 @@ return(
         
         options={{
           headerTitle:`Dr. ${doc.docname_first} ${doc.docname_last}`,
-        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.goBack()}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
+        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
         headerStyle:{backgroundColor:'#00415e'},
         headerTintColor:'#fff', 
           }}
@@ -516,6 +518,7 @@ useEffect(()=>{
           <Stack.Screen
         name='inbox'
         component={Inbox}
+        
         options={{title:'Inbox',
         headerStyle:{backgroundColor:'#00415e'},
         headerTintColor:'#fff', 
@@ -525,18 +528,19 @@ useEffect(()=>{
         name='chat'
         component={Chat}
         
-        options={{
+        options={({route})=>({
         headerTitle:()=>(
-           row!=0?<Text style={{color:'#fff'}}>Dr {chatInfo.first_name} {chatInfo.last_name}</Text>:<Text style={{color:'#fff',fontWeight:'bold',fontSize:20}}>{chatInfo.first_name} {chatInfo.last_name}</Text>
+           row==0?<Text style={{color:'#fff',fontWeight:'bold',fontSize:20}}>Dr. {route.params.first_name} {route.params.last_name}</Text>:<Text style={{color:'#fff',fontWeight:'bold',fontSize:20}}>{chatInfo.first_name} {chatInfo.last_name}</Text>
         ),
-        headerLeft:()=>(
+        headerLeft:({route})=>(
+       
           chatInfo.rowno!=null?(
         <View style={{flexDirection:'row'}}>
-          <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.navigate('inbox')}}/>
+          <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>
           {exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}
           </View>):(
    <View style={{flexDirection:'row'}}>
-   <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.navigate('inbox')}}/>
+   <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>
 <User/>
    </View>)
         ),
@@ -544,7 +548,7 @@ useEffect(()=>{
         headerTintColor:'#fff', 
         
       
-          }}
+          })}
         />
         <Stack.Screen
         name='editprofile'

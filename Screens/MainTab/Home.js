@@ -50,7 +50,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
-
+import crashlytics from '@react-native-firebase/crashlytics';
 import Svg, {Path, Circle} from 'react-native-svg';
 import { useDispatch,useSelector,useStore } from 'react-redux';
 import { reg, screenName } from '../Redux/Action';
@@ -60,6 +60,7 @@ import * as Animatable from 'react-native-animatable';
 import { position } from 'native-base/lib/typescript/theme/styled-system';
 import { topDoctors,recentCures } from '../Redux/Action';
 import LottieView from 'lottie-react-native';
+
 
 const HomeScreen = ({navigation, route}) => {
 
@@ -128,7 +129,6 @@ const toast=useToast()
    
       });
       dispatch(recentCures(temp))
-      console.log('top',topDoctorsData.map.DoctorDetails.myArrayList)
       dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList))
 
     }).then(([])=>{
@@ -137,7 +137,7 @@ const toast=useToast()
    .then()
     {
        setIsLoaded(true)
-       console.log('art',articles.getState().recent.Data)
+
 
     }
         
@@ -193,6 +193,19 @@ const toast=useToast()
 
   useEffect(() => {
   
+   
+    async function getValue() {
+      const myValue = await AsyncStorage.getItem('artId');
+      if(myValue!==null){
+  navigation.navigate('Disease',{ids:myValue})
+  AsyncStorage.removeItem('artId')
+      }
+   
+    }
+
+getValue()
+    
+    
     if (isFocuss) {
      
 

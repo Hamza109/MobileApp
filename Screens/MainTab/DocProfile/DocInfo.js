@@ -24,6 +24,8 @@ const DocInfo = () => {
         {
           
             <VStack ml="2" space={1}>
+              
+              <View style={{display:doc.about==''?'none':'flex'}}>
               <Text
                 style={styles.dbodyHead}>
                 About
@@ -32,14 +34,20 @@ const DocInfo = () => {
                 style={styles.dbodyText}>
                 {doc.about}
               </Text>
+              </View>
+
+              <View style={{display:doc.edu_training==''?'none':'flex'}}>
               <Text
                   style={styles.dbodyHead}>
                 Education
               </Text>
               <Text
                 style={styles.dbodyText}>
-                {doc.edu_training?doc.edu_training: '-- not available --'}
+                {doc.edu_training}
               </Text>
+              </View>
+
+              <View style={{display:doc.primary_spl==''?'none':'flex'}}>
               <Text
                   style={styles.dbodyHead}>
                 Specialities
@@ -49,7 +57,8 @@ const DocInfo = () => {
                  style={styles.dbodyText}>
                 {doc.primary_spl}
               </Text>
-              
+              </View>
+
               </VStack>
 }
               </ScrollView>

@@ -109,7 +109,7 @@ function User() {
                             { 
                              <TouchableOpacity
                           
-                             onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
+                             onPress={()=>{navigation.navigate('DocProfile',{ids:`${rowno}`})}}
                              >
  <ImageBackground  source={{uri:url}} style={{width:scale(120),height:scale(120),borderRadius:200,overflow:'hidden'}} 
        
@@ -120,7 +120,7 @@ function User() {
         </Card>
 :  <TouchableOpacity
 
-onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
+onPress={()=>{navigation.navigate('DocProfile',{ids:`${rowno}`})}}
 >
 <User/>
 </TouchableOpacity>
@@ -130,7 +130,7 @@ onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
        <View style={{width:scale(200)}}>
          <TouchableOpacity
          style={{}}
-         onPress={()=>{navigation.push('DocProfile',{ids:`${rowno}`})}}
+         onPress={()=>{navigation.navigate('DocProfile',{ids:`${rowno}`})}}
          >
 
      

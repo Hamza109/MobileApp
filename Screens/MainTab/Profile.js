@@ -536,6 +536,7 @@ useEffect(()=>{
   <ScrollView>
 
             <VStack ml="2" mt='1' p='1' space={1}>
+            <View style={{display:userProfile.about==''?'none':'flex'}}>
               <Text
                 style={styles.dbodyHead}>
                 About
@@ -544,6 +545,7 @@ useEffect(()=>{
                 style={styles.dbodyText}>
                 {userProfile.about}
               </Text>
+              </View>
               <Text
                   style={styles.dbodyHead}>
                 Education

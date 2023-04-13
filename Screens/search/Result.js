@@ -302,7 +302,7 @@ const load = () => {
                               }}>
                                 
                               <HStack space={1}  key={Math.random().toString(36)}>
-                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.navigate(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
                                 <Image
                                 resizeMode='stretch'
                               key={Math.random().toString(36)}
@@ -324,9 +324,10 @@ const load = () => {
                                   }}
                                 />
                                 </TouchableOpacity>
-                                <View style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
-                               <View style={{width:'90%'}}>
+                                <View      key={Math.random().toString(36)} style={{flex:1 ,flexDirection:'column',justifyContent:'space-evenly'}}>
+                               <View key={Math.random().toString(36)} style={{width:'90%'}}>
                                <AllPost
+                               key={Math.random().toString(36)}
                                       id={i.article_id}
                                       title={i.title}
                                       f_title={i.friendly_name}
@@ -334,12 +335,13 @@ const load = () => {
                                       allPostsContent={() => receivedData()}
                                     />
                                </View>
-                               <Text>
+                               <Text key={Math.random().toString(36)} >
                                         {content
                                           ? content.map(
                                               (j, idx) =>
                                                 idx < 1 && (
                                                   <CenterWell
+                                                  key={Math.random().toString(36)}
                                                     content={j.data.content}
                                                     type={j.type}
                                                     text={

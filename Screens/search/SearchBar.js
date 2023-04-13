@@ -51,7 +51,7 @@ const SearchBar = ({placeholder,doc,city}) => {
     if (text && doc === 1)
     (
    
-     navigation.push('docResult', {
+     navigation.navigate('docResult', {
         names: `${text}`,
       }),
       setName(null),
@@ -60,7 +60,7 @@ const SearchBar = ({placeholder,doc,city}) => {
     
     )
     else if(text && city===1){
-      return navigation.push('docResultCity', {
+      return navigation.navigate('docResultCity', {
         names: `${text}`,
       }),
       setName(null),

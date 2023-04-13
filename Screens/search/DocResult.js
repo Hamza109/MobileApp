@@ -44,12 +44,13 @@ import { scale, verticalScale } from '../../components/Scale';
 import ArticleHeader from './ArticleHeader';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
+import { useNavigation ,useNavigationState} from '@react-navigation/native';
 
-const DocResult = ({navigation, route}) => {
+const DocResult = ({ route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
 
-
+const navigation=useNavigation()
   const names = route.params.names;
 
   const {colors} = useTheme();
@@ -63,8 +64,12 @@ const DocResult = ({navigation, route}) => {
 const [search,setSearch]=useState();
   const [text, setText] = useState(names);
   const [isConnected, setIsConnected] = useState(true);
+  const navigationState = useNavigationState(state => state);
 
   useEffect(() => {
+  
+
+    console.log(navigationState);
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
       console.log('state',state.isConnected)

@@ -36,17 +36,17 @@ return(
   <View styles={styles.flex}>
     <View style={styles.header}>
     <View style={styles.headBar}>
-<Icon name="arrow-back-outline" style={{marginTop:7,marginRight:15,marginLeft:-15}}color={'#00415e'} size={35} onPress={()=>{doc===1||city===1?navigation.navigate('DocTab'):navigation.navigate('Main')}}/>
+<Icon name="arrow-back-outline" style={{marginTop:7,marginRight:15,marginLeft:-15}}color={'#00415e'} size={35} onPress={()=>{navigation.goBack()}}/>
 <TouchableOpacity
             activeOpacity={0.8}
             style={{width:'100%',paddingHorizontal:0}}
             onPress={() => {
               if(doc==1)
               {
-              navigation.push('SearchDoc');
+              navigation.navigate('SearchDoc');
               }else if(city ==1 )
               {
-                navigation.push('SearchDocCity');
+                navigation.navigate('SearchDocCity');
               }
               else{
                 navigation.navigate('searchArt');

@@ -15,6 +15,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { scale } from '../../../components/Scale';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   HStack,
   Stack,
@@ -228,7 +229,17 @@ const Favourites = () => {
             })
           ) : (
        
-              <Text style={{color: '#00415e'}}>No Cures Yet</Text>
+            <View style={{justifyContent:'center',alignItems:'center',height:hp('80%')}} >
+            <Icon
+                    name="medical-outline"
+                    size={50}
+                    color={'#00415e'}
+                    style={{opacity: 0.5}}
+                  />
+                  <Text style={{textAlign: 'center', fontSize: 18,color:'#00415e',fontFamily:'Raleway-Medium'}}>
+                    No cures yet
+                  </Text>
+            </View>
      
           )}
         </ScrollView>

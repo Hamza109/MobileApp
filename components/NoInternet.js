@@ -21,7 +21,7 @@ const toast=useToast()
     
     
         }
-    },[isConnected]
+    },[]
     )
 
     useEffect(() => {

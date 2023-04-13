@@ -12,7 +12,7 @@ import {NativeBaseProvider, Box} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-;
+import messaging from '@react-native-firebase/messaging';
 import {
   SafeAreaView,
   ScrollView,
@@ -44,7 +44,9 @@ import reduxStore  from './Screens/Redux/Store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { useStore,useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { screenName } from './Screens/Redux/Action';
+
+import { screenName,artId } from './Screens/Redux/Action';
+
 const App = () => {
   // const linking = {
   //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
@@ -70,6 +72,33 @@ const App = () => {
     }
   };
 
+  const articeId=async id=>{
+    try {
+      await AsyncStorage.setItem('artId',id)
+    }catch(error){
+      throw error
+    }
+  
+  
+  }
+
+  const getFCMToken=async ()=>{
+    try{
+      const token= await messaging().getToken();
+      console.log(token)
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
+  useEffect(()=>{
+ 
+    getFCMToken();
+  },[]);
+
+
+
 
   useEffect(() => {
 
@@ -93,10 +122,8 @@ const App = () => {
       if (initialUrl.includes('/cure')) {
         const url = initialUrl.split('/').pop();
         const id = url.split('-')[0];
-
-        setTimeout(() => {
-          navigationRef.current?.navigate('Disease', {ids: `${id}`});
-        }, 3000);
+        articeId(id)
+      
       }
       if (initialUrl.includes('/ResetPass')) {
         const url = initialUrl.split('em=')[1];
