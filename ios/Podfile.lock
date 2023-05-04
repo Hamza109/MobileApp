@@ -21,6 +21,9 @@ PODS:
   - Firebase/Crashlytics (8.12.1):
     - Firebase/CoreOnly
     - FirebaseCrashlytics (~> 8.12.0)
+  - Firebase/Messaging (8.12.1):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 8.12.0)
   - Firebase/Performance (8.12.1):
     - Firebase/CoreOnly
     - FirebasePerformance (~> 8.12.0)
@@ -65,6 +68,15 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
     - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseMessaging (8.12.0):
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.7)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Reachability (~> 7.7)
+    - GoogleUtilities/UserDefaults (~> 7.7)
+    - nanopb (~> 2.30908.0)
   - FirebasePerformance (8.12.0):
     - FirebaseCore (~> 8.0)
     - FirebaseInstallations (~> 8.0)
@@ -426,6 +438,10 @@ PODS:
     - Firebase/Crashlytics (= 8.12.1)
     - React-Core
     - RNFBApp
+  - RNFBMessaging (14.5.1):
+    - Firebase/Messaging (= 8.12.1)
+    - React-Core
+    - RNFBApp
   - RNFBPerf (14.5.1):
     - Firebase/Performance (= 8.12.1)
     - React-Core
@@ -522,6 +538,7 @@ DEPENDENCIES:
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
+  - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - "RNFBPerf (from `../node_modules/@react-native-firebase/perf`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
@@ -540,6 +557,7 @@ SPEC REPOS:
     - FirebaseCoreDiagnostics
     - FirebaseCrashlytics
     - FirebaseInstallations
+    - FirebaseMessaging
     - FirebasePerformance
     - FirebaseRemoteConfig
     - fmt
@@ -632,6 +650,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBCrashlytics:
     :path: "../node_modules/@react-native-firebase/crashlytics"
+  RNFBMessaging:
+    :path: "../node_modules/@react-native-firebase/messaging"
   RNFBPerf:
     :path: "../node_modules/@react-native-firebase/perf"
   RNGestureHandler:
@@ -662,6 +682,7 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
   FirebaseCrashlytics: 7952ffd988006128325510664b99dc8ca5851dff
   FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
+  FirebaseMessaging: 23db8bf05585e929ada8af0f0968933c25252808
   FirebasePerformance: 2e8861c96657ba16d6512f23a1bc43a7e4aa891e
   FirebaseRemoteConfig: 2d6e2cfdb49af79535c8af8a80a4a5009038ec2b
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
@@ -706,6 +727,7 @@ SPEC CHECKSUMS:
   RNFBAnalytics: a223c94f9497efbbabeeb1ae1f7f146f225821f4
   RNFBApp: 1d627d867ed89fed52f284134bd9ae3306dfeda3
   RNFBCrashlytics: 0de353d01e97d8fd998c3046832d8097a15f087b
+  RNFBMessaging: 6dcf44dde498a332956666f8ff89f6bbebd07286
   RNFBPerf: e3c0b7ac5ffd332282b67a7b87fd597ec8ba8940
   RNGestureHandler: 6e757e487a4834e7280e98e9bac66d2d9c575e9c
   RNImageCropPicker: 44e2807bc410741f35d4c45b6586aedfe3da39d2

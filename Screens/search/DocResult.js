@@ -69,10 +69,9 @@ const [search,setSearch]=useState();
   useEffect(() => {
   
 
-    console.log(navigationState);
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
-      console.log('state',state.isConnected)
+
      
     });
     return () => {

@@ -100,8 +100,7 @@ const toast=useToast()
   useEffect(() => {
 
 
-    console.log('user',user)
-  console.log('screen',screen)
+
 
   const unsubscribe = NetInfo.addEventListener(state => {
     setIsConnected(state.isConnected);
@@ -196,8 +195,11 @@ const toast=useToast()
    
     async function getValue() {
       const myValue = await AsyncStorage.getItem('artId');
-      if(myValue!==null){
-  navigation.navigate('Disease',{ids:myValue})
+      const myObject = myValue != null ? JSON.parse(myValue) : null;
+ // Log the retrieved object
+      if(myObject!==null){
+
+  navigation.navigate('Disease',{ids:myObject.id,title:myObject.title})
   AsyncStorage.removeItem('artId')
       }
    

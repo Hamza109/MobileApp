@@ -153,7 +153,7 @@ const navigation=useNavigation()
           });
       };
       const changeHandler = event => {
-        console.log('ok')
+        
         if (photo.name.size > 1048576) {
           Alert.alert('Image should be less than 1MB!');
           return;
@@ -176,7 +176,7 @@ const navigation=useNavigation()
       const handleImageSubmission = e => {
         // e.preventDefault()
         setImageUploadLoading(true);
-      console.log('hellook')
+
         const formData = new FormData();
         formData.append('File', photo);
         axios.post(`${backendHost}/dashboard/imageupload/doctor/${userProfile.rowno}`, {
@@ -184,7 +184,7 @@ const navigation=useNavigation()
           body: formData,
         })
           .then(response => {
-            console.log('r',response.data)
+ 
             response.data;
           })
           .then(result => {
@@ -205,11 +205,10 @@ const navigation=useNavigation()
           cropping: true,
           compressImageQuality: 0.7,
         }).then(image => {
-            console.log(image)
-            console.log(image.path)
+         
           const a = image.path.split('/');
           const b = a[a.length - 1];
-        //   console.log(b)
+  
           type == 1
             ? (setImage(image.path), setSelectedFile(b), bs.current.snapTo(1),handleImageSubmission())
             : setImageUser(image.path);

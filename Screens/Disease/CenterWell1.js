@@ -58,7 +58,7 @@ const tex ={
              <RenderHTML source={tex} contentWidth={wp('100%')}     tagsStyles = {{ adjustsFontSizeToFit:true,
        span:  {fontSize: 16}, 
        b:     {fontSize: 16, color: '#00415e'},
-       body:{color:'#00415e',fontSize:wp('4.5%')}
+       body:{color:'#00415e',fontSize:16}
     }} />
              
             </View>

@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 const NoInternet = ({isConnected,setIsConnected}) => {
 const toast=useToast()
     useEffect(() => {
-  console.log('no',isConnected)
+ 
         if(!isConnected){
       
             

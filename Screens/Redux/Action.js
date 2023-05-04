@@ -14,6 +14,14 @@ export const USER_PASS='USER_PASS'
 export const RECENT_CURES='RECENT_CURES'
 export const CHAT_INFO='CHAT_INFO'
 export const TOP_DOCTORS='TOP_DOCTORS'
+export const ARTICLE_DATA='ARTICLE_DATA'
+
+export function getArticleId(article){
+    return {
+        type:'ARTICLE_DATA',
+        payload:article
+    }
+}
 
 export function chatInfo(info){
     return {

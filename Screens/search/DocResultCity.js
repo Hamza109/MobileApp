@@ -67,7 +67,7 @@ const DocResultCity = ({navigation, route}) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
-      console.log('state',state.isConnected)
+
      
     });
     return () => {

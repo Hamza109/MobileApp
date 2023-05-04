@@ -10,6 +10,7 @@ import {
   ImageBackground,
   RefreshControl,
   BackHandler,
+  SafeAreaView,
   Animated,
 } from 'react-native';
 import { useToast, Divider } from 'native-base';
@@ -88,7 +89,7 @@ const doc=useSelector((state)=>state.info.data)
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
-      console.log('state',state.isConnected)
+   
      
     });
     return () => {
@@ -193,7 +194,7 @@ if(isConnected)
             } else {
              
            resolve(dispatch(fetchSuccessProfile(json)))
-           console.log(json.rowno)
+   
            setImg(`http://all-cures.com:8280/cures_articleimages/doctors/${json.rowno}.png?d=${parseInt(Math.random()*1000)}`)
           
        
@@ -305,7 +306,7 @@ useEffect(()=>{
       const b = a[a.length - 1];
 
       type == 1
-        ? (console.log(b), setSelectedFile(b), bs.current.snapTo(1))
+        ? ( setSelectedFile(b), bs.current.snapTo(1))
         : setImageUser(image.path);
       bs.current.snapTo(1);
     }).catch(err => err);;
@@ -395,7 +396,7 @@ useEffect(()=>{
     );
   } 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {type == 1 ? (
           <View style={{height:145,width:'100%'}}>
 
@@ -682,7 +683,7 @@ useEffect(()=>{
         </View>
 
               
-      </View>
+      </SafeAreaView>
       
     );
   }

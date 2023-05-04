@@ -254,7 +254,7 @@ docData.then(()=>{
 
       axios.post(`${backendHost}/chat/start/${user}/${doc.docid}`)
       .then(res=>{
-        console.log('create',res.data)
+    
         if(res.data[0].Chat_id!=null){
           navigation.navigate('chat',{id:doc.docid,messages:[],chatId:res.data[0].Chat_id})
         }
@@ -275,15 +275,14 @@ if(user!=0)
 {
     axios.get(`${backendHost}/chat/${user}/${doc.docid}`)
   .then(res=>{
-    console.log('data->',res.data)
+
   
   if(res.status===200){
     if(res.data[0].Chat_id === null){
       createChat()
     }
     else {
-      console.log('data->',res.data)
-      console.log(res.status)
+    
 
         const transformedMessages = res.data.map(message => {
           return {
@@ -494,7 +493,7 @@ useEffect(()=>{
                 <Ratings rowno={doc.rowno} article_id={null} />
                 <Text
                   style={{
-                    fontFamily: 'Raleway',
+                    fontFamily: 'Raleway-Regular',
                     color: '#00415e',
                     fontSize: wp('3%'),
                   }}>
@@ -518,7 +517,7 @@ useEffect(()=>{
                   />
                   <Text
                     style={{
-                      fontFamily: 'Raleway',
+                      fontFamily: 'Raleway-Regular',
                       color: '#00415e',
                       fontSize: wp('3%'),
                     }}>
@@ -538,45 +537,16 @@ useEffect(()=>{
   doc.subscription===1?(
 row===0?(
       <TouchableOpacity activeOpacity={0.9} style={styles.chat} onPress={initiateChat} >
-   {exist?(
-         <ImageBackground
-                
-              resizeMode='contain'
-                  source={require('../../assets/img/chat.png')}
-                  style={{
-                    width: 45,
-                    height: 45,
-                    overflow:'hidden',
-                    justifyContent:'center',
-                    alignItems:'center'
-                    
-                
-                    
-                  }}
-                >
-                  <ImageBackground
-                
-              
-                source={{
-                  uri: url
-                }}
-                style={{
-                  width: 38,
-                  height: 38,
-                  overflow:'hidden',
-                borderRadius:100
-                  
-                }}
-              />
-                  </ImageBackground>
-):
+
+
+<View>
 <ImageBackground
                 
 resizeMode='contain'
     source={require('../../assets/img/chat.png')}
     style={{
-      width: 45,
-      height: 45,
+      width: 100,
+      height: 100,
       overflow:'hidden',
       justifyContent:'center',
       alignItems:'center'
@@ -585,9 +555,14 @@ resizeMode='contain'
       
     }}
   >
-<Chat/>
+<Text style={{color:'#00415e',fontSize:10,textDecorationLine:'underline',marginBottom:7,fontFamily:'Raleway-Bold'}}>
+  Chat With Doctor
+</Text>
 </ImageBackground>
-              }
+
+</View>
+
+        
          </TouchableOpacity>
 ):null):null
 }
@@ -787,8 +762,8 @@ const styles = StyleSheet.create({
       },
       chat:{
      position:'absolute',
-     bottom:16,
-     right:16,
+     bottom:15,
+     right:40,
      zIndex:20,
      backgroundColor:'#fff',
      borderRadius:50,

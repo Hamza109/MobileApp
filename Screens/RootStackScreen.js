@@ -1,5 +1,7 @@
 import React,{useState,useEffect,useLayoutEffect} from 'react';
-import { View,Image,Text } from 'react-native';
+import { View,Image,Text,StatusBar,SafeAreaView ,StyleSheet,Alert} from 'react-native';
+import { heightPercentageToDP as hp ,widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { HStack,VStack ,Divider,useToast} from 'native-base';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainTabScreen from './MainTab/MainTab';
 import SignInScreen from './login/SignIn';
@@ -23,7 +25,6 @@ import SearchDocCity from './search/SearchDocCity';
 import DocResultCity from './search/DocResultCity';
 import DocProfile from './MainTab/DocProfile';
 import SignUpScreen from './login/SignUp';
-import DrawerMenu from './MainTab/DrawerMenu';
 import Subscribe from '../components/Subscribe';
 import Feedback from '../components/FeedBack';
 import Forgetpass from './login/ForgetPass';
@@ -44,25 +45,33 @@ import { Touchable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Chat from './Inbox/Chat';
 import Svg, { Path, Circle } from 'react-native-svg';
+import { useDispatch,useStore } from 'react-redux';
 import { StackActions } from '@react-navigation/native'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList} from '@react-navigation/drawer';
+import { DrawerActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { backendHost } from '../components/apiConfig';
+import axios from 'axios';
+
 
 
 
 const Stack = createStackNavigator();
 const Login=createStackNavigator();
+const Home=createStackNavigator();
+const Doctor=createStackNavigator();
+const Drawer=createDrawerNavigator();
 
 const LoginStack=()=>{
   return(
   <Login.Navigator
   initialRouteName="SignIn"
   screenOptions={{
-   
-
+  
     headerStyle: {
       backgroundColor: '#fff',
-    
-      
+      height:Platform.OS ==='android'?60:90
     },
     
     headerTintColor: '#00415e',
@@ -121,7 +130,8 @@ const SettingStack=()=>{
   <Stack.Navigator
   initialRouteName="settings"
   screenOptions={{
-   headerShown:false
+   headerShown:false,
+
   }}>
 <Stack.Screen name='settings' component={Settings}  />
 <Stack.Screen name='legal' component={Legal} />
@@ -136,13 +146,53 @@ const SettingStack=()=>{
 }
 
 const HomeStack = () => {
-  const navigation = useNavigation();
+  const Navigation = useNavigation();
+  const user=useSelector((state)=>state.userId.regId)
   const doc=useSelector((state)=>state.info.data)
+
   const [exist,setExist]=useState(false)
   const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
+  const toast=useToast()
+  const article=useSelector((state)=>state.getArtId.articleId)
+  const like=useStore()
+  const [isFavorite, setIsFavorite] = useState();
+  const goto = () => {
+    toast.show({
+      title: isFavorite?'Removed from favorites':'Added to favorites',
+      description: 'You can access favorites in Mycures.',
+      status: 'info',
+      placement: 'bottom',
+      duration: 2000,
+      style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+    });
+
+    return true;
+  };
+
+const handleFavourite=()=>{
+
+  const favoriteValue = like ? 0 : 1
+   axios.post(
+    `${backendHost}/favourite/userid/${user}/articleid/${article.id}/status/${favoriteValue}/create`,
+  )
+  .then(res => {
+
+    if (res.data > 0) {
+  dispatch(fav(favoriteValue))
+      goto()
+    }
+  })
+  .catch(err => {
+    err;
+    throw err;
+  });
+
+}
+
+
 
 useEffect(()=>{
-  console.log(doc.rowno)
+
   setUrl(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
   
   checkIfImage(url)
@@ -177,24 +227,26 @@ useEffect(()=>{
   return (
 
 
-    <Stack.Navigator
+    <Home.Navigator
       initialRouteName="Main"
       screenOptions={{
         headerStyle: {
           backgroundColor: '#fff',
+          height:Platform.OS ==='android'?60:90
         
           
         },
-        
+    
         headerTintColor: '#00415e',
         headerTitleStyle: {
           fontWeight: 'bold',
+          marginTop:Platform.OS === 'android'?0:50,
         },
       }}>
         
-     <Stack.Screen
+     <Home.Screen
         name="Main"
-        component={MainTabScreen}
+        component={HomeScreen}
         options={{headerShown: false}}
       />
  {/* <Stack.Screen
@@ -215,67 +267,86 @@ useEffect(()=>{
       /> */}
 
      
-      <Stack.Screen
+      <Home.Screen
         name="CreateScreenHome"
         component={CreateScreenHome}
-        options={{headerTitle: 'Create Article',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.navigate('Main')}}/>)}}
+        options={{headerTitle: 'Create Article',  headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,  marginTop:Platform.OS === 'android'?0:45}} color={'#00415e'} size={28} onPress={()=>{Navigation.dispatch(StackActions.pop(1))}}/>)}}
       />
-      <Stack.Screen
+      <Home.Screen
         name="Result"
         component={Result}
         options={{headerShown: false, headerLeft: null}}
       />
        
      
-      <Stack.Screen
+      <Home.Screen
         name="Disease"
         component={Disease}
-        options={{headerShown: false, headerLeft: null,gestureEnabled:false}}
+        options={({route})=>{
+
+         return {
+          title:article.title,
+          headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{Navigation.goBack()}}/>),
+
+       
+        gestureEnabled:false
+      }
+    }
+    }
       />
-         <Stack.Screen
+         <Home.Screen
         name="Subscribe"
         component={Subscribe}
       
       />
-         <Stack.Screen
+         <Home.Screen
         name="Feedback"
         component={Feedback}
       
       />
-      <Stack.Screen
+      <Home.Screen
         name="searchArt"
         component={SearchArt}
         options={{headerShown: false,}}
       />
     
-      <Stack.Screen
+      <Home.Screen
         name="SearchBar"
         component={SearchBar}
         options={{headerShown: false}}
       />
      
      
-    
-   
   
-      <Stack.Screen
+      <Home.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)}}
+        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,  marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{Navigation.dispatch(StackActions.pop(1))}}/>)}}
       />
       
-      <Stack.Screen
+      <Home.Screen
         name='chat'
         component={Chat}
         
         options={{
+          headerShown:true,
+          headerTintColor:'#fff', 
+          headerStyle:{
+            height:Platform.OS ==='android'?60:90,
+            backgroundColor:'#00415e'
+        
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            marginTop:Platform.OS === 'android'?0:50,
+          },
           headerTitle:`Dr. ${doc.docname_first} ${doc.docname_last}`,
-        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
-        headerStyle:{backgroundColor:'#00415e'},
-        headerTintColor:'#fff', 
+        headerLeft:()=>(<View style={{flexDirection:'row',marginTop:Platform.OS === 'android'?5:45}}><IonIcon name="chevron-back-outline" style={{marginLeft:10,}} color={'#fff'} size={28} onPress={()=>{Navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25,}} />:<User/>}</View>),
+
+     
           }}
         />
-    </Stack.Navigator>
+    </Home.Navigator>
   );
 };
 
@@ -284,9 +355,71 @@ const DocStack =()=>{
   const doc=useSelector((state)=>state.info.data)
   const [exist,setExist]=useState(false)
   const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
+  const user=useSelector((state)=>state.userId.regId)
+
+  const toast=useToast()
+  const article=useSelector((state)=>state.getArtId.articleId)
+  const [isFavorite, setIsFavorite] = useState();
+  const goto = () => {
+    toast.show({
+      title: isFavorite?'Removed from favorites':'Added to favorites',
+      description: 'You can access favorites in Mycures.',
+      status: 'info',
+      placement: 'bottom',
+      duration: 2000,
+      style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+    });
+
+    return true;
+  };
+
+const handleFavourite=()=>{
+  const favoriteValue = isFavorite ? 0 : 1
+   axios.post(
+    `${backendHost}/favourite/userid/${user}/articleid/${article.id}/status/${favoriteValue}/create`,
+  )
+  .then(res => {
+
+    if (res.data > 0) {
+      setIsFavorite(!isFavorite);
+      goto()
+    }
+  })
+  .catch(err => {
+    err;
+    throw err;
+  });
+
+}
+
+  useEffect(() => {
+
+    const loadFavoriteStatus = async () => {
+      // load the favorite status from storage
+    
+  
+      // load the favorite status from the API
+      const response = await fetch(`${backendHost}/favourite/userid/${user}/articleid/${article.id}/favourite`);
+      const data = await response.json();
+
+  
+  
+        dispatch(fav(res.data[0].status))
+        setIsFavorite(data[0].status);
+          // save the favorite status to storage
+      
+    
+
+ 
+  
+    
+    };
+    loadFavoriteStatus()
+  }, []);
+
 
 useEffect(()=>{
-  console.log(doc.rowno)
+
   setUrl(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
   
   checkIfImage(url)
@@ -318,25 +451,34 @@ useEffect(()=>{
       </Svg>)
   }
 return(
-  <Stack.Navigator
+  <Doctor.Navigator
   initialRouteName="DocTab"
   screenOptions={{
+    headerShown:false,
     headerStyle: {
       backgroundColor: '#fff',
      height:Platform.OS ==='android'?60:90,
 
     },
-    headerTintColor: '#00415e',
     headerTitleStyle: {
-       marginTop:Platform.OS === 'android'?0:0
-      
+      fontWeight: 'bold',
+      marginTop:Platform.OS === 'android'?0:50,
     },
+
+
+
   }}>
-        <Stack.Screen
+        <Doctor.Screen
         name="DocTab"
         component={DocTab}
         options={{
-          headerStyle:{backgroundColor:'#00415e'},
+          headerShown:true,
+          headerStyle: {
+            backgroundColor: '#00415e',
+           height:Platform.OS ==='android'?60:90,
+    
+          },
+      
       headerTitle:'Doctor',
       headerTintColor:'#fff',
           headerLeft: () => (
@@ -344,86 +486,110 @@ return(
             <Icon
               name="user-md"
               size={30}
-              style={{marginLeft: 20, color: '#fff', marginTop:Platform.OS === 'android'?0:0}}
+              style={{marginLeft: 20, color: '#fff',      marginTop:Platform.OS === 'android'?0:45,}}
               backgroundColor="#fff"></Icon>
           ),
         }}
       />
         
       
-        <Stack.Screen
+        <Doctor.Screen
         name="docResult"
         component={DocResult}
         options={{headerShown: false}}
       />
-      <Stack.Screen
+      <Doctor.Screen
         name="docResultCity"
         component={DocResultCity}
         options={{headerShown: false}}
       />
-        <Stack.Screen
+        <Doctor.Screen
         name="SearchBar"
         component={SearchBar}
         options={{headerShown: false}}
       />
      
-         <Stack.Screen
+         <Doctor.Screen
         name="SearchDocCity"
         component={SearchDocCity}
         options={{headerShown: true,
           headerTitle:'Doctor Finder',
+          headerTintColor:'#00415e',
     
           headerLeft: () => (
   
             <Icon
               name="user-md"
               size={30}
-              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:0}}
+              style={{marginLeft: 20, color: '#00415e',  marginTop:Platform.OS === 'android'?0:45,}}
               backgroundColor="#fff"></Icon>
           ),
         }}
       />
-      <Stack.Screen
+       <Doctor.Screen
         name="DocProfile"
         component={DocProfile}
-        options={{headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:0}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)}}
+        options={{headerShown:true,          headerTintColor:'#00415e',headerTitle: 'Doctor Finder',headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,  marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)}}
       />
+   
 
-<Stack.Screen
+<Doctor.Screen
         name='chat'
         component={Chat}
         
         options={{
+          headerShown:true,
+          headerTintColor:'#fff', 
+          headerStyle:{
+            height:Platform.OS ==='android'?60:90,
+            backgroundColor:'#00415e'
+        
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            marginTop:Platform.OS === 'android'?0:45,
+          },
           headerTitle:`Dr. ${doc.docname_first} ${doc.docname_last}`,
-        headerLeft:()=>(<View style={{flexDirection:'row'}}><IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
-        headerStyle:{backgroundColor:'#00415e'},
-        headerTintColor:'#fff', 
+        headerLeft:()=>(<View style={{flexDirection:'row',marginTop:Platform.OS === 'android'?5:45}}><IonIcon name="chevron-back-outline" style={{marginLeft:10}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
+        
           }}
         />
 
-      <Stack.Screen
+      <Doctor.Screen
         name="SearchDoc"
         component={SearchDoc}
         options={{headerShown: true,
           headerTitle:'Doctor Finder',
+          headerTintColor:'#00415e',
           headerLeft: () => (
   
             <Icon
               name="user-md"
               size={30}
-              style={{marginLeft: 20, color: '#00415e', marginTop:Platform.OS === 'android'?0:0}}
+              style={{marginLeft: 20, color: '#00415e',      marginTop:Platform.OS === 'android'?0:45,}}
               backgroundColor="#fff"></Icon>
           ),
         }}
       />
-          <Stack.Screen
-        name="Disease"
-        component={Disease}
-        options={{headerShown: false, headerLeft: null}}
+          <Doctor.Screen
+ name="Disease"
+ component={Disease}
+ options={({route})=>{
+
+  return {
+   title:article.title,
+   headerShown:true,
+   headerTintColor:'#00415e',
+   headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>),
+
+ gestureEnabled:false
+}
+}
+}
       />
      
   
-  </Stack.Navigator>
+  </Doctor.Navigator>
 )
 }
 
@@ -432,14 +598,74 @@ const ProfileStack=()=>{
 
   
   const navigation=useNavigation()
+  const user=useSelector((state)=>state.userId.regId)
   const doc=useSelector((state)=>state.info.data)
   const row=useSelector((state)=>state.docRow.rowId)
   const chatInfo=useSelector((state)=>state.chatUser.chat)
   const [exist,setExist]=useState(false)
   const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
 
+  const toast=useToast()
+  const article=useSelector((state)=>state.getArtId.articleId)
+  const [isFavorite, setIsFavorite] = useState();
+  const goto = () => {
+    toast.show({
+      title: isFavorite?'Removed from favorites':'Added to favorites',
+      description: 'You can access favorites in Mycures.',
+      status: 'info',
+      placement: 'bottom',
+      duration: 2000,
+      style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
+    });
+
+    return true;
+  };
+
+const handleFavourite=()=>{
+  const favoriteValue = isFavorite ? 0 : 1
+   axios.post(
+    `${backendHost}/favourite/userid/${user}/articleid/${article.id}/status/${favoriteValue}/create`,
+  )
+  .then(res => {
+
+    if (res.data > 0) {
+      setIsFavorite(!isFavorite);
+      goto()
+    }
+  })
+  .catch(err => {
+    err;
+    throw err;
+  });
+
+}
+
+  useEffect(() => {
+
+    const loadFavoriteStatus = async () => {
+      // load the favorite status from storage
+     
+      // load the favorite status from the API
+      const response = await fetch(`${backendHost}/favourite/userid/${user}/articleid/${article.id}/favourite`);
+      const data = await response.json();
+
+  
+  
+        dispatch(fav(res.data[0].status))
+        setIsFavorite(data[0].status);
+          // save the favorite status to storage
+      
+
+ 
+  
+    
+    };
+    loadFavoriteStatus();
+  }, []);
+
+
 useEffect(()=>{
-  console.log('chat',chatInfo)
+
   setUrl(`http://all-cures.com:8080/cures_articleimages/doctors/${chatInfo.rowno}.png`)
   
   checkIfImage(url)
@@ -475,31 +701,37 @@ useEffect(()=>{
       initialRouteName="profile"
       
       screenOptions={{
-     
         headerStyle: {
           backgroundColor: '#fff',
-          height:Platform.OS ==='android'?60:90,
+          height:Platform.OS ==='android'?60:90
         
-     
-  
+          
         },
+    
         headerTintColor: '#00415e',
         headerTitleStyle: {
-          fontWeight: 'bold', marginTop:Platform.OS === 'android'?0:0
+          fontWeight: 'bold',
+          marginTop:Platform.OS === 'android'?0:50,
         },
       }}>
+        
 <Stack.Screen
-        name='profile'
+        name='Profile'
         component={ProfileScreen}
        
         options={{
-          headerStyle:{backgroundColor:'#00415e'},
-          headerTintColor:'#fff',
-          headerTitle:'Profile',
+       headerShown:true,
+      headerStyle:{
+        height:Platform.OS ==='android'?60:90,
+        backgroundColor:'#00415e'
+    
+      },
+      headerTintColor:'#fff',
           headerLeft:()=> 
           (
+            
           <Icon  
-          style={{marginLeft: 20, marginTop:Platform.OS === 'android'?0:0}}
+          style={{marginLeft: 20, marginTop:Platform.OS === 'android'?0:45}}
            name="heartbeat"    
            color={'#fff'} 
            size={26} />
@@ -508,44 +740,80 @@ useEffect(()=>{
         <Stack.Screen
         name='favourite'
         component={Favourites}
-        options={{title:'Favourite Articles'}}
+        options={{title:'Favourite Articles',
+        headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)
+      }}
         />
          <Stack.Screen
         name='cures'
         component={All}
-        options={{title:'My Cures',      headerLeftLabelVisible:false,}}
+        options={{title:'My Cures',      headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>)}}
         />
           <Stack.Screen
         name='inbox'
         component={Inbox}
         
         options={{title:'Inbox',
-        headerStyle:{backgroundColor:'#00415e'},
+        headerShown:true,
         headerTintColor:'#fff', 
+        headerStyle:{
+          height:Platform.OS ==='android'?60:90,
+          backgroundColor:'#00415e'
+      
+        },
+        headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>),
+
+      
           }}
         />
+          <Stack.Screen
+ name="Disease"
+ component={Disease}
+ options={({route})=>{
+
+  return {
+   title:article.title,
+   headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#00415e'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>),
+
+   gestureEnabled:false
+}
+}
+}
+      />
+     
            <Stack.Screen
         name='chat'
         component={Chat}
         
         options={({route})=>({
+          headerShown:true,
+          headerTintColor:'#fff', 
+          headerStyle:{
+            height:Platform.OS ==='android'?60:90,
+            backgroundColor:'#00415e'
+        
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            marginTop:Platform.OS === 'android'?0:50,
+          },
+         
         headerTitle:()=>(
-           row==0?<Text style={{color:'#fff',fontWeight:'bold',fontSize:20}}>Dr. {route.params.first_name} {route.params.last_name}</Text>:<Text style={{color:'#fff',fontWeight:'bold',fontSize:20}}>{chatInfo.first_name} {chatInfo.last_name}</Text>
+           row==0?<Text style={{color:'#fff',fontWeight:'bold',fontSize:20,marginTop:Platform.OS === 'android'?5:45}}>Dr. {route.params.first_name} {route.params.last_name}</Text>:<Text style={{color:'#fff',fontWeight:'bold',fontSize:20,marginTop:Platform.OS === 'android'?5:45}}>{chatInfo.first_name} {chatInfo.last_name}</Text>
         ),
         headerLeft:({route})=>(
        
           chatInfo.rowno!=null?(
-        <View style={{flexDirection:'row'}}>
-          <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>
-          {exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}
+        <View style={{flexDirection:'row',marginTop:Platform.OS === 'android'?5:45}}>
+          <IonIcon name="chevron-back-outline" style={{marginLeft:10}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>
+          {exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25,marginTop:Platform.OS === 'android'?5:45}} />:<User/>}
           </View>):(
-   <View style={{flexDirection:'row'}}>
-   <IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?5:0}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>
+   <View style={{flexDirection:'row',marginTop:Platform.OS === 'android'?5:45}}>
+   <IonIcon name="chevron-back-outline" style={{marginLeft:10,}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>
 <User/>
    </View>)
         ),
-        headerStyle:{backgroundColor:'#00415e'},
-        headerTintColor:'#fff', 
+ 
         
       
           })}
@@ -557,7 +825,7 @@ useEffect(()=>{
         options={{
           headerTitle: 'Edit Profile',
           headerLeft:()=>(  
-          <  IonIcon name="arrow-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} 
+          <  IonIcon name="chevron-back-outline" style={{marginLeft:10,marginTop:Platform.OS === 'android'?0:30}} color={'#00415e'} size={28} 
           onPress={()=>{navigation.push('profile')}}/>),
           presentation:'modal',
           
@@ -577,7 +845,7 @@ return(
       screenOptions={{
         headerStyle: {
           backgroundColor: '#fff',
-          height:Platform.OS ==='android'?60:80,
+          height:Platform.OS ==='android'?60:90,
      
   
         },
@@ -613,10 +881,270 @@ return(
 )
 
 
-
-
-
 }
+
+const DrawerNavigator=()=>{
+
+  const user=useSelector((state)=>state.userId.regId) ;
+  const dispatch=useDispatch();
+    const Navigation = useNavigation();
+    
+    useEffect(() => {
+
+    },[]);
+    const remove = async () => {
+      dispatch(reg(0))
+    };
+    const logout = () => {
+      Alert.alert('Hold on!', 'Are you sure you want Logout?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => {
+         dispatch(screenName('SPLASH')), remove();
+          },
+        },
+      ]);
+      return true;
+    };
+    function CustomDrawerContent(props) {
+      return (
+        <DrawerContentScrollView
+          contentContainerStyle={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+          {...props}>
+                <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+          <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
+     
+          <View style={{backgroundColor:'#fff'}}>
+          <HStack ml='3' mb='3' mt='3' bg='#fff' space={1}>
+            <Image
+            resizeMode='stretch'
+              source={require('../assets/img/heart.png')}
+              style={styles.imageModal}></Image>
+            <Text
+              style={{
+                marginTop: 22,
+                marginRight: 15,
+                fontSize: 20,
+                color: '#00415e',
+              }}>
+              All Cures
+            </Text>
+            </HStack>
+          </View>
+          <View>
+            <Divider style={{marginBottom:20}}/>
+          </View>
+          <DrawerItemList {...props} />
+        
+         
+          </SafeAreaView>
+     
+          
+        </DrawerContentScrollView>
+      );
+    }
+    
+
+  return (
+    <Drawer.Navigator
+    screenOptions={{
+      height:Platform.OS ==='android'?60:90
+    }}
+    drawerContent={props => <CustomDrawerContent {...props} />  }  >
+    <Drawer.Screen
+      name="Home"
+      component={MainTabScreen}
+  
+      options={{
+        headerShown: null,
+
+        drawerLabel: 'Home',
+        drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:5},
+        drawerIcon: () => (
+          <Icon name="home" color={'#00415e'} size={22} />
+        ),
+      }}
+    />
+
+   
+    
+      <Drawer.Screen
+      name="Subscribe"
+      component={Subscribe}
+      options={{
+        headerStyle: {
+          backgroundColor: '#fff',
+          height:Platform.OS ==='android'?60:90,
+  
+        },
+        headerTintColor: '#00415e',
+        headerTitleStyle: {
+          fontWeight: 'bold', 
+        },
+        drawerLabel: 'Subscribe',
+        drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+        headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
+      </TouchableOpacity>),
+     
+        drawerIcon: ({focused, size}) => (
+          <Icon name="bell" color={'#00415e'} size={22} style={{marginLeft:-2}} />
+        ),
+        
+      }}
+    />
+       <Drawer.Screen
+      name="Feedback"
+      component={Feedback}
+      options={{
+        headerStyle: {
+          backgroundColor: '#fff',
+          height:Platform.OS ==='android'?60:90
+        },
+        headerTintColor: '#00415e',
+        headerTitleStyle: {
+          fontWeight: 'bold', 
+        },
+        drawerLabel: 'Feedback',
+        drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+        headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
+      </TouchableOpacity>),
+        drawerIcon: ({focused, size}) => (
+          <Icon name="paper-plane" color={'#00415e'} size={22} style={{marginLeft:-2}} />
+        ),
+      }}
+    />
+    <Drawer.Screen
+      name="Settings"
+      component={SettingStack}
+      options={{
+        headerStyle: {
+          backgroundColor: '#fff',
+          height:Platform.OS ==='android'?60:90
+        },
+        headerTintColor: '#00415e',
+        headerTitleStyle: {
+          fontWeight: 'bold', 
+        },
+        drawerLabel: 'Settings',
+        drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+        headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+        <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
+      </TouchableOpacity>),
+        drawerIcon: () => (
+          <IonIcon name="md-settings" color={'#00415e'} size={22} style={{marginLeft:-2}} />
+        ),
+      }}
+    />
+  </Drawer.Navigator>
+  
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+
+    alignItems: 'center',
+  },
+  card: {
+    padding: 10,
+    margin: 0,
+    height: hp('60%'),
+    width: wp('100%'),
+    position: 'relative',
+    bottom: 90,
+    borderRadius: 0,
+    backgroundColor: '#00415e',
+  },
+
+  search: {
+    position: 'relative',
+    bottom: 282,
+    backgroundColor: '#fff',
+  },
+
+  b1: {
+    backgroundColor: '#00415e',
+    padding: 40,
+  },
+
+  text: {
+    backgroundColor: '#00415e',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  h1: {
+    position: 'relative',
+    bottom: 450,
+    right: 0,
+    fontWeight: 'bold',
+    padding: 0,
+    margin: 0,
+  },
+  t2: {
+    position: 'relative',
+    bottom: 410,
+
+    padding: 10,
+    margin: 0,
+    zIndex: 9999,
+  },
+  centeredView: {
+    flex: 1,
+
+    marginTop: 25,
+  },
+  modalView: {
+    alignItems: 'center',
+  },
+
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  image: {
+    padding: 20,
+    marginTop: 5,
+    height: hp('5%'),
+    width: wp('5%'),
+  },
+  imageModal: {
+    padding: 20,
+    height: 60,
+    width: wp('15%'),
+  },
+  btn: {
+    borderWidth: 2,
+    borderRadius: 15,
+    borderColor: '#00415e',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: wp('35%'),
+    height: hp('4.5%'),
+    backgroundColor: '#00415e',
+    color: 'white',
+    marginRight: 10,
+    marginTop: 12,
+  },
+});
+
 
 
 const Navigator = () => {
@@ -625,7 +1153,7 @@ const Navigator = () => {
       case 'LOGIN':
           return <LoginStack />
       case 'MAIN':
-          return <HomeStack/>
+          return <DrawerNavigator/>
       case 'SPLASH':
           return <SplashStack />
       default:

@@ -54,17 +54,23 @@ import CenterWell from '../Disease/CenterWell';
 import Heart from '../../assets/img/heart.png';
 import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-snap-carousel';
-import { useSelector,useStore } from 'react-redux';
+import { useSelector,useStore ,useDispatch} from 'react-redux';
+import { getArticleId } from '../Redux/Action';
 const ArticlePreview = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
   const store=useStore()
   const articles=store.getState().recent.Data
+  const navigation=useNavigation()
+   const dispatch=useDispatch()
+ const handlePress= (id,title)=>{
+// dispatch(getArticleId({id:id,title:title}))
 
- const navigation=useNavigation();
-  
+  navigation.push(`Disease`, {ids:`${id}`,title:title})
 
- 
+
+    
+  }
 
   function IsJsonValid(str) {
     try {
@@ -133,7 +139,7 @@ key={Math.random().toString(36)}
                               }}>
                                 
                               <HStack space={1}  key={Math.random().toString(36)}>
-                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{handlePress(i.article_id,i.title)}}>
                                 <Image
                                 resizeMode='stretch'
                               key={Math.random().toString(36)}

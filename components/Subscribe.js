@@ -8,12 +8,13 @@ import {
   TouchableOpacity,
   Alert,
   ImageBackground,
+KeyboardAvoidingView
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {HStack, VStack} from 'native-base';
+import {HStack, ScrollView, VStack} from 'native-base';
 import PhoneInput from 'react-native-phone-number-input';
 import {useToast, Spinner} from 'native-base';
 import axios from 'axios';
@@ -90,6 +91,8 @@ const Subscribe = () => {
           />
         </View>
       ) : null}
+          <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+            <ScrollView>
       <ImageBackground
         source={require('../assets/img/LandingMainImg.jpg')}
         style={{width: wp('100%'), height: hp('30%')}}></ImageBackground>
@@ -145,6 +148,9 @@ const Subscribe = () => {
           </View>
         </VStack>
       </VStack>
+        </ScrollView>
+      </KeyboardAvoidingView>
+   
     </View>
   );
 };

@@ -50,7 +50,7 @@ const SignInScreen = ({ props, route }) => {
   const navigation = useNavigation()
   const [buttonClick, setClicked] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(true);
-  const[passwordSecured,setPasswordSecured]=useState(false)
+  const[passwordSecured,setPasswordSecured]=useState(true)
   const routeName = useStore()
 
   const user = useStore()
@@ -68,16 +68,7 @@ const SignInScreen = ({ props, route }) => {
 
 
   const toast = useToast();
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
 
-  useEffect(() => {
-    console.log('screen:', routeName.getState().name.screen)
-  })
 
 
   const loading = () => {
@@ -98,17 +89,16 @@ const SignInScreen = ({ props, route }) => {
   };
 
   const loginForm = () => {
-console.log('email',data.email)
-console.log('pass',data.password)
+
 if(data.email!=''&&data.password!=''){
   setClicked(true)
    
       axios.get(`${backendHost}/data/delete/${data.email}`)
       .then((res)=>{
- console.log('delete',res.data)
+
 
         if(res.data.includes('deleted')){
-          console.log('true')
+      
           setClicked(false)
           toast.show({
             title: 'Invalid email/password',
@@ -122,7 +112,7 @@ if(data.email!=''&&data.password!=''){
         }
         else{
   
-console.log('false')
+
           axios
       .post(
         `${backendHost}/login?cmd=login&email=${data.email.replace(/\s/g, '')}&psw=${data.password}&rempwd=on`,
@@ -135,7 +125,7 @@ console.log('false')
 
       .then(res => {
         if (res.data.registration_id) {
-         console.log(res.data)
+
           setTimeout(() => {
            dispatch(getEmail(res.data.email_address))
           dispatch(getPass(data.password))
@@ -150,7 +140,7 @@ console.log('false')
             setStatus(res.status);
             user.dispatch(reg(res.data.registration_id))
             user.dispatch(type(res.data.registration_type))
-            console.log('r', res.data.rowno)
+         
             user.dispatch(row(res.data.rowno))
             setClicked(false);
           }, 3000);

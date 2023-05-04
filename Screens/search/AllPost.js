@@ -8,11 +8,22 @@ import axios from 'axios';
 import { widthPercentageToDP } from 'react-native-responsive-screen';
 import { useIsFocused } from '@react-navigation/native';
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getArticleId } from '../Redux/Action';
+import { useDispatch } from 'react-redux';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const { s, c } = bootstrapStyleSheet;
 
 
 const AllPost = ({ id, title, f_title, w_title}) => {
+  const dispatch=useDispatch()
+
+const handlePress= async ()=>{
+// dispatch(getArticleId({id:id,title:title}))
+navigation.push(`Disease`, {ids:`${id}`,title:title})
+  
+}
+
 
 
 
@@ -22,7 +33,7 @@ const isFocus=useIsFocused()
         return (
           <View style={styles.contain}>
             <View>
-           <Text  numberOfLines={2} onPress={()=>{{ navigation.push(`Disease`, {ids:`${id}`})}}} style={[styles.title]}>{title}</Text>
+           <Text  numberOfLines={2} onPress={()=>{handlePress()}} style={[styles.title]}>{title}</Text>
             </View>
 
             <View>

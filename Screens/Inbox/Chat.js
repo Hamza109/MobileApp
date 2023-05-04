@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View,Text,Alert } from 'react-native';
+import { View,Text,Alert,KeyboardAvoidingView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { Image } from 'react-native';
 import initialMessages from './messages';
@@ -27,7 +27,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-const CHAT_SERVER_URL = 'ws://all-cures.com:8000';
+const CHAT_SERVER_URL = 'wss://all-cures.com:8000';
 
 const Chat = ({ route }) => {
   const navigation = useNavigation()
@@ -44,11 +44,13 @@ const Chat = ({ route }) => {
   const [exist,setExist]=useState(false)
   const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
   const [selectedMessageId, setSelectedMessageId] = useState(null);
+
+  
   
 
   useEffect(() => {
     setMessages(chatData.reverse());
-    console.log('message',`${user}`)
+
     if (!socket || socket.readyState === WebSocket.CLOSED) {
         setupSocket();
       }
@@ -61,15 +63,18 @@ const Chat = ({ route }) => {
   
   const setupSocket = () => {
     const newSocket = new WebSocket(CHAT_SERVER_URL);
+
+
+    
     newSocket.onopen = (event) => {
-      console.log('Connected to the Chat Server');
+
       newSocket.send(`{"Room_No":"${chatid}"}`);
     }
     newSocket.onmessage = (event) => {
-      console.log(`Message ${Math.random()*1000}: ${event.data}`);
+     
       const fromId=event.data.split(':')[0]
       const message=event.data.split(':').pop()
-      console.log('from:->',fromId);
+   
 
       const transformedMessages = 
        {
@@ -105,21 +110,20 @@ const Chat = ({ route }) => {
     const toId = Id;
     const chat_id = chatid;
     const payload = `${fromId}:${toId}:${chat_id}:${message.text}`;
-    console.log(payload);
+   
     socket.send(payload);
   };
 
   const renderSend = (props) => (
 
 
-    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-      <Foundation name="paperclip" size={24} color="#00415e"  style={{ marginRight: 5 ,marginLeft:5}} />
+     
     <Send {...props}>
       <View>
       <Icon name="send" size={24} color={'#00415e'} style={{marginBottom:10}} />
       </View>
     </Send>
-  </View>
+
   
   );
   
@@ -150,6 +154,7 @@ const Chat = ({ route }) => {
   return (
     <>
       <StatusBar backgroundColor={'#00415e'} barStyle={'light-content'} />
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-210} style={{ flex: 1 }}>
       <GiftedChat
       wrapInSafeArea={false}
   messagesContainerStyle={{backgroundColor:'#fff'}}
@@ -182,6 +187,7 @@ const Chat = ({ route }) => {
         },
       ]}
     />
+    </KeyboardAvoidingView>
     </>
   );
 };

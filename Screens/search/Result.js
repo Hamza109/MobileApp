@@ -33,8 +33,11 @@ import {
 } from 'react-native-responsive-screen';
 import CenterWell from '../Disease/CenterWell';
 import NoInternet from '../../components/NoInternet';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { getArticleId } from '../Redux/Action';
 
-const Result = ({navigation, route}) => {
+const Result = ({route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
 
   const texts = route.params.texts;
@@ -44,9 +47,18 @@ const Result = ({navigation, route}) => {
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
-
+  const navigation=useNavigation();
   const [text, setText] = useState(texts);
   const [medtype, setMedType] = useState(types);
+  const dispatch=useDispatch()
+
+  const handlePress = (id,title)=>{
+    // dispatch(getArticleId({id:id,title:title}))
+
+    navigation.push(`Disease`, {ids:`${id}`,title:title})
+      
+    }
+
   function IsJsonValid(str) {
     try {
       JSON.parse(str);
@@ -58,10 +70,11 @@ const Result = ({navigation, route}) => {
   const [initial, setInitial] = useState(9);
   const [showMore, setShowMore] = useState(true);
 
+
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
-      console.log('state',state.isConnected)
+
      
     });
     return () => {
@@ -153,6 +166,8 @@ searchData.then(()=>{
   };
 
   const [loading,setLoading]=useState(false)
+
+ 
   const footer = () => {
     return(
     <View>
@@ -302,7 +317,7 @@ const load = () => {
                               }}>
                                 
                               <HStack space={1}  key={Math.random().toString(36)}>
-                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.navigate(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>handlePress(i.article_id,i.title)}>
                                 <Image
                                 resizeMode='stretch'
                               key={Math.random().toString(36)}

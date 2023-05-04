@@ -84,7 +84,7 @@ const Delete = ({ props, route }) => {
 //   const showModal=()=>setVisible(true)
 //   const hideModal=()=>setVisible(false)
   useEffect(() => {
-    console.log('screen:', reason)
+
   })
 
 
@@ -117,7 +117,7 @@ const Delete = ({ props, route }) => {
 
   const deleted=()=>{
     if(reason!=null){
-      console.log(reason)
+
      
 axios.post(`${backendHost}/data/deactivate/${user}/${reason}`).then((res)=>{
 if(res.data==1){

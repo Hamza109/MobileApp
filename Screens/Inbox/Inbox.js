@@ -52,6 +52,49 @@ const checkIfImage = imageUrl => {
 
 
 
+const initiateChat=(getId,getFirstName,getLastName,rowno)=>{
+
+  dispatch(chatInfo({first_name:getFirstName, last_name:getLastName,rowno:rowno}))
+const data= new Promise((resolve,reject)=>{
+  
+ fetch(`${backendHost}/chat/${row===0?user:getId}/${row===0?getId:user}`)
+  .then(res=>{
+
+   
+   resolve(res.json())
+  
+    }
+  ).catch(err=>err)
+  
+})
+data.then((responseData)=>{
+ 
+  
+const transformedMessages = responseData.map(message => {
+
+  return {
+    _id: Math.random().toString(36).substring(2,9),
+    text: message.Message,
+    createdAt: new Date(message.Time),
+    user: {
+      _id: message.From_id,     
+    },
+  };
+});
+
+
+
+navigation.push('chat',{messages:responseData.length!==1?transformedMessages.reverse():[],chatId:responseData[0].Chat_id,id:getId,first_name:getFirstName,last_name:getLastName})
+})
+ 
+  
+  
+  
+  
+  }
+  
+
+
   useLayoutEffect(() => {
     const fetchData = async () => {
 
@@ -59,7 +102,6 @@ const checkIfImage = imageUrl => {
       .then (res =>res.json())
       
       .then(json=>{
-        console.log('data',json)
         setData(json)
 
       }
@@ -83,7 +125,7 @@ const checkIfImage = imageUrl => {
 
   
   const renderMessage = ({ item }) => {
-    console.log('items->',item.Time)
+
 
     const now = moment();
     const messageTime = moment(item.Time);
@@ -108,37 +150,7 @@ const checkIfImage = imageUrl => {
   const url = `http://all-cures.com:8280/cures_articleimages/doctors/${item.Rowno}.png?d=${parseInt(Math.random()*1000)}`
   checkIfImage(url)
 
-const initiateChat=(getId,getFirstName,getLastName,rowno)=>{
 
-  dispatch(chatInfo({first_name:getFirstName, last_name:getLastName,rowno:rowno}))
-
-  axios.get(`${backendHost}/chat/${row===0?user:getId}/${row===0?getId:user}`)
-  .then(res=>{
-
-    const transformedMessages = res.data.map(message => {
-      return {
-        _id: Math.random().toString(36).substring(2,9),
-        text: message.Message,
-        createdAt: new Date(message.Time),
-        user: {
-          _id: message.From_id,     
-        },
-      };
-    });
-
-    console.log('transformed->',transformedMessages)
-  
-    navigation.navigate('chat',{messages:res.data.length!==1?transformedMessages.reverse():[],chatId:res.data[0].Chat_id,id:getId,first_name:getFirstName,last_name:getLastName})
-  
-    }
-  ).catch(err=>err)
-  
-  
-  
-  
-  
-  }
-  
     
   
 

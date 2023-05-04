@@ -32,8 +32,8 @@ import {useIsFocused} from '@react-navigation/native';
 import { backendHost } from '../../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import AllPost from '../../search/AllPost';
-;
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { getArticleId } from '../../Redux/Action';
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 
@@ -43,7 +43,15 @@ const Favourites = () => {
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [status, setStatus] = useState();
+  const dispatch=useDispatch()
 
+  const handlePress= (id,title)=>{
+    // dispatch(getArticleId({id:id,title:title}))
+    setTimeout(()=>{
+
+      navigation.push(`Disease`, {ids:`${id}`,title:title})
+    },1000)
+  }
   const getId = () => {
     if(user==0)
             navigation.navigate('SignIn');
@@ -138,7 +146,7 @@ const Favourites = () => {
                                 }}>
                                   
                                 <HStack space={1}  key={Math.random().toString(36)}>
-                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{handlePress(i.article_id,i.title)}}>
                                   <Image
                                 key={Math.random().toString(36)}
                                     source={{
@@ -229,14 +237,14 @@ const Favourites = () => {
             })
           ) : (
        
-            <View style={{justifyContent:'center',alignItems:'center',height:hp('80%')}} >
+            <View key={Math.random().toString(36)} style={{justifyContent:'center',alignItems:'center',height:hp('80%')}} >
             <Icon
                     name="medical-outline"
                     size={50}
                     color={'#00415e'}
                     style={{opacity: 0.5}}
                   />
-                  <Text style={{textAlign: 'center', fontSize: 18,color:'#00415e',fontFamily:'Raleway-Medium'}}>
+                  <Text key={Math.random().toString(36)} style={{textAlign: 'center', fontSize: 18,color:'#00415e',fontFamily:'Raleway-Medium'}}>
                     No cures yet
                   </Text>
             </View>

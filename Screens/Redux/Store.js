@@ -1,6 +1,6 @@
 
 import {legacy_createStore as createStore,combineReducers,applyMiddleware} from 'redux'
-import  { chatInfoReducer,dataReducer, FavReducer, mailReducer, passReducer, profileReducer, recentCuresReducer, reducer, rowReducer, topDocReducer, typeReducer } from './Reducer'
+import  { chatInfoReducer,dataReducer, FavReducer, mailReducer, passReducer, profileReducer, recentCuresReducer, reducer, rowReducer, topDocReducer, typeReducer,getArticleIdReducer } from './Reducer'
 import thunk from 'redux-thunk'
 import { screenReducer } from './Reducer'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -17,14 +17,15 @@ const rootReducer=combineReducers({
     pass:passReducer,
     top:topDocReducer,
     recent:recentCuresReducer,
-    chatUser:chatInfoReducer
+    chatUser:chatInfoReducer,
+    getArtId:getArticleIdReducer
 
 
 })
 const persistConfig ={
     key: 'root',
     storage:AsyncStorage,
-    blacklist: ['name'],
+    blacklist: ['name','getArtId'],
 }
 const persistedReducer= persistReducer(persistConfig,rootReducer)
 export default ()=>{

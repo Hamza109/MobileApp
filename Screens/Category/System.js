@@ -19,7 +19,7 @@ const medicine=()=>{
     fetch(`${backendHost}/data/medicines`)
     .then(res=>res.json())
     .then(json=>{
-        console.log(json)
+   
         setData(json)
         setIsLoaded(true)
     })

@@ -55,6 +55,7 @@ import Svg, {Path, Circle} from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
+import { getArticleId } from '../Redux/Action';
 const Disease = ({navigation, route}) => {
   const toast = useToast();
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -64,6 +65,7 @@ const Disease = ({navigation, route}) => {
   const [selected, setSelected] = useState(1);
   const ids = route.params.ids;
   const flow =route.params.flow
+  const title=route.params.title
   const user =useStore();
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
@@ -88,6 +90,7 @@ const Disease = ({navigation, route}) => {
   const like=useStore()
   const [sItems, setSItems] = useState([]);
   const [result, setResult] = useState();
+  const [toggle,setToggle]=useState();
   const [isConnected, setIsConnected] = useState(true);
 
 
@@ -100,7 +103,18 @@ const Disease = ({navigation, route}) => {
   };
 
 
+  useEffect(()=>{
+    navigation.setOptions({
+      title:title
+    })
+})
+
+
+
  useEffect(()=>{
+
+  
+
   const backAction =()=>{
     Platform.OS=='ios'?
     flow===1?
@@ -125,7 +139,7 @@ const Disease = ({navigation, route}) => {
 
   useEffect(() => {
     getRating();
-    console.log('flow',flow)
+
   }, [id]);
   
   const comment=()=>{  fetch(`${backendHost}/rating/target/${id}/targettype/2`)
@@ -138,7 +152,7 @@ const Disease = ({navigation, route}) => {
       }
      
     })
-    console.log(temp)
+
     setCommentItems(temp)
     })
 
@@ -259,7 +273,7 @@ const Disease = ({navigation, route}) => {
    
     
     const get = () => {
-      console.log(isConnected)
+
       const getArticle = new Promise((resolve,reject)=>{
         if(isConnected)
         { 
@@ -335,13 +349,18 @@ get();
       });
   }
   
-  const stat = async () => {
+  const stat = async (userid) => {
     await axios
-      .get(`${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/favourite`)
+      .get(`${backendHost}/favourite/userid/${userid}/articleid/${id}/favourite`)
       .then(res => {
         setResponse(res.data);
 
         if (res.data.length != 0) {
+ if(res.data[0].status === 0){
+setToggle(false)
+ }else{
+  setToggle(true)
+ }
           dispatch(fav(res.data[0].status))
       
         } else {
@@ -365,13 +384,23 @@ get();
       });
   };
   
+  const handleSubmit= (id,title)=>{
+    // dispatch(getArticleId({id:id,title:title}))
+    
+      navigation.push(`Disease`, {ids:`${id}`,title:title})
+    
+    
+        
+      }
 
   const handlePress = () => {
     if (like.getState().favourite.stat == 1) {
      dispatch(fav(0))
+
       favorite(like.getState().favourite.stat)
     } else {
       dispatch(fav(1))
+
       favorite(like.getState().favourite.stat)
       
     }
@@ -393,7 +422,8 @@ get();
   const favorite = async status => {
     if (status != 0) {
       dispatch(fav(1))
-
+      setToggle(true)
+      
       await axios
         .post(
           `${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/status/${status}/create`,
@@ -409,6 +439,7 @@ get();
         });
     } else {
       dispatch(fav(0));
+      setToggle(false)
       axios
         .post(
           `${backendHost}/favourite/userid/${user.getState().userId.regId}/articleid/${id}/status/${status}/create`,
@@ -442,7 +473,11 @@ get();
   }, [])
   useEffect(() => {
  
-      stat();
+      stat(user.getState().userId.regId);
+      return ()=>{
+        stat();
+      }
+
    
   }, [user.getState().userId.regId]);
 
@@ -476,33 +511,31 @@ get();
         <View>
           <View style={{flex: 1}}>
             <SafeAreaView style={styles.HeadCard}>
-              <View style={styles.headerMain} >
-                <Icon
-                  name="close-circle-outline"
-                  size={35}
-                  color={'#00415e'}
-                  onPress={() => {
-                    navigation.push('Main');
-                  }}
+              
+              <View
+                style={{
+                  width: '100%',
+                 alignItems:'center',
+                  flexDirection:'row',
+                  justifyContent:'space-between',
+             
+                 paddingHorizontal:15
+                  
+                }}>
+  
+                <StarRating
+                  disabled={false}
+                  starSize={20}
+                  maxStars={5}
+                  rating={showValue}
+                  emptyStarColor={'#00415e'}
+                  fullStarColor={'orange'}
                 />
-               <View style={{marginTop:6,paddingHorizontal:25}}>
-                  <Text
-                    adjustsFontSizeToFit
-                    numberOfLines={2}
-                    style={{
-                      color: '#00415e',
-                    
-                      fontFamily: 'Raleway-Bold',
-                      fontSize: 13,
-                      textAlign: 'auto',
-                    }}>
-                    {data.title}
-                  </Text>
-                  </View>
                
-                {user.getState().userId.regId != 0 ? (
+                
+                  {user.getState().userId.regId != 0 ? (
                   response.length != 0 ? (
-                    like.getState().favourite.stat == 0 ? (
+                 !toggle ? (
                       <Icon
                         name={'heart-outline'}
                         size={32}
@@ -533,34 +566,6 @@ get();
                   )
                 ) : null}
               </View>
-              <View
-                style={{
-                  width: '100%',
-                 alignItems:'center',
-                  flexDirection:'row',
-                  justifyContent:'space-evenly'
-                 
-                  
-                }}>
-                <StarRating
-                  disabled={false}
-                  starSize={18}
-                  maxStars={5}
-                  rating={showValue}
-                  emptyStarColor={'#00415e'}
-                  fullStarColor={'orange'}
-                />
-                <Text
-                    style={{
-                      color: '#00415e',
-
-                      fontFamily: 'Raleway-Light',
-                      fontSize: 16,
-                      textAlign: 'left',
-                    }}>
-                    {data.authors_name} ▪️ {data.published_date}
-                  </Text>
-              </View>
             </SafeAreaView>
             <ScrollView
               style={{
@@ -574,7 +579,30 @@ get();
               }}>
               <VStack space={3} ml="1" mb='2'>
                 
-                  
+              <View style={{marginTop:6}}>
+                  <Text
+                    adjustsFontSizeToFit
+                 
+                    style={{
+                      color: '#00415e',
+                    
+                      fontFamily: 'Raleway-Bold',
+                      fontSize: 17,
+                      textAlign: 'auto',
+                    }}>
+                    {data.title}
+                  </Text>
+                  <Text
+                    style={{
+                      color: '#00415e',
+
+                      fontFamily: 'Raleway-Light',
+                      fontSize: 16,
+                      textAlign: 'left',
+                    }}>
+                    {data.authors_name} ▪️ {data.published_date}
+                  </Text>
+                  </View>  
                 
 
                 {items.map((i, key) => (
@@ -825,7 +853,7 @@ get();
                                 }}>
                                   
                                 <HStack space={1}  key={Math.random().toString(36)}>
-                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`})}}}>
+                                  <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>handleSubmit(i.article_id,i.title)}>
                                   <Image
                                   
                                   resizeMode='stretch'
@@ -1253,8 +1281,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: wp('100%'),
      justifyContent:'space-between',
-    height: Platform.OS === 'android' ? 70 : 110,
     fontSize: 20,
+    alignItems:'center'
   },
 
   search: {
@@ -1404,3 +1432,5 @@ const styles = StyleSheet.create({
     fontFamily:'Raleway-Medium',
     fontSize:14}
 });
+
+

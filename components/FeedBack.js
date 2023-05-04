@@ -3,58 +3,64 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
+TextInput,
   Platform,
   StyleSheet,
   ScrollView,
   StatusBar,
+KeyboardAvoidingView,
   Alert,
 } from 'react-native';
 import axios from 'axios';
-import {Button} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
-import Feather from 'react-native-vector-icons/Feather';
-import {useIsFocused} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button } from 'native-base';
+
+
 import LottieView from 'lottie-react-native';
 import {backendHost} from './apiConfig';
-import { useSelector } from 'react-redux';
-import {VStack, Stack, Container, HStack, Checkbox} from 'native-base';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { TextBox } from './Input';
 import {Spinner, useToast} from 'native-base';
 const FeedBack = () => {
-  const navigation = useNavigation();
-  const toast = useToast();
+  const [firstName,setFirstName]= useState('')
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [number, setNumber] = useState('');
+  const [feedBack,setFeedBack]=useState('')
 
-  const [data, setData] = useState([]);
+  const toast = useToast();
 
   const [title, setTitle] = useState('');
   const [article, setArticle] = useState('');
-  const [lastName, setLastname] = useState('');
-  const [email, setEmail] = useState('');
-  const [num, setNum] = useState('');
+
+
 
 
 
   const [loading, setLoading] = useState(false);
   const submitFeedbackForm = e => {
-    if (article != '') {
+    if (feedBack != '') {
       setLoading(true);
       axios.defaults.withCredentials = true;
       axios
         .post(`${backendHost}/admin/create/feedback  `, {
-          firstname: title,
+          firstname: firstName,
           lastname: lastName,
           email: email,
-          phonenumber: num,
-          feedback: article,
+          phonenumber: number,
+          feedback: feedBack,
         })
         .then(res => {
           if (res.data === 1) {
             setLoading(false);
+            setFirstName('')
+            setLastName('')
+            setEmail('')
+            setNumber('')
+            setFeedBack('')
             toast.show({
               title: 'Feedback submitted successfully!',
               description: 'Thankyou for your feedback.',
@@ -83,77 +89,77 @@ const FeedBack = () => {
     }
   };
 
-  const titleValue = () => {
-    return (
-      <View style={styles.action}>
-        <TextInput
-          placeholder="Enter first name"
-          placeholderTextColor="#00415e"
-          style={[styles.textInputTitle, {color: '#00415e', padding: 10}]}
-          autoCapitalize="none"
-          value={title}
-          returnKeyType="done"
-          onChangeText={e => setTitle(e)}
-        />
+  // const titleValue = () => {
+  //   return (
+  //     <View style={styles.action}>
+  //       <TextInput
+  //         placeholder="Enter first name"
+  //         placeholderTextColor="#00415e"
+  //         style={[styles.textInputTitle, {color: '#00415e', padding: 10}]}
+  //         autoCapitalize="none"
+  //         value={title}
+  //         returnKeyType="done"
+  //         onChangeText={e => setTitle(e)}
+  //       />
 
-        {data.check_textInputChange ? (
-          <View animation="bounceIn">
-            <Feather name="check-circle" color="green" size={20} />
-          </View>
-        ) : null}
-      </View>
-    );
-  };
-  const remarks = () => {
-    return (
-      <View style={styles.action}>
-        <TextInput
-          placeholder="Enter email"
-          placeholderTextColor="#00415e"
-          secureTextEntry={data.secureTextEntry ? true : false}
-          style={[
-            styles.textInput,
-            {
-              color: '#00415e',
-              padding: 10,
-            },
-          ]}
-          autoCapitalize="none"
-          returnKeyType="go"
-          value={email}
-          onChangeText={e => setEmail(e)}
-        />
-      </View>
-    );
-  };
+  //       {data.check_textInputChange ? (
+  //         <View animation="bounceIn">
+  //           <Feather name="check-circle" color="green" size={20} />
+  //         </View>
+  //       ) : null}
+  //     </View>
+  //   );
+  // };
+  // const remarks = () => {
+  //   return (
+  //     <View style={styles.action}>
+  //       <TextInput
+  //         placeholder="Enter email"
+  //         placeholderTextColor="#00415e"
+  //         secureTextEntry={data.secureTextEntry ? true : false}
+  //         style={[
+  //           styles.textInput,
+  //           {
+  //             color: '#00415e',
+  //             padding: 10,
+  //           },
+  //         ]}
+  //         autoCapitalize="none"
+  //         returnKeyType="go"
+  //         value={email}
+  //         onChangeText={e => setEmail(e)}
+  //       />
+  //     </View>
+  //   );
+  // };
 
-  const articles = () => {
-    return (
-      <View style={styles.article}>
-        <TextInput
-          placeholder="Enter your feedback"
-          placeholderTextColor="#00415e"
-          secureTextEntry={data.secureTextEntry ? true : false}
-          style={[
-            styles.textInputArticle,
-            {
-              color: '#00415e',
-              height: 120,
-              fontSize: 15,
-            },
-          ]}
-          autoCapitalize="none"
-          returnKeyType="go"
-          value={article}
-          onChangeText={e => setArticle(e)}
-          multiline={true}
-        />
-      </View>
-    );
-  };
+  // const articles = () => {
+  //   return (
+  //     <View style={styles.article}>
+  //       <TextInput
+  //         placeholder="Enter your feedback"
+  //         placeholderTextColor="#00415e"
+  //         secureTextEntry={data.secureTextEntry ? true : false}
+  //         style={[
+  //           styles.textInputArticle,
+  //           {
+  //             color: '#00415e',
+  //             height: 120,
+  //             fontSize: 15,
+  //           },
+  //         ]}
+  //         autoCapitalize="none"
+  //         returnKeyType="go"
+  //         value={article}
+  //         onChangeText={e => setArticle(e)}
+  //         multiline={true}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#fff', padding: 15}}>
+    <View style={styles.container}>
          {loading ? (
           <View style={styles.loading}>
             <LottieView
@@ -164,123 +170,87 @@ const FeedBack = () => {
             />
           </View>
         ) : null}
-      <ScrollView style={{flex:1,marginTop:15}}>
-     
-        <Stack space={4}>
-          <VStack space={2}>
-            <Text
-              style={{
-                position: 'relative',
-                left: 15,
-                fontSize: 16,
-                fontFamily: 'Raleway-Regular',
-                color: '#00415e',
-              }}>
-              Enter first name (optional)
-            </Text>
-            {titleValue()}
-          </VStack>
-          <VStack space={2}>
-            <Text
-              style={{
-                position: 'relative',
-                left: 15,
-                fontSize: 16,
-                fontFamily: 'Raleway-Regular',
-                color: '#00415e',
-              }}>
-              Enter last name (optional)
-            </Text>
-            <View style={styles.action}>
-              <TextInput
-                placeholder="Enter last name"
-                placeholderTextColor="#00415e"
-                style={[
-                  styles.textInputTitle,
-                  {
-                    color: '#00415e',
-                    padding: 10,
-                  },
-                ]}
-                autoCapitalize="none"
-                value={lastName}
-                returnKeyType="done"
-                onChangeText={e => setLastname(e)}
-              />
-            </View>
-          </VStack>
-          <VStack space={2}>
-            <Text
-              style={{
-                position: 'relative',
-                left: 15,
-                fontSize: 16,
-                fontFamily: 'Raleway-Regular',
-                color: '#00415e',
-              }}>
-              Enter email (optional)
-            </Text>
-            {remarks()}
-          </VStack>
-          <VStack space={2}>
-            <Text
-              style={{
-                position: 'relative',
-                left: 15,
-                fontSize: 16,
-                fontFamily: 'Raleway-Regular',
-                color: '#00415e',
-              }}>
-              Enter phone number (optional)
-            </Text>
-            <View style={styles.action}>
-              <TextInput
-                placeholder="Enter phone number"
-                placeholderTextColor="#00415e"
-                style={[
-                  styles.textInputTitle,
-                  {
-                    color: '#00415e',
-                    padding: 10,
-                  },
-                ]}
-                autoCapitalize="none"
-                value={num}
-                returnKeyType="done"
-                keyboardType="numeric"
-                onChangeText={e => setNum(e)}
-              />
-            </View>
-          </VStack>
-          <VStack space={0}>
-            <Text
-              style={{
-                position: 'relative',
-                left: 15,
-                fontSize: 16,
-                fontFamily: 'Raleway-Regular',
-                color: '#00415e',
-              }}>
-              Enter your feedback
-            </Text>
-            {articles()}
-          </VStack>
+            <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+      <ScrollView style={{flex:1,paddingHorizontal:10}}>
 
-          <View style={{alignItems: 'center'}}>
+        <TextBox 
+        label={'Enter first name'}
+        placeholder={' enter first name'}
+         value={firstName}
+         returnKeyType={'done'}
+         keyboardType={'default'}
+         onChangeText={(text)=>setFirstName(text)}
+         multiline={false}
+        
+        />
+           <TextBox 
+                 label={'Enter last name'}
+           placeholder={' enter last name'}
+         value={lastName}
+         returnKeyType={'done'}
+         keyboardType={'default'}
+         onChangeText={(text)=>setLastName(text)}
+         multiline={false}
+        
+        />
+           <TextBox
+                 label={'Enter email'} 
+           placeholder={' enter email'}
+         value={email}
+         returnKeyType={'done'}
+         keyboardType={'email-address'}
+         onChangeText={(text)=>setEmail(text)}
+         multiline={false}
+        
+        />
+
+<TextBox
+      label={'Enter number'}
+placeholder={' enter number'}
+         value={number}
+         returnKeyType={'done'}
+         keyboardType={'numeric'}
+         onChangeText={(text)=>setNumber(text)}
+         multiline={false}
+        
+        />
+
+         <View style={{marginVertical:15}}>
+            <Text style={{marginLeft:8,color:'#00415e',fontFamily:'Raleway-Regular'}}>Enter feedback (required)</Text>
+        <TextInput
+           
+           placeholder={' enter feedback'}
+           placeholderTextColor="#00415e"
+                    value={feedBack}
+                    returnKeyType={'go'}
+                    keyboardType={'default'}
+                    onChangeText={(text)=>setFeedBack(text)}
+                    multiline={true}
+        style={[styles.textInputTitle,{height:120,textAlignVertical:'top'}]}
+        
+        
+        />
+        </View>
+ 
+
+        <View style={{paddingHorizontal:60,marginTop:15}}>
             <Button
-              mode="contained"
-              labelStyle={{
-                color: '#00415e',
-
-                width: wp('50%'),
-              }}
-              style={styles.btn}
+       
+            borderRadius={25}
+          width='100%'
+          backgroundColor={'#00415e'}
+        fontFamily={'bold'}
               onPress={e => submitFeedbackForm(e)}>
-              Submit
+              
+           <Text style={{color:'#fff',fontFamily:'Raleway-Bold',fontSize:16}}>Submit</Text>
             </Button>
           </View>
-        </Stack>
+      
+     
+ 
+        
       </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -290,11 +260,9 @@ export default FeedBack;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 40,
-    margin: 0,
-    backgroundColor: '#8cd4eb',
+    padding: 10,
+    backgroundColor: '#fff',
 
-    alignItems: 'center',
   },
   body: {
     borderWidth: 1,
@@ -378,17 +346,14 @@ const styles = StyleSheet.create({
   },
   textInputTitle: {
     borderRadius: 15,
-    flex: 1,
-
-    marginTop: Platform.OS === 'ios' ? 0 : -10,
-    fontFamily: 'Raleway-Regular',
-    borderWidth: 1,
-    borderColor: 'lightgrey',
     color: 'grey',
+    fontSize: 15,
+alignItems:'center',
+paddingLeft:15,
+    fontFamily: 'Raleway-Regular',
+    width:'100%',
+    color:'#00415e',
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
-    fontSize: 16,
-    marginBottom: -10,
-    marginVertical: 0,
   },
   textInputArticle: {
     flex: 1,

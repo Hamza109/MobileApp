@@ -12,7 +12,8 @@ import {NativeBaseProvider, Box} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import DeviceInfo from 'react-native-device-info';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import messaging from '@react-native-firebase/messaging';
+
+
 import {
   SafeAreaView,
   ScrollView,
@@ -37,15 +38,17 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SSRProvider} from '@react-aria/ssr';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
-import DrawerMenu from './Screens/MainTab/DrawerMenu';
+
 import { SplashStack,Navigator } from './Screens/RootStackScreen';
 import { Provider } from 'react-redux';
 import reduxStore  from './Screens/Redux/Store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { useStore,useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import messaging from '@react-native-firebase/messaging';
+import axios from 'axios';
+import { backendHost } from './components/apiConfig';
 
-import { screenName,artId } from './Screens/Redux/Action';
 
 const App = () => {
   // const linking = {
@@ -74,7 +77,7 @@ const App = () => {
 
   const articeId=async id=>{
     try {
-      await AsyncStorage.setItem('artId',id)
+      await AsyncStorage.setItem('artId',JSON.stringify(id))
     }catch(error){
       throw error
     }
@@ -82,21 +85,25 @@ const App = () => {
   
   }
 
-  const getFCMToken=async ()=>{
+  const  getFCMToken=async ()=>{
     try{
-      const token= await messaging().getToken();
-      console.log(token)
+      const token = await messaging().getToken();
+      console.log('token->',token)
+      axios.post(`${backendHost}/notifications/token/${token}`)
+      .then((res)=>{
+        console.log('notify->',res.status)
+      })
     }
     catch(e){
-      console.log(e)
+  console.log(e)
     }
-  }
+  };
 
   useEffect(()=>{
- 
     getFCMToken();
-  },[]);
+  },[])
 
+  
 
 
 
@@ -109,7 +116,7 @@ const App = () => {
     Text.defaultProps.allowFontScaling = false;
 
     let deviceId = DeviceInfo.getUniqueId();
-    console.log('device:', deviceId);
+ 
     setDeviceInfo(deviceId);
     // Get the deep link used to open the app
     const getUrl = async () => {
@@ -121,8 +128,13 @@ const App = () => {
 
       if (initialUrl.includes('/cure')) {
         const url = initialUrl.split('/').pop();
+    
         const id = url.split('-')[0];
-        articeId(id)
+        const regex = /\/cure\/\d+-(.*)$/;
+const match = regex.exec(initialUrl);
+const string = match ? match[1].replace(/-/g, ' ') : null;
+const title=string.replace('?whatsapp', '')
+        articeId({id:id,title:title})
       
       }
       if (initialUrl.includes('/ResetPass')) {

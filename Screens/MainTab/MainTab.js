@@ -12,31 +12,34 @@ import DocTab from './DocTab';
 import { Platform } from 'react-native';
 import HomeScreen from './Home';
 import { useDispatch } from 'react-redux';
-import DrawerMenu from './DrawerMenu';
+
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
-const MyCuresStack = createStackNavigator();
-const ArticleStack = createStackNavigator();
+
 const Tab = createBottomTabNavigator();
 
 
 const MainTabScreen = () => {
-  const dispatch=useDispatch()
  
+
   return (
     <Tab.Navigator
       initialRouteName="drawer"
       screenOptions={({route})=>{
       
         return {
+          headerShown:  false,
+          headerStyle:{
+            height:Platform.OS==='android'?60:90,
+          },
         tabBarStyle:{
           justifyContent:'center',
           alignItems:'center',
           height:Platform.OS==='android'?55:85,
           display:
-          getFocusedRouteNameFromRoute(route) === "chat"
+          getFocusedRouteNameFromRoute(route) === "chat" || getFocusedRouteNameFromRoute(route) === "searchArt" || getFocusedRouteNameFromRoute(route) === "Disease" || getFocusedRouteNameFromRoute(route) === "Result" 
             ? "none"
-            : "flex",
+            : "flex" 
         }
         ,
         tabBarInactiveTintColor: 'grey',
@@ -48,12 +51,10 @@ const MainTabScreen = () => {
    
       <Tab.Screen
         name="drawer"
-        component={DrawerMenu}
+        component={HomeStack}
         options={{
-          headerShown: false,
+   
           tabBarActiveTintColor: '#00415e',
-        
-         
           tabBarLabel: 'Home',
           tabBarColor: '#fff',
           tabBarIcon: ({focused}) => (
@@ -68,9 +69,23 @@ const MainTabScreen = () => {
       <Tab.Screen
         name="DoctorTab"
         component={DocStack}
+      
         options={{
-  
-          headerShown: false,
+          headerStyle: {
+            backgroundColor: '#00415e',
+           height:Platform.OS ==='android'?60:90,
+      
+          },
+          headerTintColor:'#fff',
+          headerLeft: () => (
+        
+            <Icon
+              name="user-md"
+              size={30}
+              style={{marginLeft: 20, color: '#fff',      marginTop:Platform.OS === 'android'?0:45,}}
+              backgroundColor="#fff"></Icon>
+          ),
+      
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Doctor',
           tabBarColor: '#fff',
@@ -83,11 +98,25 @@ const MainTabScreen = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="ProfileStack"
         component={ProfileStack}
         
         options={{
-          headerShown: false,
+          headerStyle: {
+            backgroundColor: '#00415e',
+           height:Platform.OS ==='android'?60:90,
+      
+          },
+          headerTintColor:'#fff',
+          headerLeft:()=> 
+          (
+            
+          <Icon  
+          style={{marginLeft: 20, marginTop:Platform.OS === 'android'?0:0}}
+           name="heartbeat"    
+           color={'#fff'} 
+           size={26} />
+          ),
           tabBarActiveTintColor: '#00415e',
           tabBarLabel: 'Profile',
           

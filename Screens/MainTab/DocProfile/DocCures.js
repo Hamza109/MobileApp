@@ -12,6 +12,7 @@ import AllPost from '../../search/AllPost';
 import CenterWell from '../../Disease/CenterWell';
 import { useNavigation } from '@react-navigation/native';
 import { moderateScale,scale,verticalScale } from '../../../components/Scale';
+import { getArticleId } from '../../Redux/Action';
 
 const DocCures = () => {
     const [articleItems, setArticleItems] = useState([]);
@@ -19,6 +20,10 @@ const DocCures = () => {
     const dispatch=useDispatch()
     const store=useStore();
     const navigation=useNavigation();
+    const handlePress= (id,title)=>{
+      // dispatch(getArticleId({id:id,title:title}))
+      navigation.push(`Disease`, {ids:`${id}`,title:title})
+    }
 
     function IsJsonValid(str) {
         try {
@@ -106,7 +111,7 @@ const DocCures = () => {
                               }}>
                                 
                               <HStack space={1}  key={Math.random().toString(36)}>
-                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>{{ navigation.push(`Disease`, {ids:`${i.article_id}`,flow:0})}}}>
+                                <TouchableOpacity activeOpacity={0.8}  key={Math.random().toString(36)} onPress={()=>handlePress(i.article_id,i.title)}>
                                 <Image
                                 resizeMode='stretch'
                               key={Math.random().toString(36)}

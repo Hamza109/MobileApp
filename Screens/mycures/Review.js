@@ -2,30 +2,19 @@ import React from 'react';
 import {View, Text, Button, StyleSheet, Image} from 'react-native';
 import {useState} from 'react';
 import {useEffect} from 'react';
-import AllPost from '../search/AllPost';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {Card} from 'react-native-paper';
-import {get} from 'js-cookie';
 import {ScrollView} from 'react-native';
-import {TouchableOpacity} from 'react-native';
-import {TouchableHighlight} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {
   HStack,
-  Stack,
-  Center,
   Heading,
-  NativeBaseProvider,
-  Container,
-  Box,
   Spinner,
   VStack
 } from 'native-base';
-import CenterWell from '../Disease/CenterWell';
 import {useIsFocused} from '@react-navigation/native';
 import {backendHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
