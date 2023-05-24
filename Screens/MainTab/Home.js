@@ -60,6 +60,7 @@ import * as Animatable from 'react-native-animatable';
 import { position } from 'native-base/lib/typescript/theme/styled-system';
 import { topDoctors,recentCures } from '../Redux/Action';
 import LottieView from 'lottie-react-native';
+import Tip from './Tip/Tip';
 
 
 const HomeScreen = ({navigation, route}) => {
@@ -817,6 +818,10 @@ getValue()
           <DocPreview />
         </Stack>
       </ScrollView>
+
+      </View>
+      <View>
+      <Tip/>
       </View>
     </SafeAreaView>
   );

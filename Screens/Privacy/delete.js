@@ -126,7 +126,7 @@ if(res.data==1){
     {
       text: 'OK',
       onPress: () => {
-     dispatch(screenName('SPLASH')),dispatch(reg(0))
+     dispatch(screenName('MAIN')),dispatch(reg(0))
       }
     },
   ]

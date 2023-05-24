@@ -49,7 +49,7 @@ const UserProfile = ({first,last,number,mail}) => {
         {
           text: 'YES',
           onPress: () => {
-         dispatch(screenName('SPLASH')), remove()
+         dispatch(screenName('MAIN')), remove()
           },
         },
       ]);

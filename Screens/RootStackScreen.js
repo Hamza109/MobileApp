@@ -1157,7 +1157,7 @@ const Navigator = () => {
       case 'SPLASH':
           return <SplashStack />
       default:
-          return <SplashStack />
+          return <DrawerNavigator/>
   }
 }
 

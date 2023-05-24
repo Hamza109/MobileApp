@@ -24,7 +24,7 @@ const initialState={
  
 }
 const initialScreenState={
-    screen:'SPLASH'
+    screen:'MAIN'
 }
 const initialFavState={
     stat:0
