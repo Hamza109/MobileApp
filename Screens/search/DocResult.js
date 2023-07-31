@@ -67,18 +67,12 @@ const [search,setSearch]=useState();
   const navigationState = useNavigationState(state => state);
 
   useEffect(() => {
-  
-
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected);
-
-     
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [isConnected])
-
+    NetInfo.addEventListener(state => {
+       setIsConnected(state.isConnected);
+      
+     });
+   
+   }, [isConnected])
   const isearch = () => {
 
     const searchData= new Promise((resolve,reject)=>{

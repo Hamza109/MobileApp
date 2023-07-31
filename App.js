@@ -26,14 +26,7 @@ import {
   Alert,
   AppState,
 } from 'react-native';
-import RootStack from './Screens/RootStackScreen';
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SSRProvider} from '@react-aria/ssr';
@@ -43,8 +36,6 @@ import { SplashStack,Navigator } from './Screens/RootStackScreen';
 import { Provider } from 'react-redux';
 import reduxStore  from './Screens/Redux/Store';
 import { PersistGate } from 'redux-persist/integration/react';
-import { useStore,useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 import axios from 'axios';
 import { backendHost } from './components/apiConfig';
@@ -53,11 +44,8 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 
 const App = () => {
-  // const linking = {
-  //   prefixes: ['https://test.saadibrah.im', 'saadibrahim://'],
-  // };
-  const [url, setUrl] = useState(null);
-  const [processing, setProcessing] = useState(true);
+
+
 
   const setMail = async mail => {
     try {
@@ -87,37 +75,147 @@ const App = () => {
   
   }
 
-  const  getFCMToken=async ()=>{
-    try{
+  const tiPValue=async tip=>{
+    try {
+      await AsyncStorage.setItem('modal',JSON.stringify(tip))
+    }catch(error){
+      throw error
+    }
+  
+  }
+
+  const tipArticle=async tip=>{
+    try {
+      await AsyncStorage.setItem('tip_article',JSON.stringify(tip))
+    }catch(error){
+      throw error
+    }
+  
+  }
+
+
+
+  useEffect(() => {
+    setTimeout(()=>SplashScreen.hide(),2000)
+
+
+
+
+
+
+    const requestUserPermission = async () => {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+      if (enabled) {
+        // User has authorized or provisionally authorized the app to receive notifications.
+        getToken(); // Retrieve the FCM token for the device.
+      }
+    };
+  
+    const getToken = async () => {
       const token = await messaging().getToken();
-      console.log('token->',token)
-      axios.post(`${backendHost}/notifications/token/${token}`)
-      .then((res)=>{
-        console.log('notify->',res.status)
+      fetch(`${backendHost}/notification/token/"${token}"`,{
+        method:'POST'
       })
-    }
-    catch(e){
-  console.log(e)
-    }
-  };
+      .then((res)=>{
+       console.log('tokenStore-->',res)
+      })
+      console.log('FCM Token:', token);
+      // Send the token to your server for further processing if needed.
+    };
+  
+    requestUserPermission();
+  
+    // return messaging().onTokenRefresh(getToken); // Handle token refresh events.
+  }, []);
+
+  
+
+  useEffect(() => {
 
 
 
-  useEffect(()=>{
-setTimeout(()=>SplashScreen.hide(),2000)
+
+    const handleInitialNotification = async () => {
+      const initialNotification = await messaging().getInitialNotification();
+   
+      if (initialNotification) {
+        const {notification}=initialNotification
     
-    getFCMToken();
-  },[])
+        const {action,id}=initialNotification.data
+        if(action === 'tip')
+        {
+          tiPValue(true)
+          console.log('action',action)
+        }
+
+         if(action === 'article')
+         {
+          articeId({id:id,title:notification.body})
+          console.log('action',action)
+         }
+
+
+
+
+
+        console.log('Notification Data1:', initialNotification); // Log the notification data
+      // navigationRef.current?.navigate('ProfileTab',{screen:'chat'})
+       
+        // Handle the notification as needed
+      }
+    };
+
+    handleInitialNotification();
+  }, []);
+  
+
+  useEffect(() => {
+
+
+
+    messaging().registerDeviceForRemoteMessages();
+
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      // Handle the notification when the app is already open
+   
+      console.log('Notification opened:', remoteMessage);
+      // Perform any desired action based on the notification data
+    });
+
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
+
+    messaging().onMessage(async (remoteMessage) => {
+      console.log('Received a new FCM message:', remoteMessage);
+  
+      // Process the received notification message.
+      // You can show an in-app notification or handle the data payload as per your requirements.
+    });
+  
+    
+  }, []);
+
+  
 
 
  const configPush = () => {
+
+   
     if (Platform.OS == 'ios') {
       PushNotification.getApplicationIconBadgeNumber((number) => {
         if (number > 0) {
           PushNotification.setApplicationIconBadgeNumber(0);
         }
       });
+
+
     }
+   
 
     PushNotification.createChannel(
       {
@@ -131,22 +229,40 @@ setTimeout(()=>SplashScreen.hide(),2000)
       },
       (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
     );
+
+  
     PushNotification.configure({
     
+    
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function (token) {
-        console.log("TOKEN:", token);
+      onRegister: function (deviceToken) {
+        console.log(deviceToken)
+      
+    
       },
-
+        
       // (required) Called when a remote is received or opened, or local notification is opened
       onNotification: function (notification) {
-        console.log("NOTIFICATION:", notification);
+
+
+        console.log("NOTIFICATION DATA:", notification);
+     
+        
+      //  tiPValue(true)
         // process the notification
+        PushNotification.localNotification({
+          channelId: "channel_id_ALL_CURES",
+          title: notification.title,
+          message: notification.message
+          
+        });
         if (notification.foreground) {
+    
           PushNotification.localNotification({
             channelId: "channel_id_ALL_CURES",
             title: notification.title,
             message: notification.message
+            
           });
         }
         // (required) Called when a remote is received or opened, or local notification is opened
@@ -166,6 +282,8 @@ setTimeout(()=>SplashScreen.hide(),2000)
         console.error(err.message, err);
       },
 
+      
+
       // IOS ONLY (optional): default: all - Permissions to register.
       permissions: {
         alert: true,
@@ -184,7 +302,8 @@ setTimeout(()=>SplashScreen.hide(),2000)
        * - if you are not using remote notification or do not have Firebase installed, use this:
        *     requestPermissions: Platform.OS === 'ios'
        */
-      requestPermissions: true,
+      requestPermissions:true
+   
     });
   }
 
@@ -199,6 +318,48 @@ setTimeout(()=>SplashScreen.hide(),2000)
   useEffect(() => {
 
 
+   
+    
+
+
+
+    const handleDeepLink = async (url) => {
+      // Process the deep link URL and perform the desired action
+      console.log('Deep link URL:', url);
+      if (url.includes('/ResetPass')) {
+        console.log('reset')
+        const newUrl = url.split('em=')[1];
+        console.log('new->',newUrl)
+
+        setMail(newUrl);
+     
+    
+        setTimeout(() => {
+          navigationRef.current?.navigate('Forgetpass');
+        }, 2000);
+      }
+    
+    };
+    
+    const initializeDeepLinking = () => {
+      // Add an event listener to handle incoming deep links
+      Linking.addEventListener('url', handleOpenURL);
+    };
+    
+   const cleanUpDeepLinking = () => {
+      // Remove the event listener when the component is unmounted or the app is backgrounded
+      Linking.removeEventListener('url', handleOpenURL);
+    };
+    
+    const handleOpenURL = (event) => {
+      // Handle the deep link when it is received
+      const url = event.url;
+
+      handleDeepLink(url);
+    }
+
+    initializeDeepLinking();
+    
 
 
     Text.defaultProps = Text.defaultProps || {};
@@ -211,8 +372,20 @@ setTimeout(()=>SplashScreen.hide(),2000)
     const getUrl = async () => {
       const initialUrl = await Linking.getInitialURL();
 
+      console.log('initial',initialUrl)
+
       if (initialUrl === null) {
         return;
+      }
+
+
+      if(initialUrl.includes('/view'))
+      {
+        console.log('true')
+        tipArticle(true)
+      }
+      else{
+        console.log('false')
       }
 
       if (initialUrl.includes('/cure')) {
@@ -223,16 +396,21 @@ setTimeout(()=>SplashScreen.hide(),2000)
 const match = regex.exec(initialUrl);
 const string = match ? match[1].replace(/-/g, ' ') : null;
 const title=string.replace('?whatsapp', '')
+console.log('id',id)
+console.log('title',title)
         articeId({id:id,title:title})
       
       }
+
+
+
       if (initialUrl.includes('/ResetPass')) {
         const url = initialUrl.split('em=')[1];
 
         setMail(url);
         setTimeout(() => {
-          navigationRef.current?.navigate('Forgetpass');
-        }, 4000);
+       navigationRef.current?.navigate('Forgetpass');
+        }, 2000);
       }
     };
 
@@ -240,6 +418,7 @@ const title=string.replace('?whatsapp', '')
 
     return () => {
       getUrl()
+      cleanUpDeepLinking()
     };
     
   });
@@ -258,22 +437,7 @@ const title=string.replace('?whatsapp', '')
         <NavigationContainer
           // linking={linking}
           ref={navigationRef}
-          onReady={() => {
-            routeNameRef.current = navigationRef.current.getCurrentRoute().name;
-          }}
-          onStateChange={async () => {
-            const previousRouteName = routeNameRef.current;
-            const currentRouteName =
-              navigationRef.current.getCurrentRoute().name;
-
-            if (previousRouteName !== currentRouteName) {
-              await analytics().logScreenView({
-                screen_name: currentRouteName,
-                screen_class: currentRouteName,
-              });
-            }
-            routeNameRef.current = currentRouteName;
-          }}>
+        >
      
          <Navigator/>
         </NavigationContainer>

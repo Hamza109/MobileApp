@@ -13,6 +13,7 @@ const [isLoaded, setIsLoaded] = useState(false);
 
   
 const disease=()=>{
+  
     fetch(`${backendHost}/data/categories`)
     .then(res=>res.json())
     .then(json=>{

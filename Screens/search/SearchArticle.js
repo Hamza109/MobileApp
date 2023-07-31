@@ -214,7 +214,6 @@ const [uniqueId,setUniqueId]=useState()
     )
 }
 export default SearchArt;
-const width=Dimensions.get('screen').width
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',

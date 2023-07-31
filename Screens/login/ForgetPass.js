@@ -25,7 +25,7 @@ import axios from 'axios';
 
 import * as Animatable from 'react-native-animatable';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import Feather from 'react-native-vector-icons/Feather';
 import {useTheme} from 'react-native-paper';
 import {
@@ -37,6 +37,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {usePasswordValidation} from '../../components/usePasswordValidation';
+import LottieView from 'lottie-react-native';
+import { StackActions } from '@react-navigation/routers';
 const Forgetpass = ({navigation, route}) => {
   
 
@@ -70,6 +72,7 @@ const Forgetpass = ({navigation, route}) => {
   const [promo, setPromo] = useState(null);
   const [validEmail, setValidEmail] = useState();
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] =
     usePasswordValidation({
@@ -87,6 +90,25 @@ const Forgetpass = ({navigation, route}) => {
     setPassword({...password, secondPassword: event});
   };
 
+  const spinner = () => {
+    return (
+      <View style={{alignItems: 'center'}}>
+        <HStack space={2} justifyContent="center">
+          <LottieView
+            source={require('../../assets/animation/pulse.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50}}
+          />
+          {/* <Spinner
+            accessibilityLabel="Loading posts"
+            color="#fff"
+            size="lg"
+          /> */}
+        </HStack>
+      </View>
+    );
+  }
 
   useEffect(() => {
 getMail()
@@ -113,6 +135,7 @@ getMail()
     } catch (error) {error;}
   };
   const SignUpForm = () => {
+    setLoading(true);
     setClicked(1);
     setTimeout(() => {
       setClicked(0);
@@ -173,18 +196,20 @@ getMail()
         <TouchableOpacity
           style={{marginLeft: 20, color: '#fff'}}
           backgroundColor="#fff"
-          onPress={() => navigation.navigate('MainTab')}>
-          <Text
-            style={{
-              color: '#fff',
-              position: 'absolute',
-              bottom: 140,
-              left: 300,
-              fontSize: 18,
-              fontFamily: 'Raleway',
-            }}>
-            Skip
-          </Text>
+          onPress={() => navigation.dispatch(StackActions.pop(1))}>
+
+<Icon  name={'close-circle-outline'} color={'#fff'}
+size={30} 
+style={{
+  color: '#fff',
+  position: 'absolute',
+  bottom: 140,
+  left: 300,
+  fontFamily: 'Raleway',
+}}
+/>
+
+        
         </TouchableOpacity>
         <Stack space={1}>
           <View style={styles.header}>
@@ -289,9 +314,7 @@ getMail()
             <TouchableOpacity
               style={styles.signIn}
               onPress={
-                (() => {
-                  handleEmail(emails);
-                },
+                (
                 SignUpForm)
               }>
               <Text
@@ -305,6 +328,7 @@ getMail()
                Submit
               </Text>
             </TouchableOpacity>
+            {loading?spinner():null}
            
           </View>
         </Stack>

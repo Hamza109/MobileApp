@@ -15,6 +15,7 @@ import {
   TouchableHighlight,
   Image,
   RefreshControl,
+
 } from 'react-native';
 import Category from '../Category/Category';
 import { Header } from '@rneui/themed';
@@ -26,19 +27,13 @@ import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import System from '../Category/System';
-
+import messaging from '@react-native-firebase/messaging';
 import MaterialIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {
   HStack,
   Stack,
-  Center,
-  Box,
-  Spinner,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Fab
+
 } from 'native-base';
 import CenterWell from '../Disease/CenterWell';
 import {backendHost} from '../../components/apiConfig';
@@ -61,6 +56,7 @@ import { position } from 'native-base/lib/typescript/theme/styled-system';
 import { topDoctors,recentCures } from '../Redux/Action';
 import LottieView from 'lottie-react-native';
 import Tip from './Tip/Tip';
+import { set } from 'react-native-reanimated';
 
 
 const HomeScreen = ({navigation, route}) => {
@@ -73,10 +69,12 @@ const toast=useToast()
   const  topDoc=useSelector((state)=>state.top.Data)
   const [isLoaded, setIsLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
+  const [open,setOpen]=useState(false)
+  const [tip,setTip]=useState(false)
 
  const dispatch=useDispatch();
 
-  const [visible, setVisible] = useState(false);
+
 
   function Reload(){
   
@@ -97,17 +95,40 @@ const toast=useToast()
     )
   }
 
+  useEffect(()=>{
+    NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+     
+    });
+  
+  },[isConnected])
 
   useEffect(() => {
 
+if(Platform.OS === 'ios')
+{
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      // Handle the notification when the app is already open
+     console.log('notification',remoteMessage)
+      const {action,id}=remoteMessage.data
+        if(action === 'tip')
+        {
+        setTip(true)
+          console.log('action',action)
+        }
+
+         if(action === 'article')
+         {
+          navigation.navigate('Disease',{ids:id,title:remoteMessage.notification.body})
+      
+          console.log('action',action)
+         }
+      // Perform any desired action based on the notification data
+    });
+  }
 
 
 
-  const unsubscribe = NetInfo.addEventListener(state => {
-    setIsConnected(state.isConnected);
-   
-  });
-  unsubscribe();
     
  Promise.all([  
     fetch(`${backendHost}/article/allkv?limit=15`)
@@ -192,8 +213,41 @@ const toast=useToast()
   const isFocuss = useIsFocused();
 
   useEffect(() => {
+
+    const getTip=async ()=>{
+      const response=await fetch(`${backendHost}/view/article`)
+      const url=await `"${response.url}."`
+      console.log(url)
+    
+      const regex = /cure\/(\d+)-(.*?)\./;
+    const match = url.match(regex);
+    
+    if (match && match.length >= 3) {
+      const articleId = match[1];
+      const articleTitle = match[2].replace(/%20/g, ' '); // Replace %20 with space
+      console.log("Article ID:", articleId);
+      console.log("Article Title:", articleTitle);
+      navigation.navigate('Disease',{ids:articleId,title:articleTitle})
+      
+    } else {
+      console.log("Invalid URL format");
+    }
+    
+    }
+    
+
   
-   
+    async function getModal(){
+      const  value= await AsyncStorage.getItem('modal')
+      const  visible = value !=null? JSON.parse(value):null
+      if(visible)
+      {
+        console.log('visible',visible)
+        setTip(value)
+        AsyncStorage.removeItem('modal')
+      }
+       }
+       
     async function getValue() {
       const myValue = await AsyncStorage.getItem('artId');
       const myObject = myValue != null ? JSON.parse(myValue) : null;
@@ -205,9 +259,24 @@ const toast=useToast()
       }
    
     }
+    async function getTipArticle() {
+      const myValue = await AsyncStorage.getItem('tip_article');
+      const myObject = myValue != null ? JSON.parse(myValue) : null;
+ // Log the retrieved object
+      if(myObject){
+        console.log(myObject)
+getTip()
+  AsyncStorage.removeItem('tip_article')
+      }
+   
+    }
 
+getTipArticle()
 getValue()
+getModal()
     
+
+
     
     if (isFocuss) {
      
@@ -418,7 +487,7 @@ getValue()
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
-                Cures By Category
+               Choose by diseases
               </Text>
               <Icon
                 style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
@@ -751,7 +820,7 @@ getValue()
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
-                System Of Medicine
+                Trending Cures
               </Text>
               <Icon
                 style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
@@ -821,7 +890,7 @@ getValue()
 
       </View>
       <View>
-      <Tip/>
+      <Tip tip={tip} onDismiss={()=>setTip(!tip)} />
       </View>
     </SafeAreaView>
   );

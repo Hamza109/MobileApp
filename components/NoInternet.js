@@ -25,14 +25,12 @@ const toast=useToast()
     )
 
     useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(state => {
+       NetInfo.addEventListener(state => {
           setIsConnected(state.isConnected);
          
         });
-        return () => {
-          unsubscribe();
-        };
-      }, [])
+      
+      }, [isConnected])
 
 
       const tryAgain = () => {

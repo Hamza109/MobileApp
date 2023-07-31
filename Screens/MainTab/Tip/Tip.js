@@ -5,7 +5,7 @@ import { Modal,Portal } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { backendHost } from '../../../components/apiConfig';
-const Tip = () => {
+const Tip = ({tip,onDismiss}) => {
   const tips = [
     {"tip_date": "2022-05-24T11:31:49.000+00:00", "tip_id": 3, "tip_status": 0, "tip_title": "A apple a day keeps a doctor awayss", "user_id": 5},
     {"tip_date": "2022-05-24T11:32:25.000+00:00", "tip_id": 4, "tip_status": 1, "tip_title": "diksha is testing tip functionality in uat ", "user_id": 5},
@@ -14,7 +14,7 @@ const Tip = () => {
     {"tip_date": "2022-05-24T04:37:23.000+00:00", "tip_id": 8, "tip_status": 0, "tip_title": "diksha hamza", "user_id": 6}
   ];
   
-  const [tip, setTip] = useState(false);
+
   const [data,setData]=useState([])
   const [hasEntriesForToday, setHasEntriesForToday] = useState(false);
 
@@ -27,8 +27,8 @@ const Tip = () => {
         
     .then(res => {
 
-      console.log('tip',res.data)
-      const filteredData = tips.filter(tip => tip.tip_date.startsWith(today));
+
+      const filteredData = res.data.filter(tip => tip.tip_date.startsWith(today));
       setData(filteredData)
      
       setHasEntriesForToday(filteredData.length>0)
@@ -45,7 +45,7 @@ console.log(error)
 
 useEffect(()=>{
 
-  console.log('date',today)
+
   tipData()
 },[])
   const containerStyle = {backgroundColor: 'white', padding: 9,margin:12,maxHeight:300,borderRadius:20};
@@ -78,14 +78,14 @@ useEffect(()=>{
         height={12}
         width={12}
         p="2"
-        onPress={() => setTip(!tip)}
+        onPress={onDismiss}
         shadow={2}
         background="#00415e"
         icon={<MaterialIcons name={tip ? 'lightbulb-on' : 'lightbulb-outline'} size={25} color={tip ? 'yellow' : 'white'} />}
       />
 <View>
 <Portal>
-<Modal visible={tip} onDismiss={()=>setTip(!tip)} contentContainerStyle={containerStyle}>
+<Modal visible={tip} onDismiss={onDismiss} contentContainerStyle={containerStyle}>
 
 <FlatList data={data} renderItem={renderItem} 
 ListEmptyComponent={() =>

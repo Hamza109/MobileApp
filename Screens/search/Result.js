@@ -72,15 +72,12 @@ const Result = ({route}) => {
 
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected);
-
-     
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [isConnected])
+    NetInfo.addEventListener(state => {
+       setIsConnected(state.isConnected);
+      
+     });
+   
+   }, [isConnected])
 
   const receivedData = () => {
    const receive= new Promise((resolve,reject)=>{

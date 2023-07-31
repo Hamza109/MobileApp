@@ -85,6 +85,7 @@ const doc=useSelector((state)=>state.info.data)
   const [modalVisible, setModalVisible] = useState(false);
   const [exist,setExist]=useState(false)
   const [isConnected, setIsConnected] = useState(true);
+  const abort =new AbortController()
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
@@ -122,7 +123,9 @@ const doc=useSelector((state)=>state.info.data)
       {
         setIsLoaded(false)
       axios
-      .get(`${backendHost}/profile/${userId}`)
+      .get(`${backendHost}/profile/${userId}`,{
+        signal:abort.signal
+      })
       .then(res => {
      
        resolve (setFirstName(res.data.first_name))
@@ -176,6 +179,9 @@ if(isConnected)
           `${backendHost}/DoctorsActionController?rowno=${Number(
             row
           )}&cmd=getProfile`,
+          {
+            signal:abort.signal
+          }
         )
           .then(res => res.data)
           .then(json => {
@@ -245,6 +251,10 @@ userData.then(()=>{
 
       getId();
       checkIfImage(img);
+      return () => {
+        // Cleanup code here
+        abort.abort(); // Cancel the fetch request when the component unmounts
+      };
      
   }, [isConnected]);
 
@@ -278,21 +288,18 @@ userData.then(()=>{
     return true;
   };
 
-  
 
 
-
-
-useEffect(()=>{
-  const backAction=()=>{
-    navigation.push('profile')
-  }
-  const backHandler=BackHandler.addEventListener(
-    "hardwareBackPress",
-    backAction
-  );
-  return () => backHandler.remove();
-})
+// useEffect(()=>{
+//   const backAction=()=>{
+//     navigation.push('profile')
+//   }
+//   const backHandler=BackHandler.addEventListener(
+//     "hardwareBackPress",
+//     backAction
+//   );
+//   return () => backHandler.remove();
+// })
 
 
   const choosePhotoFromLibrary = () => {

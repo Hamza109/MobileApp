@@ -92,7 +92,7 @@ const Disease = ({navigation, route}) => {
   const [result, setResult] = useState();
   const [toggle,setToggle]=useState();
   const [isConnected, setIsConnected] = useState(true);
-
+const abort= new AbortController()
 
   const check = () => {
     if (user.getState().userId.regId == 0) {
@@ -130,6 +130,7 @@ const Disease = ({navigation, route}) => {
 
   }
   const backHandler = BackHandler.addEventListener(
+    
     "hardwareBackPress",
     backAction
   );
@@ -142,7 +143,9 @@ const Disease = ({navigation, route}) => {
 
   }, [id]);
   
-  const comment=()=>{  fetch(`${backendHost}/rating/target/${id}/targettype/2`)
+  const comment=()=>{  fetch(`${backendHost}/rating/target/${id}/targettype/2`,{
+    signal:abort.signal
+  })
     .then(res => res.json())
     .then(json => {
     var temp=[];
@@ -164,9 +167,10 @@ const Disease = ({navigation, route}) => {
   useEffect(()=>{
     
   comment()
-  return ()=>{
-    comment()
-  }
+  return () => {
+    // Cleanup code here
+    abort.abort(); // Cancel the fetch request when the component unmounts
+  };
   },[])
 
   const onShare = () => {
@@ -192,7 +196,9 @@ const Disease = ({navigation, route}) => {
 
   const fetchTables = () => {
     Promise.all([
-      fetch(`${backendHost}/article/all/table/disease_condition`).then(res =>
+      fetch(`${backendHost}/article/all/table/disease_condition`,{
+        signal:abort.signal
+      }).then(res =>
         res.json(),
       ),
     ])
@@ -203,7 +209,13 @@ const Disease = ({navigation, route}) => {
   };
 
   useEffect(() => {
+console.log('articleId---->',id)
+
     fetchTables();
+    return () => {
+      // Cleanup code here
+      abort.abort(); // Cancel the fetch request when the component unmounts
+    };
   }, []);
   
   function User() {
@@ -228,7 +240,7 @@ const Disease = ({navigation, route}) => {
       countryCodeLength = phoneNumber.length % 10;
       var countryCode = phoneNumber.slice(0, countryCodeLength);
       var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-      if (phoneNumber) {
+      if (value.length === 10) {
         axios
           .post(`${backendHost}/users/subscribe/${StringValue}`, {
             nl_subscription_disease_id: option == 2 ? '1' : '0',
@@ -237,17 +249,35 @@ const Disease = ({navigation, route}) => {
             country_code: `'${countryCode}'`,
           })
           .then(res => {
-            if (res.data === 1) {
-              Alert.alert('You have successfully subscribed to our Newsletter');
-            } else {
-              Alert.alert('Some error occured! Please try again later.');
+            if (res.data.includes('Subscribed')) {
+              setLoading(false);
+
+              toast.show({
+                title: 'Subscribed',
+                description: 'Thankyou for subscribing.',
+                status: 'success',
+                placement: 'bottom',
+                duration: 2000,
+                style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+              });
+            } 
+            else if( res.data.includes('Already')){
+              setLoading(false);
+              toast.show({
+                title: 'Already Subscribed',
+                description: 'Number already subscribed.',
+                status: 'info',
+                placement: 'bottom',
+                duration: 2000,
+                style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+              });
             }
           })
           .catch(err => {
             Alert.alert('Some error occured! Please try again later.');
           });
       } else {
-        Alert.alert('Please enter a valid number!');
+        Alert.alert('Please enter a valid 10-digit number!');
       }
     } else {
       Alert.alert('Please enter your number!');
@@ -279,7 +309,9 @@ const Disease = ({navigation, route}) => {
         { 
           setIsLoaded(false)
        
-        fetch(`${backendHost}/article/${id}`)
+        fetch(`${backendHost}/article/${id}`,{
+          signal:abort.signal
+        })
         .then(res => res.json())
         .then(json => {
           
@@ -306,10 +338,10 @@ const Disease = ({navigation, route}) => {
    
 get();
 
-    return () => {
-      get();
-    
-    };
+return () => {
+  // Cleanup code here
+  abort.abort(); // Cancel the fetch request when the component unmounts
+};
   }, [isConnected]);
 
   useEffect(() => {
@@ -326,6 +358,10 @@ get();
     if (isFocus) {
       getResult();
     }
+    return () => {
+      // Cleanup code here
+      abort.abort(); // Cancel the fetch request when the component unmounts
+    };
   }, [data]);
   function IsJsonValid(str) {
     try {
@@ -337,7 +373,9 @@ get();
   }
 
   const getResult = () => {
-    fetch(`${backendHost}/isearch/${data.dc_name}`)
+    fetch(`${backendHost}/isearch/${data.dc_name}`,{
+      signal:abort.signal
+    })
       .then(res => res.json())
       .then(json => {
         
@@ -408,8 +446,8 @@ setToggle(false)
 
   const goto = () => {
     toast.show({
-      title: 'Added to cures',
-      description: 'Check MyCures Tab.',
+      title: 'Added to favourites',
+      description: 'Check favourites in profile.',
       status: 'info',
       placement: 'bottom',
       duration: 2000,
@@ -447,8 +485,8 @@ setToggle(false)
         .then(res => {
           if (res.data > 0) {
             toast.show({
-              title: 'Remove from cures',
-              description: 'Check MyCures Tab.',
+              title: 'Remove from favourites',
+              description: 'successfully removed',
               status: 'info',
               placement: 'bottom',
               duration: 2000,
@@ -524,12 +562,13 @@ setToggle(false)
                 }}>
   
                 <StarRating
-                  disabled={false}
+                  disabled={true}
                   starSize={20}
                   maxStars={5}
                   rating={showValue}
                   emptyStarColor={'#00415e'}
                   fullStarColor={'orange'}
+                  
                 />
                
                 

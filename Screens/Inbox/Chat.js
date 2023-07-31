@@ -27,26 +27,32 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-const CHAT_SERVER_URL = 'wss://all-cures.com:8000';
+const CHAT_SERVER_URL = 'wss://uat.all-cures.com:8000';
 
 const Chat = ({ route }) => {
   const navigation = useNavigation()
   const chatData = route.params.messages;
   const Id = route.params.id;
+  const FIRST_NAME = route.params.first_name
+  const LAST_NAME=route.params.last_name
   const chatid=route.params.chatId
   const [text, setText] = useState('');
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState(null);
   const user=useSelector((state)=>state.userId.regId)
   const doc=useSelector((state)=>state.info.data)
-  const row=useSelector((state)=>state.docRow.rowId)
-  const chatInfo=useSelector((state)=>state.chatUser.chat)
+
   const [exist,setExist]=useState(false)
   const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`)
   const [selectedMessageId, setSelectedMessageId] = useState(null);
 
   
-  
+  useEffect(()=>{
+    navigation.setOptions({
+      title:`Dr. ${FIRST_NAME} ${LAST_NAME}`
+    })
+})
+
 
   useEffect(() => {
     setMessages(chatData.reverse());

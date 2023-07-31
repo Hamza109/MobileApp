@@ -1,6 +1,6 @@
 import { StatusBar } from 'native-base'
 import React, { useState, useEffect,useLayoutEffect } from 'react'
-import { View, Text, FlatList, StyleSheet, Pressable,Image } from 'react-native'
+import { View, Text, FlatList, StyleSheet, Pressable,Image,BackHandler } from 'react-native'
 import axios from 'axios'
 import Svg, {Path, Circle} from 'react-native-svg';
 import {backendHost} from '../../components/apiConfig';
@@ -9,6 +9,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useDispatch,useSelector } from 'react-redux';
 import { chatInfo } from '../Redux/Action';
 import moment from 'moment';
+import { StackActions } from '@react-navigation/native';
 
 
 const Inbox = () => {
@@ -69,7 +70,6 @@ const data= new Promise((resolve,reject)=>{
 })
 data.then((responseData)=>{
  
-  
 const transformedMessages = responseData.map(message => {
 
   return {
@@ -84,8 +84,8 @@ const transformedMessages = responseData.map(message => {
 
 
 
-navigation.push('chat',{messages:responseData.length!==1?transformedMessages.reverse():[],chatId:responseData[0].Chat_id,id:getId,first_name:getFirstName,last_name:getLastName})
-})
+navigation.push('chat',{messages:responseData.length!==1?transformedMessages.reverse():[],chatId:responseData[0].Chat_id,id:getId,first_name:getFirstName,last_name:getLastName})})
+
  
   
   
@@ -93,9 +93,21 @@ navigation.push('chat',{messages:responseData.length!==1?transformedMessages.rev
   
   }
   
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+    
+        navigation.dispatch(StackActions.replace('Profile'));
+
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, [navigation]);
 
 
   useLayoutEffect(() => {
+
+    
     const fetchData = async () => {
 
       fetch(`${backendHost}/chat/list/${user}`)
@@ -119,7 +131,7 @@ navigation.push('chat',{messages:responseData.length!==1?transformedMessages.rev
     fetchData()
   }
 
-  }, [isFocused])
+  }, [data,isFocused])
 
 
 

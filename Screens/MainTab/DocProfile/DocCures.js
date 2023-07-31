@@ -20,6 +20,7 @@ const DocCures = () => {
     const dispatch=useDispatch()
     const store=useStore();
     const navigation=useNavigation();
+    const abortController= new AbortController()
     const handlePress= (id,title)=>{
       // dispatch(getArticleId({id:id,title:title}))
       navigation.push(`Disease`, {ids:`${id}`,title:title})
@@ -37,7 +38,9 @@ const DocCures = () => {
 
     const allpost = () => {
          
-        fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${doc.rowno}`)
+        fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${doc.rowno}`,{
+          signal:abortController.signal
+        })
           .then(res => res.json())
           .then(json => {
     
@@ -53,13 +56,21 @@ const DocCures = () => {
          
           })
           .catch(err => {
-        err
+            if (err.name === 'AbortError') {
+              // Fetch request was aborted
+              return;
+            }
           });
       };
 
       useEffect(() => {
 
         allpost();
+
+        return () => {
+          // Cleanup code here
+          abortController.abort(); // Cancel the fetch request when the component unmounts
+        };
     
       }, [doc.rowno]);
 

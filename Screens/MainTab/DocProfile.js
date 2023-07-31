@@ -81,6 +81,7 @@ const dispatch=useDispatch()
   const [commentItems, setCommentItems] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
   const refRBSheet = useRef();
+  const abort= new AbortController()
 
   useEffect(()=>{
     const backAction =()=>{
@@ -96,15 +97,13 @@ const dispatch=useDispatch()
    },[])
   
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected);
-     
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [])
+   useEffect(() => {
+    NetInfo.addEventListener(state => {
+       setIsConnected(state.isConnected);
+      
+     });
+   
+   }, [isConnected])
 
 
   const check = () => {
@@ -136,7 +135,9 @@ const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/docto
   
   const getRating = () => {
     axios
-      .get(`${backendHost}/rating/target/${id}/targettype/1/avg`)
+      .get(`${backendHost}/rating/target/${id}/targettype/1/avg`,{
+        signal:abort.signal
+      })
       .then(res => {
       
         setShowValue(res.data);
@@ -169,7 +170,9 @@ const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/docto
 
 const docData=new Promise ((resolve,reject)=>{
   setIsLoaded(false)
-  axios.get(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`)
+  axios.get(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`,{
+    signal:abort.signal
+  })
  
   .then(res => res.data)
   .then(json=>
@@ -196,7 +199,9 @@ docData.then(()=>{
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
          
-    fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`)
+    fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`,{
+      signal:abort.signal
+    })
       .then(res => res.json())
       .then(json => {
 
@@ -256,7 +261,7 @@ docData.then(()=>{
       .then(res=>{
     
         if(res.data[0].Chat_id!=null){
-          navigation.navigate('chat',{id:doc.docid,messages:[],chatId:res.data[0].Chat_id})
+          navigation.navigate('chat',{id:doc.docid,messages:[],chatId:res.data[0].Chat_id,first_name:doc.docname_first,last_name:doc.docname_last})
         }
         else{
           Alert.alert('Something went wrong,please try again')
@@ -330,10 +335,19 @@ useEffect(()=>{
 })
 useEffect(()=>{
   store.dispatch(getDoc())
+  return () => {
+    // Cleanup code here
+    abort.abort(); // Cancel the fetch request when the component unmounts
+  };
+
 },[id,isConnected])
   useEffect(() => {
 
     allpost();
+    return () => {
+      // Cleanup code here
+      abort.abort(); // Cancel the fetch request when the component unmounts
+    };
 
   }, [id]);
 

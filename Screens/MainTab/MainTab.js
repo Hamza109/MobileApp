@@ -37,7 +37,7 @@ const MainTabScreen = () => {
           alignItems:'center',
           height:Platform.OS==='android'?55:85,
           display:
-          getFocusedRouteNameFromRoute(route) === "chat" || getFocusedRouteNameFromRoute(route) === "searchArt" || getFocusedRouteNameFromRoute(route) === "Disease" || getFocusedRouteNameFromRoute(route) === "Result" 
+          getFocusedRouteNameFromRoute(route) === "chat" || getFocusedRouteNameFromRoute(route) === "searchArt" || getFocusedRouteNameFromRoute(route) === "Disease" || getFocusedRouteNameFromRoute(route) === "Result"  ||  getFocusedRouteNameFromRoute(route) === "Forgetpass" 
             ? "none"
             : "flex" 
         }
@@ -67,7 +67,7 @@ const MainTabScreen = () => {
         }}
       />
       <Tab.Screen
-        name="DoctorTab"
+        name="Doctor"
         component={DocStack}
       
         options={{
@@ -98,7 +98,7 @@ const MainTabScreen = () => {
         }}
       />
       <Tab.Screen
-        name="ProfileStack"
+        name="ProfileTab"
         component={ProfileStack}
         
         options={{

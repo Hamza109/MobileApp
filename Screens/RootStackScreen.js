@@ -48,11 +48,13 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import { useDispatch,useStore } from 'react-redux';
 import { StackActions } from '@react-navigation/native'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { createDrawerNavigator,DrawerContentScrollView,DrawerItemList} from '@react-navigation/drawer';
+import { createDrawerNavigator,DrawerContentScrollView,DrawerItem,DrawerItemList} from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { backendHost } from '../components/apiConfig';
 import axios from 'axios';
+import Notification from '../components/Notification';
+import { screenName } from './Redux/Action';
 
 
 
@@ -345,7 +347,15 @@ useEffect(()=>{
 
      
           }}
-        />
+        /> 
+        <Home.Screen
+        name="Forgetpass"
+        component={Forgetpass}
+        presentation={'modal'}
+        options={{headerShown: false}}
+      />
+
+
     </Home.Navigator>
   );
 };
@@ -549,7 +559,7 @@ return(
             fontWeight: 'bold',
             marginTop:Platform.OS === 'android'?0:45,
           },
-          headerTitle:`Dr. ${doc.docname_first} ${doc.docname_last}`,
+          title:`Dr. `,
         headerLeft:()=>(<View style={{flexDirection:'row',marginTop:Platform.OS === 'android'?5:45}}><IonIcon name="chevron-back-outline" style={{marginLeft:10}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>{exist?<Image source={{uri:url}} style={{width:40,height:40,borderRadius:25}} />:<User/>}</View>),
         
           }}
@@ -761,7 +771,7 @@ useEffect(()=>{
           backgroundColor:'#00415e'
       
         },
-        headerLeft:()=>(<IonIcon name="chevron-back-outline" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#fff'} size={28} onPress={()=>{navigation.dispatch(StackActions.pop(1))}}/>),
+        headerLeft:()=>(<IonIcon name="mail" style={{marginLeft:10,     marginTop:Platform.OS === 'android'?0:45,}} color={'#fff'} size={28} />),
 
       
           }}
@@ -885,8 +895,19 @@ return(
 
 const DrawerNavigator=()=>{
 
-  const user=useSelector((state)=>state.userId.regId) ;
+  const user=useSelector((state)=>state.userId.regId)
   const dispatch=useDispatch();
+
+  const check=()=>{
+    if(user!=0)
+    {
+      Navigation.navigate('ProfileTab',{screen:'inbox'})
+    }
+    else{
+      dispatch(screenName("LOGIN"))
+    }
+  }
+
     const Navigation = useNavigation();
     
     useEffect(() => {
@@ -912,6 +933,7 @@ const DrawerNavigator=()=>{
       return true;
     };
     function CustomDrawerContent(props) {
+      
       return (
         <DrawerContentScrollView
           contentContainerStyle={{
@@ -939,11 +961,33 @@ const DrawerNavigator=()=>{
               All Cures
             </Text>
             </HStack>
+
+          </View>
+         
+          <DrawerItem
+              
+              icon={()=>(<IonIcon
+                name="mail"
+                size={22}
+                color='#00415e'
+              />)}
+        label="Inbox"
+        labelStyle={{color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4,fontSize:16}}
+        onPress={check}
+      />
+                  <Divider style={{marginBottom:10}}/>
+              <DrawerItemList  {...props} />
+  
+
+
+          
+          <View>
+       
           </View>
           <View>
-            <Divider style={{marginBottom:20}}/>
+
           </View>
-          <DrawerItemList {...props} />
+      
         
          
           </SafeAreaView>
@@ -959,14 +1003,16 @@ const DrawerNavigator=()=>{
     screenOptions={{
       height:Platform.OS ==='android'?60:90
     }}
+    
     drawerContent={props => <CustomDrawerContent {...props} />  }  >
     <Drawer.Screen
       name="Home"
       component={MainTabScreen}
-  
+     
       options={{
+    
         headerShown: null,
-
+         
         drawerLabel: 'Home',
         drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:5},
         drawerIcon: () => (
@@ -1002,6 +1048,29 @@ const DrawerNavigator=()=>{
         
       }}
     />
+    <Drawer.Screen
+          name="Notification"
+          component={Notification}
+          options={{
+            unmountOnBlur:true,
+            headerStyle: {
+              backgroundColor: '#fff',
+              height:Platform.OS ==='android'?60:90
+            },
+            headerTintColor: '#00415e',
+            headerTitleStyle: {
+              fontWeight: 'bold', 
+            },
+            drawerLabel: 'Notification',
+            drawerLabelStyle: {color: '#00415e',fontFamily:'Raleway-Medium',position:'relative',right:4},
+            headerLeft:()=>(  <TouchableOpacity  onPress={() => Navigation.dispatch(DrawerActions.openDrawer())}>
+            <Icon name="bars" size={25}  color="#00415e" style={{marginTop:Platform.OS === 'android'?0:0,marginLeft:10}} />
+          </TouchableOpacity>),
+            drawerIcon: ({focused, size}) => (
+              <IonIcon name="bulb" color={'#00415e'} size={22} style={{marginLeft:-2}} />
+            ),
+          }}
+        />
        <Drawer.Screen
       name="Feedback"
       component={Feedback}
@@ -1143,6 +1212,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 12,
   },
+  inbox:{
+    flexDirection:'row',
+    marginLeft:15,
+    
+  }
 });
 
 

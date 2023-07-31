@@ -26,14 +26,21 @@ const Subscribe = () => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState();
   const [formattedValue, setFormattedValue] = useState('');
+
   const postSubscription = val => {
+    console.log('text',value)
+    console.log(val)
     setLoading(true);
     var phoneNumber = val.split('+')[1];
-    if (phoneNumber && phoneNumber.length) {
+    console.log('number->',phoneNumber)
+    if (value) {
       var countryCodeLength = phoneNumber.length % 10;
+      console.log(countryCodeLength)
       var countryCode = phoneNumber.slice(0, countryCodeLength);
+      console.log('countrycode->',countryCode)
       var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-      if (phoneNumber) {
+      console.log(StringValue)
+      if (value.length === 10) {
         axios
           .post(`${backendHost}/users/subscribe/${StringValue}`, {
             nl_subscription_disease_id: '0',
@@ -42,7 +49,7 @@ const Subscribe = () => {
             country_code: `'${countryCode}'`,
           })
           .then(res => {
-            if (res.data === 1) {
+            if (res.data.includes('Subscribed')) {
               setLoading(false);
 
               toast.show({
@@ -53,14 +60,15 @@ const Subscribe = () => {
                 duration: 2000,
                 style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
               });
-            } else {
+            } 
+            else if( res.data.includes('Already')){
               setLoading(false);
               toast.show({
-                title: 'Number not valid',
-                description: 'Please enter a valid number!',
-                status: 'warning',
-                duration: 2000,
+                title: 'Already Subscribed',
+                description: 'Number already subscribed.',
+                status: 'info',
                 placement: 'bottom',
+                duration: 2000,
                 style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
               });
             }
@@ -71,7 +79,7 @@ const Subscribe = () => {
           });
       } else {
         setLoading(false);
-        Alert.alert('Please enter a valid number!');
+        Alert.alert('Please enter a valid 10-didgit number!');
       }
     } else {
       setLoading(false);
@@ -133,6 +141,7 @@ const Subscribe = () => {
             onChangeFormattedText={text => {
               setFormattedValue(text);
             }}
+            
             withDarkTheme
             withShadow
             autoFocus

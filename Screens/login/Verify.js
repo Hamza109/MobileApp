@@ -84,7 +84,7 @@ const [loading,setLoading]=useState(false)
   {
     if (email) {
       axios.post(`${backendHost}/users/checkemail`, {
-          email: email,
+          email: email.replace(/\s/g, ''),
         })
         .then(res => {
           if (res.data === 1) {
@@ -137,7 +137,7 @@ const [loading,setLoading]=useState(false)
             color={'#fff'}
             _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
             autoCapitalize="none"
-             value={email}
+             value={email.replace(/\s/g, '')}
             returnKeyType="done"
             onChangeText={e => validate(e)}
             />
@@ -168,63 +168,7 @@ const [loading,setLoading]=useState(false)
         {loading?spinner():null}
 
           </View>
-        {/* <View style={styles.header}>
-          <Text style={styles.text_header}>Verify your email</Text>
-        </View>
-
-        <View style={styles.action}>
-          <TextInput
-            placeholder="Enter your email"
-            placeholderTextColor="#fff"
-            style={[
-              styles.textInput,
-              {
-                color: '#fff',
-              },
-            ]}
-            autoCapitalize="none"
-            value={email}
-            onChangeText={e => setEmail(e)}
-          />
-          {data.check_textInputChange ? (
-            <Animatable.View animation="bounceIn">
-              <Feather name="check-circle" color="green" size={20} />
-            </Animatable.View>
-          ) : null}
-        </View>
-
-        <View style={styles.button}>
-          {buttonClick === 1 ? submitForm() : null}
-          <TouchableOpacity style={styles.signIn} onPress={submitForm}>
-         
-
-            {notAlert ? Alert.alert('Email not found!') : null}
-            {errAlert ? Alert.alert('error in resetting') : null}
-<HStack space={2}>
-            <Text
-              style={[
-                styles.textSign,
-                {
-                  color: '#00415e',
-                },
-              ]}>
-              Submit
-            </Text>
-            {loading ? (
-      <View>
-     
-     <Spinner
-            accessibilityLabel="Loading posts"
-            color="#00415e"
-            size="lg"
-          />
-     
-      
-      </View>
-          ) : null}
-          </HStack>
-          </TouchableOpacity>
-        </View> */}
+    
       </ImageBackground>
     </View>
   );
