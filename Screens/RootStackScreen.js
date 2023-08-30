@@ -127,6 +127,9 @@ return(
 
 )
 }
+
+
+
 const SettingStack=()=>{
   return(
   <Stack.Navigator

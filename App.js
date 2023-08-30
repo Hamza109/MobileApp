@@ -389,13 +389,13 @@ const App = () => {
       }
 
       if (initialUrl.includes('/cure')) {
-        const url = initialUrl.split('/').pop();
+        const url = await initialUrl.split('/').pop();
     
-        const id = url.split('-')[0];
-        const regex = /\/cure\/\d+-(.*)$/;
-const match = regex.exec(initialUrl);
-const string = match ? match[1].replace(/-/g, ' ') : null;
-const title=string.replace('?whatsapp', '')
+        const id = await url.split('-')[0];
+        const regex = await /\/cure\/\d+-(.*)$/;
+const match = await regex.exec(initialUrl);
+const string = await match ? match[1].replace(/-/g, ' ') : null;
+const title=await string.replace('?whatsapp', '')
 console.log('id',id)
 console.log('title',title)
         articeId({id:id,title:title})

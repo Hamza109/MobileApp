@@ -379,6 +379,15 @@ const[passwordSecured,setPasswordSecured]=useState(false)
             />
           </View>
 
+          <HStack space={2}>
+                <Checkbox
+                  value={userType}
+                  onChange={() => setUserType('Doctor')}></Checkbox>
+                <Text style={{fontFamily: 'Raleway', color: '#fff'}}>
+                  Select , If you are Doctor.
+                </Text>
+              </HStack>
+
           <TouchableOpacity
               style={styles.signIn}
               onPress={
@@ -743,6 +752,7 @@ padding:Platform.OS=='ios'?10:0,
     alignItems: 'center',
     borderRadius: 25,
     backgroundColor: '#fff',
+    marginTop:10
   },
   textSign: {
     fontSize: 18,

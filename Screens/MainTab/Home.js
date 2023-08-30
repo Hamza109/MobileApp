@@ -151,16 +151,17 @@ if(Platform.OS === 'ios')
       });
       dispatch(recentCures(temp))
       dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList))
+      setIsLoaded(true)
 
-    }).then(([])=>{
-     
     })
-   .then()
-    {
-       setIsLoaded(true)
+   .then(()=>{
+       
+     
 
 
-    }
+    
+   })
+ 
         
   
 
@@ -401,6 +402,16 @@ getModal()
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
+
+      
+      <View style={{flex:1}}>
+       
+        {
+          !isConnected?(
+          <Reload/>
+          ):null
+        }
+
 {
   !isLoaded?
   (
@@ -416,14 +427,6 @@ getModal()
     </View>
   ):null
 }
-      
-      <View style={{flex:1}}>
-       
-        {
-          !isConnected?(
-          <Reload/>
-          ):null
-        }
         <View>
 
           <View style={styles.headBar}>

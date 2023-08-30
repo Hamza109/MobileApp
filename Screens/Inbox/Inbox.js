@@ -131,7 +131,7 @@ navigation.push('chat',{messages:responseData.length!==1?transformedMessages.rev
     fetchData()
   }
 
-  }, [data,isFocused])
+  }, [isFocused])
 
 
 
