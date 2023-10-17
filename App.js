@@ -25,6 +25,7 @@ import {
   Linking,
   Alert,
   AppState,
+  Platform,
 } from 'react-native';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
@@ -43,8 +44,23 @@ import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 
+
 const App = () => {
 
+
+  const checkApplicationPermission= async ()=>{
+  
+    if(Platform.OS=='android'){
+     
+      try{
+        console.log('hi i am working')
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATION
+        )
+      }catch(err){console.log(err)}
+    } 
+  
+  }
 
 
   const setMail = async mail => {
@@ -121,12 +137,12 @@ const App = () => {
         method:'POST'
       })
       .then((res)=>{
-       console.log('tokenStore-->',res)
+           
       })
-      console.log('FCM Token:', token);
+      console.log('FCM',token)
       // Send the token to your server for further processing if needed.
     };
-  
+    checkApplicationPermission();
     requestUserPermission();
   
     // return messaging().onTokenRefresh(getToken); // Handle token refresh events.
@@ -149,20 +165,19 @@ const App = () => {
         if(action === 'tip')
         {
           tiPValue(true)
-          console.log('action',action)
+      
         }
 
          if(action === 'article')
          {
           articeId({id:id,title:notification.body})
-          console.log('action',action)
+
          }
 
 
 
 
 
-        console.log('Notification Data1:', initialNotification); // Log the notification data
       // navigationRef.current?.navigate('ProfileTab',{screen:'chat'})
        
         // Handle the notification as needed
@@ -182,16 +197,16 @@ const App = () => {
     messaging().onNotificationOpenedApp((remoteMessage) => {
       // Handle the notification when the app is already open
    
-      console.log('Notification opened:', remoteMessage);
+      
       // Perform any desired action based on the notification data
     });
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
+    console.log('background',remoteMessage)
     });
 
     messaging().onMessage(async (remoteMessage) => {
-      console.log('Received a new FCM message:', remoteMessage);
+      console.log('onMessage',remoteMessage)
   
       // Process the received notification message.
       // You can show an in-app notification or handle the data payload as per your requirements.
@@ -245,7 +260,6 @@ const App = () => {
       onNotification: function (notification) {
 
 
-        console.log("NOTIFICATION DATA:", notification);
      
         
       //  tiPValue(true)
@@ -325,11 +339,11 @@ const App = () => {
 
     const handleDeepLink = async (url) => {
       // Process the deep link URL and perform the desired action
-      console.log('Deep link URL:', url);
+
       if (url.includes('/ResetPass')) {
-        console.log('reset')
+   
         const newUrl = url.split('em=')[1];
-        console.log('new->',newUrl)
+    
 
         setMail(newUrl);
      
@@ -372,7 +386,7 @@ const App = () => {
     const getUrl = async () => {
       const initialUrl = await Linking.getInitialURL();
 
-      console.log('initial',initialUrl)
+
 
       if (initialUrl === null) {
         return;
@@ -381,11 +395,11 @@ const App = () => {
 
       if(initialUrl.includes('/view'))
       {
-        console.log('true')
+  
         tipArticle(true)
       }
       else{
-        console.log('false')
+
       }
 
       if (initialUrl.includes('/cure')) {
@@ -396,8 +410,7 @@ const App = () => {
 const match = await regex.exec(initialUrl);
 const string = await match ? match[1].replace(/-/g, ' ') : null;
 const title=await string.replace('?whatsapp', '')
-console.log('id',id)
-console.log('title',title)
+
         articeId({id:id,title:title})
       
       }

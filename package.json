@@ -47,7 +47,7 @@
     "react-native-device-info": "^8.5.1",
     "react-native-elements": "^3.4.2",
     "react-native-fontawesome": "^7.0.0",
-    "react-native-gesture-handler": "^2.3.2",
+    "react-native-gesture-handler": "2.9.0",
     "react-native-gifted-chat": "^1.1.1",
     "react-native-image-crop-picker": "^0.37.2",
     "react-native-linear-gradient": "^2.5.6",

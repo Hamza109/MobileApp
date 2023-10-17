@@ -71,10 +71,33 @@ const toast=useToast()
   const [isConnected, setIsConnected] = useState(true);
   const [open,setOpen]=useState(false)
   const [tip,setTip]=useState(false)
+  const [ad,setAd]=useState(true)
+  const [adUrl,setAdUrl]=useState()
+  const imageUrl = 'https://picsum.photos/id/237/200/300';
+
 
  const dispatch=useDispatch();
 
 
+
+ function HomeAds(){
+  
+  return(
+    <TouchableOpacity onPress={onRefresh} >
+    <Animatable.View    style={{width:'100%',height:60,backgroundColor:'#fff',        
+alignItems:'center',
+justifyContent:'center'}}  animation='slideInDown' iterationCount={1}  >
+    
+    <Image 
+source={{uri:adUrl}}
+resizeMode='stretch'
+style={{ width:320, height: 50 }} 
+/>
+    
+  </Animatable.View>
+    </TouchableOpacity>
+  )
+}
 
   function Reload(){
   
@@ -105,33 +128,41 @@ const toast=useToast()
 
   useEffect(() => {
 
+
 if(Platform.OS === 'ios')
 {
     messaging().onNotificationOpenedApp((remoteMessage) => {
       // Handle the notification when the app is already open
-     console.log('notification',remoteMessage)
+
       const {action,id}=remoteMessage.data
         if(action === 'tip')
         {
         setTip(true)
-          console.log('action',action)
+
         }
 
          if(action === 'article')
          {
           navigation.navigate('Disease',{ids:id,title:remoteMessage.notification.body})
       
-          console.log('action',action)
+       
          }
       // Perform any desired action based on the notification data
     });
   }
 
+  const headers = new Headers({
+    'Authorization': 'Bearer local@7KpRq3XvF9' 
+  });
 
+  const adServer= backendHost.includes('uat')?'https://uat.all-cures.com:444':'https://www.all-cures.com:444'
 
     
  Promise.all([  
-    fetch(`${backendHost}/article/allkv?limit=15`)
+ 
+    fetch(`${backendHost}/article/allkv?limit=15`,{
+      headers:headers
+    })
       .then(res => res.json())
       .catch(err=>err),
     fetch(
@@ -139,8 +170,11 @@ if(Platform.OS === 'ios')
     )
       .then(res => res.json())
      
+      .catch(err=>err),
+      fetch(`${backendHost}/sponsored/list/ads/url/1`,)
+      .then(res=>res.json())
       .catch(err=>err)
-    ] ).then(([recentCuresData,topDoctorsData])=>{
+    ] ).then(([recentCuresData,topDoctorsData,adData])=>{
       var temp = [];
       recentCuresData.forEach(i => {
         if (i.pubstatus_id === 3 && i.type.includes(2)) {
@@ -151,16 +185,23 @@ if(Platform.OS === 'ios')
       });
       dispatch(recentCures(temp))
       dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList))
+      var modifiedString = adData.replace("/cures_adsimages", "/cures_adsimages/mobile");
+  
+
+      setAdUrl(`${adServer}${modifiedString}`)
+       
+       
+
+
+      if(adData.includes('All')){
+
+       setAd(false)
+      }
+
       setIsLoaded(true)
 
     })
-   .then(()=>{
-       
-     
 
-
-    
-   })
  
         
   
@@ -218,7 +259,7 @@ if(Platform.OS === 'ios')
     const getTip=async ()=>{
       const response=await fetch(`${backendHost}/view/article`)
       const url=await `"${response.url}."`
-      console.log(url)
+ 
     
       const regex = /cure\/(\d+)-(.*?)\./;
     const match = url.match(regex);
@@ -226,8 +267,7 @@ if(Platform.OS === 'ios')
     if (match && match.length >= 3) {
       const articleId = match[1];
       const articleTitle = match[2].replace(/%20/g, ' '); // Replace %20 with space
-      console.log("Article ID:", articleId);
-      console.log("Article Title:", articleTitle);
+   
       navigation.navigate('Disease',{ids:articleId,title:articleTitle})
       
     } else {
@@ -243,7 +283,7 @@ if(Platform.OS === 'ios')
       const  visible = value !=null? JSON.parse(value):null
       if(visible)
       {
-        console.log('visible',visible)
+        
         setTip(value)
         AsyncStorage.removeItem('modal')
       }
@@ -265,7 +305,7 @@ if(Platform.OS === 'ios')
       const myObject = myValue != null ? JSON.parse(myValue) : null;
  // Log the retrieved object
       if(myObject){
-        console.log(myObject)
+   
 getTip()
   AsyncStorage.removeItem('tip_article')
       }
@@ -411,6 +451,11 @@ getModal()
           <Reload/>
           ):null
         }
+        {
+ad?
+<HomeAds/>
+:null
+        }
 
 {
   !isLoaded?
@@ -523,7 +568,7 @@ getModal()
                     navigation.navigate('Result', {id:1});
                   }}>
                   <Card
-                    resizeMode="stretch"
+                  
                     style={{
                       width: scale(125),
                       height: verticalScale(165),
@@ -888,6 +933,9 @@ getModal()
           <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
           </HStack>
           <DocPreview />
+
+         
+
         </Stack>
       </ScrollView>
 
@@ -895,6 +943,10 @@ getModal()
       <View>
       <Tip tip={tip} onDismiss={()=>setTip(!tip)} />
       </View>
+
+
+
+
     </SafeAreaView>
   );
 };
@@ -1014,4 +1066,18 @@ marginBottom:10
     zIndex: 999,
     alignItems: 'center',
   },
+  adBanner:{
+
+    width:'100%',
+    height:60,
+    position:'absolute',
+    bottom:0,
+    backgroundColor:'#fff',
+    justifyContent:'center',
+   paddingHorizontal:70,
+   paddingVertical:40,
+
+  
+
+  }
 });

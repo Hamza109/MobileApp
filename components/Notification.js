@@ -38,7 +38,7 @@ const getTip=async ()=>
 
    })
    .catch(error=>{
-     console.log(error)
+
    })
 }
    
@@ -54,7 +54,7 @@ const today = new Date().toISOString().split('T')[0];
 
 useEffect(()=> {
    getTip()
- console.log(today)
+
 
   },[data])
 
@@ -62,7 +62,7 @@ useEffect(()=> {
 
 
 const renderTipItem=({item})=> {
-    console.log(item.tip_date.split('T')[0])
+
     return (
         <View style={[styles.tipView,{backgroundColor:item.tip_date.startsWith(today)?'aliceblue':'white'}]}>
             <HStack space={6} ml='7'>

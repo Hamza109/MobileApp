@@ -165,7 +165,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           }
         })
         .catch(res => {
-      console.log('error')
+
          
         });
     } else {

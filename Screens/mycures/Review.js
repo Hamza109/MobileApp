@@ -35,7 +35,12 @@ const Review = () => {
   
 
   const receivedData = () => {
-    fetch(`${backendHost}/article/allkv`)
+    const headers = new Headers({
+      'Authorization': 'Bearer local@7KpRq3XvF9' 
+    });
+    fetch(`${backendHost}/article/allkv`,{
+      headers:headers
+    })
       .then(res => res.json())
       .then(json => {
         setPubStatus(json.pubstatus_id);

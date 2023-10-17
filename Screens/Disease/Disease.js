@@ -92,6 +92,8 @@ const Disease = ({navigation, route}) => {
   const [result, setResult] = useState();
   const [toggle,setToggle]=useState();
   const [isConnected, setIsConnected] = useState(true);
+  const [ad,setAd]=useState(true)
+  const [adUrl,setAdUrl]=useState()
 const abort= new AbortController()
 
   const check = () => {
@@ -200,7 +202,8 @@ const abort= new AbortController()
         signal:abort.signal
       }).then(res =>
         res.json(),
-      ),
+      ).catch(err=>err),
+      
     ])
       .then(([diseaseData]) => {
         setDisease(diseaseData);
@@ -209,7 +212,7 @@ const abort= new AbortController()
   };
 
   useEffect(() => {
-console.log('articleId---->',id)
+
 
     fetchTables();
     return () => {
@@ -297,17 +300,23 @@ console.log('articleId---->',id)
   };
   const isFocus = useIsFocused();
 
+  const adServer= backendHost.includes('uat')?'https://uat.all-cures.com:444':'https://www.all-cures.com:444'
+
   useEffect(() => {
+
+  
 
    
    
     
     const get = () => {
-
+  
       const getArticle = new Promise((resolve,reject)=>{
         if(isConnected)
         { 
+        
           setIsLoaded(false)
+
        
         fetch(`${backendHost}/article/${id}`,{
           signal:abort.signal
@@ -324,14 +333,46 @@ console.log('articleId---->',id)
         })
         .catch(err => {
           err;
-          throw err;
+          reject(err)
         });
       }
       }
       
       )
       getArticle.then(()=>{
-        setIsLoaded(true);
+       const adPromise= new Promise((resolve,reject)=>{
+        fetch(`${backendHost}/sponsored/parent_disease_id/${id}`)
+        .then(res=>res.json())
+        .then(data=>  
+        
+          axios.get(`${backendHost}/sponsored/list/ads/url/2`,{
+          params:{
+            DC_Cond:data.parent_dc_id
+          }
+  
+      
+  
+          })
+          .then(jsonData=>{
+   
+            var modifiedString = jsonData.data.replace("/cures_adsimages", "/cures_adsimages/mobile");
+      
+            resolve(setAdUrl(`${adServer}${modifiedString}`))
+
+            if(jsonData.data.includes('All')){
+           
+             setAd(false)
+            }
+
+          })
+  
+          ).catch(err=>err)
+       })
+       adPromise.then(()=>{
+        setIsLoaded(true)
+       })
+     
+        
       })
    
     };
@@ -677,6 +718,18 @@ setToggle(false)
         <Text       key={Math.random().toString(36)} style={styles.text}>{data.window_title}</Text>
         </View>
       )}
+
+{  
+   
+   ad?
+      <TouchableOpacity onPress={()=>console.log(adUrl)} style={styles.adBanner}>
+ <Image
+ resizeMode='stretch'
+        source={{ uri: adUrl}}
+        style={{ width: 320, height: 50 }} // You can set the desired dimensions here
+      />
+        </TouchableOpacity> :null   
+}
               </VStack>
 
 
@@ -996,6 +1049,8 @@ setToggle(false)
             </ScrollView>
           </View>
 
+         
+
           <Box width={wp('100%')}  alignSelf="center">
             <Center flex={1}></Center>
             <HStack
@@ -1096,11 +1151,16 @@ setToggle(false)
 
         closeOnPressMask={true}
         
-        height={522}
-        customStyles={{
+        height={520}
         
+        customStyles={{
+           container:{
+            zIndex:999,
+           },
           wrapper: {
-            backgroundColor: "transparent",
+            backgroundColor: 'rgba(52, 52, 52, 0.8)',
+      
+
          
   
           },
@@ -1467,9 +1527,23 @@ const styles = StyleSheet.create({
         alignSelf:'center'
         
       },
-    disclaimer:{color:'#00415e',
+      adBanner:{
+
+        width:'100%',
+        height:60,
+      
+        backgroundColor:'#fff',
+        
+alignItems:'center',
+justifyContent:'center'
+      
+    
+      },
+    disclaimer:{
+      color:'#00415e',
     fontFamily:'Raleway-Medium',
-    fontSize:14}
+    fontSize:14
+  }
 });
 
 

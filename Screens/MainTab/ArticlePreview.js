@@ -127,10 +127,10 @@ key={Math.random().toString(36)}
                                 overflow:'hidden',
                                 backgroundColor: '#f0f8ff',
                                 borderWidth:1,
-                                elevation:2,
+                                elevation:3,
                                 marginLeft:-5,
                                 position:'relative',
-                               
+                                                     
                                 borderColor:'#e6f7ff',
                                marginBottom:5,
                             

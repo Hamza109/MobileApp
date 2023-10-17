@@ -28,18 +28,16 @@ const Subscribe = () => {
   const [formattedValue, setFormattedValue] = useState('');
 
   const postSubscription = val => {
-    console.log('text',value)
-    console.log(val)
+    
     setLoading(true);
     var phoneNumber = val.split('+')[1];
-    console.log('number->',phoneNumber)
+
     if (value) {
       var countryCodeLength = phoneNumber.length % 10;
-      console.log(countryCodeLength)
+
       var countryCode = phoneNumber.slice(0, countryCodeLength);
-      console.log('countrycode->',countryCode)
-      var StringValue = phoneNumber.slice(countryCodeLength).replace(/,/g, '');
-      console.log(StringValue)
+    
+
       if (value.length === 10) {
         axios
           .post(`${backendHost}/users/subscribe/${StringValue}`, {

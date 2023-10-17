@@ -129,8 +129,13 @@ searchData.then(()=>{
     
   }
   const itype = () => {
+    const headers = new Headers({
+      'Authorization': 'Bearer local@7KpRq3XvF9' 
+    });
     setLoading(true)
-    fetch(`${backendHost}/isearch/medicinetype/${medtype}`)
+    fetch(`${backendHost}/isearch/medicinetype/${medtype}`,{
+      headers:headers
+    })
       .then(res => res.json())
       .then(json => {
     setInitial(initial+6)
@@ -140,12 +145,17 @@ searchData.then(()=>{
       }).catch(err=>err);;
   };
   const idisease = () => {
+    const headers = new Headers({
+      'Authorization': 'Bearer local@7KpRq3XvF9' 
+    });
     const disease=new Promise((resolve,reject)=>{
       if(isConnected)
       {
       setLoading(true)
       setIsLoaded(false)
-      fetch(`${backendHost}/isearch/diseases/${id}`)
+      fetch(`${backendHost}/isearch/diseases/${id}`,{
+        headers:headers
+      })
         .then(res => res.json())
         .then(json => {
       setInitial(initial+6)

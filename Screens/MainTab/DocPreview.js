@@ -43,8 +43,7 @@ import DoctorsCard from './DoctorsCard';
 import { useSelector } from 'react-redux';
 
 const DocPreview = () => {
-  const [items, setItems] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+
 
   const  topDoc=useSelector((state)=>state.top.Data)
 

@@ -3,14 +3,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
-  Platform,
   StyleSheet,
   StatusBar,
   Alert,
   ImageBackground,
-  ToastAndroid,
-  BackHandler,
   SafeAreaView,
   Pressable
 } from 'react-native';
@@ -22,10 +18,9 @@ import {
 } from 'native-base';
 import axios from 'axios';
 
-import * as Animatable from 'react-native-animatable';
+
 import { useToast } from 'native-base';
 import LottieView from 'lottie-react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
 import {
@@ -33,9 +28,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { backendHost } from '../../components/apiConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import analytics from '@react-native-firebase/analytics';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { reg, type, row, getEmail, getPass } from '../Redux/Action';

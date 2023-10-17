@@ -71,9 +71,10 @@ useEffect(()=>{
   };
 
   return (
-    <>
+    <View style={{zIndex:999}}>
       <Fab
         renderInPortal={false}
+        zIndex={3}
         bottom={10}
         height={12}
         width={12}
@@ -118,7 +119,7 @@ ListEmptyComponent={() =>
         </Modal.Content>
       </Modal> */}
       </View>
-    </>
+    </View>
   );
 };
 

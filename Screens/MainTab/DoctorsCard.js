@@ -2,55 +2,25 @@ import React, {useState, useEffect} from 'react';
 import {Dimensions, ImageBackground} from 'react-native';
 import {
   View,
-  ScrollView,
-  Text,
-  Button,
-  FlatList,
-  StyleSheet,
-  StatusBar,
-  BackHandler,
-  Alert,
-  TouchableOpacity,
-  TouchableHighlight,
-  Image,
-} from 'react-native';
-import ArticleHeader from '../search/ArticleHeader';
-import {useRef} from 'react';
-import {
-  NavigationContainer,
-  useIsFocused,
-  useTheme,
-} from '@react-navigation/native';
-import axios from 'axios';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+  Text,
+
+  TouchableOpacity,
+
+} from 'react-native';
+
 import {
-  Card,
-  Checkbox,
-  Modal,
-  Paragraph,
-  Portal,
-  Provider,
-} from 'react-native-paper';
-import AllPost from '../search/AllPost';
+
+  useIsFocused,
+
+} from '@react-navigation/native';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
-import PhoneInput from 'react-native-phone-number-input';
-import {
-  HStack,
-  Stack,
-  Center,
-  Heading,
-  NativeBaseProvider,
-  Container,
-  Box,
-} from 'native-base';
-import {backendHost} from '../../components/apiConfig';
+
 import {useNavigation} from '@react-navigation/native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
+import Svg, {Path, Circle} from 'react-native-svg';
+
+
 
 const DoctorsCard = ({
   rowno,
@@ -62,6 +32,7 @@ const DoctorsCard = ({
   country_code,
 }) => {
   const [imageExists, setImageExists] = useState(false);
+  const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`)
 
   const checkIfImageExits = imageUrl => {
     fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
@@ -75,16 +46,31 @@ const DoctorsCard = ({
       .catch(err => err);
   };
 
+  function User() {
+    return (
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={60}
+        height={60}
+        fill="none"
+        viewBox="0 0 43 43">
+        <Path
+          fill="#e5e5e5"
+          d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
+      </Svg>)
+  }
+
+
   const navigation = useNavigation();
 
   const isfocus = useIsFocused();
   useEffect(() => {
-    checkIfImageExits(
-      `http://all-cures.com:8280/cures_articleimages/doctors/${rowno}.png`,
-    )
+    setUrl(`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`)
+    checkIfImageExits(url)
     
-  }, []);
+  }, [rowno]);
   return (
+    
     <View>
       <View>
       <TouchableOpacity
@@ -92,37 +78,39 @@ const DoctorsCard = ({
             onPress={() => {
               navigation.push('DocProfile', {ids: `${rowno}`});
             }}>
-        <Card
+        <View
           style={{
-            width: scale(110),
-            height: verticalScale('130'),
+            width: 110,
+            height: 110,
             backgroundColor: 'grey',
-            borderRadius: 20,
+            borderRadius: 100,
             marginRight: 12,
-            justifyContent: 'center',
-
+            overflow: 'hidden',
+             backgroundColor:'#00415e',
             paddingHorizontal: 5,
             alignItems: 'center',
+            justifyContent:'center'
           }}>
           {
+            imageExists?
             <ImageBackground
             resizeMode='stretch'
               source={{
                 uri: `https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`,
               }}
               style={{
-                width: scale(110),
-                height: verticalScale('130'),
-                borderRadius: 20,
-                overflow: 'hidden',
+                width: 110,
+                height: 110,
+           
+           
               }}
-            />
+            />:  <Icon name="user-md" color={'#fff'} size={86} />
           }
-        </Card>
+        </View>
         </TouchableOpacity>
       </View>
       <View>
-        <View style={{zIndex: 999, width: scale(100)}}>
+        <View style={{zIndex: 999, width: 100}}>
         
             <Text
               style={{
@@ -130,7 +118,7 @@ const DoctorsCard = ({
                 marginTop: 5,
           
                 fontFamily: 'Raleway-Medium',
-                fontSize: scale(12),
+                fontSize: 12,
                 position: 'relative',
                 bottom: 0,
                 textAlign: 'center',
@@ -144,7 +132,7 @@ const DoctorsCard = ({
               marginTop: 5,
               marginBottom:50,
               fontFamily: 'Raleway-Medium',
-              fontSize: scale(9),
+              fontSize: 9,
               position: 'relative',
               bottom: 0,
               textAlign: 'center',
