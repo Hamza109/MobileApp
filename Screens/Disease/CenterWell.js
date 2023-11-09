@@ -7,15 +7,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Image} from 'react-native';
-import {
-  Table,
-  TableWrapper,
-  Row,
-  Rows,
-  Col,
-  Cols,
-  Cell,
-} from 'react-native-table-component';
+
 
 
 import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';

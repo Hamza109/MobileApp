@@ -42,6 +42,7 @@ import axios from 'axios';
 import { backendHost } from './components/apiConfig';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import BottomTabNavigator from './Screens/Tabs/BottomTabNavigator';
 
 
 
@@ -452,7 +453,7 @@ const title=await string.replace('?whatsapp', '')
           ref={navigationRef}
         >
      
-         <Navigator/>
+      <BottomTabNavigator />
         </NavigationContainer>
         </SafeAreaProvider>
       </PaperProvider>

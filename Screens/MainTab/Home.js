@@ -52,7 +52,7 @@ import { reg, screenName } from '../Redux/Action';
 import NetInfo from '@react-native-community/netinfo';
 import { useToast } from 'native-base';
 import * as Animatable from 'react-native-animatable';
-import { position } from 'native-base/lib/typescript/theme/styled-system';
+
 import { topDoctors,recentCures } from '../Redux/Action';
 import LottieView from 'lottie-react-native';
 import Tip from './Tip/Tip';

@@ -6,18 +6,10 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Image} from 'react-native';
-import {
-  Table,
-  TableWrapper,
-  Row,
-  Rows,
-  Col,
-  Cols,
-  Cell,
-} from 'react-native-table-component';
+
 import RenderHTML from 'react-native-render-html';
 import { useSelector } from 'react-redux';
-import { color } from 'native-base/lib/typescript/theme/styled-system';
+
 const CenterWell1 = ({
   content,
   type,

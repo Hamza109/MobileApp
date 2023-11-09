@@ -72,6 +72,7 @@
     "react-native-splash-screen": "^3.3.0",
     "react-native-star-rating": "^1.1.0",
     "react-native-svg": "^13.8.0",
+    "react-native-svg-transformer": "^1.1.0",
     "react-native-tab-view": "^3.1.1",
     "react-native-toast-message": "^2.1.1",
     "react-native-vector-icons": "^9.0.0",

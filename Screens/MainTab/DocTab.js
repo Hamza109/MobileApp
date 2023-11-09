@@ -42,7 +42,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
-import {Item} from 'react-native-paper/lib/typescript/components/List/List';
+
 const DocTab = ({navigation, route}) => {
   return (
     <View style={styles.container}>

@@ -17,7 +17,7 @@ import {
     Alert
 } from 'react-native';
 import { useToast, Divider, Radio,FormControl,Select,TextArea } from 'native-base';
-import Svg, { Path, Circle } from 'react-native-svg';
+
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from '@react-navigation/routers';
@@ -25,7 +25,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { screenName } from '../Redux/Action';
+
 import { backendHost } from '../../../components/apiConfig';
 import ImagePicker from 'react-native-image-crop-picker';
 import InputBox from '../../../components/InputBox';

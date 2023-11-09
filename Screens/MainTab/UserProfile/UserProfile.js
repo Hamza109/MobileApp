@@ -1,6 +1,5 @@
 import React, { useEffect,useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native';
-import { useRef } from 'react';
+
 import {
   View,
   Text,

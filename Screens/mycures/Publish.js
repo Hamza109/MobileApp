@@ -6,7 +6,7 @@ import AllPost from '../search/AllPost';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import {Card} from 'react-native-paper';
-import {get} from 'js-cookie';
+
 import {ScrollView} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import LottieView from 'lottie-react-native';
