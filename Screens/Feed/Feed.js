@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useDebugValue, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {
   FontFamily,
@@ -15,12 +16,19 @@ import {
   Padding,
   FontSize,
 } from '../../config/GlobalStyles';
+import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import {width, height} from '../../config/GlobalStyles';
 import {FlatList} from 'react-native-gesture-handler';
+import ArticlesCard from '../../components/ArticlesCard';
+import {backendHost, headers} from '../../components/apiConfig';
 
 const Feed = () => {
-  const [selected, setSelected] = useState(1);
+  const [isConnected, setIsConnected] = useState(true);
+  const [diseaseId, setDiseaseId] = useState(null);
+  const [item, setItem] = useState();
+  
+  
 
   const DATA = [
     {dc_id: 1, category: 'Arthritis'},
@@ -46,13 +54,98 @@ const Feed = () => {
     {dc_id: 168, category: 'Urinary Disorders'},
     {dc_id: 176, category: 'Healthy Lifestyle'},
   ];
+  useEffect(() => {
+    NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+    });
+  }, [isConnected]);
 
+  async function getFeaturedArticle() {
+    try {
+      const response = await fetch(`${backendHost}/article/allkvfeatured`, {
+        method: 'GET',
+        headers: headers,
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const json = await response.json();
+
+      // Using map directly to create the array
+
+      setItem(json);
+
+      console.log(json);
+    } catch (err) {
+      console.error(err);
+      // Handle errors, e.g., show an error message to the user
+    }
+  }
+  async function getArticleByDisease() {
+    try {
+      const response = await fetch(
+        `${backendHost}/isearch/diseases/${diseaseId}`,
+        {headers: headers},
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const json = await response.json();
+
+      // Using map directly to create the array
+
+      setItem(json);
+
+      console.log(json);
+    } catch (err) {
+      console.error(err);
+      // Handle errors, e.g., show an error message to the user
+    }
+  }
+
+  
+
+  useEffect(() => {
+    if(diseaseId == null){
+      getFeaturedArticle()
+
+    }
+    else {
+      getArticleByDisease()
+    }
+  }, [diseaseId]);
   const selectFeatured = () => {
-    setSelected(null);
+    setDiseaseId(null);
   };
 
   const selectItem = item => {
-    setSelected(item.dc_id);
+    setDiseaseId(item.dc_id);
+  };
+  const renderItem = ({item}) => {
+    let imageLoc='';
+    const  imgLocation = item.content_location
+    if(imgLocation && imgLocation.includes('cures_articleimages')){
+      imageLoc = `https://all-cures.com:444/`+imgLocation.replace('json', 'png').split('/webapps/')[1]
+  } else {
+      imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
+  }
+    
+    return (
+      <TouchableOpacity activeOpacity={0.7} onPress={()=>console.log('Pressed')}>
+       
+        <ArticlesCard
+          title={item.title}
+          window_title={item.authors_name}
+          create_date={item.create_date}
+          image_location={imageLoc}
+          dc_name ={item.dc_name}
+        />
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -75,12 +168,15 @@ const Feed = () => {
 
         {/*   List of categories    */}
 
-        <ScrollView horizontal style={{padding: 5, flex: 1, marginTop: 20}}>
+        <ScrollView
+          horizontal
+          style={{padding: 5, flex: 1, marginTop: 20}}
+          showsHorizontalScrollIndicator={false}>
           <TouchableOpacity onPress={selectFeatured}>
             <Text
               style={[
                 styles.featured,
-                selected === null ? styles.activeLabel : styles.inactiveLabel,
+                diseaseId === null ? styles.activeLabel : styles.inactiveLabel,
               ]}>
               Featured
             </Text>
@@ -90,12 +186,14 @@ const Feed = () => {
               <View key={item.dc_id}>
                 <TouchableOpacity
                   onPress={() => {
+                    
                     selectItem(item);
+                   
                   }}>
                   <Text
                     style={[
                       styles.category,
-                      item.dc_id === selected
+                      item.dc_id === diseaseId
                         ? styles.activeLabel
                         : styles.inactiveLabel,
                     ]}>
@@ -107,6 +205,7 @@ const Feed = () => {
           })}
         </ScrollView>
       </View>
+      <FlatList data={item} renderItem={renderItem} />
     </View>
   );
 };
