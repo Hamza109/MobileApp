@@ -1,4 +1,4 @@
-import React, {useDebugValue, useEffect, useState} from 'react';
+import React, {useDebugValue, useEffect, useState, memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,13 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import {
-  FontFamily,
-  Color,
-  Border,
-  Padding,
-  FontSize,
-} from '../../config/GlobalStyles';
+import {FontFamily, Color} from '../../config/GlobalStyles';
 import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import {width, height} from '../../config/GlobalStyles';
@@ -27,8 +21,8 @@ const Feed = () => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
   const [item, setItem] = useState();
-  
-  
+  const abortController = new AbortController();
+  const signal = abortController.signal;
 
   const DATA = [
     {dc_id: 1, category: 'Arthritis'},
@@ -65,6 +59,7 @@ const Feed = () => {
       const response = await fetch(`${backendHost}/article/allkvfeatured`, {
         method: 'GET',
         headers: headers,
+        signal: signal,
       });
 
       if (!response.ok) {
@@ -87,7 +82,7 @@ const Feed = () => {
     try {
       const response = await fetch(
         `${backendHost}/isearch/diseases/${diseaseId}`,
-        {headers: headers},
+        {headers: headers, signal: signal},
       );
 
       if (!response.ok) {
@@ -101,22 +96,26 @@ const Feed = () => {
       setItem(json);
 
       console.log(json);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Request aborted');
+      } else {
+        throw new Error(error);
+      }
       // Handle errors, e.g., show an error message to the user
     }
   }
 
-  
-
   useEffect(() => {
-    if(diseaseId == null){
-      getFeaturedArticle()
+    if (diseaseId == null) {
+      getFeaturedArticle();
+    } else {
+      getArticleByDisease();
+    }
 
-    }
-    else {
-      getArticleByDisease()
-    }
+    return () => {
+      abortController.abort();
+    };
   }, [diseaseId]);
   const selectFeatured = () => {
     setDiseaseId(null);
@@ -126,23 +125,27 @@ const Feed = () => {
     setDiseaseId(item.dc_id);
   };
   const renderItem = ({item}) => {
-    let imageLoc='';
-    const  imgLocation = item.content_location
-    if(imgLocation && imgLocation.includes('cures_articleimages')){
-      imageLoc = `https://all-cures.com:444/`+imgLocation.replace('json', 'png').split('/webapps/')[1]
-  } else {
-      imageLoc = 'https://all-cures.com:444/cures_articleimages//299/default.png'
-  }
-    
+    let imageLoc = '';
+    const imgLocation = item.content_location;
+    if (imgLocation && imgLocation.includes('cures_articleimages')) {
+      imageLoc =
+        `https://all-cures.com:444/` +
+        imgLocation.replace('json', 'png').split('/webapps/')[1];
+    } else {
+      imageLoc =
+        'https://all-cures.com:444/cures_articleimages//299/default.png';
+    }
+
     return (
-      <TouchableOpacity activeOpacity={0.7} onPress={()=>console.log('Pressed')}>
-       
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => console.log('Pressed')}>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
           create_date={item.create_date}
           image_location={imageLoc}
-          dc_name ={item.dc_name}
+          dc_name={item.dc_name}
         />
       </TouchableOpacity>
     );
@@ -186,9 +189,7 @@ const Feed = () => {
               <View key={item.dc_id}>
                 <TouchableOpacity
                   onPress={() => {
-                    
                     selectItem(item);
-                   
                   }}>
                   <Text
                     style={[
@@ -205,7 +206,11 @@ const Feed = () => {
           })}
         </ScrollView>
       </View>
-      <FlatList data={item} renderItem={renderItem} />
+      <FlatList
+        keyExtractor={item => item.article_id.toString()}
+        data={item}
+        renderItem={renderItem}
+      />
     </View>
   );
 };
@@ -250,4 +255,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Feed;
+export default memo(Feed);
