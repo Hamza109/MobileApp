@@ -26,6 +26,8 @@
 		1855522428C72BAB0086E8B2 /* Raleway-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65C79C6E4E7C4011A75BA0B3 /* Raleway-Medium.ttf */; };
 		1888871929D2F88B0033A88C /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 61F627241146463BAFBC42DC /* Fontisto.ttf */; };
 		1888871A29D2F88B0033A88C /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B9D7C2595F742EFAEF47BF3 /* Foundation.ttf */; };
+		18C971632B0235680035B712 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C971612B0235660035B712 /* Poppins-Regular.ttf */; };
+		18C971642B0235680035B712 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18C971622B0235670035B712 /* Poppins-Bold.ttf */; };
 		18D3D23929939186000626D7 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2B5C8D81C524578AC9CBF18 /* AntDesign.ttf */; };
 		18D6C47E2A207EF40057239B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		1FD2CEB1D9A5A8809353417E /* Pods_AllCures_AllCuresTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F813E166492CC26351373A /* Pods_AllCures_AllCuresTests.framework */; };
@@ -57,6 +59,8 @@
 		1855521D28B610AE0086E8B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		186391A4776A4E71A1D64457 /* Raleway-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-Italic.ttf"; path = "../assets/fonts/Raleway-Italic.ttf"; sourceTree = "<group>"; };
 		1889EC272A1F824400A4E916 /* AllCures.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AllCures.entitlements; path = AllCures/AllCures.entitlements; sourceTree = "<group>"; };
+		18C971612B0235660035B712 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Regular.ttf"; sourceTree = "<group>"; };
+		18C971622B0235670035B712 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Bold.ttf"; sourceTree = "<group>"; };
 		18E1E12A2A0130F400AADE42 /* AllCuresRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AllCuresRelease.entitlements; path = AllCures/AllCuresRelease.entitlements; sourceTree = "<group>"; };
 		1A71950C6FF9192F88F878F3 /* Pods-AllCures-AllCuresTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AllCures-AllCuresTests.release.xcconfig"; path = "Target Support Files/Pods-AllCures-AllCuresTests/Pods-AllCures-AllCuresTests.release.xcconfig"; sourceTree = "<group>"; };
 		1D21945DC7314C19BC534ABF /* Raleway-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Raleway-BoldItalic.ttf"; path = "../assets/fonts/Raleway-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -172,6 +176,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				18C971622B0235670035B712 /* Poppins-Bold.ttf */,
+				18C971612B0235660035B712 /* Poppins-Regular.ttf */,
 				1855521D28B610AE0086E8B2 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* AllCures */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -342,6 +348,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C971632B0235680035B712 /* Poppins-Regular.ttf in Resources */,
+				18C971642B0235680035B712 /* Poppins-Bold.ttf in Resources */,
 				18D6C47E2A207EF40057239B /* LaunchScreen.storyboard in Resources */,
 				1888871929D2F88B0033A88C /* Fontisto.ttf in Resources */,
 				1888871A29D2F88B0033A88C /* Foundation.ttf in Resources */,

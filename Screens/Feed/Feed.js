@@ -1,4 +1,4 @@
-import React, {useDebugValue, useEffect, useState} from 'react';
+import React, {useDebugValue, useEffect, useState,memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,9 +12,7 @@ import {
 import {
   FontFamily,
   Color,
-  Border,
-  Padding,
-  FontSize,
+
 } from '../../config/GlobalStyles';
 import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
@@ -22,12 +20,14 @@ import {width, height} from '../../config/GlobalStyles';
 import {FlatList} from 'react-native-gesture-handler';
 import ArticlesCard from '../../components/ArticlesCard';
 import {backendHost, headers} from '../../components/apiConfig';
+import { FlashList } from '@shopify/flash-list';
 
 const Feed = () => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
   const [item, setItem] = useState();
-  
+  const abortController = new AbortController();
+  const signal = abortController.signal;
   
 
   const DATA = [
@@ -65,30 +65,8 @@ const Feed = () => {
       const response = await fetch(`${backendHost}/article/allkvfeatured`, {
         method: 'GET',
         headers: headers,
+        signal:signal
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const json = await response.json();
-
-      // Using map directly to create the array
-
-      setItem(json);
-
-      console.log(json);
-    } catch (err) {
-      console.error(err);
-      // Handle errors, e.g., show an error message to the user
-    }
-  }
-  async function getArticleByDisease() {
-    try {
-      const response = await fetch(
-        `${backendHost}/isearch/diseases/${diseaseId}`,
-        {headers: headers},
-      );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -108,8 +86,42 @@ const Feed = () => {
   }
 
   
+  async function getArticleByDisease() {
+    try {
+      const response = await fetch(
+        `${backendHost}/isearch/diseases/${diseaseId}`,
+        {headers: headers,
+          signal:signal
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const json = await response.json();
+
+      // Using map directly to create the array
+
+      setItem(json);
+
+      console.log(json);
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Request aborted');
+      } else {
+     throw new Error(error)
+      }
+      // Handle errors, e.g., show an error message to the user
+    }
+  }
+
+  
 
   useEffect(() => {
+
+
+
     if(diseaseId == null){
       getFeaturedArticle()
 
@@ -117,6 +129,11 @@ const Feed = () => {
     else {
       getArticleByDisease()
     }
+
+    return()=>{
+   abortController.abort()
+    }
+
   }, [diseaseId]);
   const selectFeatured = () => {
     setDiseaseId(null);
@@ -205,7 +222,10 @@ const Feed = () => {
           })}
         </ScrollView>
       </View>
-      <FlatList data={item} renderItem={renderItem} />
+      <FlashList
+      estimatedItemSize={100}
+      keyExtractor={(item)=>item.article_id.toString()}
+      data={item} renderItem={renderItem} />
     </View>
   );
 };
@@ -250,4 +270,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Feed;
+export default memo(Feed);
