@@ -7,7 +7,9 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
   Alert,
+  Platform,
 } from 'react-native';
 import {
   FontFamily,
@@ -167,7 +169,7 @@ const Feed = () => {
 
   return (
     // feed container
-    <View style={styles.feedContainer}>
+    <SafeAreaView style={styles.feedContainer}>
       {/* header component */}
 
       <View style={styles.feedHeader}>
@@ -189,7 +191,8 @@ const Feed = () => {
           horizontal
           style={{padding: 5, flex: 1, marginTop: 20}}
           showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity onPress={selectFeatured}>
+            <View style={{paddingHorizontal:8}}>
+          <TouchableOpacity style={Platform.OS ==='ios'?diseaseId === null ? styles.activeLabel : styles.inactiveLabel:null} onPress={selectFeatured}>
             <Text
               style={[
                 styles.featured,
@@ -198,15 +201,20 @@ const Feed = () => {
               Featured
             </Text>
           </TouchableOpacity>
+          </View>
+
+
           {DATA.map((item, index) => {
             return (
-              <View key={item.dc_id}>
+              <View key={item.dc_id} style={{paddingHorizontal:8}}  >
                 <TouchableOpacity
+                style={Platform.OS==='ios'?item.dc_id===diseaseId?styles.activeLabel:styles.inactiveLabel:null}
                   onPress={() => {
                     
                     selectItem(item);
                    
                   }}>
+                   
                   <Text
                     style={[
                       styles.category,
@@ -216,6 +224,7 @@ const Feed = () => {
                     ]}>
                     {item.category}
                   </Text>
+             
                 </TouchableOpacity>
               </View>
             );
@@ -226,7 +235,7 @@ const Feed = () => {
       estimatedItemSize={100}
       keyExtractor={(item)=>item.article_id.toString()}
       data={item} renderItem={renderItem} />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -247,10 +256,11 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   category: {
-    marginLeft: 11,
+  
     fontFamily: FontFamily.poppinsRegular,
     fontWeight: '700',
     fontSize: 12,
+    width: 'auto'
   },
 
   featured: {
@@ -261,8 +271,8 @@ const styles = StyleSheet.create({
 
   activeLabel: {
     color: Color.colorDarkslategray,
-    borderBottomWidth: 2,
-    borderColor: '#5E4DB0',
+  borderBottomWidth:2,
+  borderColor: '#5E4DB0',
   },
 
   inactiveLabel: {
