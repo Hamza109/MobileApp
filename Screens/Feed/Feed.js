@@ -1,4 +1,4 @@
-import React, {useDebugValue, useEffect, useState,memo} from 'react';
+import React, {useDebugValue, useEffect, useState, memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,13 +7,11 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
   Alert,
+  Platform,
 } from 'react-native';
-import {
-  FontFamily,
-  Color,
-
-} from '../../config/GlobalStyles';
+import {FontFamily, Color} from '../../config/GlobalStyles';
 
 import MyLoader from '../../components/ContentLoader';
 
@@ -23,17 +21,16 @@ import {width, height} from '../../config/GlobalStyles';
 import {FlatList} from 'react-native-gesture-handler';
 import ArticlesCard from '../../components/ArticlesCard';
 import {backendHost, headers} from '../../components/apiConfig';
-import { FlashList } from '@shopify/flash-list';
-import { useDispatch } from 'react-redux';
+import {FlashList} from '@shopify/flash-list';
+import {useDispatch} from 'react-redux';
 const Feed = () => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
   const [item, setItem] = useState();
-  const [Loaded,setLoaded]= useState(false)
-  const dispatch= useDispatch()
+  const [Loaded, setLoaded] = useState(false);
+  const dispatch = useDispatch();
   const abortController = new AbortController();
   const signal = abortController.signal;
-  
 
   const DATA = [
     {dc_id: 1, category: 'Arthritis'},
@@ -70,7 +67,7 @@ const Feed = () => {
       const response = await fetch(`${backendHost}/article/allkvfeatured`, {
         method: 'GET',
         headers: headers,
-        signal:signal
+        signal: signal,
       });
 
       if (!response.ok) {
@@ -82,25 +79,18 @@ const Feed = () => {
       // Using map directly to create the array
 
       setItem(json);
-      setLoaded(true)
-   
-      
-
-    
+      setLoaded(true);
     } catch (err) {
       console.error(err);
       // Handle errors, e.g., show an error message to the user
     }
   }
 
-  
   async function getArticleByDisease() {
     try {
       const response = await fetch(
         `${backendHost}/isearch/diseases/${diseaseId}`,
-        {headers: headers,
-          signal:signal
-        },
+        {headers: headers, signal: signal},
       );
 
       if (!response.ok) {
@@ -112,38 +102,31 @@ const Feed = () => {
       // Using map directly to create the array
 
       setItem(json);
-      setLoaded(true)
+      setLoaded(true);
 
       console.log(json);
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Request aborted');
       } else {
-     throw new Error(error)
+        throw new Error(error);
       }
       // Handle errors, e.g., show an error message to the user
     }
   }
 
   useEffect(() => {
-    setLoaded(false)
-   
+    setLoaded(false);
 
-
-
-    if(diseaseId == null){
-      
-      getFeaturedArticle()
-
-    }
-    else {
-      getArticleByDisease()
+    if (diseaseId == null) {
+      getFeaturedArticle();
+    } else {
+      getArticleByDisease();
     }
 
-    return()=>{
-   abortController.abort()
-    }
-
+    return () => {
+      abortController.abort();
+    };
   }, [diseaseId]);
   const selectFeatured = () => {
     setDiseaseId(null);
@@ -181,7 +164,7 @@ const Feed = () => {
 
   return (
     // feed container
-    <View style={styles.feedContainer}>
+    <SafeAreaView style={styles.feedContainer}>
       {/* header component */}
 
       <View style={styles.feedHeader}>
@@ -198,25 +181,44 @@ const Feed = () => {
         </View>
 
         {/*   List of categories    */}
-        
 
         <ScrollView
           horizontal
           style={{padding: 5, flex: 1, marginTop: 20}}
           showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity onPress={selectFeatured}>
-            <Text
-              style={[
-                styles.featured,
-                diseaseId === null ? styles.activeLabel : styles.inactiveLabel,
-              ]}>
-              Featured
-            </Text>
-          </TouchableOpacity>
+          <View style={{paddingHorizontal: 8}}>
+            <TouchableOpacity
+              style={
+                Platform.OS === 'ios'
+                  ? diseaseId === null
+                    ? styles.activeLabel
+                    : styles.inactiveLabel
+                  : null
+              }
+              onPress={selectFeatured}>
+              <Text
+                style={[
+                  styles.featured,
+                  diseaseId === null
+                    ? styles.activeLabel
+                    : styles.inactiveLabel,
+                ]}>
+                Featured
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {DATA.map((item, index) => {
             return (
-              <View key={item.dc_id}>
+              <View key={item.dc_id} style={{paddingHorizontal: 8}}>
                 <TouchableOpacity
+                  style={
+                    Platform.OS === 'ios'
+                      ? item.dc_id === diseaseId
+                        ? styles.activeLabel
+                        : styles.inactiveLabel
+                      : null
+                  }
                   onPress={() => {
                     selectItem(item);
                   }}>
@@ -235,12 +237,17 @@ const Feed = () => {
           })}
         </ScrollView>
       </View>
-      {Loaded?<FlashList
-      estimatedItemSize={100}
-      keyExtractor={(item)=>item.article_id.toString()}
-      data={item} renderItem={renderItem} />:<MyLoader/>}
-      
-    </View>
+      {Loaded ? (
+        <FlashList
+          estimatedItemSize={100}
+          keyExtractor={item => item.article_id.toString()}
+          data={item}
+          renderItem={renderItem}
+        />
+      ) : (
+        <MyLoader />
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -261,10 +268,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   category: {
-    marginLeft: 11,
     fontFamily: FontFamily.poppinsRegular,
     fontWeight: '700',
     fontSize: 12,
+    width: 'auto',
   },
 
   featured: {
