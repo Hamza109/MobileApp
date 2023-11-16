@@ -1225,7 +1225,7 @@ const styles = StyleSheet.create({
 
 
 const Navigator = () => {
-  const navigation = useSelector((state) => state.name.screen);
+  const navigation = useSelector(state => state.screen.screen);
   switch (navigation) {
       case 'LOGIN':
           return <LoginStack />

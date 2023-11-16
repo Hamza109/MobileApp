@@ -82,6 +82,8 @@
 	<string>AllCures requires access to your photo library</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-Bold.ttf</string>
 		<string>Raleway.ttf</string>
 		<string>Raleway-Regular.ttf</string>
 		<string>Raleway-Black.ttf</string>

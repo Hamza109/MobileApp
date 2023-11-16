@@ -450,7 +450,7 @@ PODS:
     - Firebase/Performance (= 8.12.1)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.3.2):
+  - RNGestureHandler (2.9.0):
     - React-Core
   - RNImageCropPicker (0.37.3):
     - React-Core
@@ -741,7 +741,7 @@ SPEC CHECKSUMS:
   RNFBCrashlytics: 0de353d01e97d8fd998c3046832d8097a15f087b
   RNFBMessaging: 6dcf44dde498a332956666f8ff89f6bbebd07286
   RNFBPerf: e3c0b7ac5ffd332282b67a7b87fd597ec8ba8940
-  RNGestureHandler: 6e757e487a4834e7280e98e9bac66d2d9c575e9c
+  RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNImageCropPicker: 44e2807bc410741f35d4c45b6586aedfe3da39d2
   RNReanimated: e8afbe2a9e08e9e778ea72ddb1a8533445812621
   RNScreens: 2559f98b0835103cbef3b26ba77fa61d4bb37ae7

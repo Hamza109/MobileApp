@@ -1,4 +1,4 @@
-import React, {useDebugValue, useEffect, useState, memo} from 'react';
+import React, {useDebugValue, useEffect, useState,memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,20 +9,31 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import {FontFamily, Color} from '../../config/GlobalStyles';
+import {
+  FontFamily,
+  Color,
+
+} from '../../config/GlobalStyles';
+
+import MyLoader from '../../components/ContentLoader';
+
 import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import {width, height} from '../../config/GlobalStyles';
 import {FlatList} from 'react-native-gesture-handler';
 import ArticlesCard from '../../components/ArticlesCard';
 import {backendHost, headers} from '../../components/apiConfig';
-
+import { FlashList } from '@shopify/flash-list';
+import { useDispatch } from 'react-redux';
 const Feed = () => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
   const [item, setItem] = useState();
+  const [Loaded,setLoaded]= useState(false)
+  const dispatch= useDispatch()
   const abortController = new AbortController();
   const signal = abortController.signal;
+  
 
   const DATA = [
     {dc_id: 1, category: 'Arthritis'},
@@ -59,7 +70,7 @@ const Feed = () => {
       const response = await fetch(`${backendHost}/article/allkvfeatured`, {
         method: 'GET',
         headers: headers,
-        signal: signal,
+        signal:signal
       });
 
       if (!response.ok) {
@@ -71,18 +82,25 @@ const Feed = () => {
       // Using map directly to create the array
 
       setItem(json);
+      setLoaded(true)
+   
+      
 
-      console.log(json);
+    
     } catch (err) {
       console.error(err);
       // Handle errors, e.g., show an error message to the user
     }
   }
+
+  
   async function getArticleByDisease() {
     try {
       const response = await fetch(
         `${backendHost}/isearch/diseases/${diseaseId}`,
-        {headers: headers, signal: signal},
+        {headers: headers,
+          signal:signal
+        },
       );
 
       if (!response.ok) {
@@ -94,28 +112,38 @@ const Feed = () => {
       // Using map directly to create the array
 
       setItem(json);
+      setLoaded(true)
 
       console.log(json);
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Request aborted');
       } else {
-        throw new Error(error);
+     throw new Error(error)
       }
       // Handle errors, e.g., show an error message to the user
     }
   }
 
   useEffect(() => {
-    if (diseaseId == null) {
-      getFeaturedArticle();
-    } else {
-      getArticleByDisease();
+    setLoaded(false)
+   
+
+
+
+    if(diseaseId == null){
+      
+      getFeaturedArticle()
+
+    }
+    else {
+      getArticleByDisease()
     }
 
-    return () => {
-      abortController.abort();
-    };
+    return()=>{
+   abortController.abort()
+    }
+
   }, [diseaseId]);
   const selectFeatured = () => {
     setDiseaseId(null);
@@ -170,6 +198,7 @@ const Feed = () => {
         </View>
 
         {/*   List of categories    */}
+        
 
         <ScrollView
           horizontal
@@ -206,11 +235,11 @@ const Feed = () => {
           })}
         </ScrollView>
       </View>
-      <FlatList
-        keyExtractor={item => item.article_id.toString()}
-        data={item}
-        renderItem={renderItem}
-      />
+      {Loaded?<FlashList
+      estimatedItemSize={100}
+      keyExtractor={(item)=>item.article_id.toString()}
+      data={item} renderItem={renderItem} />:<MyLoader/>}
+      
     </View>
   );
 };
