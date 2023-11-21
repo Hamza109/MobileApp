@@ -23,11 +23,13 @@ import ArticlesCard from '../../components/ArticlesCard';
 import {backendHost, headers} from '../../components/apiConfig';
 import {FlashList} from '@shopify/flash-list';
 import {useDispatch} from 'react-redux';
-const Feed = () => {
+import {ARTICLES_READ} from '../../routes';
+const Feed = ({navigation}) => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
   const [item, setItem] = useState();
   const [Loaded, setLoaded] = useState(false);
+  const [articleId, setArticleId] = useState();
   const dispatch = useDispatch();
   const abortController = new AbortController();
   const signal = abortController.signal;
@@ -64,23 +66,26 @@ const Feed = () => {
 
   async function getFeaturedArticle() {
     try {
-      const response = await fetch(`${backendHost}/article/allkvfeatured?limit=1`, {
-        method: 'GET',
-        headers: headers,
-        signal: signal,
-      });
+      const response = await fetch(
+        `${backendHost}/article/allkvfeatured?limit=1`,
+        {
+          method: 'GET',
+          headers: headers,
+          signal: signal,
+        },
+      );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
       const json = await response.json();
-console.log('json',json)
+      console.log('json', json[0].article_id);
       // Using map directly to create the array
+      setArticleId(json[0].article_id);
 
       setItem(json);
       setLoaded(true);
-
     } catch (err) {
       console.error(err);
       // Handle errors, e.g., show an error message to the user
@@ -101,7 +106,7 @@ console.log('json',json)
       const json = await response.json();
 
       // Using map directly to create the array
-
+      
       setItem(json);
       setLoaded(true);
 
@@ -151,7 +156,7 @@ console.log('json',json)
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => console.log('Pressed')}>
+        onPress={() => navigation.navigate(ARTICLES_READ,{articleId:`${item.article_id}`})}>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
@@ -258,7 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   feedHeader: {
-    height: height * 0.17,
+    height: 132,
     width: width,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
@@ -293,5 +298,3 @@ const styles = StyleSheet.create({
 });
 
 export default memo(Feed);
-
-
