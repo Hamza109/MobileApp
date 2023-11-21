@@ -11,7 +11,7 @@ const ArticlesByMedicine = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [initial, setInitial] = useState(9);
   const [item, setItems] = useState([]);
-  const [Loaded, setLoaded] = useState(true);
+  const [Loaded, setLoaded] = useState(false);
   const medicineData = route.params.medicineData;
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const ArticlesByMedicine = ({route}) => {
 
       setInitial(prevInitial => prevInitial + 6);
       setItems(json);
+      setLoaded(true)
     } catch (error) {
       console.error(error);
       // Handle the error as needed
