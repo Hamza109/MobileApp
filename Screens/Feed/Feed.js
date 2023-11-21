@@ -64,7 +64,7 @@ const Feed = () => {
 
   async function getFeaturedArticle() {
     try {
-      const response = await fetch(`${backendHost}/article/allkvfeatured`, {
+      const response = await fetch(`${backendHost}/article/allkvfeatured?limit=1`, {
         method: 'GET',
         headers: headers,
         signal: signal,
@@ -75,11 +75,12 @@ const Feed = () => {
       }
 
       const json = await response.json();
-
+console.log('json',json)
       // Using map directly to create the array
 
       setItem(json);
       setLoaded(true);
+
     } catch (err) {
       console.error(err);
       // Handle errors, e.g., show an error message to the user
@@ -186,7 +187,7 @@ const Feed = () => {
           horizontal
           style={{padding: 5, flex: 1, marginTop: 20}}
           showsHorizontalScrollIndicator={false}>
-          <View style={{paddingHorizontal: 8}}>
+          <View style={{paddingRight: 11}}>
             <TouchableOpacity
               style={
                 Platform.OS === 'ios'
@@ -210,7 +211,7 @@ const Feed = () => {
 
           {DATA.map((item, index) => {
             return (
-              <View key={item.dc_id} style={{paddingHorizontal: 8}}>
+              <View key={item.dc_id} style={{paddingHorizontal: 11}}>
                 <TouchableOpacity
                   style={
                     Platform.OS === 'ios'
@@ -270,14 +271,14 @@ const styles = StyleSheet.create({
   category: {
     fontFamily: FontFamily.poppinsRegular,
     fontWeight: '700',
-    fontSize: 12,
+    fontSize: 10,
     width: 'auto',
   },
 
   featured: {
     fontFamily: FontFamily.poppinsBold,
     color: Color.colorSilver,
-    fontSize: 12,
+    fontSize: 10,
   },
 
   activeLabel: {
@@ -292,3 +293,5 @@ const styles = StyleSheet.create({
 });
 
 export default memo(Feed);
+
+

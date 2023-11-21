@@ -26,12 +26,14 @@ const ArticlesCard = ({title, window_title, create_date, image_location,dc_name}
         </View>
       </View>
       <View style={{justifyContent: 'center'}}>
+        <View style={{width:100,height:100,backgroundColor:Color.colorSilver}}>
         <Image
           style={styles.image}
           source={{
             uri: image,
           }}
         />
+        </View>
       </View>
     </View>
   );
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
     color:Color.colorDarkslategray,
     fontWeight:'400',  },
   detailsCardContainer: {justifyContent: 'space-evenly', marginRight: 11},
-  image: {width: width * 0.29, height: width * 0.29, borderRadius: 3,
+  image: {width: 100, height:100, borderRadius: 3,
   },
   title: {
     width: width * 0.55,
