@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, Text} from 'react-native';
+import {FlatList, StyleSheet, Text} from 'react-native';
 import {View} from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -8,7 +8,10 @@ import {
 import {Image} from 'react-native';
 
 import RenderHTML from 'react-native-render-html';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
+import {Color, FontFamily} from '../../config/GlobalStyles';
+import {width, height} from '../../config/GlobalStyles';
+const ratio = width / 378;
 
 const CenterWell1 = ({
   content,
@@ -23,15 +26,9 @@ const CenterWell1 = ({
   imageUrl,
   item,
 }) => {
-  const article=useSelector((state)=>state.info.data)
-  var textContent;
-
-  if(typeof(text) == "string"){
-      textContent = text.replace(/&nbsp;/g, ' ');;
-  }
-const tex ={
-  html: text
-}
+  const tex = {
+    html: text,
+  };
   return (
     <View>
       {
@@ -46,22 +43,35 @@ const tex ={
             </View>
           ),
           paragraph: (
-            <View style={{color:'#00415e'}}>
-             <RenderHTML source={tex} contentWidth={wp('100%')}     tagsStyles = {{ adjustsFontSizeToFit:true,
-       span:  {fontSize: 16}, 
-       b:     {fontSize: 16, color: '#00415e'},
-       body:{color:'#00415e',fontSize:16}
-    }} />
-             
+            <View>
+              <RenderHTML
+                source={tex}
+                contentWidth={width}
+                tagsStyles={{
+                  adjustsFontSizeToFit: true,
+                  span: {fontSize: 15},
+                  b: {
+                    fontFamily: FontFamily.poppinsBold,
+                    fontWeight: '700',
+                    color: Color.colorDarkslategray,
+                    fontSize: 15,
+                  },
+                  body: {
+                    fontFamily: FontFamily.poppinsRegular,
+                    fontWeight: '400',
+                    color: Color.colorDarkslategray,
+                    fontSize: 15,
+                  },
+                }}
+              />
             </View>
           ),
 
           image: (
             <View>
               <Image
-              resizeMode='stretch'
                 source={{uri: imageUrl}}
-                style={{width: wp('90%'), height: 150}}
+                style={{width: '100%', height: 378 * ratio}}
               />
               <Text>{caption}</Text>
             </View>
@@ -70,9 +80,9 @@ const tex ={
 
           quote: (
             <View style={{textAlign: {alignment}}}>
-              <Text style={{fontStyle: 'italic', fontSize: 1.2}}>"{text}"</Text>
+              <Text style={{fontStyle: 'italic', fontSize: 15}}>"{text}"</Text>
               <View style={{textAlign: 'center'}}>
-                <Text style={{fontStyle: 'italic'}}>- {caption}</Text>
+                <Text style={{fontStyle: 'italic'}}>{caption}</Text>
               </View>
             </View>
           ),

@@ -131,13 +131,12 @@ def nativeArchitectures = project.getProperties().get("reactNativeDebugArchitect
 
 android {
     ndkVersion rootProject.ext.ndkVersion
-
     compileSdkVersion rootProject.ext.compileSdkVersion 
-
     defaultConfig {
         applicationId "com.allcures"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+    
         versionCode 19
         versionName "1.4"
         vectorDrawables.useSupportLibrary = true

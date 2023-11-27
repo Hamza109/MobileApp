@@ -67,7 +67,7 @@ const Feed = ({navigation}) => {
   async function getFeaturedArticle() {
     try {
       const response = await fetch(
-        `${backendHost}/article/allkvfeatured?limit=1`,
+        `${backendHost}/article/allkvfeatured?limit=15`,
         {
           method: 'GET',
           headers: headers,
@@ -141,6 +141,32 @@ const Feed = ({navigation}) => {
   const selectItem = item => {
     setDiseaseId(item.dc_id);
   };
+
+  const renderCategory=({item})=>{
+    return   <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+    <TouchableOpacity
+      style={
+        Platform.OS === 'ios'
+          ? item.dc_id === diseaseId
+            ? styles.activeLabel
+            : styles.inactiveLabel
+          : null
+      }
+      onPress={() => {
+        selectItem(item);
+      }}>
+      <Text
+        style={[
+          styles.category,
+          item.dc_id === diseaseId
+            ? styles.activeLabel
+            : styles.inactiveLabel,
+        ]}>
+        {item.category}
+      </Text>
+    </TouchableOpacity>
+  </View>
+  }
   const renderItem = ({item}) => {
     let imageLoc = '';
     const imgLocation = item.content_location;
@@ -156,7 +182,7 @@ const Feed = ({navigation}) => {
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => navigation.navigate(ARTICLES_READ,{articleId:`${item.article_id}`})}>
+        onPress={() => navigation.navigate(ARTICLES_READ,{articleId:`${item.article_id}`,image:imageLoc})}>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
@@ -187,6 +213,13 @@ const Feed = ({navigation}) => {
         </View>
 
         {/*   List of categories    */}
+        {/* <FlashList  
+horizontal
+estimatedItemSize={100}
+data={DATA}
+renderItem={renderCategory}
+
+/> */}
 
         <ScrollView
           horizontal
@@ -213,6 +246,7 @@ const Feed = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
+
 
           {DATA.map((item, index) => {
             return (
