@@ -29,19 +29,22 @@ const RelatedCard = ({author,image,published_date,title}) => {
 
 const styles=StyleSheet.create({
     cardContainer:{
-        borderRadius: 6,
-        backgroundColor: "#fff",
-        shadowColor: "rgba(123, 123, 123, 0.25)",
-        shadowOffset: {
-              width: 0,
-              height: 4
-        },
-        shadowRadius: 24,
-        elevation: 24,
+      backgroundColor: '#fff',
+      borderRadius: 6,
+ 
+
+  
+          // Shadow properties for iOS
+        shadowColor: "rgba(123, 123, 123, 1)",
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 1,
+        shadowRadius: 24,
+        elevation: 5,
         flex: 1,
         width: "100%",
-    marginTop:20
+        overflow:'hidden',
+    marginTop:20,
+    marginBottom:10
      
     },
     image:{

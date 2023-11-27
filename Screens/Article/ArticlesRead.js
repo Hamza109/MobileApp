@@ -1,8 +1,8 @@
-import {View, Text, Pressable,StyleSheet, SafeAreaView,Image, ScrollView} from 'react-native';
+import {View, Text, Pressable,StyleSheet, SafeAreaView,Image, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import {backendHost} from '../../components/apiConfig';
-import {ARTICLES_BY_MEDICINE} from '../../routes';
+import {ARTICLES_BY_MEDICINE, ARTICLES_READ} from '../../routes';
 import { Border, Color, FontFamily } from '../../config/GlobalStyles';
 import moment from 'moment';
 import Dot from '../../assets/img/dot.svg';
@@ -24,7 +24,6 @@ const ArticlesRead = ({route, navigation}) => {
   const [medicineType, setMedicineType] = useState();
   const [medicineName, SetMedicineName] = useState();
   const [relatedItem,setRelatedItem] =useState([])
-  const [coverImage,setCoverImage]=useState(route.params.image)
   const abortController = new AbortController();
   const signal = abortController.signal;
                                                                                                           
@@ -87,8 +86,9 @@ const ArticlesRead = ({route, navigation}) => {
   return (
     <SafeAreaView style={styles.readContainer}>
 
-      <ScrollView 
+      <ScrollView
       showsVerticalScrollIndicator={false}>
+        <View  style={{paddingBottom:20,paddingHorizontal:3}}>
         <Text style={styles.title}>
         {data.title}
       </Text>
@@ -121,9 +121,9 @@ const ArticlesRead = ({route, navigation}) => {
                     />
                   </View>
                 ))}
+</View>
 
-
-          <View style={{paddingVertical:20}}>
+          <View style={{marginBottom:20,paddingHorizontal:3}}>
             <Text style={[styles.h2_text,{color:'#000'}]}>Approach</Text>
             <View style={styles.approachCard}>
               <Image source={require('../../assets/img/ayurvedic.jpg')} style={styles.approachImage}  />
@@ -131,16 +131,18 @@ const ArticlesRead = ({route, navigation}) => {
               <View style={styles.approachData}>
                 <Text style={{fontFamily:FontFamily.poppinsRegular,fontSize:8,color:Color.colorDarkslategray}} >School Of Medicine</Text>
                 <Text style={{fontFamily:FontFamily.poppinsBold,fontSize:15,color:Color.colorDarkslategray}}>{data.medicine_type_name}</Text>
+                <TouchableOpacity onPress={()=>{navigation.navigate(ARTICLES_BY_MEDICINE,{medicineData:{name:data.medicine_type_name,type:data.medicine_type}})}}>
                 <Text style={{color:'#5E4DB0',fontFamily:FontFamily.poppinsBold,fontSize:13,fontWeight:'600'}}>View More <Right width={5} height={8} /></Text>
+                </TouchableOpacity>
               </View>
 
             </View>
           </View>
 
 
-        <View style={{paddingVertical:20}}>
+        <View style={{paddingVertical:20,paddingHorizontal:3}}>
           <Text style={[styles.h2_text,{color:Color.colorDarkslategray}]} >Related</Text>
-        </View>
+ 
 
         {
         relatedItem.filter ((item,index)=>index<7).map((related,key)=>{
@@ -154,15 +156,20 @@ const ArticlesRead = ({route, navigation}) => {
             imageLoc =
               'https://all-cures.com:444/cures_articleimages//299/default.png';
           }
-           return <RelatedCard
+           return (
+           <TouchableOpacity onPress={()=>{navigation.push(ARTICLES_READ,{articleId:related.article_id})}} activeOpacity={0.7} key={`${key}-${related.articleId}`} >
+           <RelatedCard
+    
            author={related.authors_name} 
            title={related.title}
            image={imageLoc}
            published_date={related.published_date}
            />
-        
+           </TouchableOpacity>
+           )
         })
         }
+         </View>
          
 
 
@@ -180,7 +187,7 @@ const styles=StyleSheet.create({
   readContainer:{
     flex:1,
     backgroundColor:'#fff',
-    paddingHorizontal:26,
+    paddingHorizontal:23,
     paddingVertical:20
   
     
