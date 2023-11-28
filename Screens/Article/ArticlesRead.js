@@ -1,8 +1,9 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable,SafeAreaView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import {backendHost} from '../../components/apiConfig';
 import {ARTICLES_BY_MEDICINE} from '../../routes';
+
 const ArticlesRead = ({route, navigation}) => {
   const [isConnected, setIsConnected] = useState(true);
   const [data, setData] = useState([]);
@@ -30,11 +31,13 @@ const ArticlesRead = ({route, navigation}) => {
           
 
           setData(json);
+          
 
           const contentBlocks = JSON.parse(
             decodeURIComponent(json.content),
           ).blocks;
           setItems(contentBlocks);
+          console.log(content)
 
           const articleTitle = json.title;
           const formattedTitle = articleTitle.replace(/ /g, '-');
@@ -58,7 +61,7 @@ const ArticlesRead = ({route, navigation}) => {
     };
   }, [isConnected, id]); // Dependencies for the useEffect
   return (
-    <View>
+    <SafeAreaView>
       <Text>ArticlesRead</Text>
       <Text>hey{id} </Text>
 
@@ -73,8 +76,9 @@ const ArticlesRead = ({route, navigation}) => {
           })
         }>
         <Text>{data.medicine_type_name}</Text>
+        <Text></Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -16,6 +16,7 @@ const ArticlesByMedicine = ({route}) => {
 
   useEffect(() => {
     itype();
+    
   },[]);
   const itype = async () => {
     try {

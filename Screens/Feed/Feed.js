@@ -67,7 +67,7 @@ const Feed = ({navigation}) => {
   async function getFeaturedArticle() {
     try {
       const response = await fetch(
-        `${backendHost}/article/allkvfeatured?limit=1`,
+        `${backendHost}/article/allkvfeatured?limit=10`,
         {
           method: 'GET',
           headers: headers,
