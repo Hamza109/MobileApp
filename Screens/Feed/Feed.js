@@ -24,6 +24,7 @@ import {backendHost, headers} from '../../components/apiConfig';
 import {FlashList} from '@shopify/flash-list';
 import {useDispatch} from 'react-redux';
 import {ARTICLES_READ} from '../../routes';
+
 const Feed = ({navigation}) => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
@@ -63,6 +64,8 @@ const Feed = ({navigation}) => {
       setIsConnected(state.isConnected);
     });
   }, [isConnected]);
+
+  
 
   async function getFeaturedArticle() {
     try {
