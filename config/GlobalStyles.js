@@ -25,15 +25,20 @@ export const FontFamily = {
     colorDarkslategray: "#363636",
     colorGray_100: "#848484",
     colorSilver: "#c4c4c4",
+    colorGray: "#828282",
   };
   /* Paddings */
   export const Padding = {
-    p_3xs: 10,
     p_7xl: 26,
+    p_base: 16,
+    p_4xs: 9,
+    p_3xs: 10,
+    p_xl: 20,
     p_8xs: 5,
   };
   /* border radiuses */
   export const Border = {
     br_10xs: 3,
+    br_7xs: 6,
   };
   

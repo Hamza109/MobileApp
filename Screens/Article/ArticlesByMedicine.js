@@ -7,6 +7,7 @@ import MyLoader from '../../components/ContentLoader';
 import {FlashList} from '@shopify/flash-list';
 import ArticlesCard from '../../components/ArticlesCard';
 import { FlatList } from 'native-base';
+import { ARTICLES_READ } from '../../routes';
 const ArticlesByMedicine = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [initial, setInitial] = useState(9);
