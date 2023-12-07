@@ -1,5 +1,5 @@
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
-
+import indexSlice from './Slice/indexSlice';
 import screenSlice from './Slice/screenNameSlice';
 import {persistReducer, persistStore,FLUSH,
     REHYDRATE,
@@ -8,15 +8,18 @@ import {persistReducer, persistStore,FLUSH,
     PURGE,
     REGISTER,} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import heightSlice from './Slice/heightSlice';
 const rootReducer = combineReducers({
  
   screen: screenSlice,
+  height:heightSlice,
+  index:indexSlice
 });
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  blacklist: ['screen','index','height']
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

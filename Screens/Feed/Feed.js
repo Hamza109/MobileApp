@@ -12,9 +12,9 @@ import {
   Platform,
 } from 'react-native';
 import {FontFamily, Color} from '../../config/GlobalStyles';
-
+import CustomTabNavigator from '../Tabs/CustomTabNavigator';
 import MyLoader from '../../components/ContentLoader';
-
+import CustomHeader from '../Tabs/CustomHeader';
 import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import {width, height} from '../../config/GlobalStyles';
@@ -67,7 +67,7 @@ const Feed = ({navigation}) => {
   async function getFeaturedArticle() {
     try {
       const response = await fetch(
-        `${backendHost}/article/allkvfeatured?limit=15`,
+        `${backendHost}/article/allkvranked`,
         {
           method: 'GET',
           headers: headers,
@@ -78,9 +78,31 @@ const Feed = ({navigation}) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
+      // let countAyu = 0;
+      // let countChin = 0;
+      // let countUnani = 0;
+      // let countHomeopathy = 0;
       const json = await response.json();
-      console.log('json', json[0].article_id);
+      // const data = json.filter(i => {
+
+      //   if (countAyu === 0 && i.med_type_name === 'Ayurveda') {
+      //     countAyu += 1;
+      //     return true;
+      //   }
+      //   else if(countChin === 0 && i.med_type_name === 'Chinese'){
+      //     countChin += 1;
+      //     return true;
+      //   }else if(countUnani === 0 && i.med_type_name === 'Unani'){
+      //     countUnani += 1;
+      //     return true;
+      //   }else if(countHomeopathy === 0 && i.med_type_name === 'Homeopathy'){
+      //     countHomeopathy += 1;
+      //     return true;
+      //   }
+
+      //   return false;
+      // });
+      console.log('json', json);
       // Using map directly to create the array
       setArticleId(json[0].article_id);
 
@@ -106,7 +128,7 @@ const Feed = ({navigation}) => {
       const json = await response.json();
 
       // Using map directly to create the array
-      
+
       setItem(json);
       setLoaded(true);
 
@@ -142,31 +164,33 @@ const Feed = ({navigation}) => {
     setDiseaseId(item.dc_id);
   };
 
-  const renderCategory=({item})=>{
-    return   <View key={item.dc_id} style={{paddingHorizontal: 11}}>
-    <TouchableOpacity
-      style={
-        Platform.OS === 'ios'
-          ? item.dc_id === diseaseId
-            ? styles.activeLabel
-            : styles.inactiveLabel
-          : null
-      }
-      onPress={() => {
-        selectItem(item);
-      }}>
-      <Text
-        style={[
-          styles.category,
-          item.dc_id === diseaseId
-            ? styles.activeLabel
-            : styles.inactiveLabel,
-        ]}>
-        {item.category}
-      </Text>
-    </TouchableOpacity>
-  </View>
-  }
+  // const renderCategory = ({item}) => {
+  //   return (
+  //     <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+  //       <TouchableOpacity
+  //         style={
+  //           Platform.OS === 'ios'
+  //             ? item.dc_id === diseaseId
+  //               ? styles.activeLabel
+  //               : styles.inactiveLabel
+  //             : null
+  //         }
+  //         onPress={() => {
+  //           selectItem(item);
+  //         }}>
+  //         <Text
+  //           style={[
+  //             styles.category,
+  //             item.dc_id === diseaseId
+  //               ? styles.activeLabel
+  //               : styles.inactiveLabel,
+  //           ]}>
+  //           {item.category}
+  //         </Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // };
   const renderItem = ({item}) => {
     let imageLoc = '';
     const imgLocation = item.content_location;
@@ -182,13 +206,19 @@ const Feed = ({navigation}) => {
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => navigation.navigate(ARTICLES_READ,{articleId:`${item.article_id}`,image:imageLoc})}>
+        onPress={() =>
+          navigation.navigate(ARTICLES_READ, {
+            articleId: item.article_id,
+            title: item.title,
+            image: imageLoc,
+          })
+        }>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
           create_date={item.create_date}
           image_location={imageLoc}
-          dc_name={item.dc_name}
+          dc_name={item.med_type_name}
         />
       </TouchableOpacity>
     );
@@ -247,7 +277,6 @@ renderItem={renderCategory}
             </TouchableOpacity>
           </View>
 
-
           {DATA.map((item, index) => {
             return (
               <View key={item.dc_id} style={{paddingHorizontal: 11}}>
@@ -277,6 +306,7 @@ renderItem={renderCategory}
           })}
         </ScrollView>
       </View>
+
       {Loaded ? (
         <FlashList
           estimatedItemSize={100}

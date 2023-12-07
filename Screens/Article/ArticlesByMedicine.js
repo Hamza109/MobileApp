@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, SafeAreaView,TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {width, height, Color, FontFamily} from '../../config/GlobalStyles';
 import NotificationIcon from '../../assets/img/Notification.svg';
@@ -6,19 +13,29 @@ import {headers, backendHost} from '../../components/apiConfig';
 import MyLoader from '../../components/ContentLoader';
 import {FlashList} from '@shopify/flash-list';
 import ArticlesCard from '../../components/ArticlesCard';
-import { FlatList } from 'native-base';
-import { ARTICLES_READ } from '../../routes';
+import {FlatList} from 'native-base';
+import {ARTICLES_READ} from '../../routes';
+import {useNavigation} from '@react-navigation/native';
+import {height as bottomHeight} from '../../Redux/Slice/heightSlice';
+
 const ArticlesByMedicine = ({route}) => {
   const [loading, setLoading] = useState(false);
   const [initial, setInitial] = useState(9);
   const [item, setItems] = useState([]);
   const [Loaded, setLoaded] = useState(false);
+  const navigation = useNavigation();
   const medicineData = route.params.medicineData;
 
   useEffect(() => {
     itype();
-    
-  },[]);
+  }, []);
+  useEffect(() => {
+    // Dynamically set the title based on the current article
+    const currentArticleTitle = `${medicineData.name}`; // Replace with your dynamic title logic
+    navigation.setOptions({
+      title: currentArticleTitle,
+    });
+  }, [navigation]);
   const itype = async () => {
     try {
       setLoading(true);
@@ -29,13 +46,16 @@ const ArticlesByMedicine = ({route}) => {
           headers: headers,
         },
       );
+      if(!response.ok){
+        Alert.alert("Reload")
+
+      }
 
       const json = await response.json();
-   
 
       setInitial(prevInitial => prevInitial + 6);
       setItems(json);
-      setLoaded(true)
+      setLoaded(true);
     } catch (error) {
       console.error(error);
       // Handle the error as needed
@@ -60,7 +80,12 @@ const ArticlesByMedicine = ({route}) => {
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => navigation.navigate(ARTICLES_READ,{articleId:`${item.article_id}`})}>
+        onPress={() => {
+          console.log(`${item.article_id}`),
+            navigation.push(ARTICLES_READ, {
+              articleId: item.article_id,
+            });
+        }}>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
@@ -73,23 +98,6 @@ const ArticlesByMedicine = ({route}) => {
   };
   return (
     <SafeAreaView style={styles.feedContainer}>
-      {/* header component */}
-
-      <View style={styles.feedHeader}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: 36,
-            marginLeft: 5,
-          }}>
-          <Text style={styles.read}>{medicineData.name}</Text>
-          <NotificationIcon width={16} height={18} style={{marginTop: 5}} />
-        </View>
-
-        {/*   List of categories    */}
-      </View>
       {Loaded ? (
         <FlashList
           estimatedItemSize={100}

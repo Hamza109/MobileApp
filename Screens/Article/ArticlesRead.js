@@ -7,8 +7,9 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
-import React, {useEffect, useState, memo} from 'react';
+import React, {useEffect, useState, memo, useRef} from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import {backendHost} from '../../components/apiConfig';
 import {ARTICLES_BY_MEDICINE, ARTICLES_READ} from '../../routes';
@@ -24,23 +25,32 @@ import ContentLoader from '../../components/ContentLoader';
 import RelatedCard from '../../components/RelatedCard';
 import {height as bottomHeight} from '../../Redux/Slice/heightSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import CustomHeader from '../Tabs/CustomHeader';
 const ratio = width / 378;
 const ArticlesRead = ({route, navigation}) => {
-  const h = useSelector(state => state.height.height);
+  const [title, setTitle] = useState(route.params.title);
+
   const [isConnected, setIsConnected] = useState(true);
   const [data, setData] = useState([]);
-  const [isVisible, setIsVisible] = useState(false);
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [id, setId] = useState(route.params.articleId);
-  const [response, setResponse] = useState([]);
-  const [medicineType, setMedicineType] = useState();
-  const [medicineName, SetMedicineName] = useState();
   const [relatedItem, setRelatedItem] = useState([]);
-  const dispatch = useDispatch();
+
   const abortController = new AbortController();
   const signal = abortController.signal;
-  let scroll = 0;
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const handleScroll = Animated.event(
+    [{nativeEvent: {contentOffset: {y: scrollY}}}],
+    {useNativeDriver: false},
+  );
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
@@ -73,10 +83,8 @@ const ArticlesRead = ({route, navigation}) => {
           ).blocks;
 
           setItems(contentBlocks);
-          console.log(contentBlocks);
 
-          const articleTitle = json.title;
-          const formattedTitle = articleTitle.replace(/ /g, '-');
+      
         }
       } catch (err) {
         console.error(err);
@@ -94,36 +102,49 @@ const ArticlesRead = ({route, navigation}) => {
       abortController.abort();
     };
   }, [isConnected, id]); // Dependencies for the useEffect
-  const onScroll = e => {
-    let contentoffsetY = e.nativeEvent.contentOffset.y;
 
-    let diff = contentoffsetY - scroll;
-    console.log('diff', diff);
+  // const onScroll = e => {
+  //   let contentoffsetY = e.nativeEvent.contentOffset.y;
 
-    setTimeout(() => {
-      if (diff <= 0 || scroll <= 0) {
-        navigation.setOptions({
-          headerShown: true,
-          tabBarStyle: {height: 30},
-        });
-        dispatch(bottomHeight(60));
-      } else {
-        navigation.setOptions({
-          headerShown: false,
-          tabBarStyle: {height: 30},
-        });
-        dispatch(bottomHeight(0));
-      }
-    }, 500); // 500 milliseconds (adjust as needed)
+  //   let diff = contentoffsetY - scroll;
+  //   console.log('diff', diff);
 
-    console.log('Y Axis', contentoffsetY);
-    scroll = contentoffsetY;
-  };
+  //   setTimeout(() => {
+  //     if (diff <= 0 || scroll <= 0) {
+  //       navigation.setOptions({
+  //         headerShown: true,
+  //         tabBarStyle: {height: 30},
+  //       });
+  //       dispatch(bottomHeight(60));
+  //     } else {
+  //       navigation.setOptions({
+  //         headerShown: false,
+  //         tabBarStyle: {height: 30},
+  //       });
+  //       dispatch(bottomHeight(0));
+  //     }
+  //   }, 500); // 500 milliseconds (adjust as needed)
+
+  //   console.log('Y Axis', contentoffsetY);
+  //   scroll = contentoffsetY;
+  // };
+  const headerMarginTop = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [40, 0], // Adjust these values based on your design
+    extrapolate: 'clamp',
+  });
 
   return (
     <SafeAreaView style={styles.readContainer}>
+      <Animated.View style={[styles.animatedHeader, {opacity: headerOpacity}]}>
+        <CustomHeader title={title} />
+      </Animated.View>
+
       {isLoaded ? (
-        <ScrollView showsVerticalScrollIndicator={false} onScroll={onScroll}>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          style={[styles.scroll, {marginTop: headerMarginTop}]}
+          onScroll={handleScroll}>
           <View style={{paddingBottom: 20, paddingHorizontal: 3}}>
             <Text style={styles.title}>{data.title}</Text>
 
@@ -170,7 +191,7 @@ const ArticlesRead = ({route, navigation}) => {
                     fontSize: 8,
                     color: Color.colorDarkslategray,
                   }}>
-                  School Of Medicine
+                  System Of Medicine
                 </Text>
                 <Text
                   style={{
@@ -243,7 +264,7 @@ const ArticlesRead = ({route, navigation}) => {
                 );
               })}
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       ) : (
         <ContentLoader />
       )}
@@ -254,6 +275,8 @@ const styles = StyleSheet.create({
   readContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  scroll: {
     paddingHorizontal: 23,
     paddingVertical: 20,
   },
@@ -292,6 +315,13 @@ const styles = StyleSheet.create({
   approachImage: {
     width: 105,
     height: 105,
+  },
+  animatedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
 });
 

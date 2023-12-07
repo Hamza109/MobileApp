@@ -17,5 +17,7 @@ export const screenSlice = createSlice({
     }
 })
 
-export const {screen} = screenSlice.actions;
+
+export const {screen} = screenSlice.actions
+
 export default screenSlice.reducer;
