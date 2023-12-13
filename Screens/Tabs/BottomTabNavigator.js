@@ -1,6 +1,7 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View ,Animated} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import FeedStack from '../Stacks/FeedStack'
 import { DOCTOR_TAB, FEED_TAB, PROFILE_TAB, SEARCH_TAB } from '../../routes'
 import ActiveFeed from "../../assets/img/ACTIVE_FEED.svg"
@@ -18,14 +19,22 @@ const BottomTabNavigator = () => {
 
 const BottomTab=createBottomTabNavigator()
 
+
+
   return (
    <>
     <BottomTab.Navigator
+    
+
+
+barStyle={{
+   backgroundColor: 'white', 
   
+}}
     screenOptions={{
 
 
-     
+      
         headerShown:false,
     
        
@@ -37,7 +46,8 @@ const BottomTab=createBottomTabNavigator()
          component={FeedStack}  
          options={{
             tabBarLabel:'',
-           
+            
+            
             tabBarIcon: ({ focused })=>(
        focused?
        

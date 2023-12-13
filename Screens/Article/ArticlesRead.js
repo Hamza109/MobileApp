@@ -1,5 +1,5 @@
-import {View, Text, Pressable,StyleSheet, SafeAreaView,Image, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {View, Text, Pressable,StyleSheet, SafeAreaView,Image, ScrollView, TouchableOpacity,Animated} from 'react-native';
+import React, {useEffect, useState,useRef} from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import {backendHost} from '../../components/apiConfig';
 import {ARTICLES_BY_MEDICINE, ARTICLES_READ} from '../../routes';
@@ -12,6 +12,8 @@ import CenterWell1 from '../Disease/CenterWell1';
 import { color } from 'react-native-reanimated';
 import { FlashList } from '@shopify/flash-list';
 import RelatedCard from '../../components/RelatedCard';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useIsFocused } from '@react-navigation/native';
 const ratio=width/378 
 const ArticlesRead = ({route, navigation}) => {
   const [isConnected, setIsConnected] = useState(true);
@@ -26,8 +28,36 @@ const ArticlesRead = ({route, navigation}) => {
   const [relatedItem,setRelatedItem] =useState([])
   const abortController = new AbortController();
   const signal = abortController.signal;
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const tabBarHeight = useBottomTabBarHeight();
+  const isFocused = useIsFocused();
+  const scrollViewRef = useRef(null)
+  const translateY = scrollY.interpolate({
+    inputRange: [0, tabBarHeight],
+    outputRange: [0, tabBarHeight],
+    extrapolate: 'clamp',
+  });
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false }
+  );
+  useEffect(() => {
+  
+    if (scrollViewRef.current) {
+      // Attach event listeners to the ScrollView
+      scrollViewRef.current.getNode().scrollResponderHandleScroll = handleScroll;
+
+      // Clean up listeners when the component unmounts
+      return () => {
+        delete scrollViewRef.current.getNode().scrollResponderHandleScroll;
+      };
+    }
+  }, [scrollY, isFocused]);
+
+
                                                                                                           
   useEffect(() => {
+  
     NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
     });
@@ -87,6 +117,8 @@ const ArticlesRead = ({route, navigation}) => {
     <SafeAreaView style={styles.readContainer}>
 
       <ScrollView
+       onScroll={handleScroll}
+       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}>
         <View  style={{paddingBottom:20,paddingHorizontal:3}}>
         <Text style={styles.title}>
