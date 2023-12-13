@@ -16,10 +16,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {FlashList} from '@shopify/flash-list';
 import DoctorsCard from '../../components/DoctorsCard';
 import {backendHost} from '../../components/apiConfig';
+import {useNavigation} from '@react-navigation/native';
+import {DOCTOR_MAIN_SCREEN} from '../../routes';
 const Doctor = () => {
-  const RAZOR_PAY_KEY_ID = 'rzp_test_Tp1szE2DOuvCXP';
-
-  const RAZOR_PAY_SECRET_ID = 'LDA4jPxtGFEzOiC1Jsofu0bO';
+  const navigation = useNavigation();
+  //
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -34,8 +35,9 @@ const Doctor = () => {
           `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors`,
         );
         const data = await response.json();
-        console.log(data.map.DoctorDetails.myArrayList);
+       
         setFeaturedDoctors(data.map.DoctorDetails.myArrayList);
+        console.log(data.map.DoctorDetails.myArrayList)
       } catch (error) {
         setError(error);
       } finally {
@@ -45,50 +47,50 @@ const Doctor = () => {
 
     fetchData();
   }, []);
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-  };
+  // const onChange = (event, selectedDate) => {
+  //   const currentDate = selectedDate;
+  //   setShow(false);
+  //   setDate(currentDate);
+  // };
 
-  const showMode = currentMode => {
-    setShow(true);
-    setMode(currentMode);
-  };
+  // const showMode = currentMode => {
+  //   setShow(true);
+  //   setMode(currentMode);
+  // };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
+  // const showDatepicker = () => {
+  //   showMode('date');
+  // };
 
-  const showTimepicker = () => {
-    showMode('time');
-  };
+  // const showTimepicker = () => {
+  //   showMode('time');
+  // };
 
-  const handlePayment = () => {
-    var options = {
-      description: 'Credits towards consultation',
-      image: 'https://i.imgur.com/3g7nmJC.png',
-      currency: 'INR',
-      key: RAZOR_PAY_KEY_ID, // Your api key
-      amount: '5000',
-      name: 'foo',
-      prefill: {
-        email: 'void@razorpay.com',
-        contact: '9191919191',
-        name: 'Razorpay Software',
-      },
-      theme: {color: Color.appDefaultColor},
-    };
-    RazorpayCheckout.open(options)
-      .then(data => {
-        // handle success
-        alert(`Success: ${data.razorpay_payment_id}`);
-      })
-      .catch(error => {
-        // handle failure
-        alert(`Error: ${error.code} | ${error.description}`);
-      });
-  };
+  // const handlePayment = () => {
+  //   var options = {
+  //     description: 'Credits towards consultation',
+  //     image: 'https://i.imgur.com/3g7nmJC.png',
+  //     currency: 'INR',
+  //     key: RAZOR_PAY_KEY_ID, // Your api key
+  //     amount: '5000',
+  //     name: 'foo',
+  //     prefill: {
+  //       email: 'void@razorpay.com',
+  //       contact: '9191919191',
+  //       name: 'Razorpay Software',
+  //     },
+  //     theme: {color: Color.appDefaultColor},
+  //   };
+  //   RazorpayCheckout.open(options)
+  //     .then(data => {
+  //       // handle success
+  //       alert(`Success: ${data.razorpay_payment_id}`);
+  //     })
+  //     .catch(error => {
+  //       // handle failure
+  //       alert(`Error: ${error.code} | ${error.description}`);
+  //     });
+  // };
   const renderItem = ({item}) => {
     let imageLoc = '';
     const imgLocation = item.content_location;
@@ -102,12 +104,20 @@ const Doctor = () => {
     }
 
     return (
-      <TouchableOpacity activeOpacity={0.7}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() =>
+          navigation.navigate(DOCTOR_MAIN_SCREEN, {
+            ids: item.map.rowno,
+            firstName: item.map.docname_first,
+          })
+        }>
         <DoctorsCard
+          training={item.map.edu_training}
           firstName={item.map.docname_first}
           secondName={item.map.docname_last}
           rowno={item.map.rowno}
-          primarySpl = {item.map.primary_spl}
+          primarySpl={item.map.primary_spl}
         />
       </TouchableOpacity>
     );
@@ -193,7 +203,7 @@ const Doctor = () => {
             is24Hour={true}
             onChange={onChange}
           />
-        )} */}
+        )}  */}
       </SafeAreaView>
     </>
   );

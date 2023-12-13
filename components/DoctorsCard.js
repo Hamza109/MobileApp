@@ -1,9 +1,18 @@
-import {StyleSheet, Text, View, ImageBackground, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import {width, height, Color, FontFamily} from '../config/GlobalStyles';
 import Dot from '../assets/img/dot.svg';
+import {ViewComponent} from 'react-native';
+
 const cardItemHeight = 136;
-const DoctorsCard = ({firstName, secondName, rowno, primarySpl}) => {
+const DoctorsCard = ({firstName, secondName, rowno, primarySpl, training}) => {
   return (
     // <View style={styles.cardContainer}>
     //   <View style={styles.detailsCardContainer}>
@@ -27,15 +36,14 @@ const DoctorsCard = ({firstName, secondName, rowno, primarySpl}) => {
     <View style={styles.cardContainer}>
       <View style={styles.detailsCardContainer}>
         <Text style={styles.article_title}>
-          Doctor <Text style={{color: Color.colorDarkgray}}> in </Text>{' '}
-          {primarySpl}
+          Dr.{firstName} {secondName}
         </Text>
         <Text style={styles.title} numberOfLines={2}>
-          Dr.{firstName} {secondName}
+          {primarySpl}
         </Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.time}>
-            
+            {training} <Dot height={5} width={5} />
           </Text>
         </View>
       </View>
