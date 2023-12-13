@@ -6,7 +6,7 @@ import Dot from '../assets/img/dot.svg';
 import {FontFamily} from '../config/GlobalStyles';
 import { Color } from '../config/GlobalStyles';
 const cardItemHeight = 136;
-const ArticlesCard = ({title, window_title, create_date, image_location,dc_name}) => {
+const ArticleCard = ({title, window_title, create_date, image_location,dc_name}) => {
   const createdAt = moment(`${create_date}`, 'YYYYMMDD').fromNow();
   const image = image_location;
 
@@ -39,14 +39,14 @@ const ArticlesCard = ({title, window_title, create_date, image_location,dc_name}
   );
 };
 
-export default ArticlesCard;
+export default ArticleCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
 
     width: width,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
     height: cardItemHeight,
     paddingHorizontal: 26,
     paddingVertical: 10,

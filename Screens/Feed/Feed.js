@@ -12,14 +12,14 @@ import {
   Platform,
 } from 'react-native';
 import {FontFamily, Color} from '../../config/GlobalStyles';
-
+import CustomTabNavigator from '../Tabs/CustomTabNavigator';
 import MyLoader from '../../components/ContentLoader';
-
+import CustomHeader from '../Tabs/CustomHeader';
 import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import {width, height} from '../../config/GlobalStyles';
 import {FlatList} from 'react-native-gesture-handler';
-import ArticlesCard from '../../components/ArticlesCard';
+import ArticlesCard from '../../components/ArticleCard';
 import {backendHost, headers} from '../../components/apiConfig';
 import {FlashList} from '@shopify/flash-list';
 import {useDispatch} from 'react-redux';
@@ -70,7 +70,7 @@ const Feed = ({navigation}) => {
   async function getFeaturedArticle() {
     try {
       const response = await fetch(
-        `${backendHost}/article/allkvfeatured?limit=15`,
+        `${backendHost}/article/allkvranked`,
         {
           method: 'GET',
           headers: headers,
@@ -81,9 +81,10 @@ const Feed = ({navigation}) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
+  
       const json = await response.json();
-      console.log('json', json[0].article_id);
+    
+      console.log('json', json);
       // Using map directly to create the array
       setArticleId(json[0].article_id);
 
@@ -109,7 +110,7 @@ const Feed = ({navigation}) => {
       const json = await response.json();
 
       // Using map directly to create the array
-      
+
       setItem(json);
       setLoaded(true);
 
@@ -145,31 +146,33 @@ const Feed = ({navigation}) => {
     setDiseaseId(item.dc_id);
   };
 
-  const renderCategory=({item})=>{
-    return   <View key={item.dc_id} style={{paddingHorizontal: 11}}>
-    <TouchableOpacity
-      style={
-        Platform.OS === 'ios'
-          ? item.dc_id === diseaseId
-            ? styles.activeLabel
-            : styles.inactiveLabel
-          : null
-      }
-      onPress={() => {
-        selectItem(item);
-      }}>
-      <Text
-        style={[
-          styles.category,
-          item.dc_id === diseaseId
-            ? styles.activeLabel
-            : styles.inactiveLabel,
-        ]}>
-        {item.category}
-      </Text>
-    </TouchableOpacity>
-  </View>
-  }
+  // const renderCategory = ({item}) => {
+  //   return (
+  //     <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+  //       <TouchableOpacity
+  //         style={
+  //           Platform.OS === 'ios'
+  //             ? item.dc_id === diseaseId
+  //               ? styles.activeLabel
+  //               : styles.inactiveLabel
+  //             : null
+  //         }
+  //         onPress={() => {
+  //           selectItem(item);
+  //         }}>
+  //         <Text
+  //           style={[
+  //             styles.category,
+  //             item.dc_id === diseaseId
+  //               ? styles.activeLabel
+  //               : styles.inactiveLabel,
+  //           ]}>
+  //           {item.category}
+  //         </Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // };
   const renderItem = ({item}) => {
     let imageLoc = '';
     const imgLocation = item.content_location;
@@ -185,13 +188,19 @@ const Feed = ({navigation}) => {
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => navigation.navigate(ARTICLES_READ,{articleId:`${item.article_id}`,image:imageLoc})}>
+        onPress={() =>
+          navigation.navigate(ARTICLES_READ, {
+            articleId: item.article_id,
+            title: item.title,
+            image: imageLoc,
+          })
+        }>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
           create_date={item.create_date}
           image_location={imageLoc}
-          dc_name={item.dc_name}
+          dc_name={item.med_type_name}
         />
       </TouchableOpacity>
     );
@@ -250,7 +259,6 @@ renderItem={renderCategory}
             </TouchableOpacity>
           </View>
 
-
           {DATA.map((item, index) => {
             return (
               <View key={item.dc_id} style={{paddingHorizontal: 11}}>
@@ -280,6 +288,7 @@ renderItem={renderCategory}
           })}
         </ScrollView>
       </View>
+
       {Loaded ? (
         <FlashList
           estimatedItemSize={100}

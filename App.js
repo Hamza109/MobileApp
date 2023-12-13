@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {useState, useEffect} from 'react';
 import analytics from '@react-native-firebase/analytics';
 import {NativeBaseProvider, Box} from 'native-base';

@@ -26,6 +26,7 @@ export const FontFamily = {
     colorGray_100: "#848484",
     colorSilver: "#c4c4c4",
     colorGray: "#828282",
+    appDefaultColor:"#5E4DB0"
   };
   /* Paddings */
   export const Padding = {
