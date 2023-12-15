@@ -16,10 +16,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {FlashList} from '@shopify/flash-list';
 import DoctorsCard from '../../components/DoctorsCard';
 import {backendHost} from '../../components/apiConfig';
-
+import FilterList from '../../assets/img/filter_list.svg';
+import { FILTER_DOC } from '../../routes';
 import {DOCTOR_MAIN_SCREEN} from '../../routes';
 const Doctor = ({navigation}) => {
-
   //
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
@@ -35,9 +35,9 @@ const Doctor = ({navigation}) => {
           `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors`,
         );
         const data = await response.json();
-       
+
         setFeaturedDoctors(data.map.DoctorDetails.myArrayList);
-        console.log(data.map.DoctorDetails.myArrayList)
+        console.log(data.map.DoctorDetails.myArrayList);
       } catch (error) {
         setError(error);
       } finally {
@@ -110,6 +110,7 @@ const Doctor = ({navigation}) => {
           navigation.navigate(DOCTOR_MAIN_SCREEN, {
             ids: item.map.rowno,
             firstName: item.map.docname_first,
+            secondName: item.map.docname_last,
           })
         }>
         <DoctorsCard
@@ -139,6 +140,9 @@ const Doctor = ({navigation}) => {
             <NotificationIcon width={16} height={18} style={{marginTop: 5}} />
           </View>
         </View>
+        <Pressable style ={{alignItems:'center'}} onPress={()=>navigation.navigate(FILTER_DOC)}>
+          <FilterList width={26} height={26} style={{marginTop: 5}} />
+        </Pressable>
 
         <FlashList
           estimatedItemSize={100}

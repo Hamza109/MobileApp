@@ -7,6 +7,8 @@ export const ARTICLES_BY_MEDICINE = "ARTICLES_BY_MEDICINE"
 export const DOCTOR="DOCTOR"
 export const DOCTOR_TAB="DOCTOR_TAB"
 export const DOCTOR_MAIN_SCREEN="DOCTOR_MAIN_SCREEN"
+export const DOC_CURES = "DOC_CURES"
+export const FILTER_DOC = "FILTER_DOC"
 //search screen and tab
 export const SEARCH="SEARCH"
 export const SEARCH_TAB ="SEARCH_TAB"

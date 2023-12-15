@@ -65,25 +65,20 @@ const Feed = ({navigation}) => {
     });
   }, [isConnected]);
 
-  
-
   async function getFeaturedArticle() {
     try {
-      const response = await fetch(
-        `${backendHost}/article/allkvranked`,
-        {
-          method: 'GET',
-          headers: headers,
-          signal: signal,
-        },
-      );
+      const response = await fetch(`${backendHost}/article/allkvranked`, {
+        method: 'GET',
+        headers: headers,
+        signal: signal,
+      });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const json = await response.json();
-    
+
       console.log('json', json);
       // Using map directly to create the array
       setArticleId(json[0].article_id);
