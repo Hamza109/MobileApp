@@ -37,7 +37,7 @@ const Doctor = ({navigation}) => {
         const data = await response.json();
 
         setFeaturedDoctors(data.map.DoctorDetails.myArrayList);
-        console.log(data.map.DoctorDetails.myArrayList);
+
       } catch (error) {
         setError(error);
       } finally {

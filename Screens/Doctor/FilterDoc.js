@@ -1,14 +1,49 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {useState} from 'react';
+import {Alert, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
+import { Select } from "native-base";
 import {Color, FontFamily} from '../../config/GlobalStyles';
-const FilterDoc = () => {
-  const [selectedOption, setSelectedOption] = useState('Option 1');
+import { backendHost } from '../../components/apiConfig';
+import { RESULTS } from '../../routes';
+const FilterDoc = ({navigation}) => {
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [data,setData]=useState([])
   const dropdownOptions = ['Select City', 'Option 2', 'Option 3', 'Option 4'];
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const togglePicker = () => {
     setIsPickerVisible(!isPickerVisible);
   };
+
+const handleFilter=()=>{
+
+  if(selectedOption !==  null)
+{
+  navigation.push(RESULTS,{
+    city:selectedOption
+  })
+}
+else{
+  Alert.alert('Select city or Search Name')
+}
+
+}
+
+
+useEffect(()=>{
+  const fetchCity=async ()=>{
+    try {
+  const response=await fetch(`${backendHost}/article/all/table/city`)
+  const  city = await response.json()
+
+  setData(city)
+    }
+    catch(error){
+      console.error('Error fetching data:', error);
+    }
+  }
+fetchCity()
+},[])
+
 
   return (
     <View style={styles.containers}>
@@ -20,17 +55,23 @@ const FilterDoc = () => {
         }}>
         <Text style={styles.text}>Search</Text>
         <View style={styles.pickerView}>
-          <Picker
-            selectedValue={selectedOption}
-            onValueChange={(itemValue, itemIndex) => {
-              setSelectedOption(itemValue);
-              togglePicker(); // Close the picker after selecting an option
-            }}
-            style={styles.picker}>
-            {dropdownOptions.map((option, index) => (
-              <Picker.Item key={index} label={option} value={option} />
-            ))}
-          </Picker>
+        <Select
+                            
+                                  width={'100%'}
+                                  
+                                  onValueChange={value => setSelectedOption(value)}
+                                
+                                  selectedValue={selectedOption}
+                                  isRequired
+                                  placeholder="Select city">
+                                  {data.map(i => (
+                                    <Select.Item
+                                    key={Math.random().toString(36)}
+                                      value={i[1]}
+                                    
+                                      label={i[1]}></Select.Item>
+                                  ))}
+                                </Select>
         </View>
 
         <Text style={styles.bigText}>By Name</Text>
@@ -38,7 +79,7 @@ const FilterDoc = () => {
 
         <TextInput style={styles.textInput}>Practitoner Name</TextInput>
 
-        <Pressable style={styles.buttonView}>
+        <Pressable style={styles.buttonView} onPress={handleFilter}>
           <Text style={styles.buttonText}>FILTER</Text>
         </Pressable>
       </View>

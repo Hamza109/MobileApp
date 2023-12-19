@@ -5,7 +5,8 @@ import {
   DOCTOR,
   DOCTOR_MAIN_SCREEN,
   DOC_CURES,
-  FILTER_DOC
+  FILTER_DOC,
+  RESULTS
 } from '../../routes';
 import Doctor from '../Doctor/Doctor';
 import DoctorMainScreen from '../Doctor/DoctorMainScreen';
@@ -13,6 +14,7 @@ import {FontFamily} from '../../config/GlobalStyles';
 import ArticlesRead from '../Article/ArticlesRead';
 import DocCures from '../Doctor/DocCures';
 import FilterDoc from '../Doctor/FilterDoc';
+import SearchResult from '../Find/SearchResult';
 const DoctorStack = () => {
   const Stack = createNativeStackNavigator();
   return (
@@ -63,6 +65,24 @@ const DoctorStack = () => {
           },
         }}
       />
+
+<Stack.Screen
+        name={RESULTS}
+        component={SearchResult}
+        options={{
+          title:"Search Results",
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontFamily: FontFamily.poppinsBold,
+            fontSize: 22,
+            
+          },
+        }}
+      />
+
+
+
     </Stack.Navigator>
   );
 };

@@ -79,7 +79,7 @@ const Feed = ({navigation}) => {
 
       const json = await response.json();
 
-      console.log('json', json);
+  
       // Using map directly to create the array
       setArticleId(json[0].article_id);
 
