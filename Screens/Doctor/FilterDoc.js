@@ -32,6 +32,7 @@ const FilterDoc = () => {
             ))}
           </Picker>
         </View>
+    
 
         <Text style={styles.bigText}>By Name</Text>
         <Text style={styles.text}>Search</Text>
