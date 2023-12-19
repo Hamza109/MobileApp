@@ -7,6 +7,7 @@ import { backendHost } from '../../components/apiConfig';
 import { RESULTS } from '../../routes';
 const FilterDoc = ({navigation}) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [text,setText]=useState(null)
   const [data,setData]=useState([])
   const dropdownOptions = ['Select City', 'Option 2', 'Option 3', 'Option 4'];
   const [isPickerVisible, setIsPickerVisible] = useState(false);
@@ -16,11 +17,17 @@ const FilterDoc = ({navigation}) => {
 
 const handleFilter=()=>{
 
-  if(selectedOption !==  null)
+  if(selectedOption !== null || text.trim() !== '')
 {
+  
   navigation.push(RESULTS,{
-    city:selectedOption
+    city:selectedOption,
+    searchText:text
+    
   })
+  setSelectedOption(null)
+  setText(null)
+
 }
 else{
   Alert.alert('Select city or Search Name')
@@ -29,9 +36,11 @@ else{
 }
 
 
+
 useEffect(()=>{
   const fetchCity=async ()=>{
     try {
+      
   const response=await fetch(`${backendHost}/article/all/table/city`)
   const  city = await response.json()
 
@@ -78,7 +87,15 @@ fetchCity()
         <Text style={styles.bigText}>By Name</Text>
         <Text style={styles.text}>Search</Text>
 
-        <TextInput style={styles.textInput}>Practitoner Name</TextInput>
+     
+             <TextInput
+             style={styles.textInput}
+        placeholder={'Practitoner Name'}
+        autoCapitalize="none"
+        value={text}
+        returnKeyType={'done'}
+        onChangeText={(name)=>{setText(name)}}
+        />
 
         <Pressable style={styles.buttonView} onPress={handleFilter}>
           <Text style={styles.buttonText}>FILTER</Text>

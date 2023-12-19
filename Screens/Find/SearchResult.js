@@ -9,6 +9,8 @@ import DoctorsCard from '../../components/DoctorsCard';
 const SearchResult = ({navigation,route}) => {
 
     const [cityName,setCityName]=useState(route.params.city)
+
+    const [doctorName,setDoctorName]=useState(route.params.searchText)
     const [data,setData]=useState([])
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -50,11 +52,12 @@ const SearchResult = ({navigation,route}) => {
     
       useEffect(()=>{
 
-   console.log('hello this is useeffect')
+   console.log('city',cityName)
+   console.log('docname',doctorName)
         const getResults=async ()=>{
             try{
             const response  = await fetch(
-                `${backendHost}/SearchActionController?cmd=getResults&city=${cityName}=&doctors=&Latitude=32.7266&Longitude=74.8570`,
+                `${backendHost}/SearchActionController?cmd=getResults&city=${cityName!==''?cityName:''}=&doctors=${doctorName!==null?doctorName:''}&Latitude=32.7266&Longitude=74.8570`,
               )
               const results = await response.json()
               console.log('results-->',results.map.DoctorDetails.myArrayList.length);

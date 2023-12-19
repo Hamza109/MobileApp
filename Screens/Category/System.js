@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { View,Text,StyleSheet,FlatList,TouchableOpacity ,ImageBackground} from 'react-native'
+import { View,Text,StyleSheet,FlatList,TouchableOpacity ,ImageBackground,ScrollView} from 'react-native'
 import { backendHost } from '../../components/apiConfig'
-import LottieView from 'lottie-react-native';
-import { Card } from 'react-native-paper';
-import { scale,verticalScale } from '../../components/Scale';
-import { HStack } from 'native-base';
+
 import { useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 
 
 
@@ -15,67 +13,45 @@ const System = () => {
 const  [data,setData]=useState()
 const [isLoaded, setIsLoaded] = useState(false);
 
-const medicine=()=>{
-    fetch(`${backendHost}/data/medicines`)
-    .then(res=>res.json())
-    .then(json=>{
+const medicine=async ()=>{
+  try{
+
+
+    const response = await fetch(`${backendHost}/data/medicines`)
+const responseData=response.json()
+        setData(responseData)
    
-        setData(json)
-        setIsLoaded(true)
-    })
+
     
-      
+  }
+  catch(error){
+
+  }
  
-    .catch(err=>console.log(err))
+    
     
 }
 
 function renderItemTrend({item, index}) {
     const {med_id, med_type,} = item;
     return (
-      <View style={{marginRight:12,height:165}}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            navigation.navigate('Result', {types: `${med_id}`});
-          }}>
-          <Card
-            style={{
-              width: 105,
-              height: 125,
-              backgroundColor: '#00415e',
-              overflow:'hidden',
-              borderRadius: 20,
-              alignItems: 'center',
-            }}
-            key={index}>
-            <ImageBackground
-            
-              style={{
-                width: 105,
-                height: 125,
-                borderRadius: 20,
-                overflow: 'hidden',
-              }}
-              source={require('../../assets/img/unani.jpg')}
-            />
-          </Card>
-        </TouchableOpacity>
-        <View style={{width:'90%',alignItems:'center',justifyContent:'center'}}>
+   
+     
+        <View style={{marginRight:11}}>
         <Text
           
           numberOfLines={2}
           style={{
             color: '#00415e',
-            marginTop: 5,
-            fontFamily: 'Raleway-Medium',
+     
+      
             fontSize: 10,
-            textAlign: 'center',
+       
           }}>
           {med_type}
         </Text>
         </View>
-      </View>
+
     );
   }
 
@@ -83,26 +59,65 @@ function renderItemTrend({item, index}) {
     medicine();
 },[])
 
-if (!isLoaded) {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <HStack space={2} justifyContent="center">
-      <LottieView source={require('../../assets/animation/load.json')} autoPlay loop style={{width:50,height:50}} />
-      </HStack>
-    </View>
-  );
-} else {
+
 
   return (
-    <FlatList
-              horizontal
-              keyExtractor={(item)=>item.name}
-              showsHorizontalScrollIndicator={false}
-              data={data}
-              renderItem={renderItemTrend}
-            />
+    <ScrollView
+    horizontal
+    style={{padding: 5, flex: 1, marginTop: 20}}
+    showsHorizontalScrollIndicator={false}>
+    <View style={{paddingRight: 11}}>
+      <TouchableOpacity
+        style={
+          Platform.OS === 'ios'
+            ? diseaseId === null
+              ? styles.activeLabel
+              : styles.inactiveLabel
+            : null
+        }
+        onPress={selectFeatured}>
+        <Text
+          style={[
+            styles.featured,
+            diseaseId === null
+              ? styles.activeLabel
+              : styles.inactiveLabel,
+          ]}>
+          Featured
+        </Text>
+      </TouchableOpacity>
+    </View>
+
+    {data.map((item, index) => {
+      return (
+        <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+          <TouchableOpacity
+            style={
+              Platform.OS === 'ios'
+                ? item.dc_id === diseaseId
+                  ? styles.activeLabel
+                  : styles.inactiveLabel
+                : null
+            }
+            onPress={() => {
+              selectItem(item);
+            }}>
+            <Text
+              style={[
+                styles.category,
+                item.dc_id === diseaseId
+                  ? styles.activeLabel
+                  : styles.inactiveLabel,
+              ]}>
+              {item.med_type}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    })}
+  </ScrollView>
   )
-}
+
 }
 
 export default System
