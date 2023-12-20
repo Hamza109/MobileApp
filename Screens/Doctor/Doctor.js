@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   SafeAreaView,
+  ScrollView
 } from 'react-native';
 import {width, height, FontFamily, Color} from '../../config/GlobalStyles';
 import NotificationIcon from '../../assets/img/Notification.svg';
@@ -19,29 +20,44 @@ import {backendHost} from '../../components/apiConfig';
 import FilterList from '../../assets/img/filter_list.svg';
 import { FILTER_DOC } from '../../routes';
 import {DOCTOR_MAIN_SCREEN} from '../../routes';
+import System from '../Category/System';
+import ContentLoader from '../../components/ContentLoader';
 const Doctor = ({navigation}) => {
   //
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [featuredDoctors, setFeaturedDoctors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [Loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [speciality,setSpeciality]=useState([])
+  const [medicineId, setMedicineId] = useState(null);
+
+  const selectItem = item => {
+    setMedicineId(item.med_type);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
+        const promises = [ fetch(
           `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors`,
-        );
-        const data = await response.json();
+        ),
+        fetch(`${backendHost}/data/medicines`)
+      
+      ]
+      const [response1, response2] = await Promise.all(promises);
 
-        setFeaturedDoctors(data.map.DoctorDetails.myArrayList);
-        console.log(data.map.DoctorDetails.myArrayList);
+      const data1 = await response1.json();
+      const data2 = await response2.json();
+
+        setFeaturedDoctors(data1.map.DoctorDetails.myArrayList);
+        setSpeciality(data2)
+
       } catch (error) {
         setError(error);
       } finally {
-        setLoading(false);
+        setLoaded(true);
       }
     };
 
@@ -139,16 +155,85 @@ const Doctor = ({navigation}) => {
             <Text style={styles.read}>Practitioners</Text>
             <NotificationIcon width={16} height={18} style={{marginTop: 5}} />
           </View>
-        </View>
-        <Pressable style ={{alignItems:'center'}} onPress={()=>navigation.navigate(FILTER_DOC)}>
-          <FilterList width={26} height={26} style={{marginTop: 5}} />
+          <View style={{flexDirection:'row'}}>
+        {
+            <ScrollView
+            horizontal
+            style={{padding: 5, flex: 1, marginTop: 20}}
+            showsHorizontalScrollIndicator={false}>
+            <View style={{paddingRight: 11}}>
+              <TouchableOpacity
+                style={
+                  Platform.OS === 'ios'
+                    ? medicineId === null
+                      ? styles.activeLabel
+                      : styles.inactiveLabel
+                    : null
+                }
+                onPress={()=>{}}>
+                <Text
+                  style={[
+                    styles.featured,
+                    medicineId === null
+                      ? styles.activeLabel
+                      : styles.inactiveLabel,
+                  ]}
+                  >
+                  Featured
+                </Text>
+              </TouchableOpacity>
+            </View>
+  
+            {speciality.map((item, index) => {
+              return (
+                <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+                  <TouchableOpacity
+                    style={
+                      Platform.OS === 'ios'
+                        ? item.med_type === medicineId
+                          ? styles.activeLabel
+                          : styles.inactiveLabel
+                        : null
+                    }
+                    onPress={() => {
+                      selectItem(item);
+                    }}>
+                    <Text
+                      style={[
+                        styles.category,
+                        item.med_type === medicineId
+                          ? styles.activeLabel
+                          : styles.inactiveLabel,
+                      ]}
+                      >
+                      {item.med_type}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </ScrollView>
+        }
+        <View style={{borderLeftWidth:1}}>
+        <Pressable style={{justifyContent:'center',marginLeft:10,alignItems:'center'}} onPress={()=>navigation.navigate(FILTER_DOC)}>
+          <FilterList width={24} height={24} style={{marginTop: 5}} />
         </Pressable>
+        </View>
+        </View>
 
+        </View>
+       
+        {Loaded ? (
         <FlashList
-          estimatedItemSize={100}
-          data={featuredDoctors}
-          renderItem={renderItem}
-        />
+        estimatedItemSize={100}
+        data={featuredDoctors}
+        renderItem={renderItem}
+      />
+      ) : (
+        <ContentLoader/>
+      )}
+
+      
 
         {/* <Text style={{color: '#000', fontSize: 40}}>Doc</Text>
         <TouchableOpacity
@@ -219,7 +304,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   feedHeader: {
-    height: 80,
+    height: 132,
     width: width,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
@@ -228,6 +313,34 @@ const styles = StyleSheet.create({
     color: Color.colorDarkslategray,
     fontWeight: '700',
     fontSize: 25,
+  },
+
+  read: {
+    color: Color.colorDarkslategray,
+    fontWeight: '700',
+    fontSize: 25,
+  },
+  category: {
+    fontFamily: FontFamily.poppinsRegular,
+    fontWeight: '700',
+    fontSize: 10,
+    width: 'auto',
+  },
+
+  featured: {
+    fontFamily: FontFamily.poppinsBold,
+    color: Color.colorSilver,
+    fontSize: 10,
+  },
+
+  activeLabel: {
+    color: Color.colorDarkslategray,
+    borderBottomWidth: 2,
+    borderColor: '#5E4DB0',
+  },
+
+  inactiveLabel: {
+    color: Color.colorSilver,
   },
 });
 

@@ -12,6 +12,7 @@ export const FILTER_DOC = "FILTER_DOC"
 //search screen and tab
 export const SEARCH="SEARCH"
 export const SEARCH_TAB ="SEARCH_TAB"
+export const RESULTS="RESULTS"
 //profle screen and tab
 export const PROFILE="PROFILE"
 export const PROFILE_TAB="PROFILE_TAB"

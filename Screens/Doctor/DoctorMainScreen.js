@@ -51,7 +51,7 @@ const DoctorMainScreen = ({route, navigation}) => {
     }
   };
   useEffect(() => {
-    console.log('doctor', doc);
+
     const fetchDocData = async () => {
       try {
         // Array of promises representing your API calls
@@ -70,7 +70,7 @@ const DoctorMainScreen = ({route, navigation}) => {
         // Assuming the API returns JSON, use .json() to parse the responses
         const data1 = await response1.json();
         const data2 = await response2.json();
-        console.log('data', data2.length);
+    
         // Set the state with the fetched data
         setItem(data1);
         setDocCures(data2);
@@ -100,7 +100,7 @@ const DoctorMainScreen = ({route, navigation}) => {
       const json = await response.json();
 
       setItem(json);
-      console.log(json);
+     
     } catch (error) {
       console.error('An error occurred:', error);
       // Handle errors, e.g., show an error message to the user
