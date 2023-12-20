@@ -83,7 +83,7 @@ const DoctorMainScreen = ({route, navigation}) => {
     // Don't forget to call the function
     fetchDocData();
 
-    // Move the checkIfImage call inside the fetchDocData function
+    // Move the checkIfImage call insidex the fetchDocData function
     checkIfImage(url);
   }, []); // Empty dependency array to ensure the effect runs only once on mount
 
