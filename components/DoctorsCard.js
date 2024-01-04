@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: cardItemHeight,
     paddingHorizontal: 26,
-    paddingVertical: 10,
+   
     borderBottomWidth: 1,
     borderBottomColor: '#E3E3E3',
   },

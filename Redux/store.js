@@ -14,11 +14,13 @@ import {
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import heightSlice from './Slice/heightSlice';
+import OptionSlice from './Slice/OptionSlice';
 const rootReducer = combineReducers({
   screen: screenSlice,
   height: heightSlice,
   index: indexSlice,
   docData: DoctorDataSlice,
+  option:OptionSlice
 });
 
 const persistConfig = {

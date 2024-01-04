@@ -1,4 +1,4 @@
-import React, {useDebugValue, useEffect, useState, memo} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Alert,
   Platform,
+  StatusBar,
 } from 'react-native';
 import {FontFamily, Color} from '../../config/GlobalStyles';
 import CustomTabNavigator from '../Tabs/CustomTabNavigator';
@@ -18,13 +19,11 @@ import CustomHeader from '../Tabs/CustomHeader';
 import NetInfo from '@react-native-community/netinfo';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import {width, height} from '../../config/GlobalStyles';
-import {FlatList} from 'react-native-gesture-handler';
 import ArticlesCard from '../../components/ArticleCard';
 import {backendHost, headers} from '../../components/apiConfig';
 import {FlashList} from '@shopify/flash-list';
 import {useDispatch} from 'react-redux';
-import {ARTICLES_READ} from '../../routes';
-
+import {option} from '../../Redux/Slice/OptionSlice';
 const Feed = ({navigation}) => {
   const [isConnected, setIsConnected] = useState(true);
   const [diseaseId, setDiseaseId] = useState(null);
@@ -79,7 +78,6 @@ const Feed = ({navigation}) => {
 
       const json = await response.json();
 
-  
       // Using map directly to create the array
       setArticleId(json[0].article_id);
 
@@ -140,6 +138,7 @@ const Feed = ({navigation}) => {
   const selectItem = item => {
     setDiseaseId(item.dc_id);
   };
+  const [sendOptions, setSendOptions] = useState(false);
 
   // const renderCategory = ({item}) => {
   //   return (
@@ -171,6 +170,7 @@ const Feed = ({navigation}) => {
   const renderItem = ({item}) => {
     let imageLoc = '';
     const imgLocation = item.content_location;
+
     if (imgLocation && imgLocation.includes('cures_articleimages')) {
       imageLoc =
         `https://all-cures.com:444/` +
@@ -181,23 +181,16 @@ const Feed = ({navigation}) => {
     }
 
     return (
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() =>
-          navigation.navigate(ARTICLES_READ, {
-            articleId: item.article_id,
-            title: item.title,
-            image: imageLoc,
-          })
-        }>
+      <View>
         <ArticlesCard
           title={item.title}
           window_title={item.authors_name}
           create_date={item.create_date}
           image_location={imageLoc}
           dc_name={item.med_type_name}
+          articleId={item.article_id}
         />
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -205,6 +198,11 @@ const Feed = ({navigation}) => {
     // feed container
     <SafeAreaView style={styles.feedContainer}>
       {/* header component */}
+      <StatusBar
+        animated={true}
+        backgroundColor="#fff"
+        barStyle="dark-content"
+      />
 
       <View style={styles.feedHeader}>
         <View
@@ -290,6 +288,9 @@ renderItem={renderCategory}
           keyExtractor={item => item.article_id.toString()}
           data={item}
           renderItem={renderItem}
+          onScroll={() => {
+            dispatch(option(-100));
+          }}
         />
       ) : (
         <MyLoader />

@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Button,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  StatusBar,
 } from 'react-native';
 import {width, height, FontFamily, Color} from '../../config/GlobalStyles';
 import NotificationIcon from '../../assets/img/Notification.svg';
@@ -18,10 +19,11 @@ import {FlashList} from '@shopify/flash-list';
 import DoctorsCard from '../../components/DoctorsCard';
 import {backendHost} from '../../components/apiConfig';
 import FilterList from '../../assets/img/filter_list.svg';
-import { FILTER_DOC } from '../../routes';
+import {FILTER_DOC} from '../../routes';
 import {DOCTOR_MAIN_SCREEN} from '../../routes';
 import System from '../Category/System';
 import ContentLoader from '../../components/ContentLoader';
+import Line from '../../assets/img/Line.svg';
 const Doctor = ({navigation}) => {
   //
   const [date, setDate] = useState(new Date());
@@ -30,7 +32,7 @@ const Doctor = ({navigation}) => {
   const [featuredDoctors, setFeaturedDoctors] = useState([]);
   const [Loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
-  const [speciality,setSpeciality]=useState([])
+  const [speciality, setSpeciality] = useState([]);
   const [medicineId, setMedicineId] = useState(null);
 
   const selectItem = item => {
@@ -40,20 +42,19 @@ const Doctor = ({navigation}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const promises = [ fetch(
-          `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors`,
-        ),
-        fetch(`${backendHost}/data/medicines`)
-      
-      ]
-      const [response1, response2] = await Promise.all(promises);
+        const promises = [
+          fetch(
+            `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors`,
+          ),
+          fetch(`${backendHost}/data/medicines`),
+        ];
+        const [response1, response2] = await Promise.all(promises);
 
-      const data1 = await response1.json();
-      const data2 = await response2.json();
+        const data1 = await response1.json();
+        const data2 = await response2.json();
 
         setFeaturedDoctors(data1.map.DoctorDetails.myArrayList);
-        setSpeciality(data2)
-
+        setSpeciality(data2);
       } catch (error) {
         setError(error);
       } finally {
@@ -152,88 +153,91 @@ const Doctor = ({navigation}) => {
               marginTop: 36,
               marginLeft: 5,
             }}>
-            <Text style={styles.read}>Practitioners</Text>
+            <Text style={styles.read}>Practitioner</Text>
             <NotificationIcon width={16} height={18} style={{marginTop: 5}} />
           </View>
-          <View style={{flexDirection:'row'}}>
-        {
-            <ScrollView
-            horizontal
-            style={{padding: 5, flex: 1, marginTop: 20}}
-            showsHorizontalScrollIndicator={false}>
-            <View style={{paddingRight: 11}}>
-              <TouchableOpacity
-                style={
-                  Platform.OS === 'ios'
-                    ? medicineId === null
-                      ? styles.activeLabel
-                      : styles.inactiveLabel
-                    : null
-                }
-                onPress={()=>{}}>
-                <Text
-                  style={[
-                    styles.featured,
-                    medicineId === null
-                      ? styles.activeLabel
-                      : styles.inactiveLabel,
-                  ]}
-                  >
-                  Featured
-                </Text>
-              </TouchableOpacity>
-            </View>
-  
-            {speciality.map((item, index) => {
-              return (
-                <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+          <View style={{flexDirection: 'row'}}>
+            {
+              <ScrollView
+                horizontal
+                style={{padding: 5, flex: 1, marginTop: 20}}
+                showsHorizontalScrollIndicator={false}>
+                <View style={{}}>
                   <TouchableOpacity
                     style={
                       Platform.OS === 'ios'
-                        ? item.med_type === medicineId
+                        ? medicineId === null
                           ? styles.activeLabel
                           : styles.inactiveLabel
                         : null
                     }
-                    onPress={() => {
-                      selectItem(item);
-                    }}>
+                    onPress={() => {}}>
                     <Text
                       style={[
-                        styles.category,
-                        item.med_type === medicineId
+                        styles.featured,
+                        medicineId === null
                           ? styles.activeLabel
                           : styles.inactiveLabel,
-                      ]}
-                      >
-                      {item.med_type}
+                      ]}>
+                      Featured
                     </Text>
                   </TouchableOpacity>
                 </View>
-              );
-            })}
-          </ScrollView>
-        }
-        <View style={{borderLeftWidth:1}}>
-        <Pressable style={{justifyContent:'center',marginLeft:10,alignItems:'center'}} onPress={()=>navigation.navigate(FILTER_DOC)}>
-          <FilterList width={24} height={24} style={{marginTop: 5}} />
-        </Pressable>
-        </View>
+
+                {speciality.map((item, index) => {
+                  return (
+                    <View key={item.dc_id} style={{paddingHorizontal: 11}}>
+                      <TouchableOpacity
+                        style={
+                          Platform.OS === 'ios'
+                            ? item.med_type === medicineId
+                              ? styles.activeLabel
+                              : styles.inactiveLabel
+                            : null
+                        }
+                        onPress={() => {
+                          selectItem(item);
+                        }}>
+                        <Text
+                          style={[
+                            styles.category,
+                            item.med_type === medicineId
+                              ? styles.activeLabel
+                              : styles.inactiveLabel,
+                          ]}>
+                          {item.med_type}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            }
+            <View style={{marginTop:20}}>
+              <Pressable
+                style={{
+                  justifyContent: 'center',
+                  
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}
+                onPress={() => navigation.navigate(FILTER_DOC)}>
+                <Line width={24} height={24} />
+                <FilterList width={24} height={24}  />
+              </Pressable>
+            </View>
+          </View>
         </View>
 
-        </View>
-       
         {Loaded ? (
-        <FlashList
-        estimatedItemSize={100}
-        data={featuredDoctors}
-        renderItem={renderItem}
-      />
-      ) : (
-        <ContentLoader/>
-      )}
-
-      
+          <FlashList
+            estimatedItemSize={100}
+            data={featuredDoctors}
+            renderItem={renderItem}
+          />
+        ) : (
+          <ContentLoader />
+        )}
 
         {/* <Text style={{color: '#000', fontSize: 40}}>Doc</Text>
         <TouchableOpacity
@@ -304,7 +308,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   feedHeader: {
-    height: 132,
+    height: 118,
     width: width,
     backgroundColor: '#fff',
     paddingHorizontal: 20,

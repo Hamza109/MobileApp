@@ -1,28 +1,67 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Share} from 'react-native';
 import React from 'react';
 import {FontFamily, Color} from '../../config/GlobalStyles';
 import Back from '../../assets/img/BACK.svg';
+import ShareButt from '../../assets/img/share.svg';
+import Heart from '../../assets/img/heart.svg';
 import {useNavigation, CommonActions} from '@react-navigation/native';
 import {Platform} from 'react-native';
-const CustomHeader = ({title}) => {
+import Line from '../../assets/img/Line.svg';
+const CustomHeader = ({title, id}) => {
   const navigation = useNavigation();
 
   const handleBack = () => {
     navigation.dispatch(CommonActions.goBack());
   };
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `https://all-cures.com/cure/${id}-${title}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   return (
-    <View>
+    <>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack} style={{padding: 5}}>
+        <TouchableOpacity
+          onPress={handleBack}
+          style={{padding: 5, alignItems: 'center', justifyContent: 'center'}}>
           <Back />
         </TouchableOpacity>
 
-        <View style={styles.text}>
-          <Text style={styles.headerText}></Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: 50,
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity style={{}}>
+            <Heart width={'11.74'} height={'15'} />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Line width={'11.74'} height={'15'} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onShare} style={{}}>
+            <ShareButt width={'11.74'} height={'15'} />
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.divider}></View>
-    </View>
+    </>
   );
 };
 
@@ -36,7 +75,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     marginVertical: 10,
     flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   text: {
     padding: 5,

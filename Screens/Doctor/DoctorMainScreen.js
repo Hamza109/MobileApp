@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {backendHost} from '../../components/apiConfig';
@@ -20,7 +21,7 @@ import ScheduleButton from '../../components/ScheduleButton';
 import OutButton from '../../components/outButton';
 import RelatedCard from '../../components/RelatedCard';
 import Right from '../../assets/img/RIGHT.svg';
-import {ARTICLES_READ,DOC_CURES} from '../../routes';
+import {ARTICLES_READ, DOC_CURES} from '../../routes';
 
 const DoctorMainScreen = ({route, navigation}) => {
   const doc = useSelector(state => state.docData.doc);
@@ -33,8 +34,8 @@ const DoctorMainScreen = ({route, navigation}) => {
   const [url, setUrl] = useState(
     `http://all-cures.com:8080/cures_articleimages/doctors/${id}.png`,
   );
-  const firstName = route.params.firstName
-  const secondName = route.params.secondName
+  const firstName = route.params.firstName;
+  const secondName = route.params.secondName;
 
   const checkIfImage = async imageUrl => {
     try {
@@ -51,7 +52,6 @@ const DoctorMainScreen = ({route, navigation}) => {
     }
   };
   useEffect(() => {
-
     const fetchDocData = async () => {
       try {
         // Array of promises representing your API calls
@@ -70,7 +70,7 @@ const DoctorMainScreen = ({route, navigation}) => {
         // Assuming the API returns JSON, use .json() to parse the responses
         const data1 = await response1.json();
         const data2 = await response2.json();
-    
+
         // Set the state with the fetched data
         setItem(data1);
         setDocCures(data2);
@@ -100,7 +100,6 @@ const DoctorMainScreen = ({route, navigation}) => {
       const json = await response.json();
 
       setItem(json);
-     
     } catch (error) {
       console.error('An error occurred:', error);
       // Handle errors, e.g., show an error message to the user
@@ -112,6 +111,11 @@ const DoctorMainScreen = ({route, navigation}) => {
     <>
       {isLoaded ? (
         <ScrollView style={{backgroundColor: '#fff', paddingHorizontal: 26}}>
+          <StatusBar
+            animated={true}
+            backgroundColor="#fff"
+            barStyle="dark-content"
+          />
           <View style={{backgroundColor: '#fff'}}>
             <Image
               source={{
@@ -246,11 +250,15 @@ const DoctorMainScreen = ({route, navigation}) => {
               })}
 
             {docCures.length > 2 ? (
-              <TouchableOpacity style={{marginTop: 10}} onPress={()=>{navigation.navigate(DOC_CURES,{
-                docId:id,
-                firstName:firstName,
-                secondName:secondName
-              })}}>
+              <TouchableOpacity
+                style={{marginTop: 10}}
+                onPress={() => {
+                  navigation.navigate(DOC_CURES, {
+                    docId: id,
+                    firstName: firstName,
+                    secondName: secondName,
+                  });
+                }}>
                 <Text style={styles.seeAll}>
                   See All Cures <Right />
                 </Text>

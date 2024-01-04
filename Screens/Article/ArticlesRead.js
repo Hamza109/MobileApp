@@ -26,6 +26,7 @@ import RelatedCard from '../../components/RelatedCard';
 import {height as bottomHeight} from '../../Redux/Slice/heightSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import CustomHeader from '../Tabs/CustomHeader';
+import axios from 'axios';
 const ratio = width / 378;
 const ArticlesRead = ({route, navigation}) => {
   const [title, setTitle] = useState(route.params.title);
@@ -51,9 +52,8 @@ const ArticlesRead = ({route, navigation}) => {
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
-
+ 
   useEffect(() => {
-  
     NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
     });
@@ -84,8 +84,6 @@ const ArticlesRead = ({route, navigation}) => {
           ).blocks;
 
           setItems(contentBlocks);
-
-      
         }
       } catch (err) {
         console.error(err);
@@ -138,7 +136,7 @@ const ArticlesRead = ({route, navigation}) => {
   return (
     <SafeAreaView style={styles.readContainer}>
       <Animated.View style={[styles.animatedHeader, {opacity: headerOpacity}]}>
-        <CustomHeader title={title} />
+        <CustomHeader title={title} id={id} />
       </Animated.View>
 
       {isLoaded ? (
@@ -264,6 +262,16 @@ const ArticlesRead = ({route, navigation}) => {
                   </TouchableOpacity>
                 );
               })}
+            <View style = {{paddingHorizontal:26,paddingVertical:10}}>
+              <Text style = {{fontSize:7,lineHeight:11.9,fontFamily:FontFamily.poppinsRegular,fontWeight:"400",color:Color.colorDarkslategray}}>
+                Content available on All Cures website is not intended to be a
+                substitute for professional medical advice, diagnosis, or
+                treatment. It is strongly recommended to consult your physician
+                or other qualified medical practitioner with any questions you
+                may have regarding a medical condition. The website should not
+                be used as a source for treatment of any medical condition.
+              </Text>
+            </View>
           </View>
         </Animated.ScrollView>
       ) : (
