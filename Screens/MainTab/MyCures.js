@@ -14,39 +14,35 @@ import Published from '../mycures/Publish';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import All from '../mycures/All';
-import { widthPercentageToDP } from 'react-native-responsive-screen';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 const bootstrapStyleSheet = new BootstrapStyleSheet();
 const {s, c} = bootstrapStyleSheet;
 const Tab = createMaterialTopTabNavigator();
 const MyCures = () => {
-
-
-
-
-
-
   return (
     <>
       <Tab.Navigator
         initialRouteName="All"
         screenOptions={{
-        
-tabBarIndicatorStyle:{color:'#00415e'},
-          tabBarStyle: {padding: 0,width:widthPercentageToDP('100%')},
+          tabBarIndicatorStyle: {color: '#00415e'},
+          tabBarStyle: {padding: 0, width: widthPercentageToDP('100%')},
           tabBarInactiveTintColor: 'grey',
           tabBarActiveTintColor: '#00415e',
-          tabBarLabelStyle: {fontFamily: 'Raleway-Bold', fontSize: widthPercentageToDP('3%')},
+          tabBarLabelStyle: {
+            fontFamily: 'Raleway-Bold',
+            fontSize: widthPercentageToDP('3%'),
+          },
         }}>
         <Tab.Screen
           name="All"
           component={All}
           options={{
-            unmountOnBlur:true,
+            unmountOnBlur: true,
             headerShown: false,
-            tabBarIndicatorStyle:{color:'#00415e'},
+            tabBarIndicatorStyle: {color: '#00415e'},
             tabBarLabel: 'Article',
-          
+
             tabBarColor: '#fff',
           }}
         />
@@ -54,14 +50,13 @@ tabBarIndicatorStyle:{color:'#00415e'},
           name="Cures"
           component={Published}
           options={{
-            unmountOnBlur:true,
+            unmountOnBlur: true,
             headerShown: false,
-            tabBarIndicatorStyle:{color:'#00415e'},
+            tabBarIndicatorStyle: {color: '#00415e'},
             tabBarLabel: 'Cures',
             tabBarColor: '#fff',
           }}
         />
-
       </Tab.Navigator>
     </>
   );

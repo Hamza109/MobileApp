@@ -1,16 +1,15 @@
-import React, {useState, useEffect,useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   ScrollView,
   Text,
-
   StyleSheet,
-BackHandler,
+  BackHandler,
   TouchableOpacity,
   ImageBackground,
   Image,
   Alert,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import {
   HStack,
@@ -23,11 +22,10 @@ import {
   Box,
   Pressable,
   Divider,
-  
   VStack,
 } from 'native-base';
 import Svg, {Path, Circle} from 'react-native-svg';
-import RBSheet from "react-native-raw-bottom-sheet";
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 import LottieView from 'lottie-react-native';
 import axios from 'axios';
@@ -48,32 +46,37 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 
 import AllPost from '../search/AllPost';
 import Comment from '../Disease/comment';
-import { useSelector,useDispatch,useStore } from 'react-redux';
-import { scale, verticalScale } from '../../components/Scale';
-import { fetchRequest,fetchFailure,fetchSuccess, screenName } from '../Redux/Action';
+import {useSelector, useDispatch, useStore} from 'react-redux';
+import {scale, verticalScale} from '../../components/Scale';
+import {
+  fetchRequest,
+  fetchFailure,
+  fetchSuccess,
+  screenName,
+} from '../Redux/Action';
 import DocInfo from './DocProfile/DocInfo';
 import DocCures from './DocProfile/DocCures';
 import DocProfileTab from './DocProfile/DocProfileTab';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
-import { Fab } from 'native-base';
-import { v4 as uuidv4 } from 'uuid';
+import {Fab} from 'native-base';
+import {v4 as uuidv4} from 'uuid';
 
 const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(ids);
-  const store=useStore();
-  const row=useSelector((state)=>state.docRow.rowId)
-  const user=useSelector((state)=>state.userId.regId) ;
+  const store = useStore();
+  const row = useSelector(state => state.docRow.rowId);
+  const user = useSelector(state => state.userId.regId);
   const [items, setItems] = useState([]);
   const [articleItems, setArticleItems] = useState([]);
-const dispatch=useDispatch()
-  const doc=useSelector((state)=>state.info.data)
-  const isLoading=useSelector((state)=>state.info.loading)
+  const dispatch = useDispatch();
+  const doc = useSelector(state => state.info.data);
+  const isLoading = useSelector(state => state.info.loading);
   const [selected, setSelected] = useState(1);
-  
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [showValue, setShowValue] = useState();
@@ -81,69 +84,59 @@ const dispatch=useDispatch()
   const [commentItems, setCommentItems] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
   const refRBSheet = useRef();
-  const abort= new AbortController()
+  const abort = new AbortController();
 
-  useEffect(()=>{
-    const backAction =()=>{
-  
-  
-    }
+  useEffect(() => {
+    const backAction = () => {};
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    ); 
-  
+      'hardwareBackPress',
+      backAction,
+    );
+
     return () => backHandler.remove();
-   },[])
-  
+  }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     NetInfo.addEventListener(state => {
-       setIsConnected(state.isConnected);
-      
-     });
-   
-   }, [isConnected])
-
+      setIsConnected(state.isConnected);
+    });
+  }, [isConnected]);
 
   const check = () => {
-    if (user== 0) {
-dispatch(screenName('LOGIN'))
+    if (user == 0) {
+      dispatch(screenName('LOGIN'));
     } else {
-     refRBSheet.current.open()
+      refRBSheet.current.open();
     }
   };
 
-  const [exist,setExist]=useState(false)
-const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${id}.png`)
+  const [exist, setExist] = useState(false);
+  const [url, setUrl] = useState(
+    `http://all-cures.com:8080/cures_articleimages/doctors/${id}.png`,
+  );
 
- const checkIfImage = imageUrl => {
-  fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
-    .then(res => {
-      if (res.ok) {
-        setExist(true);
-      } else {
-        setExist(false);
-      }
-    })
-    .catch(err => err);
-};
+  const checkIfImage = imageUrl => {
+    fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
+      .then(res => {
+        if (res.ok) {
+          setExist(true);
+        } else {
+          setExist(false);
+        }
+      })
+      .catch(err => err);
+  };
 
-
- 
-
-  
   const getRating = () => {
     axios
-      .get(`${backendHost}/rating/target/${id}/targettype/1/avg`,{
-        signal:abort.signal
+      .get(`${backendHost}/rating/target/${id}/targettype/1/avg`, {
+        signal: abort.signal,
       })
       .then(res => {
-      
         setShowValue(res.data);
       })
       .catch(err => {
-  err
+        err;
         throw err;
       });
   };
@@ -155,69 +148,64 @@ const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/docto
         setCommentItems(json);
       })
       .catch(err => {
-      err
+        err;
         throw err;
       });
   }
-  useEffect(()=>{
+  useEffect(() => {
     comments();
-
-  },[id])
+  }, [id]);
   const getDoc = () => {
+    return function (dispatch) {
+      dispatch(fetchRequest());
 
-      return function(dispatch){
-        dispatch(fetchRequest())
+      const docData = new Promise((resolve, reject) => {
+        setIsLoaded(false);
+        axios
+          .get(
+            `${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`,
+            {
+              signal: abort.signal,
+            },
+          )
 
-const docData=new Promise ((resolve,reject)=>{
-  setIsLoaded(false)
-  axios.get(`${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`,{
-    signal:abort.signal
-  })
- 
-  .then(res => res.data)
-  .then(json=>
-    {
- 
-      resolve(dispatch(fetchSuccess(json)))
-     
-  
-    })
-  .catch(err => {err
+          .then(res => res.data)
+          .then(json => {
+            resolve(dispatch(fetchSuccess(json)));
+          })
+          .catch(err => {
+            err;
 
-      dispatch(fetchFailure(err))
-
- 
-    })
-})
-docData.then(()=>{
-  setIsLoaded(true)
-})
-    
-      }
+            dispatch(fetchFailure(err));
+          });
+      });
+      docData.then(() => {
+        setIsLoaded(true);
+      });
+    };
   };
 
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
-         
-    fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`,{
-      signal:abort.signal
+    fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`, {
+      signal: abort.signal,
     })
       .then(res => res.json())
-      .then(json => {
+      .then(
+        json => {
+          var temp = [];
+          json.forEach(i => {
+            if (i.pubstatus_id === 3) {
+              temp.push(i);
+            }
+          });
 
-        var temp = [];
-        json.forEach(i => {
-          if (i.pubstatus_id === 3) {
-            temp.push(i);
-          }
-        });
-     
-        setArticleItems(temp);
-     
-     
-      },[id])
+          setArticleItems(temp);
+        },
+        [id],
+      )
       .catch(err => {
-    err
+        err;
       });
   };
   function IsJsonValid(str) {
@@ -239,7 +227,8 @@ docData.then(()=>{
         <Path
           fill="#e5e5e5"
           d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
-      </Svg>)
+      </Svg>
+    );
   }
   function User() {
     return (
@@ -252,169 +241,151 @@ docData.then(()=>{
         <Path
           fill="#e5e5e5"
           d="M37.288 34.616A20.548 20.548 0 10.938 21.5a20.414 20.414 0 004.774 13.116l-.029.025c.103.123.22.23.326.351.132.151.275.294.411.44.412.447.835.876 1.278 1.278.135.124.275.238.411.356.47.405.954.79 1.454 1.148.065.044.124.102.188.147v-.017a20.417 20.417 0 0023.5 0v.017c.065-.045.122-.102.189-.147.499-.36.983-.743 1.454-1.148.136-.118.276-.234.41-.356.444-.404.867-.83 1.279-1.277.136-.147.277-.29.41-.441.105-.122.224-.228.327-.352l-.032-.024zM21.5 9.75a6.61 6.61 0 110 13.22 6.61 6.61 0 010-13.22zM9.76 34.616a7.338 7.338 0 017.334-7.241h8.812a7.338 7.338 0 017.334 7.241 17.537 17.537 0 01-23.48 0z"></Path>
-      </Svg>)
+      </Svg>
+    );
   }
 
-  const createChat=()=>{
-
-      axios.post(`${backendHost}/chat/start/${user}/${doc.docid}`)
-      .then(res=>{
-    
-        if(res.data[0].Chat_id!=null){
-          navigation.navigate('chat',{id:doc.docid,messages:[],chatId:res.data[0].Chat_id,first_name:doc.docname_first,last_name:doc.docname_last})
+  const createChat = () => {
+    axios
+      .post(`${backendHost}/chat/start/${user}/${doc.docid}`)
+      .then(res => {
+        if (res.data[0].Chat_id != null) {
+          navigation.navigate('chat', {
+            id: doc.docid,
+            messages: [],
+            chatId: res.data[0].Chat_id,
+            first_name: doc.docname_first,
+            last_name: doc.docname_last,
+          });
+        } else {
+          Alert.alert('Something went wrong,please try again');
         }
-        else{
-          Alert.alert('Something went wrong,please try again')
-        }
-      }
-        
-        ).catch(err=>Alert.alert(err))
-
-
-  
-  }
-  
-
-const initiateChat=()=>{
-if(user!=0)
-{
-    axios.get(`${backendHost}/chat/${user}/${doc.docid}`)
-  .then(res=>{
-
-  
-  if(res.status===200){
-    if(res.data[0].Chat_id === null){
-      createChat()
-    }
-    else {
-    
-
-        const transformedMessages = res.data.map(message => {
-          return {
-            _id: Math.random().toString(36).substring(2,9),
-            text: message.Message,
-            createdAt: new Date(message.Time),
-            user: {
-              _id: message.From_id,
-              name: message.From,
-           
-            },
-          };
-        });
-      
-      navigation.navigate('chat',{messages:res.data[0].Message!=""?transformedMessages.reverse():[],id:doc.docid,chatId:res.data[0].Chat_id,first_name:doc.docname_first,last_name:doc.docname_last})
-      
-    }
-  }else{
-Alert.alert('Please Try again','something went wrong')
-  }
-    
-      }
-).catch(err=>err)
-
-    }else{
-      dispatch(screenName('LOGIN'))
-    }
-
-
-  
-  
-
-}
-
-
-
-
-
-useEffect(()=>{
- 
-  getRating();
-  checkIfImage(url);
-
-
-})
-useEffect(()=>{
-  store.dispatch(getDoc())
-  return () => {
-    // Cleanup code here
-    abort.abort(); // Cancel the fetch request when the component unmounts
+      })
+      .catch(err => Alert.alert(err));
   };
 
-},[id,isConnected])
-  useEffect(() => {
+  const initiateChat = () => {
+    if (user != 0) {
+      axios
+        .get(`${backendHost}/chat/${user}/${doc.docid}`)
+        .then(res => {
+          if (res.status === 200) {
+            if (res.data[0].Chat_id === null) {
+              createChat();
+            } else {
+              const transformedMessages = res.data.map(message => {
+                return {
+                  _id: Math.random().toString(36).substring(2, 9),
+                  text: message.Message,
+                  createdAt: new Date(message.Time),
+                  user: {
+                    _id: message.From_id,
+                    name: message.From,
+                  },
+                };
+              });
 
+              navigation.navigate('chat', {
+                messages:
+                  res.data[0].Message != ''
+                    ? transformedMessages.reverse()
+                    : [],
+                id: doc.docid,
+                chatId: res.data[0].Chat_id,
+                first_name: doc.docname_first,
+                last_name: doc.docname_last,
+              });
+            }
+          } else {
+            Alert.alert('Please Try again', 'something went wrong');
+          }
+        })
+        .catch(err => err);
+    } else {
+      dispatch(screenName('LOGIN'));
+    }
+  };
+
+  useEffect(() => {
+    getRating();
+    checkIfImage(url);
+  });
+  useEffect(() => {
+    store.dispatch(getDoc());
+    return () => {
+      // Cleanup code here
+      abort.abort(); // Cancel the fetch request when the component unmounts
+    };
+  }, [id, isConnected]);
+  useEffect(() => {
     allpost();
     return () => {
       // Cleanup code here
       abort.abort(); // Cancel the fetch request when the component unmounts
     };
-
   }, [id]);
 
   if (!isConnected) {
-
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
     );
   }
-  
+
   return (
     <>
-    
-       {
-          !isLoaded?(
-            <View style={styles.loading}>
-            <HStack space={2} justifyContent="center">
-              <LottieView
-                source={require('../../assets/animation/load.json')}
-                autoPlay
-                loop
-                style={{width: 50, height: 50, justifyContent: 'center'}}
-              />
-            </HStack>
-          </View>
-  ):null
-        }
-      <SafeAreaView style={{flex:1}}>
-        
-      <View style={{height:165,width:'100%'}}>
-          <View style={{backgroundColor:'#00415e',height:'100%',width:'100%',alignItems:'center',justifyContent:'center'}}>
+      {!isLoaded ? (
+        <View style={styles.loading}>
+          <HStack space={2} justifyContent="center">
+            <LottieView
+              source={require('../../assets/animation/load.json')}
+              autoPlay
+              loop
+              style={{width: 50, height: 50, justifyContent: 'center'}}
+            />
+          </HStack>
+        </View>
+      ) : null}
+      <SafeAreaView style={{flex: 1}}>
+        <View style={{height: 165, width: '100%'}}>
+          <View
+            style={{
+              backgroundColor: '#00415e',
+              height: '100%',
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
             <View style={styles.row}>
-              
-                {exist?
-              <View
-
-                style={{
-                  width: 130,
-                  height: 130,
-                  backgroundColor: '#fff',
-                  borderRadius: 200,
-                 marginLeft:20,
-                  justifyContent: 'center',
-                  paddingHorizontal: 5,
-                  alignItems: 'center',
-                  
-                }}>
-                <ImageBackground
-                
-              
-                  source={{
-                    uri: url
-                  }}
+              {exist ? (
+                <View
                   style={{
                     width: 130,
                     height: 130,
-                    overflow:'hidden',
-                  borderRadius:100
-                    
-                  }}
-                />
-              </View>: <User/> }
-             
-              <View style={{width:wp('50%') }}>
-          
-                <VStack space={1} py='1' px='0'>
+                    backgroundColor: '#fff',
+                    borderRadius: 200,
+                    marginLeft: 20,
+                    justifyContent: 'center',
+                    paddingHorizontal: 5,
+                    alignItems: 'center',
+                  }}>
+                  <ImageBackground
+                    source={{
+                      uri: url,
+                    }}
+                    style={{
+                      width: 130,
+                      height: 130,
+                      overflow: 'hidden',
+                      borderRadius: 100,
+                    }}
+                  />
+                </View>
+              ) : (
+                <User />
+              )}
 
+              <View style={{width: wp('50%')}}>
+                <VStack space={1} py="1" px="0">
                   <Text
                     style={{
                       color: '#fff',
@@ -425,7 +396,7 @@ useEffect(()=>{
                     Dr. {doc.docname_first} {doc.docname_last}
                   </Text>
                   <HStack space={1}>
-                    <Icon name="ribbon" size={18} color='#fff' />
+                    <Icon name="ribbon" size={18} color="#fff" />
 
                     <Text
                       style={{
@@ -439,7 +410,7 @@ useEffect(()=>{
                     </Text>
                   </HStack>
                   <HStack space={1}>
-                    <Icon name="business" size={18} color='#fff'/>
+                    <Icon name="business" size={18} color="#fff" />
                     <Text
                       style={{
                         color: '#fff',
@@ -454,215 +425,201 @@ useEffect(()=>{
                     </Text>
                   </HStack>
                   <HStack space={1}>
-                  <Icon name="globe" size={18} color='#fff'/>
-                  <Text
-                    style={{
-                      color: '#fff',
+                    <Icon name="globe" size={18} color="#fff" />
+                    <Text
+                      style={{
+                        color: '#fff',
 
-                      fontFamily: 'Raleway-Regular',
-                      fontSize: scale(10),
+                        fontFamily: 'Raleway-Regular',
+                        fontSize: scale(10),
                         width: scale(180),
-                      position: 'relative',
-                     
-                    }}>
-                  
-                    {doc.state} {doc.country_code}
-                  </Text>
+                        position: 'relative',
+                      }}>
+                      {doc.state} {doc.country_code}
+                    </Text>
                   </HStack>
                   <View
-                style={{
-                  width: wp('25%'),
-                           
-                }}>
-                <StarRating
-                  disabled={false}
-                  starSize={18}
-                  maxStars={5}
-                  rating={showValue}
-                  emptyStarColor={'#fff'}
-                  fullStarColor={'orange'}
-                />
-
-              </View>
-              
+                    style={{
+                      width: wp('25%'),
+                    }}>
+                    <StarRating
+                      disabled={false}
+                      starSize={18}
+                      maxStars={5}
+                      rating={showValue}
+                      emptyStarColor={'#fff'}
+                      fullStarColor={'orange'}
+                    />
+                  </View>
                 </VStack>
-                
               </View>
             </View>
-            </View>
-            
           </View>
-        
-         
-      <Box bg="#00415e" width={wp('100%')} alignSelf="center" style={{position:'relative',bottom:0}}>
-            <Center flex={1}></Center>
-            <HStack
-              bg="#fff"
-              alignItems="center"
-        
-            
-              
-              shadow={5}>
-              <Center mr='10' flex={1}>
-                <Ratings rowno={doc.rowno} article_id={null} />
+        </View>
+
+        <Box
+          bg="#00415e"
+          width={wp('100%')}
+          alignSelf="center"
+          style={{position: 'relative', bottom: 0}}>
+          <Center flex={1}></Center>
+          <HStack bg="#fff" alignItems="center" shadow={5}>
+            <Center mr="10" flex={1}>
+              <Ratings rowno={doc.rowno} article_id={null} />
+              <Text
+                style={{
+                  fontFamily: 'Raleway-Regular',
+                  color: '#00415e',
+                  fontSize: wp('3%'),
+                }}>
+                Rate this Doctor
+              </Text>
+            </Center>
+            <Center>
+              <Icon name="videocam" color={'#00415e'} size={28} />
+              <Text
+                style={{
+                  fontFamily: 'Raleway-Regular',
+                  color: '#00415e',
+                  fontSize: wp('3%'),
+                }}
+                onPress={() => {
+                  navigation.navigate('videoCall');
+                }}>
+                Start Video call
+              </Text>
+            </Center>
+            <Pressable
+              cursor="pointer"
+              py="3"
+              flex={1}
+              onPress={() => setSelected(0)}>
+              <Center>
+                <Icon
+                  mb="1"
+                  name="chatbubble-ellipses"
+                  color="#00415e"
+                  size={30}
+                  onPress={() => {
+                    check();
+                  }}
+                />
                 <Text
                   style={{
                     fontFamily: 'Raleway-Regular',
                     color: '#00415e',
                     fontSize: wp('3%'),
                   }}>
-                  Rate this Doctor
+                  Comment
                 </Text>
               </Center>
-              <Pressable
-                cursor="pointer"
-                py="3"
-                flex={1}
-                onPress={() => setSelected(0)}>
-                <Center>
-                  <Icon
-                    mb="1"
-                    name="chatbubble-ellipses"
-                    color="#00415e"
-                    size={30}
-                    onPress={() => {
-                      check();
-                    }}
-                  />
+            </Pressable>
+          </HStack>
+        </Box>
+
+        <DocProfileTab />
+
+        {doc.subscription === 1 ? (
+          row === 0 ? (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={styles.chat}
+              onPress={initiateChat}>
+              <View>
+                <ImageBackground
+                  resizeMode="contain"
+                  source={require('../../assets/img/chat.png')}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    overflow: 'hidden',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <Text
                     style={{
-                      fontFamily: 'Raleway-Regular',
                       color: '#00415e',
-                      fontSize: wp('3%'),
+                      fontSize: 10,
+                      textDecorationLine: 'underline',
+                      marginBottom: 7,
+                      fontFamily: 'Raleway-Bold',
                     }}>
-                    Comment
+                    Chat With Doctor
                   </Text>
-                </Center>
-              </Pressable>
-             
-            </HStack>
-          </Box>
-
-
-      <DocProfileTab/>
-      
-      {
-  
-  doc.subscription===1?(
-row===0?(
-      <TouchableOpacity activeOpacity={0.9} style={styles.chat} onPress={initiateChat} >
-
-
-<View>
-<ImageBackground
-                
-resizeMode='contain'
-    source={require('../../assets/img/chat.png')}
-    style={{
-      width: 100,
-      height: 100,
-      overflow:'hidden',
-      justifyContent:'center',
-      alignItems:'center'
-      
-  
-      
-    }}
-  >
-<Text style={{color:'#00415e',fontSize:10,textDecorationLine:'underline',marginBottom:7,fontFamily:'Raleway-Bold'}}>
-  Chat With Doctor
-</Text>
-</ImageBackground>
-
-</View>
-
-        
-         </TouchableOpacity>
-):null):null
-}
+                </ImageBackground>
+              </View>
+            </TouchableOpacity>
+          ) : null
+        ) : null}
       </SafeAreaView>
 
-{/* Rating and comment */}
+      {/* Rating and comment */}
 
+      {/* tabs */}
 
-          {/* tabs */}
-          
-  
+      {/** comments sheet */}
 
-
-{/** comments sheet */}
-
-<RBSheet
+      <RBSheet
         ref={refRBSheet}
-
         closeOnPressMask={true}
-        
         height={522}
         customStyles={{
-        
           wrapper: {
-            backgroundColor: "transparent",
-         
-  
+            backgroundColor: 'transparent',
           },
-      
-        }}
-      >
-    <Stack space={3}>
-<View style={styles.cheader}>
-  <Text style={styles.ctext}>
-    Comments
-  </Text>
-</View>
+        }}>
+        <Stack space={3}>
+          <View style={styles.cheader}>
+            <Text style={styles.ctext}>Comments</Text>
+          </View>
 
-
-<ScrollView style={{height:'70%'}}>
-                {commentItems.length !== 0 ? (
-                  commentItems.map(i => (
-                    <View  key={Math.random().toString(36)} style={{marginBottom: 10}}>
-                      <View
-                       key={Math.random().toString(36)}
-                        style={styles.cbody}>
-                          <Box  key={Math.random().toString(36)} bg='gray.200' rounded={'xl'} p='2'w={wp('50%')} >
-                          <Text style={styles.cbodyHead}>{i.first_name} {i.last_name}</Text>
-                        <Text style={styles.cbodyText}>{i.comments}</Text>
-                        </Box>
-                      </View>
-                    </View>
-                  ))
-                ) : (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Icon
-                      name="chatbubbles"
-                      style={{opacity: 0.3,color:'grey'}}
-                      size={150}
-                    />
-                    <Text style={{color: 'grey'}}>No comments yet</Text>
-                    <Text style={{color: 'grey'}}>
-                      Be the first to comment.
-                    </Text>
+          <ScrollView style={{height: '70%'}}>
+            {commentItems.length !== 0 ? (
+              commentItems.map(i => (
+                <View
+                  key={Math.random().toString(36)}
+                  style={{marginBottom: 10}}>
+                  <View key={Math.random().toString(36)} style={styles.cbody}>
+                    <Box
+                      key={Math.random().toString(36)}
+                      bg="gray.200"
+                      rounded={'xl'}
+                      p="2"
+                      w={wp('50%')}>
+                      <Text style={styles.cbodyHead}>
+                        {i.first_name} {i.last_name}
+                      </Text>
+                      <Text style={styles.cbodyText}>{i.comments}</Text>
+                    </Box>
                   </View>
-                )}
-              </ScrollView>
-<Divider  bg={'Darkgray'} />
-<View style={styles.cComment}>
-<Comment  article_id={null}  doc_id={doc.rowno}/>
-</View>
-
-    </Stack>
+                </View>
+              ))
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Icon
+                  name="chatbubbles"
+                  style={{opacity: 0.3, color: 'grey'}}
+                  size={150}
+                />
+                <Text style={{color: 'grey'}}>No comments yet</Text>
+                <Text style={{color: 'grey'}}>Be the first to comment.</Text>
+              </View>
+            )}
+          </ScrollView>
+          <Divider bg={'Darkgray'} />
+          <View style={styles.cComment}>
+            <Comment article_id={null} doc_id={doc.rowno} />
+          </View>
+        </Stack>
       </RBSheet>
-
-
-
-
-      
     </>
-  )};
+  );
+};
 
 export default DocProfile;
 
@@ -702,9 +659,9 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
- 
+
     marginTop: Platform.OS === 'ios' ? 0 : -7,
-  
+
     borderColor: '#fff',
     borderWidth: 0.1,
     alignItems: 'center',
@@ -728,62 +685,57 @@ const styles = StyleSheet.create({
     zIndex: 999,
     alignItems: 'center',
   },
-  cheader:{
-    padding:15,
-    borderBottomWidth:.3,
-    borderColor:'gray'
-      }
-      ,
-      ctext:{
-        color:'#000',
-        fontSize:18,
-      
-
-      },
-      cComment:{
-        padding:6
-      },
-      cbody:{
-      paddingLeft:25,
-      marginTop:8
-      },
-      cbodyHead:{
-        fontWeight:'bold',
-        color:'black'
-      },
-      cbodyText:{
-        color:'black'
-      },
-      dbodyHead:{
-        color: '#00415e',
-        fontFamily: 'Raleway-Bold',
-        fontSize: 12,
- 
-      }
-      ,
-      dbodyText:{
-        color: '#00415e',
-                  fontFamily: 'Raleway-Medium',
-                  fontSize: wp('3.5%'),
-      },
-      row:{
-        flexDirection:'row',
-        justifyContent:'space-evenly',
-        width:'100%',
-        height:'100%',
-        alignItems:'center',
-        marginLeft:10,
-      },
-      chat:{
-     position:'absolute',
-     bottom:15,
-     right:40,
-     zIndex:20,
-     backgroundColor:'#fff',
-     borderRadius:50,
-     width:52,
-     alignItems:'center',
-     justifyContent:'center',
-     height:52
-      }
+  cheader: {
+    padding: 15,
+    borderBottomWidth: 0.3,
+    borderColor: 'gray',
+  },
+  ctext: {
+    color: '#000',
+    fontSize: 18,
+  },
+  cComment: {
+    padding: 6,
+  },
+  cbody: {
+    paddingLeft: 25,
+    marginTop: 8,
+  },
+  cbodyHead: {
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  cbodyText: {
+    color: 'black',
+  },
+  dbodyHead: {
+    color: '#00415e',
+    fontFamily: 'Raleway-Bold',
+    fontSize: 12,
+  },
+  dbodyText: {
+    color: '#00415e',
+    fontFamily: 'Raleway-Medium',
+    fontSize: wp('3.5%'),
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  chat: {
+    position: 'absolute',
+    bottom: 15,
+    right: 40,
+    zIndex: 20,
+    backgroundColor: '#fff',
+    borderRadius: 50,
+    width: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 52,
+  },
 });

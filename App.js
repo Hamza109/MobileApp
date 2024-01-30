@@ -26,6 +26,7 @@ import {
   Alert,
   AppState,
   Platform,
+  LogBox
 } from 'react-native';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
@@ -43,7 +44,7 @@ import { backendHost } from './components/apiConfig';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
-
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const App = () => {
 

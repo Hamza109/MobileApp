@@ -21,7 +21,6 @@ import axios from 'axios';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 import {
   HStack,
   Stack,
@@ -40,45 +39,36 @@ import {
 } from 'react-native-responsive-screen';
 import CenterWell from '../Disease/CenterWell';
 import DoctorsCard from './DoctorsCard';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const DocPreview = () => {
+  const topDoc = useSelector(state => state.top.Data);
 
-
-  const  topDoc=useSelector((state)=>state.top.Data)
-
-
-  
-  
-
-    return (
-      <>
-        <View style={{flex: 1}}>
-          <View style={{flexDirection: 'row'}}>
-            <ScrollView
-              style={{width: wp('100%')}}
-              horizontal
-              
-              showsHorizontalScrollIndicator={false}>
-              {topDoc.map((i,j) => (
-                <DoctorsCard
-               key={j}
-                  rowno={i.map.rowno}
-                  firstName={i.map.docname_first}
-                  lastName={i.map.docname_last}
-                  primary_spl={i.map.primary_spl}
-                  hospital_affliated={i.map.hospital_affliated}
-                  state={i.map.state}
-                  country_code={i.map.country_code}
-                />
-              ))}
-            </ScrollView>
-          </View>
-
+  return (
+    <>
+      <View style={{flex: 1}}>
+        <View style={{flexDirection: 'row'}}>
+          <ScrollView
+            style={{width: wp('100%')}}
+            horizontal
+            showsHorizontalScrollIndicator={false}>
+            {topDoc.map((i, j) => (
+              <DoctorsCard
+                key={j}
+                rowno={i.map.rowno}
+                firstName={i.map.docname_first}
+                lastName={i.map.docname_last}
+                primary_spl={i.map.primary_spl}
+                hospital_affliated={i.map.hospital_affliated}
+                state={i.map.state}
+                country_code={i.map.country_code}
+              />
+            ))}
+          </ScrollView>
         </View>
-      </>
-    );
-  }
-
+      </View>
+    </>
+  );
+};
 
 export default DocPreview;

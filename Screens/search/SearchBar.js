@@ -12,7 +12,7 @@ import {
   Button,
   Dimensions,
   FlatList,
-  Platform
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -34,90 +34,72 @@ import {useNavigation} from '@react-navigation/core';
 import {backendHost} from '../../components/apiConfig';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { scale, verticalScale } from '../../components/Scale';
-const SearchBar = ({placeholder,doc,city}) => {
-
+import {scale, verticalScale} from '../../components/Scale';
+const SearchBar = ({placeholder, doc, city}) => {
   const [name, setName] = useState('');
 
   const [items, setItems] = useState([]);
-
-  
 
   const [searching, setSearching] = useState(false);
 
   const navigation = useNavigation();
 
-  const docresult = (text) => {
+  const docresult = text => {
     if (text && doc === 1)
-    (
-   
-     navigation.navigate('docResult', {
+      navigation.navigate('docResult', {
         names: `${text}`,
       }),
-      setName(null),
-      setSearching(false)
-    
-    
-    )
-    else if(text && city===1){
-      return navigation.navigate('docResultCity', {
-        names: `${text}`,
-      }),
-      setName(null),
-      setSearching(false)
-   }
-    else{
+        setName(null),
+        setSearching(false);
+    else if (text && city === 1) {
+      return (
+        navigation.navigate('docResultCity', {
+          names: `${text}`,
+        }),
+        setName(null),
+        setSearching(false)
+      );
+    } else {
       Alert.alert('type something');
     }
   };
 
   const [search, setSearch] = useState('');
   const [filteredDataSource, setFilteredDataSource] = useState([]);
-  const [masterDataSource, setMasterDataSource] = useState([]);
-
+ 
   useEffect(() => {
-  
-    if(doc===1)
-    {
-    axios
-      .get(`${backendHost}/IntegratedActionController`)
-      .then(res => res.data)
-      .then(doctordata => {
-
-        setItems(doctordata.map.Doctorname.myArrayList);
-      })
-
-      .catch(res => res);
-    }
-   else if(city===1)
-    {
+    if (doc === 1) {
       axios
-      .get(`${backendHost}/city/all`)
-      .then(res => res.data)
-      .then(citydata => {
-  
-      var temp = []
-      citydata.forEach(i => {
-        temp.push(i.Cityname, i.Pincode)
-      });
-  
-              setItems(temp)
-          ;
-   
-      })
-  
-      .catch(res => res);
+        .get(`${backendHost}/IntegratedActionController`)
+        .then(res => res.data)
+        .then(doctordata => {
+          setItems(doctordata.map.Doctorname.myArrayList);
+        })
+
+        .catch(res => res);
+    } else if (city === 1) {
+      axios
+        .get(`${backendHost}/city/all`)
+        .then(res => res.data)
+        .then(citydata => {
+          var temp = [];
+          citydata.forEach(i => {
+            temp.push(i.Cityname, i.Pincode);
+          });
+
+          setItems(temp);
+        })
+
+        .catch(res => res);
     }
   }, []);
 
   const searchFilterFunction = text => {
     setName(null);
-    
+
     if (text) {
       setSearching(true);
-      
-      
-      
+
       const newData = items.filter(function (item) {
         const itemData = item ? item.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
@@ -126,8 +108,7 @@ const SearchBar = ({placeholder,doc,city}) => {
       setFilteredDataSource(newData);
       setName(text);
     } else {
-      
-      setSearching(false)
+      setSearching(false);
       setFilteredDataSource(items);
       setName(text);
     }
@@ -135,13 +116,10 @@ const SearchBar = ({placeholder,doc,city}) => {
 
   const ItemView = ({item}) => {
     return (
-      
       <TouchableOpacity onPress={() => setName(item) & docresult(item)}>
-    
-          <View style={styles.itemView}>
-            <Text style={styles.itemText}>{item}</Text>
-          </View>
-        
+        <View style={styles.itemView}>
+          <Text style={styles.itemText}>{item}</Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -151,63 +129,65 @@ const SearchBar = ({placeholder,doc,city}) => {
       <View>
         <View styles={styles.flex}>
           <View style={styles.header}>
-           
-              <Icon
-                name="arrow-back-outline"
-                style={{marginTop: 4, marginLeft: Platform.OS==='android'?11:13}}
-                color={'#00415e'}
-                size={Platform.OS ==='android'?35:37}
-                onPress={() => {
-                  navigation.navigate('DocTab');
-                }}
-              />
-              <View style={{paddingRight:0,width:'75%'}}>
-                <Input
-                  placeholder={placeholder}
-                  placeholderTextColor="#00415e"
-                  fontFamily="Raleway-Regular"
-                  bg="#fff"
-                  onChangeText={text => searchFilterFunction(text)}
-                  onClear={() => searchFilterFunction('')}
-                  onSubmitEditing={(() => setName(name)& docresult(name))}
-                  value={name}
-                  width={'100%'}
-          height={52}
-                  color="#00415e"
-                  borderRadius="25"
-                  _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
-                  backgroundColor="rgba(0, 65, 94, 0.2)"
-                  borderColor="lightgrey"
-                  py="3"
-                  px="1"
-                  fontSize="16"
-               
-                  InputRightElement={
-                    searching?(
+            <Icon
+              name="arrow-back-outline"
+              style={{
+                marginTop: 4,
+                marginLeft: Platform.OS === 'android' ? 11 : 13,
+              }}
+              color={'#00415e'}
+              size={Platform.OS === 'android' ? 35 : 37}
+              onPress={() => {
+                navigation.navigate('DocTab');
+              }}
+            />
+            <View style={{paddingRight: 0, width: '75%'}}>
+              <Input
+                placeholder={placeholder}
+                placeholderTextColor="#00415e"
+                fontFamily="Raleway-Regular"
+                bg="#fff"
+                onChangeText={text => searchFilterFunction(text)}
+                onClear={() => searchFilterFunction('')}
+                onSubmitEditing={() => setName(name) & docresult(name)}
+                value={name}
+                width={'100%'}
+                height={52}
+                color="#00415e"
+                borderRadius="25"
+                _focus={{borderColor: 'rgba(0, 65, 94, 0.2)'}}
+                backgroundColor="rgba(0, 65, 94, 0.2)"
+                borderColor="lightgrey"
+                py="3"
+                px="1"
+                fontSize="16"
+                InputRightElement={
+                  searching ? (
                     <View style={{position: 'relative', right: 20}}>
                       <Icon
                         m="2"
                         ml="3"
                         color="#00415e"
                         name="close"
-                        onPress={(() => searchFilterFunction(''))}
+                        onPress={() => searchFilterFunction('')}
                         size={20}
                       />
-                    </View>):  ( <View style={{position: 'relative', right: 20}}>
+                    </View>
+                  ) : (
+                    <View style={{position: 'relative', right: 20}}>
                       <Icon
                         m="2"
                         ml="3"
                         color="#00415e"
                         name="search"
-                        onPress={(() => setName(name)& docresult(name))}
+                        onPress={() => setName(name) & docresult(name)}
                         size={20}
                       />
-                    </View>)
-                  }
-                  
-                />
-              </View>
-     
+                    </View>
+                  )
+                }
+              />
+            </View>
           </View>
         </View>
       </View>
@@ -218,7 +198,6 @@ const SearchBar = ({placeholder,doc,city}) => {
           renderItem={ItemView}
         />
       )}
-   
     </SafeAreaView>
   );
 };
@@ -228,22 +207,21 @@ const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-
   },
 
   header: {
-    paddingTop:Platform.OS === 'ios' ? 0 : 0,
+    paddingTop: Platform.OS === 'ios' ? 0 : 0,
     borderColor: '#fff',
     borderWidth: 0.1,
-    justifyContent:'flex-start',
-    
-    alignItems:'center',
-    flexDirection:'row',
+    justifyContent: 'flex-start',
+
+    alignItems: 'center',
+    flexDirection: 'row',
     width: 400,
-    height:80,
+    height: 80,
     elevation: 1,
-  
-    backgroundColor:'#fff'
+
+    backgroundColor: '#fff',
   },
 
   itemView: {
@@ -263,7 +241,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: wp('4%'),
     marginLeft: -5,
-   
+
     zIndex: 999,
   },
   noResultView: {
