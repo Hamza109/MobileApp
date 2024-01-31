@@ -476,6 +476,13 @@ const DocProfile = ({navigation, route}) => {
               </Text>
             </Center>
             <Center>
+            <Pressable
+              cursor="pointer"
+              py="3"
+              flex={1}
+              onPress={() => {
+                navigation.navigate('videoCall');
+              }}>
               <Icon name="videocam" color={'#00415e'} size={28} />
               <Text
                 style={{
@@ -483,11 +490,10 @@ const DocProfile = ({navigation, route}) => {
                   color: '#00415e',
                   fontSize: wp('3%'),
                 }}
-                onPress={() => {
-                  navigation.navigate('videoCall');
-                }}>
-                Start Video call
+              >
+             Video call
               </Text>
+              </Pressable>
             </Center>
             <Pressable
               cursor="pointer"
