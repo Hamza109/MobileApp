@@ -176,7 +176,7 @@ if(isConnected)
 
      
         axios.get(
-          `${backendHost}/DoctorsActionController?rowno=${Number(
+          `${backendHost}/DoctorsActionController?DocID=${Number(
             row
           )}&cmd=getProfile`,
           {

@@ -40,17 +40,17 @@ import {
   Box,
   NativeBaseProvider,
 } from 'native-base';
-import { scale, verticalScale } from '../../components/Scale';
+import {scale, verticalScale} from '../../components/Scale';
 import ArticleHeader from './ArticleHeader';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
-import { useNavigation ,useNavigationState} from '@react-navigation/native';
+import {useNavigation, useNavigationState} from '@react-navigation/native';
 
-const DocResult = ({ route}) => {
+const DocResult = ({route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
   const {s, c} = bootstrapStyleSheet;
 
-const navigation=useNavigation()
+  const navigation = useNavigation();
   const names = route.params.names;
 
   const {colors} = useTheme();
@@ -61,40 +61,34 @@ const navigation=useNavigation()
   // const [params] = useState(props)
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-const [search,setSearch]=useState();
+  const [search, setSearch] = useState();
   const [text, setText] = useState(names);
   const [isConnected, setIsConnected] = useState(true);
   const navigationState = useNavigationState(state => state);
 
   useEffect(() => {
     NetInfo.addEventListener(state => {
-       setIsConnected(state.isConnected);
-      
-     });
-   
-   }, [isConnected])
+      setIsConnected(state.isConnected);
+    });
+  }, [isConnected]);
   const isearch = () => {
-
-    const searchData= new Promise((resolve,reject)=>{
-      if(isConnected){
-        setIsLoaded(false)
-      fetch(
-        `${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}&Latitude=32.7266&Longitude=74.8570`,
-      )
-        .then(res => res.json())
-        .then(json => {
-      ;
-         resolve(setItems(json.map.DoctorDetails.myArrayList))
-        }).catch(err=>err);;
+    const searchData = new Promise((resolve, reject) => {
+      if (isConnected) {
+        setIsLoaded(false);
+        fetch(
+          `${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}`,
+        )
+          .then(res => res.json())
+          .then(json => {
+            resolve(setItems(json.map.DoctorDetails.myArrayList));
+          })
+          .catch(err => err);
       }
+    });
 
-    })
-
-    searchData.then(()=>{
-      setIsLoaded(true)
-    })
-  
-    
+    searchData.then(() => {
+      setIsLoaded(true);
+    });
   };
 
   useEffect(() => {
@@ -102,7 +96,6 @@ const [search,setSearch]=useState();
   }, [isConnected]);
 
   if (!isConnected) {
-
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
     );
@@ -111,38 +104,33 @@ const [search,setSearch]=useState();
   if (!isLoaded) {
     return (
       <View style={styles.loading}>
-      <HStack space={2} justifyContent="center">
-        <LottieView
-          source={require('../../assets/animation/load.json')}
-          autoPlay
-          loop
-          style={{width: 50, height: 50, justifyContent: 'center'}}
-        />
-      </HStack>
-    </View>
+        <HStack space={2} justifyContent="center">
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
+          />
+        </HStack>
+      </View>
     );
-  } 
-    return (
-      <SafeAreaView style={styles.container}>
+  }
+  return (
+    <SafeAreaView style={styles.container}>
+      <ArticleHeader placeholder="Search by name" doc={1} city={0} />
 
-        <ArticleHeader placeholder='Search by name'   doc={1} city={0}   />
-
-        <ScrollView>
-
-
-          
-          {
-            items.length!==0?(
-          items.map((i,j) => (
+      <ScrollView>
+        {items.length !== 0 ? (
+          items.map((i, j) => (
             <Card
               style={{
                 padding: 5,
-                marginVertical:5,
+                marginVertical: 5,
                 height: verticalScale(150),
                 width: '100%',
                 backgroundColor: '#f0f8ff',
-                borderColor:'#e6f7ff',
-                borderWidth:1,
+                borderColor: '#e6f7ff',
+                borderWidth: 1,
 
                 padding: 9,
               }}>
@@ -162,49 +150,48 @@ const [search,setSearch]=useState();
       /> */}
               <View>
                 <ProfileTab
-                key={j.id}
-                  rowno={i.map.rowno}
+                  key={j.id}
+                  rowno={i.map.docid}
                   firstName={i.map.docname_first}
                   lastName={i.map.docname_last}
                   primary_spl={i.map.primary_spl}
                   hospital_affliated={i.map.hospital_affliated}
-                  state={i.map.state}
-                  country_code={i.map.country_code}
                 />
               </View>
               <View style={{position: 'relative', bottom: 0, left: 4}}></View>
             </Card>
-          ))):  (<View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <Icon
-            name="medical-outline"
-            size={50}
-            style={{opacity: 0.5, color: '#00415e'}}
-          />
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 18,
-              color: '#00415e',
-              fontFamily: 'Raleway-Medium',
-            }}>
-            No Doctor Found
-          </Text>
-        </View>)
-        }
-        </ScrollView>
+          ))
+        ) : (
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <Icon
+              name="medical-outline"
+              size={50}
+              style={{opacity: 0.5, color: '#00415e'}}
+            />
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 18,
+                color: '#00415e',
+                fontFamily: 'Raleway-Medium',
+              }}>
+              No Doctor Found
+            </Text>
+          </View>
+        )}
+      </ScrollView>
 
-        <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-      </SafeAreaView>
-    );
-  }
-
+      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+    </SafeAreaView>
+  );
+};
 
 export default DocResult;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-flex:1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

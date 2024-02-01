@@ -15,26 +15,26 @@ import {
   TouchableHighlight,
   Image,
   RefreshControl,
-
 } from 'react-native';
 import Category from '../Category/Category';
-import { Header } from '@rneui/themed';
+import {Header} from '@rneui/themed';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { moderateScale,verticalScale,scale,scalledPixel } from '../../components/Scale';
+import {
+  moderateScale,
+  verticalScale,
+  scale,
+  scalledPixel,
+} from '../../components/Scale';
 import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import System from '../Category/System';
 import messaging from '@react-native-firebase/messaging';
-import MaterialIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {
-  HStack,
-  Stack,
-
-} from 'native-base';
+import {HStack, Stack} from 'native-base';
 import CenterWell from '../Disease/CenterWell';
 import {backendHost} from '../../components/apiConfig';
 import ArticlePreview from './ArticlePreview';
@@ -47,183 +47,169 @@ import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
 import crashlytics from '@react-native-firebase/crashlytics';
 import Svg, {Path, Circle} from 'react-native-svg';
-import { useDispatch,useSelector,useStore } from 'react-redux';
-import { reg, screenName } from '../Redux/Action';
+import {useDispatch, useSelector, useStore} from 'react-redux';
+import {reg, screenName} from '../Redux/Action';
 import NetInfo from '@react-native-community/netinfo';
-import { useToast } from 'native-base';
+import {useToast} from 'native-base';
 import * as Animatable from 'react-native-animatable';
-import { position } from 'native-base/lib/typescript/theme/styled-system';
-import { topDoctors,recentCures } from '../Redux/Action';
+import {position} from 'native-base/lib/typescript/theme/styled-system';
+import {topDoctors, recentCures} from '../Redux/Action';
 import LottieView from 'lottie-react-native';
 import Tip from './Tip/Tip';
-import { set } from 'react-native-reanimated';
-
+import {set} from 'react-native-reanimated';
 
 const HomeScreen = ({navigation, route}) => {
-
-const toast=useToast()
-  const user=useSelector((state)=>state.userId.regId) ;
-  const screen=useSelector((state)=>state.name.screen)
+  const toast = useToast();
+  const user = useSelector(state => state.userId.regId);
+  const screen = useSelector(state => state.name.screen);
   const theme = useTheme();
-  const  articles=useStore()
-  const  topDoc=useSelector((state)=>state.top.Data)
+  const articles = useStore();
+  const topDoc = useSelector(state => state.top.Data);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
-  const [open,setOpen]=useState(false)
-  const [tip,setTip]=useState(false)
-  const [ad,setAd]=useState(true)
-  const [adUrl,setAdUrl]=useState()
+  const [open, setOpen] = useState(false);
+  const [tip, setTip] = useState(false);
+  const [ad, setAd] = useState(true);
+  const [adUrl, setAdUrl] = useState();
   const imageUrl = 'https://picsum.photos/id/237/200/300';
 
+  const dispatch = useDispatch();
 
- const dispatch=useDispatch();
-
-
-
- function HomeAds(){
-  
-  return(
-    <TouchableOpacity onPress={onRefresh} >
-    <Animatable.View    style={{width:'100%',height:60,backgroundColor:'#fff',        
-alignItems:'center',
-justifyContent:'center'}}  animation='slideInDown' iterationCount={1}  >
-    
-    <Image 
-source={{uri:adUrl}}
-resizeMode='stretch'
-style={{ width:320, height: 50 }} 
-/>
-    
-  </Animatable.View>
-    </TouchableOpacity>
-  )
-}
-
-  function Reload(){
-  
-    return(
-      <TouchableOpacity onPress={onRefresh} >
-      <Animatable.View  style={{width:'100%',height:55,justifyContent:'center',alignItems:'center',backgroundColor:'#ffedd5'}}  animation='slideInDown' iterationCount={1} >
-      <View style={{position:'absolute',left:12}}>
-        <IonIcon name='information-circle' size={30} color={'#f27938'} />
-        </View>
-
-     <Text style={{color:'black',fontFamily:'Raleway-Medium',fontSize:15}}> Check your connection</Text>
-      <Text style={{color:'black',fontFamily:'Raleway-Regular',fontSize:12}}> you are offline</Text>
-
-   
-      
-    </Animatable.View>
+  function HomeAds() {
+    return (
+      <TouchableOpacity onPress={onRefresh}>
+        <Animatable.View
+          style={{
+            width: '100%',
+            height: 60,
+            backgroundColor: '#fff',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          animation="slideInDown"
+          iterationCount={1}>
+          <Image
+            source={{uri: adUrl}}
+            resizeMode="stretch"
+            style={{width: 320, height: 50}}
+          />
+        </Animatable.View>
       </TouchableOpacity>
-    )
+    );
   }
 
-  useEffect(()=>{
-    NetInfo.addEventListener(state => {
-      setIsConnected(state.isConnected);
-     
-    });
-  
-  },[isConnected])
+  function Reload() {
+    return (
+      <TouchableOpacity onPress={onRefresh}>
+        <Animatable.View
+          style={{
+            width: '100%',
+            height: 55,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#ffedd5',
+          }}
+          animation="slideInDown"
+          iterationCount={1}>
+          <View style={{position: 'absolute', left: 12}}>
+            <IonIcon name="information-circle" size={30} color={'#f27938'} />
+          </View>
+
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'Raleway-Medium',
+              fontSize: 15,
+            }}>
+            {' '}
+            Check your connection
+          </Text>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'Raleway-Regular',
+              fontSize: 12,
+            }}>
+            {' '}
+            you are offline
+          </Text>
+        </Animatable.View>
+      </TouchableOpacity>
+    );
+  }
 
   useEffect(() => {
+    NetInfo.addEventListener(state => {
+      setIsConnected(state.isConnected);
+    });
+  }, [isConnected]);
 
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        // Handle the notification when the app is already open
 
-if(Platform.OS === 'ios')
-{
-    messaging().onNotificationOpenedApp((remoteMessage) => {
-      // Handle the notification when the app is already open
-
-      const {action,id}=remoteMessage.data
-        if(action === 'tip')
-        {
-        setTip(true)
-
+        const {action, id} = remoteMessage.data;
+        if (action === 'tip') {
+          setTip(true);
         }
 
-         if(action === 'article')
-         {
-          navigation.navigate('Disease',{ids:id,title:remoteMessage.notification.body})
-      
-       
-         }
-      // Perform any desired action based on the notification data
+        if (action === 'article') {
+          navigation.navigate('Disease', {
+            ids: id,
+            title: remoteMessage.notification.body,
+          });
+        }
+        // Perform any desired action based on the notification data
+      });
+    }
+
+    const headers = new Headers({
+      Authorization: 'Bearer local@7KpRq3XvF9',
     });
-  }
 
-  const headers = new Headers({
-    'Authorization': 'Bearer local@7KpRq3XvF9' 
-  });
+    const adServer = backendHost.includes('uat')
+      ? 'https://uat.all-cures.com:444'
+      : 'https://www.all-cures.com:444';
 
-  const adServer= backendHost.includes('uat')?'https://uat.all-cures.com:444':'https://www.all-cures.com:444'
+    Promise.all([
+      fetch(`${backendHost}/article/allkv?limit=15`, {
+        headers: headers,
+      })
+        .then(res => res.json())
+        .catch(err => err),
+      fetch(
+        `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=901,903,905`,
+      )
+        .then(res => res.json())
 
-    
- Promise.all([  
- 
-    fetch(`${backendHost}/article/allkv?limit=15`,{
-      headers:headers
-    })
-      .then(res => res.json())
-      .catch(err=>err),
-    fetch(
-      `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=871,872,873,874,875,876,877,878,879,880,881,882`,
-    )
-      .then(res => res.json())
-     
-      .catch(err=>err),
-      fetch(`${backendHost}/sponsored/list/ads/url/1`,)
-      .then(res=>res.json())
-      .catch(err=>err)
-    ] ).then(([recentCuresData,topDoctorsData,adData])=>{
+        .catch(err => err),
+      fetch(`${backendHost}/sponsored/list/ads/url/1`)
+        .then(res => res.json())
+        .catch(err => err),
+    ]).then(([recentCuresData, topDoctorsData, adData]) => {
       var temp = [];
       recentCuresData.forEach(i => {
         if (i.pubstatus_id === 3 && i.type.includes(2)) {
           temp.push(i);
-     
         }
-   
       });
-      dispatch(recentCures(temp))
-      dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList))
-      var modifiedString = adData.replace("/cures_adsimages", "/cures_adsimages/mobile");
-  
+      dispatch(recentCures(temp));
+      dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList));
+      var modifiedString = adData.replace(
+        '/cures_adsimages',
+        '/cures_adsimages/mobile',
+      );
 
-      setAdUrl(`${adServer}${modifiedString}`)
-       
-       
+      setAdUrl(`${adServer}${modifiedString}`);
 
-
-      if(adData.includes('All')){
-
-       setAd(false)
+      if (adData.includes('All')) {
+        setAd(false);
       }
 
-      setIsLoaded(true)
-
-    })
-
- 
-        
-  
-
-
- 
-
-
-
-
-
-
-
-
-   
-  }, [])
-
-  
-
-
-
-
+      setIsLoaded(true);
+    });
+  }, []);
 
   const backAction = () => {
     if (navigation.isFocused()) {
@@ -233,111 +219,111 @@ if(Platform.OS === 'ios')
           onPress: () => null,
           style: 'cancel',
         },
-        {text: 'YES', onPress: () =>{ BackHandler.exitApp()} },
+        {
+          text: 'YES',
+          onPress: () => {
+            BackHandler.exitApp();
+          },
+        },
       ]);
       return true;
     }
   };
-  
-  const getId =  () => {
-  if(user!=0){
-    navigation.navigate('CreateScreenHome')
-  }
-  else{
-    dispatch(screenName("LOGIN"))
-  
-   
-  }
+
+  const getId = () => {
+    if (user != 0) {
+      navigation.navigate('CreateScreenHome');
+    } else {
+      dispatch(screenName('LOGIN'));
+    }
   };
 
-  
-  
   const isFocuss = useIsFocused();
 
   useEffect(() => {
+    const getTip = async () => {
+      const response = await fetch(`${backendHost}/view/article`);
+      const url = await `"${response.url}."`;
 
-    const getTip=async ()=>{
-      const response=await fetch(`${backendHost}/view/article`)
-      const url=await `"${response.url}."`
- 
-    
       const regex = /cure\/(\d+)-(.*?)\./;
-    const match = url.match(regex);
-    
-    if (match && match.length >= 3) {
-      const articleId = match[1];
-      const articleTitle = match[2].replace(/%20/g, ' '); // Replace %20 with space
-   
-      navigation.navigate('Disease',{ids:articleId,title:articleTitle})
-      
-    } else {
-      console.log("Invalid URL format");
-    }
-    
-    }
-    
+      const match = url.match(regex);
 
-  
-    async function getModal(){
-      const  value= await AsyncStorage.getItem('modal')
-      const  visible = value !=null? JSON.parse(value):null
-      if(visible)
-      {
-        
-        setTip(value)
-        AsyncStorage.removeItem('modal')
+      if (match && match.length >= 3) {
+        const articleId = match[1];
+        const articleTitle = match[2].replace(/%20/g, ' '); // Replace %20 with space
+
+        navigation.navigate('Disease', {ids: articleId, title: articleTitle});
+      } else {
+        console.log('Invalid URL format');
       }
-       }
-       
+    };
+
+    async function getModal() {
+      const value = await AsyncStorage.getItem('modal');
+      const visible = value != null ? JSON.parse(value) : null;
+      if (visible) {
+        setTip(value);
+        AsyncStorage.removeItem('modal');
+      }
+    }
+
     async function getValue() {
       const myValue = await AsyncStorage.getItem('artId');
       const myObject = myValue != null ? JSON.parse(myValue) : null;
- // Log the retrieved object
-      if(myObject!==null){
-
-  navigation.navigate('Disease',{ids:myObject.id,title:myObject.title})
-  AsyncStorage.removeItem('artId')
+      // Log the retrieved object
+      if (myObject !== null) {
+        navigation.navigate('Disease', {
+          ids: myObject.id,
+          title: myObject.title,
+        });
+        AsyncStorage.removeItem('artId');
       }
-   
     }
     async function getTipArticle() {
       const myValue = await AsyncStorage.getItem('tip_article');
       const myObject = myValue != null ? JSON.parse(myValue) : null;
- // Log the retrieved object
-      if(myObject){
-   
-getTip()
-  AsyncStorage.removeItem('tip_article')
+      // Log the retrieved object
+      if (myObject) {
+        getTip();
+        AsyncStorage.removeItem('tip_article');
       }
-   
     }
 
-getTipArticle()
-getValue()
-getModal()
-    
+    getTipArticle();
+    getValue();
+    getModal();
 
-
-    
     if (isFocuss) {
-     
-
-    
       BackHandler.addEventListener('hardwareBackPress', backAction);
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', backAction);
     }
   });
 
-
   const DATA1 = [
-    {name: 'Ayurveda',type:1, source: require('../../assets/img/ayurvedic.jpg')},
+    {
+      name: 'Ayurveda',
+      type: 1,
+      source: require('../../assets/img/ayurvedic.jpg'),
+    },
 
-    {name: 'Unani',type:2, source: require('../../assets/img/unani.jpg')},
-    {name: 'Chinese',type:4, source: require('../../assets/img/chinese.jpg')},
-    {name: 'Persian', type:3,source: require('../../assets/img/medicine.jpg')},
-    {name: 'Scandavian',type:5, source: require('../../assets/img/herbal.jpg')},
-    {name: 'Japanese', type:6, source: require('../../assets/img/homeopathy.jpg')},
+    {name: 'Unani', type: 2, source: require('../../assets/img/unani.jpg')},
+    {name: 'Chinese', type: 4, source: require('../../assets/img/chinese.jpg')},
+    {
+      name: 'Persian',
+      type: 3,
+      source: require('../../assets/img/medicine.jpg'),
+    },
+    {
+      name: 'Scandavian',
+      type: 5,
+      source: require('../../assets/img/herbal.jpg'),
+    },
+    {
+      name: 'Japanese',
+      type: 6,
+      source: require('../../assets/img/homeopathy.jpg'),
+    },
   ];
   const [cont, setCont] = useState([]);
   function Create() {
@@ -358,21 +344,19 @@ getModal()
   function User() {
     return (
       <Svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={scale(45)}
-      height={scale(45)}
-      fill="none"
-      viewBox="0 0 42 42"
-    >
-      <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
-      <Path
-        stroke="#fff"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="4"
-        d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"
-      ></Path>
-    </Svg>
+        xmlns="http://www.w3.org/2000/svg"
+        width={scale(45)}
+        height={scale(45)}
+        fill="none"
+        viewBox="0 0 42 42">
+        <Circle cx="20.563" cy="20.563" r="20.563" fill="#00415E"></Circle>
+        <Path
+          stroke="#fff"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="4"
+          d="M11.813 14.438h18.374m-18.375 14h18.376-18.375zm0-7h18.376-18.375z"></Path>
+      </Svg>
     );
   }
   const wait = timeout => {
@@ -383,15 +367,15 @@ getModal()
   const onRefresh = () => {
     navigation.push('Main');
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false)).catch(err=>err)
-  }
-  
-  
+    wait(2000)
+      .then(() => setRefreshing(false))
+      .catch(err => err);
+  };
 
   function renderItemTrend({item, index}) {
     const {name, source, color, type} = item;
     return (
-      <View style={{marginRight: 9,height:verticalScale('165')}}>
+      <View style={{marginRight: 9, height: verticalScale('165')}}>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
@@ -402,13 +386,12 @@ getModal()
               width: scale(110),
               height: verticalScale('130'),
               backgroundColor: '#00415e',
-              overflow:'hidden',
+              overflow: 'hidden',
               borderRadius: 20,
               alignItems: 'center',
             }}
             key={index}>
             <ImageBackground
-            
               style={{
                 width: scale(110),
                 height: verticalScale('130'),
@@ -436,67 +419,47 @@ getModal()
     );
   }
 
-
   return (
-    
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
+      <View style={{flex: 1}}>
+        {!isConnected ? <Reload /> : null}
+        {ad ? <HomeAds /> : null}
 
-      
-      <View style={{flex:1}}>
-       
-        {
-          !isConnected?(
-          <Reload/>
-          ):null
-        }
-        {
-ad?
-<HomeAds/>
-:null
-        }
-
-{
-  !isLoaded?
-  (
-    <View style={styles.loading}>
-      <HStack space={2} justifyContent="center">
-        <LottieView
-          source={require('../../assets/animation/load.json')}
-          autoPlay
-          loop
-          style={{width: 50, height: 50, justifyContent: 'center'}}
-        />
-      </HStack>
-    </View>
-  ):null
-}
+        {!isLoaded ? (
+          <View style={styles.loading}>
+            <HStack space={2} justifyContent="center">
+              <LottieView
+                source={require('../../assets/animation/load.json')}
+                autoPlay
+                loop
+                style={{width: 50, height: 50, justifyContent: 'center'}}
+              />
+            </HStack>
+          </View>
+        ) : null}
         <View>
-
           <View style={styles.headBar}>
-
             <View>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={{zIndex:1}}
+                style={{zIndex: 1}}
                 onPress={() => {
                   navigation.openDrawer();
                 }}>
-                
-                  <User />
-                  
+                <User />
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity
               activeOpacity={0.8}
-              style={{width:'100%',paddingHorizontal:30}}
+              style={{width: '100%', paddingHorizontal: 30}}
               onPress={() => {
                 navigation.navigate('searchArt');
               }}>
               <View style={styles.card}>
-                <HStack ml="2"  alignItems="center">
+                <HStack ml="2" alignItems="center">
                   <Text
                     adjustsFontSizeToFit
                     numberOfLines={1}
@@ -508,7 +471,10 @@ ad?
                     }}>
                     Search Cures
                   </Text>
-                  <Icon name="search" size={scale(20)} style={styles.icon}></Icon>
+                  <Icon
+                    name="search"
+                    size={scale(20)}
+                    style={styles.icon}></Icon>
                 </HStack>
               </View>
             </TouchableOpacity>
@@ -516,10 +482,8 @@ ad?
             <TouchableOpacity activeOpacity={0.8} onPress={() => getId()}>
               <Create />
             </TouchableOpacity>
-
           </View>
         </View>
-   
 
         <ScrollView
           style={{width: wp('100%'), backgroundColor: '#fff'}}
@@ -535,7 +499,7 @@ ad?
                   color: '#00415e',
                   fontFamily: 'Raleway-Regular',
                 }}>
-               Choose by diseases
+                Choose by diseases
               </Text>
               <Icon
                 style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
@@ -546,13 +510,12 @@ ad?
             </HStack>
             <View
               style={{
-              justifyContent:'center',
+                justifyContent: 'center',
                 width: '100%',
-                marginLeft:-4,
-                paddingHorizontal:5
-              
+                marginLeft: -4,
+                paddingHorizontal: 5,
               }}>
-                {/* <View
+              {/* <View
                 style={styles.category}
                 >
 
@@ -565,10 +528,9 @@ ad?
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {id:1});
+                    navigation.navigate('Result', {id: 1});
                   }}>
                   <Card
-                  
                     style={{
                       width: scale(125),
                       height: verticalScale(165),
@@ -652,7 +614,7 @@ ad?
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {id:74});
+                    navigation.navigate('Result', {id: 74});
                   }}>
                   <Card
                     style={{
@@ -696,7 +658,7 @@ ad?
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {id:164});
+                    navigation.navigate('Result', {id: 164});
                   }}>
                   <Card
                     style={{
@@ -739,7 +701,7 @@ ad?
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {id:155});
+                    navigation.navigate('Result', {id: 155});
                   }}>
                   <Card
                     style={{
@@ -780,7 +742,7 @@ ad?
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {id:50});
+                    navigation.navigate('Result', {id: 50});
                   }}>
                   <Card
                     style={{
@@ -822,7 +784,7 @@ ad?
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    navigation.navigate('Result', {id:160});
+                    navigation.navigate('Result', {id: 160});
                   }}>
                   <Card
                     style={{
@@ -893,13 +855,13 @@ ad?
                 </View>
                 </View> */}
             <View style={{alignItems: 'center', width: wp('100%')}}>
-            <FlatList
-              horizontal
-              keyExtractor={(item)=>item.name}
-              showsHorizontalScrollIndicator={false}
-              data={DATA1}
-              renderItem={renderItemTrend}
-            />
+              <FlatList
+                horizontal
+                keyExtractor={item => item.name}
+                showsHorizontalScrollIndicator={false}
+                data={DATA1}
+                renderItem={renderItemTrend}
+              />
             </View>
             <HStack space={1}>
               <Text
@@ -918,35 +880,31 @@ ad?
               />
             </HStack>
 
-          <ArticlePreview />
-          
-          <HStack space={1}>
-          <Text
-        
-            style={{
-              fontSize: 20,
-              color: '#00415e',
-              fontFamily: 'Raleway-Regular',
-            }}>
-            Top Doctors
-          </Text>
-          <Icon style={{marginTop:Platform.OS==='android'?5:1}} name='caret-right' color={'#00415e'} size={25} />
-          </HStack>
-          <DocPreview />
+            <ArticlePreview />
 
-         
-
-        </Stack>
-      </ScrollView>
-
+            <HStack space={1}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: '#00415e',
+                  fontFamily: 'Raleway-Regular',
+                }}>
+                Top Doctors
+              </Text>
+              <Icon
+                style={{marginTop: Platform.OS === 'android' ? 5 : 1}}
+                name="caret-right"
+                color={'#00415e'}
+                size={25}
+              />
+            </HStack>
+            <DocPreview />
+          </Stack>
+        </ScrollView>
       </View>
       <View>
-      <Tip tip={tip} onDismiss={()=>setTip(!tip)} />
+        <Tip tip={tip} onDismiss={() => setTip(!tip)} />
       </View>
-
-
-
-
     </SafeAreaView>
   );
 };
@@ -960,18 +918,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  category:{
-   width:'100%' ,
-   backgroundColor:'#f0f8ff',
-   borderWidth:1,
-   borderColor:'#e6f7ff',
-   alignItems:'center',
-   height:170,
-   justifyContent:'center',
-   paddingHorizontal:10,
-   borderRadius:15,
-   paddingVertical:15,
-   
+  category: {
+    width: '100%',
+    backgroundColor: '#f0f8ff',
+    borderWidth: 1,
+    borderColor: '#e6f7ff',
+    alignItems: 'center',
+    height: 170,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    paddingVertical: 15,
   },
   card: {
     backgroundColor: 'rgba(0, 65, 94, 0.2)',
@@ -979,8 +936,8 @@ const styles = StyleSheet.create({
     height: 52,
     fontSize: 20,
     borderRadius: 25,
-    
-    justifyContent:'center'
+
+    justifyContent: 'center',
   },
   inCard: {
     flexDirection: 'row',
@@ -1033,16 +990,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginTop: 12,
   },
-headBar:
-{
-  width:'100%',
-  flexDirection:'row',
-justifyContent:'space-evenly',
-marginTop:12,
+  headBar: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 12,
 
-paddingHorizontal:30,
-marginBottom:10
-},
+    paddingHorizontal: 30,
+    marginBottom: 10,
+  },
   image: {
     padding: 20,
     marginTop: 5,
@@ -1066,18 +1022,14 @@ marginBottom:10
     zIndex: 999,
     alignItems: 'center',
   },
-  adBanner:{
-
-    width:'100%',
-    height:60,
-    position:'absolute',
-    bottom:0,
-    backgroundColor:'#fff',
-    justifyContent:'center',
-   paddingHorizontal:70,
-   paddingVertical:40,
-
-  
-
-  }
+  adBanner: {
+    width: '100%',
+    height: 60,
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    paddingHorizontal: 70,
+    paddingVertical: 40,
+  },
 });

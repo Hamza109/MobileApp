@@ -28,6 +28,7 @@ import theme from './theme';
 import CopyLinkButton from './CopyLinkButton/CopyLinkButton';
 import {useOrientation, Orientation} from './useOrientation';
 import packageJson from '../../package.json';
+import { backendHost } from '../../components/apiConfig';
 LogBox.ignoreLogs(['Require cycle: node_modules']);
 // After upgrading to RN 0.66, app has started to show a warning about the constructor
 // of NativeEventEmitter been called with a non-null argument without the required removeListeners.
@@ -72,7 +73,9 @@ const VideoCall = () => {
     if (!callObject) {
       return;
     }
-
+useEffect(()=>{
+  fetch(`${backendHost}/video/create/room`)
+})
     const events = ['joined-meeting', 'left-meeting', 'error'];
 
     function handleNewMeetingState(event) {
@@ -260,14 +263,7 @@ const VideoCall = () => {
                     </TouchableWithoutFeedback>
                   )}
                 </View>
-                {roomCreateError && (
-                  <View style={styles.textRow}>
-                    <Image source={require('../../assets/img/error.png')} />
-                    <Text style={styles.errorText}>
-                      Oops! A room couldn't be created.
-                    </Text>
-                  </View>
-                )}
+             
                 {roomUrlFieldValue ? (
                   <CopyLinkButton roomUrl={roomUrlFieldValue} />
                 ) : (

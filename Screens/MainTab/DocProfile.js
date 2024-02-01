@@ -85,6 +85,8 @@ const DocProfile = ({navigation, route}) => {
   const [isConnected, setIsConnected] = useState(true);
   const refRBSheet = useRef();
   const abort = new AbortController();
+  console.log('DocId', ids);
+  console.log('DocData', doc);
 
   useEffect(() => {
     const backAction = () => {};
@@ -163,7 +165,7 @@ const DocProfile = ({navigation, route}) => {
         setIsLoaded(false);
         axios
           .get(
-            `${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`,
+            `${backendHost}/DoctorsActionController?DocID=${id}&cmd=getProfile`,
             {
               signal: abort.signal,
             },
@@ -184,6 +186,19 @@ const DocProfile = ({navigation, route}) => {
       });
     };
   };
+
+  const [availability, setAvailability] = useState();
+  useEffect(() => {
+    fetch(`${backendHost}/video/get/${id}/availability`)
+      .then(res => res.json()) // Convert the response to JSON
+      .then(data => {
+        setAvailability(data); // Update state with the data
+        console.log('response', data); // Log the data
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error); // Handle any errors
+      });
+  }, [id]);
 
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
@@ -254,8 +269,8 @@ const DocProfile = ({navigation, route}) => {
             id: doc.docid,
             messages: [],
             chatId: res.data[0].Chat_id,
-            first_name: doc.docname_first,
-            last_name: doc.docname_last,
+            first_name: doc.firstName,
+            last_name: doc.lastName,
           });
         } else {
           Alert.alert('Something went wrong,please try again');
@@ -292,8 +307,8 @@ const DocProfile = ({navigation, route}) => {
                     : [],
                 id: doc.docid,
                 chatId: res.data[0].Chat_id,
-                first_name: doc.docname_first,
-                last_name: doc.docname_last,
+                first_name: doc.firstName,
+                last_name: doc.lastName,
               });
             }
           } else {
@@ -393,7 +408,7 @@ const DocProfile = ({navigation, route}) => {
                       fontFamily: 'Raleway-Bold',
                       fontSize: scale(15),
                     }}>
-                    Dr. {doc.docname_first} {doc.docname_last}
+                    Dr. {doc.firstName} {doc.lastName}
                   </Text>
                   <HStack space={1}>
                     <Icon name="ribbon" size={18} color="#fff" />
@@ -406,7 +421,7 @@ const DocProfile = ({navigation, route}) => {
                         fontSize: scale(10),
                         width: scale(155),
                       }}>
-                      {doc.primary_spl}
+                      {doc.Primary_Spl}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -421,7 +436,7 @@ const DocProfile = ({navigation, route}) => {
                         position: 'relative',
                         bottom: 0,
                       }}>
-                      {doc.hospital_affliated}
+                      {doc.hospitalAffiliated}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -476,24 +491,25 @@ const DocProfile = ({navigation, route}) => {
               </Text>
             </Center>
             <Center>
-            <Pressable
-              cursor="pointer"
-              py="3"
-              flex={1}
-              onPress={() => {
-                navigation.navigate('videoCall');
-              }}>
-              <Icon name="videocam" color={'#00415e'} size={28} />
-              <Text
-                style={{
-                  fontFamily: 'Raleway-Regular',
-                  color: '#00415e',
-                  fontSize: wp('3%'),
-                }}
-              >
-             Video call
-              </Text>
-              </Pressable>
+              {availability == 1 ? (
+                <Pressable
+                  cursor="pointer"
+                  py="3"
+                  flex={1}
+                  onPress={() => {
+                    navigation.navigate('videoCall');
+                  }}>
+                  <Icon name="videocam" color={'#00415e'} size={28} />
+                  <Text
+                    style={{
+                      fontFamily: 'Raleway-Regular',
+                      color: '#00415e',
+                      fontSize: wp('3%'),
+                    }}>
+                    Video call
+                  </Text>
+                </Pressable>
+              ) : null}
             </Center>
             <Pressable
               cursor="pointer"

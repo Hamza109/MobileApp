@@ -28,8 +28,7 @@ const DoctorsCard = ({
   lastName,
   primary_spl,
   hospital_affliated,
-  state,
-  country_code,
+
 }) => {
   const [imageExists, setImageExists] = useState(false);
   const [url,setUrl]=useState(`http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`)
