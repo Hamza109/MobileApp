@@ -89,6 +89,28 @@ const DocProfile = ({navigation, route}) => {
   console.log('DocData', doc);
 
   useEffect(() => {
+    // Define an async function inside the useEffect
+    setIsLoaded(false)
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${backendHost}/video/get/${id}/availability`,
+        );
+        const data = await response.json(); // Convert the response to JSON
+        
+        setAvailability(data); // Update state with the data
+        setIsLoaded(true)
+        console.log('response', data); // Log the data
+      } catch (error) {
+        console.error('Error fetching data:', error); // Handle any errors
+      }
+    };
+
+    // Call the async function
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     const backAction = () => {};
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -97,7 +119,22 @@ const DocProfile = ({navigation, route}) => {
 
     return () => backHandler.remove();
   }, []);
+  const [apiUrl, setApiUrl] = useState();
+  const [waitRoom, setWaitRoom] = useState(false);
+  const videoCall = async () => {
+    setIsLoaded(false);
+    try {
+      const response = await fetch(`${backendHost}/video/create/room/${id}`);
+      const result = await response.json();
+      setApiUrl(result);
+      setIsLoaded(true);
+      navigation.navigate('videoCall', {id: `${id}`, url: result});
 
+      console.log('res', result);
+    } catch (error) {
+      console.error('Error in startCall:', error);
+    }
+  };
   useEffect(() => {
     NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
@@ -188,17 +225,6 @@ const DocProfile = ({navigation, route}) => {
   };
 
   const [availability, setAvailability] = useState();
-  useEffect(() => {
-    fetch(`${backendHost}/video/get/${id}/availability`)
-      .then(res => res.json()) // Convert the response to JSON
-      .then(data => {
-        setAvailability(data); // Update state with the data
-        console.log('response', data); // Log the data
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error); // Handle any errors
-      });
-  }, [id]);
 
   const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
@@ -492,13 +518,9 @@ const DocProfile = ({navigation, route}) => {
             </Center>
             <Center>
               {availability == 1 ? (
-                <Pressable
-                  cursor="pointer"
-                  py="3"
-                  flex={1}
-                  onPress={() => {
-                    navigation.navigate('videoCall');
-                  }}>
+                <TouchableOpacity
+                  style={{alignItems: 'center', justifyContent: 'center'}}
+                  onPress={videoCall}>
                   <Icon name="videocam" color={'#00415e'} size={28} />
                   <Text
                     style={{
@@ -508,7 +530,7 @@ const DocProfile = ({navigation, route}) => {
                     }}>
                     Video call
                   </Text>
-                </Pressable>
+                </TouchableOpacity>
               ) : null}
             </Center>
             <Pressable

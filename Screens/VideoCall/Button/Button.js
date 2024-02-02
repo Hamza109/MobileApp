@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   primary: {
-    backgroundColor: theme.colors.green,
+    backgroundColor: "#00415e",
   },
   secondary: {
     backgroundColor: theme.colors.white,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: theme.fontFamily.body,
-    color: theme.colors.blueDark,
+    color: "#fff",
     fontSize: theme.fontSize.base,
     fontWeight: '700',
   },

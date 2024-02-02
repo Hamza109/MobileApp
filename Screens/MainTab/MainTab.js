@@ -41,7 +41,8 @@ const MainTabScreen = () => {
               getFocusedRouteNameFromRoute(route) === 'searchArt' ||
               getFocusedRouteNameFromRoute(route) === 'Disease' ||
               getFocusedRouteNameFromRoute(route) === 'Result' ||
-              getFocusedRouteNameFromRoute(route) === 'Forgetpass'
+              getFocusedRouteNameFromRoute(route) === 'Forgetpass'||
+              getFocusedRouteNameFromRoute(route) === 'videoCall'
                 ? 'none'
                 : 'flex',
           },

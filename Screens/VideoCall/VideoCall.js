@@ -28,7 +28,7 @@ import theme from './theme';
 import CopyLinkButton from './CopyLinkButton/CopyLinkButton';
 import {useOrientation, Orientation} from './useOrientation';
 import packageJson from '../../package.json';
-import { backendHost } from '../../components/apiConfig';
+import {backendHost} from '../../components/apiConfig';
 LogBox.ignoreLogs(['Require cycle: node_modules']);
 // After upgrading to RN 0.66, app has started to show a warning about the constructor
 // of NativeEventEmitter been called with a non-null argument without the required removeListeners.
@@ -43,13 +43,19 @@ const AppState = {
   Leaving: 'Leaving',
   Error: 'Error',
 };
-const VideoCall = () => {
+const VideoCall = ({route}) => {
   const [appState, setAppState] = useState(AppState.Idle);
   const [roomUrl, setRoomUrl] = useState(undefined);
   const [roomCreateError, setRoomCreateError] = useState(false);
   const [callObject, setCallObject] = useState(null);
   const [roomUrlFieldValue, setRoomUrlFieldValue] = useState(undefined);
-  const orientation = useOrientation(); // Make sure to replace with the correct import path
+  const orientation = useOrientation();
+  const [apiUrl, setApiUrl] = useState();
+  const id = route.params.id;
+  const videoUrl = route.params.url;
+  // Make sure to replace with the correct import path
+
+  console.log('videourl',videoUrl)
 
   useEffect(() => {
     if (!callObject || !roomUrl) {
@@ -73,9 +79,7 @@ const VideoCall = () => {
     if (!callObject) {
       return;
     }
-useEffect(()=>{
-  fetch(`${backendHost}/video/create/room`)
-})
+
     const events = ['joined-meeting', 'left-meeting', 'error'];
 
     function handleNewMeetingState(event) {
@@ -112,6 +116,10 @@ useEffect(()=>{
     };
   }, [callObject]);
 
+  const startCall = async () => {
+    setRoomUrl(videoUrl);
+    console.log('Video Call Pressed');
+  };
   useEffect(() => {
     if (!callObject) {
       return;
@@ -131,22 +139,23 @@ useEffect(()=>{
     };
   }, [callObject]);
 
-  useEffect(() => {
-    if (!roomUrl) {
-      return;
-    }
-    api
-      .createRoom()
-      .then(room => {
-        setRoomUrlFieldValue(room.url);
-        setAppState(AppState.Idle);
-      })
-      .catch(() => {
-        setRoomCreateError(true);
-        setRoomUrlFieldValue(undefined);
-        setAppState(AppState.Idle);
-      });
-  }, [roomUrl]);
+
+  // useEffect(() => {
+  //   if (!roomUrl) {
+  //     return;
+  //   }
+  //   api
+  //     .createRoom()
+  //     .then(room => {
+  //       setRoomUrlFieldValue(room.url);
+  //       setAppState(AppState.Idle);
+  //     })
+  //     .catch(() => {
+  //       setRoomCreateError(true);
+  //       setRoomUrlFieldValue(undefined);
+  //       setAppState(AppState.Idle);
+  //     });
+  // }, [roomUrl]);
 
   const createRoom = () => {
     setRoomCreateError(false);
@@ -164,9 +173,9 @@ useEffect(()=>{
       });
   };
 
-  const startCall = () => {
-    setRoomUrl(roomUrlFieldValue);
-  };
+  // const startCall = () => {
+  //   setRoomUrl(roomUrlFieldValue);
+  // };
 
   const leaveCall = useCallback(() => {
     if (!callObject) {
@@ -227,12 +236,7 @@ useEffect(()=>{
                   : styles.homeContainerLandscape
               }
               alwaysBounceVertical={false}>
-              
               <View style={styles.buttonContainer}>
-                <Text style={styles.bodyText}>
-                  To get started, enter an existing room URL or create a
-                  temporary demo room
-                </Text>
                 <View
                   style={[
                     styles.demoInputContainer,
@@ -246,8 +250,8 @@ useEffect(()=>{
                     autoCorrect={false}
                     keyboardType="url"
                     {...robotID('robots-room-url')}
-                    editable={isAppStateIdle}
-                    value={roomUrlFieldValue}
+                    editable={false}
+                    value={videoUrl}
                     onChangeText={text => {
                       setRoomUrlFieldValue(text);
                       setRoomCreateError(false);
@@ -263,26 +267,13 @@ useEffect(()=>{
                     </TouchableWithoutFeedback>
                   )}
                 </View>
-             
-                {roomUrlFieldValue ? (
-                  <CopyLinkButton roomUrl={roomUrlFieldValue} />
-                ) : (
-                  <Button
-                    type="secondary"
-                    robotId="robots-create-room"
-                    onPress={createRoom}
-                    label={
-                      appState === AppState.Creating
-                        ? 'Creating room...'
-                        : 'Create demo room'
-                    }
-                  />
-                )}
+
                 <StartButton
                   onPress={startCall}
                   disabled={startButtonDisabled}
                   starting={appState === AppState.Joining}
                 />
+             
               </View>
             </ScrollView>
           )}

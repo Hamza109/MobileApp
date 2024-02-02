@@ -2,12 +2,11 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import Button from '../Button/Button';
 
-const StartButton = ({onPress, disabled, starting}) => {
+const StartButton = ({onPress, starting}) => {
   return (
     <View style={styles.container}>
       <Button
         onPress={onPress}
-        disabled={disabled}
         label={starting ? 'Joining...' : 'Join call'}
         robotId={'robots-start-call'}
       />

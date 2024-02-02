@@ -47,14 +47,14 @@ export default function TrayButton({
     switch (type) {
       case 'camera':
         return muted
-          ? require('../../../assets/img/camera-off.png')
+          ? require('../../../assets/img/cameraon.png')
           : require('../../../assets/img/camera.png');
       case 'mic':
         return muted
-          ? require('../../../assets/img/mic-off.png')
+          ? require('../../../assets/img/micon.png')
           : require('../../../assets/img/mic.png');
       case 'leave':
-        return require('../../../assets/img/leave.png');
+        return require('../../../assets/img/leaveCall.png');
       default:
         return null; // Handle other cases or return a default value as needed
     }

@@ -353,6 +353,11 @@ const HomeStack = () => {
           ),
         }}
       />
+      <Home.Screen
+        name="videoCall"
+        component={VideoCall}
+        options={{headerShown: 'false', title: 'Video Call'}}
+      />
 
       <Home.Screen
         name="chat"
@@ -664,7 +669,7 @@ const DocStack = () => {
           ),
         }}
       />
-      <Doctor.Screen name ="videoCall" component={VideoCall}/>
+      <Doctor.Screen name="videoCall" component={VideoCall} />
       <Doctor.Screen
         name="Disease"
         component={Disease}
@@ -1073,6 +1078,7 @@ const CuresStack = () => {
         component={HomeScreen}
         options={{headerShown: false}}
       />
+      <Stack.Screen name="videoCall" component={VideoCall} />
     </Stack.Navigator>
   );
 };
@@ -1273,7 +1279,7 @@ const DrawerNavigator = () => {
           ),
         }}
       />
-      
+
       <Drawer.Screen
         name="Feedback"
         component={Feedback}

@@ -6,7 +6,7 @@ const theme = {
     greyDark: '#7b848f',
     greyLight: '#e6eaef',
     greyLightest: '#f7f9fa',
-    red: '#e71115',
+    red: '#00415e',
     white: '#ffffff',
   },
   fontFamily: {
