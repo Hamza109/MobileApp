@@ -66,7 +66,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
-  const [id, setId] = useState(ids);
+  const [id, setId] = useState(Number(ids));
   const store = useStore();
   const row = useSelector(state => state.docRow.rowId);
   const user = useSelector(state => state.userId.regId);
@@ -86,20 +86,21 @@ const DocProfile = ({navigation, route}) => {
   const refRBSheet = useRef();
   const abort = new AbortController();
   console.log('DocId', ids);
+  console.log('typeof', typeof ids);
   console.log('DocData', doc);
 
   useEffect(() => {
     // Define an async function inside the useEffect
-    setIsLoaded(false)
+    setIsLoaded(false);
     const fetchData = async () => {
       try {
         const response = await fetch(
           `${backendHost}/video/get/${id}/availability`,
         );
         const data = await response.json(); // Convert the response to JSON
-        
+        console.log('availabilty ', data);
         setAvailability(data); // Update state with the data
-        setIsLoaded(true)
+        setIsLoaded(true);
         console.log('response', data); // Log the data
       } catch (error) {
         console.error('Error fetching data:', error); // Handle any errors
