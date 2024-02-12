@@ -293,7 +293,7 @@ const DocProfile = ({navigation, route}) => {
       .then(res => {
         if (res.data[0].Chat_id != null) {
           navigation.navigate('chat', {
-            id: doc.docid,
+            id: doc.docID,
             messages: [],
             chatId: res.data[0].Chat_id,
             first_name: doc.firstName,
@@ -302,7 +302,8 @@ const DocProfile = ({navigation, route}) => {
         } else {
           Alert.alert('Something went wrong,please try again');
         }
-      })
+      }) 
+      
       .catch(err => Alert.alert(err));
   };
 
@@ -332,7 +333,7 @@ const DocProfile = ({navigation, route}) => {
                   res.data[0].Message != ''
                     ? transformedMessages.reverse()
                     : [],
-                id: doc.docid,
+                id: doc.docID,
                 chatId: res.data[0].Chat_id,
                 first_name: doc.firstName,
                 last_name: doc.lastName,

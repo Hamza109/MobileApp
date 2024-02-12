@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -123,56 +123,112 @@ const[passwordSecured,setPasswordSecured]=useState(false)
 
 
     if (validEmail && upperCase && lowerCase && match) {
-     
-      axios
-        .post(
-          `${backendHost}/RegistrationActionController?firstname=${firstName}&lastname=${lastName}&email=${emails}&psw=${password.firstPassword}&psw-repeat=${password.secondPassword}&rempwd=on&doc_patient=${userType}&acceptTnc=${terms}&number=${number}`,
-          {headers: {'Access-Control-Allow-Credentials': true}},
-        )
-        .then(response => {
-          if (response.data.registration_id) {
-           setTimeout(()=>{
-            dispatch(screenName('MAIN'))
+      axios.post(
+        `${backendHost}/registration/add/new`,
+        {
+          headers: {'Access-Control-Allow-Credentials': true},
+          "firstname":firstName,
+"lastname":lastName,
+"email":emails,
+"psw":password.firstPassword,
+"psw-repeat":password.secondPassword,
+"rempwd":"1" ,
+"doc_patient":userType,
+"acceptTnc":"1",
+"number":number,
+"Age":null
+      },)
+      .then(response => {
+        console.log(response.data)
+        if (response.data.registration_id) {
+         setTimeout(()=>{
+          dispatch(screenName('MAIN'))
+        
+          user.dispatch(reg(response.data.registration_id))
+          console.log('docID',response.data.docID)
+          toast.show({
+            title: 'Signup Successful',
+            description: 'Welcome To All Cures',
+            status: 'success',
+            placement: 'bottom',
+            style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+          });
           
-            user.dispatch(reg(response.data.registration_id))
-            toast.show({
-              title: 'Signup Successful',
-              description: 'Welcome To All Cures',
-              status: 'success',
-              placement: 'bottom',
-              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-            });
-            
-            setType(response.data.registration_type),
-            setFirst(response.data.first_name),
-            setLast(response.data.last_name),
-            setRow(response.data.rowno);
-          setEmail(response.data.email_address);
-           },3000)
-           
-       
-          } else if (response.data == 'Email Address already Exists in the System') {
-            setLoading(false);
-            toast.show({
-              title: 'Email already exists!',
-              description: 'Try with another email',
-              status: 'warning',
-              placement: 'bottom',
-              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-            });
+          user.dispatch(type(response.data.registration_type))
+          user.dispatch(row(response.data.docID))
 
-           
-          }
-        })
-        .catch(res => {
+          
+        setEmail(response.data.email_address);
+         },3000)
+         
+     
+        } else if (response.data == 'Email Address already Exists in the System') {
+          setLoading(false);
+          toast.show({
+            title: 'Email already exists!',
+            description: 'Try with another email',
+            status: 'warning',
+            placement: 'bottom',
+            style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+          });
 
          
-        });
-    } else {
-      setTimeout(()=>{
-        setLoading(false);
+        }
+      })
+      .catch(res => {
+
+       
+      });
+     
+    //   axios
+    //     .post(
+    //       `${backendHost}/RegistrationActionController?firstname=${firstName}&lastname=${lastName}&email=${emails}&psw=${password.firstPassword}&psw-repeat=${password.secondPassword}&rempwd=on&doc_patient=${userType}&acceptTnc=${terms}&number=${number}`,
+    //       {headers: {'Access-Control-Allow-Credentials': true}},
+    //     )
+    //     .then(response => {
+    //       if (response.data.registration_id) {
+    //        setTimeout(()=>{
+    //         dispatch(screenName('MAIN'))
+          
+    //         user.dispatch(reg(response.data.registration_id))
+    //         toast.show({
+    //           title: 'Signup Successful',
+    //           description: 'Welcome To All Cures',
+    //           status: 'success',
+    //           placement: 'bottom',
+    //           style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+    //         });
+            
+    //         setType(response.data.registration_type),
+    //         setFirst(response.data.first_name),
+    //         setLast(response.data.last_name),
+    //         setRow(response.data.rowno);
+    //       setEmail(response.data.email_address);
+    //        },3000)
+           
+       
+    //       } else if (response.data == 'Email Address already Exists in the System') {
+    //         setLoading(false);
+    //         toast.show({
+    //           title: 'Email already exists!',
+    //           description: 'Try with another email',
+    //           status: 'warning',
+    //           placement: 'bottom',
+    //           style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+    //         });
+
+           
+    //       }
+    //     })
+    //     .catch(res => {
+
+         
+    //     });
+    // } else {
+    //   setTimeout(()=>{
+    //     setLoading(false);
     
-      },2000)
+    //   },2000)
   
     }
   };
@@ -184,9 +240,9 @@ const[passwordSecured,setPasswordSecured]=useState(false)
     });
   };
 
-  const handleChange = event => {
-    setUserType(event);
-  };
+useEffect(()=>{
+  console.log('userType',userType)
+})
 
   const validate = text => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -410,6 +466,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
                 
               </HStack>
             </TouchableOpacity>
+
 
             {loading?spinner():null}
 

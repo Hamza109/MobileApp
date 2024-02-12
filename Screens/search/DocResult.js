@@ -151,7 +151,7 @@ const DocResult = ({route}) => {
               <View>
                 <ProfileTab
                   key={j.id}
-                  rowno={i.map.docid}
+                  rowno={i.map.docID}
                   firstName={i.map.docname_first}
                   lastName={i.map.docname_last}
                   primary_spl={i.map.primary_spl}

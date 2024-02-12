@@ -94,6 +94,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const abort = new AbortController();
 
   useEffect(() => {
+    console.log('userProfile',userProfile)
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
     });
@@ -168,7 +169,8 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
               )
               .then(res => res.data)
               .then(json => {
-                if (json == null) {
+                console.log('profile',json)
+                if (json.eduTraining == null) {
                   setIsLoaded(true);
                   Alert.alert(
                     'No details found',
@@ -377,18 +379,18 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 onPress={() =>
                   navigation.navigate('editprofile', {
                     data: {
-                      first: userProfile.docname_first,
-                      last: userProfile.docname_last,
+                      first: userProfile.firstName,
+                      last: userProfile.lastName,
                       gender_code: userProfile.gender,
-                      city_code: userProfile.city_code,
-                      state_code: userProfile.state_code,
-                      country_code: userProfile.countries_code,
-                      primary_spl: userProfile.primary_spl_code,
-                      secondary_spl: userProfile.secondary_spl_code,
-                      other_code: userProfile.other_spls_code,
-                      edu_training: userProfile.edu_training,
-                      telephone_nos: userProfile.telephone_nos,
-                      website_url: userProfile.website_url,
+                      city_code: userProfile.City,
+                      state_code: userProfile.State,
+                      country_code: userProfile.Country,
+                      primary_spl: userProfile.Primary_Spls,
+                      secondary_spl: userProfile.Secondary_Spls,
+                      other_code: userProfile.Other_Spls,
+                      eduTraining: userProfile.edu_training,
+                      telephone_nos: userProfile.telephoneNos,
+                      website_url: userProfile.websiteUrl,
                       hospital_affliated: userProfile.hospital_affliated_code,
                       insurance_accept: userProfile.insurance_accept,
                       about: userProfile.about,

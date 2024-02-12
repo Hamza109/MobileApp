@@ -120,6 +120,7 @@ if(data.email!=''&&data.password!=''){
         if (res.data.registration_id) {
 
           setTimeout(() => {
+            console.log('docID',res.data.docID)
            dispatch(getEmail(res.data.email_address))
           dispatch(getPass(data.password))
             dispatch(screenName('MAIN'));
@@ -134,7 +135,7 @@ if(data.email!=''&&data.password!=''){
             user.dispatch(reg(res.data.registration_id))
             user.dispatch(type(res.data.registration_type))
          
-            user.dispatch(row(res.data.rowno))
+            user.dispatch(row(res.data.docID))
             setClicked(false);
           }, 3000);
         }
