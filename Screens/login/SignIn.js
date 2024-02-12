@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,18 +8,12 @@ import {
   Alert,
   ImageBackground,
   SafeAreaView,
-  Pressable
+  Pressable,
 } from 'react-native';
-import {
-  HStack,
-  Input,
-  Stack,
-  VStack,
-} from 'native-base';
+import {HStack, Input, Stack, VStack} from 'native-base';
 import axios from 'axios';
 
-
-import { useToast } from 'native-base';
+import {useToast} from 'native-base';
 import LottieView from 'lottie-react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -27,26 +21,24 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { backendHost } from '../../components/apiConfig';
+import {backendHost} from '../../components/apiConfig';
 import analytics from '@react-native-firebase/analytics';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { reg, type, row, getEmail, getPass } from '../Redux/Action';
-import { useStore } from 'react-redux';
-import { screenName } from '../Redux/Action';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {reg, type, row, getEmail, getPass} from '../Redux/Action';
+import {useStore} from 'react-redux';
+import {screenName} from '../Redux/Action';
 import crashlytics from '@react-native-firebase/crashlytics';
 
-
-
-const SignInScreen = ({ props, route }) => {
+const SignInScreen = ({props, route}) => {
   const [status, setStatus] = useState('');
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [buttonClick, setClicked] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(true);
-  const[passwordSecured,setPasswordSecured]=useState(true)
-  const routeName = useStore()
+  const [passwordSecured, setPasswordSecured] = useState(true);
+  const routeName = useStore();
 
-  const user = useStore()
+  const user = useStore();
   const [data, setData] = useState({
     email: '',
     password: '',
@@ -59,135 +51,127 @@ const SignInScreen = ({ props, route }) => {
   };
   const dispatch = useDispatch();
 
-
   const toast = useToast();
-
-
 
   const loading = () => {
     return (
-      <View style={{ alignItems: 'center' }}>
+      <View style={{alignItems: 'center'}}>
         <HStack space={2} justifyContent="center">
           <LottieView
             source={require('../../assets/animation/pulse.json')}
             autoPlay
             loop
-            style={{ width: 50, height: 50 }}
+            style={{width: 50, height: 50}}
           />
-    
-       
         </HStack>
       </View>
     );
   };
 
   const loginForm = () => {
+    if (data.email != '' && data.password != '') {
+      setClicked(true);
 
-if(data.email!=''&&data.password!=''){
-  setClicked(true)
-   
-      axios.get(`${backendHost}/data/delete/${data.email}`)
-      .then((res)=>{
-
-
-        if(res.data.includes('deleted')){
-      
-          setClicked(false)
+      axios.get(`${backendHost}/data/delete/${data.email}`).then(res => {
+        if (res.data.includes('deleted')) {
+          setClicked(false);
           toast.show({
             title: 'Invalid email/password',
             status: 'warning',
             description: 'Please enter a valid email/password',
             duration: 2000,
 
-            style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
+            style: {borderRadius: 20, width: wp('70%'), marginBottom: 20},
           });
-
-        }
-        else{
-  
-
-          axios
-      .post(
-        `${backendHost}/login?cmd=login&email=${data.email.replace(/\s/g, '')}&psw=${data.password}&rempwd=on`,
-        {
-          headers: {
-            'Access-Control-Allow-Credentials': true,
-          },
-        },
-      )
-
-      .then(res => {
-        if (res.data.registration_id) {
-
-          setTimeout(() => {
-           dispatch(getEmail(res.data.email_address))
-          dispatch(getPass(data.password))
-            dispatch(screenName('MAIN'));
-            crashlytics().log(`User has signed in`);
-            analytics().setUserProperty(
-              'Reg_Id',
-              JSON.stringify(res.data.registration_id),
-            );
-            analytics().setUserId(JSON.stringify(res.data.registration_id));
-            analytics().logEvent('login', { reg_id: res.data.registration_id });
-            setStatus(res.status);
-            user.dispatch(reg(res.data.registration_id))
-            user.dispatch(type(res.data.registration_type))
-         
-            user.dispatch(row(res.data.rowno))
-            setClicked(false);
-          }, 3000);
-        }
-        return true;
-      })
-
-      .catch(err => {
-        setLoginSuccess(false);
-        if (err.response) {
-          if (err.response.data.includes('Incorrect email')) {
-            setTimeout(() => {
-              setClicked(false);
-              toast.show({
-                title: 'Invalid email/password',
-                status: 'warning',
-                description: 'Please enter a valid email/password',
-                duration: 2000,
-
-                style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
-              });
-            }, 1000);
-          } else {
-            setTimeout(() => {
-              setClicked(false);
-              toast.show({
-                title: 'Some Error Occured',
-                status: 'warning',
-                description: 'Please try again',
-                duration: 2000,
-    
-                style: { borderRadius: 20, width: wp('70%'), marginBottom: 20 },
-              });
-            }, 2000);
-          }
         } else {
-          return;
-        }
-      })
-          
-        }
-      })
-    }
-    else{
-      setClicked(false)
-      Alert.alert('enter details')
-    }
+          axios
+            .post(
+              `${backendHost}/login?cmd=login&email=${data.email.replace(
+                /\s/g,
+                '',
+              )}&psw=${data.password}&rempwd=on`,
+              {
+                headers: {
+                  'Access-Control-Allow-Credentials': true,
+                },
+              },
+            )
 
-    
+            .then(res => {
+              if (res.data.registration_id) {
+                setTimeout(() => {
+                  dispatch(getEmail(res.data.email_address));
+                  dispatch(getPass(data.password));
+                  dispatch(screenName('MAIN'));
+                  crashlytics().log(`User has signed in`);
+                  analytics().setUserProperty(
+                    'Reg_Id',
+                    JSON.stringify(res.data.registration_id),
+                  );
+                  analytics().setUserId(
+                    JSON.stringify(res.data.registration_id),
+                  );
+                  analytics().logEvent('login', {
+                    reg_id: res.data.registration_id,
+                  });
+                  setStatus(res.status);
+                  user.dispatch(reg(res.data.registration_id));
+                  user.dispatch(type(res.data.registration_type));
+
+                  user.dispatch(row(res.data.rowno));
+                  setClicked(false);
+                }, 3000);
+              }
+              return true;
+            })
+
+            .catch(err => {
+              setLoginSuccess(false);
+              if (err.response) {
+                if (err.response.data.includes('Incorrect email')) {
+                  setTimeout(() => {
+                    setClicked(false);
+                    toast.show({
+                      title: 'Invalid email/password',
+                      status: 'warning',
+                      description: 'Please enter a valid email/password',
+                      duration: 2000,
+
+                      style: {
+                        borderRadius: 20,
+                        width: wp('70%'),
+                        marginBottom: 20,
+                      },
+                    });
+                  }, 1000);
+                } else {
+                  setTimeout(() => {
+                    setClicked(false);
+                    toast.show({
+                      title: 'Some Error Occured',
+                      status: 'warning',
+                      description: 'Please try again',
+                      duration: 2000,
+
+                      style: {
+                        borderRadius: 20,
+                        width: wp('70%'),
+                        marginBottom: 20,
+                      },
+                    });
+                  }, 2000);
+                }
+              } else {
+                return;
+              }
+            });
+        }
+      });
+    } else {
+      setClicked(false);
+      Alert.alert('enter details');
+    }
   };
-
-
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -197,93 +181,106 @@ if(data.email!=''&&data.password!=''){
         source={require('../../assets/img/backheart.png')}
         resizeMode="stretch"
         style={styles.image}>
-
-<Pressable onPress={() => dispatch(screenName('MAIN'))}><Text  style={styles.skip}>Skip</Text></Pressable>
+        <Pressable onPress={() => dispatch(screenName('MAIN'))}>
+          <Text style={styles.skip}>Skip</Text>
+        </Pressable>
 
         <View style={styles.body}>
-
-
           <View style={styles.header}>
             <Text style={styles.headerText}>Sign In</Text>
           </View>
 
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter email' 
-            height={12}
-            color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
-            autoCapitalize="none"
-                  value={data.email.replace(/\s/g, '')}
-                
-                  returnKeyType="done"
-                  onChangeText={e => setData({...data, email: e})}
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter email"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              autoCapitalize="none"
+              value={data.email.replace(/\s/g, '')}
+              returnKeyType="done"
+              onChangeText={e => setData({...data, email: e})}
             />
           </View>
 
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter password' 
-            height={12}
-             color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }}
-            secureTextEntry={passwordSecured}
-            autoCapitalize="none"
-            returnKeyType="go"
-            value={data.password}
-            onSubmitEditing={loginForm}
-            onChangeText={e => setData({...data, password: e})}
-            InputRightElement={<View><TouchableOpacity onPress={()=>setPasswordSecured(!passwordSecured)}><Feather name={passwordSecured?'eye-off':'eye'} color="grey" size={20} style={{marginRight:10}} /></TouchableOpacity></View>}
-             />
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter password"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              secureTextEntry={passwordSecured}
+              autoCapitalize="none"
+              returnKeyType="go"
+              value={data.password}
+              onSubmitEditing={loginForm}
+              onChangeText={e => setData({...data, password: e})}
+              InputRightElement={
+                <View>
+                  <TouchableOpacity
+                    onPress={() => setPasswordSecured(!passwordSecured)}>
+                    <Feather
+                      name={passwordSecured ? 'eye-off' : 'eye'}
+                      color="grey"
+                      size={20}
+                      style={{marginRight: 10}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              }
+            />
           </View>
 
           <TouchableOpacity style={styles.signIn} onPress={loginForm}>
-                <Text
-                  style={[
-                    styles.textSign,
-                    {
-                      fontFamily: 'Raleway-Bold',
-                      color: '#00415e',
-                    },
-                  ]}>
-                  Sign In
-                </Text>
-              </TouchableOpacity>
+            <Text
+              style={[
+                styles.textSign,
+                {
+                  fontFamily: 'Raleway-Bold',
+                  color: '#00415e',
+                },
+              ]}>
+              Sign In
+            </Text>
+          </TouchableOpacity>
 
-              <TouchableOpacity>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      textAlign: 'center',
-                      marginTop: 10,
-                      fontFamily: 'Raleway',
-                    }}
-                    onPress={verify}>
-                    Forgot password?
-                  </Text>
-                </TouchableOpacity>
-                {buttonClick == true? loading() : null}
-                <TouchableOpacity>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      textAlign: 'center',
-                      marginTop: 25,
-                      fontFamily: 'Raleway',
-                    }}
-                    onPress={() => navigation.navigate('SignUp')}>
-                    Don't have an account? Sign Up
-                  </Text>
-                </TouchableOpacity>
-
-
+          <TouchableOpacity>
+            <Text
+              style={{
+                color: '#fff',
+                textAlign: 'center',
+                marginTop: 10,
+                fontFamily: 'Raleway',
+              }}
+              onPress={verify}>
+              Forgot password?
+            </Text>
+          </TouchableOpacity>
+          {buttonClick == true ? loading() : null}
+          <TouchableOpacity>
+            <Text
+              style={{
+                color: '#fff',
+                textAlign: 'center',
+                marginTop: 25,
+                fontFamily: 'Raleway',
+              }}
+              onPress={() => navigation.navigate('SignUp')}>
+              Don't have an account? Sign Up
+            </Text>
+          </TouchableOpacity>
         </View>
-
-
-
-
-
-              </ImageBackground>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -299,8 +296,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '90%',
-    marginTop:40,
-
+    marginTop: 40,
   },
   skip: {
     color: '#fff',
@@ -312,15 +308,14 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    marginBottom:10
+    marginBottom: 10,
   },
 
   headerText: {
     fontSize: 25,
     fontFamily: 'Raleway-Bold',
     color: '#fff',
-    alignSelf: 'center'
-
+    alignSelf: 'center',
   },
 
   text_header: {
