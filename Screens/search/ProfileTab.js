@@ -53,7 +53,7 @@ const ProfileTab = ({
   primary_spl,
   hospital_affliated,
   state,
-  country_code,
+ 
 }) => {
   const [url, setUrl] = useState(
     `http://all-cures.com:8080/cures_articleimages/doctors/${Number(rowno)}.png`,
@@ -191,7 +191,7 @@ const ProfileTab = ({
                 right: 4,
               }}>
               {' '}
-              {state} {country_code}
+              {state}
             </Text>
           </View>
         </View>

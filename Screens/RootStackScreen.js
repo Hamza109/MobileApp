@@ -157,7 +157,7 @@ const HomeStack = () => {
 
   const [exist, setExist] = useState(false);
   const [url, setUrl] = useState(
-    `http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`,
+    `http://all-cures.com:8080/cures_articleimages/doctors/${doc.docID}.png`,
   );
   const toast = useToast();
   const article = useSelector(state => state.getArtId.articleId);
@@ -1475,6 +1475,8 @@ const Navigator = () => {
       return <LoginStack />;
     case 'MAIN':
       return <DrawerNavigator />;
+    case 'Home':
+      return <HomeStack />;
     case 'SPLASH':
       return <SplashStack />;
     default:

@@ -151,11 +151,11 @@ const DocResult = ({route}) => {
               <View>
                 <ProfileTab
                   key={j.id}
-                  rowno={i.map.docid}
-                  firstName={i.map.docname_first}
-                  lastName={i.map.docname_last}
-                  primary_spl={i.map.primary_spl}
-                  hospital_affliated={i.map.hospital_affliated}
+                  rowno={i.map.docID}
+                  firstName={i.map.firstName}
+                  lastName={i.map.lastName}
+                  primary_spl={i.map.primarySpl}
+                  hospital_affliated={i.map.hospitalAffiliated}
                 />
               </View>
               <View style={{position: 'relative', bottom: 0, left: 4}}></View>

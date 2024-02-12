@@ -94,6 +94,10 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const abort = new AbortController();
 
   useEffect(() => {
+    console.log('userProfile', userProfile);
+    console.log('user', user);
+    console.log('type', type);
+    console.log('row', row);
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
     });
@@ -123,6 +127,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
             signal: abort.signal,
           })
           .then(res => {
+            console.log("fetched Data",res)
             resolve(setFirstName(res.data.first_name));
             resolve(setLastName(res.data.last_name));
             resolve(setEmail(res.data.email_address));
@@ -168,6 +173,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
               )
               .then(res => res.data)
               .then(json => {
+                console.log('profile', json);
                 if (json == null) {
                   setIsLoaded(true);
                   Alert.alert(
@@ -177,7 +183,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       {
                         text: 'OK',
                         onPress: () => {
-                          navigation.navigate('editprofile');
+                          navigation.navigate('editprofile',{data:json});
                         },
                       },
                     ],
@@ -377,18 +383,18 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 onPress={() =>
                   navigation.navigate('editprofile', {
                     data: {
-                      first: userProfile.docname_first,
-                      last: userProfile.docname_last,
+                      first: userProfile.firstName,
+                      last: userProfile.lastName,
                       gender_code: userProfile.gender,
-                      city_code: userProfile.city_code,
-                      state_code: userProfile.state_code,
-                      country_code: userProfile.countries_code,
-                      primary_spl: userProfile.primary_spl_code,
-                      secondary_spl: userProfile.secondary_spl_code,
-                      other_code: userProfile.other_spls_code,
-                      edu_training: userProfile.edu_training,
-                      telephone_nos: userProfile.telephone_nos,
-                      website_url: userProfile.website_url,
+                      city_code: userProfile.city,
+                      state_code: userProfile.state,
+                      country_code: userProfile.country,
+                      primary_spl: userProfile.primarySpl,
+                      secondary_spl: userProfile.otherSpl,
+                    
+                      eduTraining: userProfile.edu_training,
+                      telephone_nos: userProfile.telephoneNos,
+                      website_url: userProfile.websiteUrl,
                       hospital_affliated: userProfile.hospital_affliated_code,
                       insurance_accept: userProfile.insurance_accept,
                       about: userProfile.about,

@@ -227,7 +227,6 @@ const DocProfile = ({navigation, route}) => {
 
   const [availability, setAvailability] = useState();
 
-  const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
     fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`, {
       signal: abort.signal,
@@ -289,11 +288,11 @@ const DocProfile = ({navigation, route}) => {
 
   const createChat = () => {
     axios
-      .post(`${backendHost}/chat/start/${user}/${doc.docid}`)
+      .post(`${backendHost}/chat/start/${user}/${doc.docID}`)
       .then(res => {
         if (res.data[0].Chat_id != null) {
           navigation.navigate('chat', {
-            id: doc.docid,
+            id: doc.docID,
             messages: [],
             chatId: res.data[0].Chat_id,
             first_name: doc.firstName,
@@ -302,14 +301,15 @@ const DocProfile = ({navigation, route}) => {
         } else {
           Alert.alert('Something went wrong,please try again');
         }
-      })
+      }) 
+      
       .catch(err => Alert.alert(err));
   };
 
   const initiateChat = () => {
     if (user != 0) {
       axios
-        .get(`${backendHost}/chat/${user}/${doc.docid}`)
+        .get(`${backendHost}/chat/${user}/${doc.docID}`)
         .then(res => {
           if (res.status === 200) {
             if (res.data[0].Chat_id === null) {
@@ -332,7 +332,7 @@ const DocProfile = ({navigation, route}) => {
                   res.data[0].Message != ''
                     ? transformedMessages.reverse()
                     : [],
-                id: doc.docid,
+                id: doc.docID,
                 chatId: res.data[0].Chat_id,
                 first_name: doc.firstName,
                 last_name: doc.lastName,
@@ -448,7 +448,7 @@ const DocProfile = ({navigation, route}) => {
                         fontSize: scale(10),
                         width: scale(155),
                       }}>
-                      {doc.Primary_Spl}
+                      {doc.primarySpl}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -477,7 +477,7 @@ const DocProfile = ({navigation, route}) => {
                         width: scale(180),
                         position: 'relative',
                       }}>
-                      {doc.state} {doc.country_code}
+                      {doc.state} 
                     </Text>
                   </HStack>
                   <View
@@ -507,7 +507,7 @@ const DocProfile = ({navigation, route}) => {
           <Center flex={1}></Center>
           <HStack bg="#fff" alignItems="center" shadow={5}>
             <Center mr="10" flex={1}>
-              <Ratings rowno={doc.rowno} article_id={null} />
+              <Ratings rowno={doc.docID} article_id={null} />
               <Text
                 style={{
                   fontFamily: 'Raleway-Regular',
@@ -658,7 +658,7 @@ const DocProfile = ({navigation, route}) => {
           </ScrollView>
           <Divider bg={'Darkgray'} />
           <View style={styles.cComment}>
-            <Comment article_id={null} doc_id={doc.rowno} />
+            <Comment article_id={null} doc_id={doc.docID} />
           </View>
         </Stack>
       </RBSheet>

@@ -41,10 +41,9 @@ import {
   NativeBaseProvider,
 } from 'native-base';
 import ArticleHeader from './ArticleHeader';
-import { scale, verticalScale } from '../../components/Scale';
+import {scale, verticalScale} from '../../components/Scale';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../components/NoInternet';
-
 
 const DocResultCity = ({navigation, route}) => {
   const bootstrapStyleSheet = new BootstrapStyleSheet();
@@ -57,7 +56,7 @@ const DocResultCity = ({navigation, route}) => {
   const theme = useTheme();
 
   const [value, setValue] = useState();
- 
+
   const [items, setItems] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -67,36 +66,29 @@ const DocResultCity = ({navigation, route}) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
-
-     
     });
     return () => {
       unsubscribe();
     };
-  }, [isConnected])
+  }, [isConnected]);
 
   const isearch = () => {
-
-    const searchData=new Promise((resolve,reject)=>{
-      if(isConnected)
-      {
+    const searchData = new Promise((resolve, reject) => {
+      if (isConnected) {
         setIsLoaded(false);
-      fetch(
-        `${backendHost}/SearchActionController?cmd=getResults&city=${text}=&doctors=&Latitude=32.7266&Longitude=74.8570`,
-      )
-        .then(res => res.json())
-        .then(json => {
-        
-         resolve(setItems(json.map.DoctorDetails.myArrayList));
-        }).catch(err=>err);
+        fetch(
+          `${backendHost}/SearchActionController?cmd=getResults&city=${text}=&doctors=&Latitude=32.7266&Longitude=74.8570`,
+        )
+          .then(res => res.json())
+          .then(json => {
+            resolve(setItems(json.map.DoctorDetails.myArrayList));
+          })
+          .catch(err => err);
       }
-    })
-    searchData.then(()=>{
-      setIsLoaded(true)
-    })
-  
-
-    
+    });
+    searchData.then(() => {
+      setIsLoaded(true);
+    });
   };
 
   useEffect(() => {
@@ -104,72 +96,67 @@ const DocResultCity = ({navigation, route}) => {
   }, [isConnected]);
 
   if (!isConnected) {
-
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
     );
   }
 
-
   if (!isLoaded) {
     return (
       <View style={styles.loading}>
-      <HStack space={2} justifyContent="center">
-        <LottieView
-          source={require('../../assets/animation/load.json')}
-          autoPlay
-          loop
-          style={{width: 50, height: 50, justifyContent: 'center'}}
-        />
-      </HStack>
-    </View>
-    );
-  } 
-    return (
-      <SafeAreaView style={styles.container}>
-            <ArticleHeader placeholder='Search by city'   doc={0} city={1}   />
-        <ScrollView >
-          {items.map(i => (
-            <Card
-              style={{
-                padding: 5,
-                margin: 5,
-                height: verticalScale(150),
-                width: scale(350),
-                backgroundColor: '#f0f8ff',
-                borderColor:'#e6f7ff',
-                borderWidth:1,
-                padding: 9,
-              }}>
-            
-              <View>
-                <ProfileTab
-                  rowno={i.map.rowno}
-                  firstName={i.map.docname_first}
-                  lastName={i.map.docname_last}
-                  primary_spl={i.map.primary_spl}
-                  hospital_affliated={i.map.hospital_affliated}
-                  state={i.map.state}
-                  country_code={i.map.country_code}
-                />
-              </View>
-              <View style={{position: 'relative', bottom: 0, left: 4}}></View>
-            </Card>
-          ))}
-        </ScrollView>
-
-        <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-      </SafeAreaView>
+        <HStack space={2} justifyContent="center">
+          <LottieView
+            source={require('../../assets/animation/load.json')}
+            autoPlay
+            loop
+            style={{width: 50, height: 50, justifyContent: 'center'}}
+          />
+        </HStack>
+      </View>
     );
   }
+  return (
+    <SafeAreaView style={styles.container}>
+      <ArticleHeader placeholder="Search by city" doc={0} city={1} />
+      <ScrollView>
+        {items.map(i => (
+          <Card
+            style={{
+              padding: 5,
+              margin: 5,
+              height: verticalScale(150),
+              width: scale(350),
+              backgroundColor: '#f0f8ff',
+              borderColor: '#e6f7ff',
+              borderWidth: 1,
+              padding: 9,
+            }}>
+            <View>
+              <ProfileTab
+                rowno={i.map.docID}
+                firstName={i.map.firstName}
+                lastName={i.map.lastName}
+                primary_spl={i.map.primarySpl}
+                hospital_affliated={i.map.hospitalAffiliated}
+                state={i.map.state}
+              />
+            </View>
+            <View style={{position: 'relative', bottom: 0, left: 4}}></View>
+          </Card>
+        ))}
+      </ScrollView>
 
+      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+    </SafeAreaView>
+  );
+};
 
 export default DocResultCity;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-  flex:1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

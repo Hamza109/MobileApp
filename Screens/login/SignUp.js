@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {HStack, Input, useToast, Spinner, Checkbox} from 'native-base';
 import axios from 'axios';
-
+import {type} from '../Redux/Action';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -49,9 +49,6 @@ const SignUpScreen = ({props}) => {
   const [firstName, setFname] = useState('');
   const [lastName, setLname] = useState('');
   const [userType, setUserType] = useState('other');
-  const [terms, setTerms] = useState('');
-  const [policy, setPolicy] = useState('');
-  const [rempwd, setRempwd] = useState('');
 
   const [message, setMessage] = useState('');
   const [isError, setError] = useState(false);
@@ -105,52 +102,79 @@ const SignUpScreen = ({props}) => {
       </View>
     );
   };
-  const SignUpForm = () => {
+  const SignUpForm = async () => {
     setLoading(true);
 
-    var res;
-
+    // Check if all validation passed
     if (validEmail && upperCase && lowerCase && match) {
-      axios
-        .post(
-          `${backendHost}/RegistrationActionController?firstname=${firstName}&lastname=${lastName}&email=${emails}&psw=${password.firstPassword}&psw-repeat=${password.secondPassword}&rempwd=on&doc_patient=${userType}&acceptTnc=${terms}&number=${number}`,
-          {headers: {'Access-Control-Allow-Credentials': true}},
-        )
-        .then(response => {
-          if (response.data.registration_id) {
-            setTimeout(() => {
-              dispatch(screenName('MAIN'));
+      try {
+        const response = await axios.post(
+          `${backendHost}/registration/add/new`,
+          {
+            firstname: firstName,
+            lastname: lastName,
+            email: emails,
+            psw: password.firstPassword,
+            'psw-repeat': password.secondPassword,
+            rempwd: '1',
+            doc_patient: userType,
+            acceptTnc: '1',
+            number: number,
+            Age: null, // Assuming you intentionally set this to null
+          },
+          {
+            withCredentials: true, // This should be in the second argument as part of the config object
+            headers: {'Access-Control-Allow-Credentials': true},
+          },
+        );
 
-              user.dispatch(reg(response.data.registration_id));
-              toast.show({
-                title: 'Signup Successful',
-                description: 'Welcome To All Cures',
-                status: 'success',
-                placement: 'bottom',
-                style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-              });
+        console.log('Doc Res', response.data);
 
-              setType(response.data.registration_type),
-                setFirst(response.data.first_name),
-                setLast(response.data.last_name),
-                setRow(response.data.rowno);
-              setEmail(response.data.email_address);
-            }, 3000);
-          } else if (
-            response.data == 'Email Address already Exists in the System'
-          ) {
-            setLoading(false);
+        // Successful registration
+        if (response.data.registration_id) {
+          setTimeout(() => {
+            dispatch(screenName('MAIN'));
+            user.dispatch(reg(response.data.registration_id));
+            console.log('docID', response.data.docID);
+
             toast.show({
-              title: 'Email already exists!',
-              description: 'Try with another email',
-              status: 'warning',
+              title: 'Signup Successful',
+              description: 'Welcome To All Cures',
+              status: 'success',
               placement: 'bottom',
               style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
             });
-          }
-        })
-        .catch(res => {});
+
+            user.dispatch(type(response.data.registration_type));
+            user.dispatch(row(response.data.docID));
+            setEmail(response.data.email_address);
+          }, 3000);
+        } else if (
+          response.data === 'Email Address already Exists in the System'
+        ) {
+          toast.show({
+            title: 'Email already exists!',
+            description: 'Try with another email',
+            status: 'warning',
+            placement: 'bottom',
+            style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        // Handle error here, for example:
+        toast.show({
+          title: 'Registration failed',
+          description: 'An unexpected error occurred. Please try again later.',
+          status: 'error',
+          placement: 'bottom',
+          style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
+      // If validation fails, immediately stop loading
       setTimeout(() => {
         setLoading(false);
       }, 2000);
@@ -164,9 +188,9 @@ const SignUpScreen = ({props}) => {
     });
   };
 
-  const handleChange = event => {
-    setUserType(event);
-  };
+  useEffect(() => {
+    console.log('userType', userType);
+  });
 
   const validate = text => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -179,41 +203,6 @@ const SignUpScreen = ({props}) => {
     }
   };
 
-  const setCheck = async value => {
-    try {
-      await AsyncStorage.setItem('check', JSON.stringify(value));
-    } catch (error) {
-      error;
-    }
-  };
-  const setId = async id => {
-    try {
-      await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {
-      error;
-    }
-  };
-  const setType = async type => {
-    try {
-      await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {
-      error;
-    }
-  };
-  const setFirst = async first => {
-    try {
-      await AsyncStorage.setItem('firstName', first);
-    } catch (error) {
-      error;
-    }
-  };
-  const setLast = async last => {
-    try {
-      await AsyncStorage.setItem('lastName', last);
-    } catch (error) {
-      error;
-    }
-  };
   const setEmail = async email => {
     try {
       await AsyncStorage.setItem('email', email);
@@ -300,7 +289,6 @@ const SignUpScreen = ({props}) => {
                 color: '#fff',
                 placeholderTextColor: '#fff',
               }}
-              secureTextEntry={passwordSecured}
               autoCapitalize="none"
               value={lastName}
               returnKeyType="done"
@@ -356,6 +344,7 @@ const SignUpScreen = ({props}) => {
               }}
               autoCapitalize="none"
               returnKeyType="go"
+              secureTextEntry={passwordSecured}
               value={password}
               onChangeText={e => setFirstP(e)}
             />
@@ -373,6 +362,7 @@ const SignUpScreen = ({props}) => {
                 placeholderTextColor: '#fff',
               }}
               autoCapitalize="none"
+              secureTextEntry={passwordSecured}
               returnKeyType="go"
               value={password}
               onChangeText={e => setSecond(e)}
