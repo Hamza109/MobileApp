@@ -799,7 +799,7 @@ const ProfileStack = () => {
   }
   return (
     <Stack.Navigator
-      initialRouteName="profile"
+      initialRouteName="Profile"
       screenOptions={{
         headerStyle: {
           backgroundColor: '#fff',
@@ -1029,7 +1029,7 @@ const ProfileStack = () => {
               color={'#00415e'}
               size={28}
               onPress={() => {
-                navigation.push('profile');
+                navigation.dispatch(StackActions.pop(1));
               }}
             />
           ),
@@ -1476,7 +1476,7 @@ const Navigator = () => {
     case 'MAIN':
       return <DrawerNavigator />;
     case 'Home':
-      return <HomeStack />;
+      return <DrawerNavigator />;
     case 'SPLASH':
       return <SplashStack />;
     default:

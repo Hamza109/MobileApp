@@ -1,10 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Dimensions, ImageBackground} from 'react-native';
-import {
-  View,
-  ScrollView,
-
-} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
@@ -51,7 +47,7 @@ const DocPreview = () => {
                 lastName={i.map.lastName}
                 primary_spl={i.map.primarySpl}
                 hospital_affliated={i.map.hospitalAffiliated}
-                
+                img ={i.map.imgLoc}
               />
             ))}
           </ScrollView>

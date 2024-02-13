@@ -34,6 +34,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useStore} from 'react-redux';
 import {reg} from '../Redux/Action';
 import {screenName} from '../Redux/Action';
+import {row} from '../Redux/Action';
+import {fetchSuccessProfile} from '../Redux/Action';
 
 const SignUpScreen = ({props}) => {
   const [emails, setEmails] = useState('');
@@ -76,13 +78,7 @@ const SignUpScreen = ({props}) => {
   const setSecond = event => {
     setPassword({...password, secondPassword: event});
   };
-  const setRow = async row => {
-    try {
-      await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {
-      error;
-    }
-  };
+
   const spinner = () => {
     return (
       <View style={{alignItems: 'center'}}>
@@ -136,6 +132,7 @@ const SignUpScreen = ({props}) => {
             dispatch(screenName('MAIN'));
             user.dispatch(reg(response.data.registration_id));
             console.log('docID', response.data.docID);
+            user.dispatch(fetchSuccessProfile(response.data));
 
             toast.show({
               title: 'Signup Successful',

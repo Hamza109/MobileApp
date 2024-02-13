@@ -29,7 +29,7 @@ import {reg, type, row, getEmail, getPass} from '../Redux/Action';
 import {useStore} from 'react-redux';
 import {screenName} from '../Redux/Action';
 import crashlytics from '@react-native-firebase/crashlytics';
-
+import {fetchSuccessProfile} from '../Redux/Action';
 const SignInScreen = ({props, route}) => {
   const [status, setStatus] = useState('');
   const navigation = useNavigation();
@@ -81,7 +81,7 @@ const SignInScreen = ({props, route}) => {
     try {
       // Attempt login
       const response = await fetch(
-        `${backendHost}/login?cmd=login&email=ashukamal@gmail.com&psw=Ashukamal@12&rempwd=on`,
+        `${backendHost}/login?cmd=login&email=${data.email}&psw=${data.password}&rempwd=on`,
         {
           method: 'POST',
           credentials: 'include', // Ensures cookies are sent with the request, equivalent to withCredentials in axios
@@ -98,7 +98,10 @@ const SignInScreen = ({props, route}) => {
         throw new Error(`Network response was not ok: ${errorText}`);
       }
 
-      const loginData = await response.json(); // Parse JSON response into JavaScript object
+      const loginData = await response.json();
+      // Parse JSON response into JavaScript object
+      console.log('Login Response', loginData);
+      dispatch(fetchSuccessProfile(loginData));
 
       const {registration_id, email_address, docID, registration_type} =
         loginData;

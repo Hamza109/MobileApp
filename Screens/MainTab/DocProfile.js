@@ -62,8 +62,6 @@ import NoInternet from '../../components/NoInternet';
 import {Fab} from 'native-base';
 import {v4 as uuidv4} from 'uuid';
 
-const Tab = createMaterialTopTabNavigator();
-
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(Number(ids));
@@ -301,8 +299,8 @@ const DocProfile = ({navigation, route}) => {
         } else {
           Alert.alert('Something went wrong,please try again');
         }
-      }) 
-      
+      })
+
       .catch(err => Alert.alert(err));
   };
 
@@ -435,7 +433,7 @@ const DocProfile = ({navigation, route}) => {
                       fontFamily: 'Raleway-Bold',
                       fontSize: scale(15),
                     }}>
-                    Dr. {doc.firstName} {doc.lastName}
+                    Dr.{doc.firstName} {doc.lastName}
                   </Text>
                   <HStack space={1}>
                     <Icon name="ribbon" size={18} color="#fff" />
@@ -477,7 +475,7 @@ const DocProfile = ({navigation, route}) => {
                         width: scale(180),
                         position: 'relative',
                       }}>
-                      {doc.state} 
+                      {doc.state}
                     </Text>
                   </HStack>
                   <View

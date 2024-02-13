@@ -39,6 +39,7 @@ import InputBox from '../../../components/InputBox';
 const EditProfile = ({route}) => {
   const userProfile = useSelector(state => state.profileInfo.data);
   const row = useSelector(state => state.docRow.rowId);
+  const preData = route.params.data;
   const type = useSelector(state => state.userType.typeId);
   const navigation = useNavigation();
   const [gender, setGender] = useState();
@@ -60,15 +61,17 @@ const EditProfile = ({route}) => {
   const [country, setCountry] = useState();
   const [website, setWebsite] = useState();
   const [primary, setPrimary] = useState();
+  const [address, setAddress] = useState();
   const [secondary, setSecondary] = useState();
-  const [other, setOther] = useState();
+  const [systemOfMedicine, setOther] = useState(route.params.data.medicineType);
   const [education, setEducation] = useState();
   const [awards, setAwards] = useState();
   const [num, setNum] = useState();
   const [hospital, setHospital] = useState();
   const [acceptInsurance, setInsurance] = useState();
   const [imageUser, setImageUser] = useState(``);
-  const preData = route.params.data;
+  const [registrationNumber, setRegistrationNumber] = useState();
+  const [websiteUrl, setWebsiteUrl] = useState(preData.websiteUrl);
 
   const [image, setImage] = useState(
     `http://all-cures.com:8280/cures_articleimages/doctors/${userProfile.docID}.png`,
@@ -91,24 +94,87 @@ const EditProfile = ({route}) => {
       fetch(`${backendHost}/article/all/table/countries`)
         .then(res => res.json())
         .catch(err => err),
+      fetch(`${backendHost}/data/medicines`)
+        .then(res => res.json())
+        .catch(err => err),
     ])
-      .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
-        setDiseaseList(diseaseData);
-        setHospitalList(hospitalData);
-        setStateList(stateData);
-        setCityList(cityData);
-        setCountryList(countryData);
-      })
+      .then(
+        ([
+          diseaseData,
+          hospitalData,
+          stateData,
+          cityData,
+          countryData,
+          medicineData,
+        ]) => {
+          console.log('medicineData', medicineData);
+          setDiseaseList(diseaseData);
+          setHospitalList(hospitalData);
+          setStateList(stateData);
+          setCityList(cityData);
+          setCountryList(countryData);
+        },
+      )
       .catch(err => {
         err;
       });
   };
-
+  const medicine = [
+    {
+      med_id: 1,
+      med_type: 'Ayurveda',
+    },
+    {
+      med_id: 2,
+      med_type: 'Unani',
+    },
+    {
+      med_id: 3,
+      med_type: 'Persian',
+    },
+    {
+      med_id: 4,
+      med_type: 'Chinese',
+    },
+    {
+      med_id: 5,
+      med_type: 'Scandinavian',
+    },
+    {
+      med_id: 6,
+      med_type: 'Japanese',
+    },
+    {
+      med_id: 7,
+      med_type: 'Traditional Australian',
+    },
+    {
+      med_id: 8,
+      med_type: 'Homeopathy',
+    },
+    {
+      med_id: 9,
+      med_type: 'Naturopathy',
+    },
+    {
+      med_id: 10,
+      med_type: 'Korean',
+    },
+    {
+      med_id: 11,
+      med_type: 'Traditional Vietnamese',
+    },
+    {
+      med_id: 12,
+      med_type: 'Arabic',
+    },
+  ];
   useEffect(() => {
     fetchTables();
   }, []);
 
   const formSubmit = e => {
+    console.log('Form Button', userProfile);
     axios
       .post(`${backendHost}/doctors/updateprofile`, {
         docID: Number(userProfile.docID),
@@ -117,6 +183,7 @@ const EditProfile = ({route}) => {
         lastName: lastName,
         primarySpl: primary,
         otherSpl: secondary,
+        address1: address,
 
         telephoneNos: num,
         hospitalAffiliated: hospital,
@@ -126,12 +193,13 @@ const EditProfile = ({route}) => {
         awards: awards,
         city: city,
         state: states,
-        medicineTypeID: 1,
+        medicineTypeID: systemOfMedicine,
 
         websiteUrl: website,
       })
       .then(res => {
-        if (res != 0) {
+        console.log('Response Edit ', res.data);
+        if (res.data != 0) {
           Alert.alert('Profile Updated', 'Profile updated successfully', [
             {
               text: 'OK',
@@ -176,7 +244,7 @@ const EditProfile = ({route}) => {
     formData.append('File', photo);
     axios
       .post(
-        `${backendHost}/dashboard/imageupload/doctor/${userProfile.rowno}`,
+        `${backendHost}/dashboard/imageupload/doctor/${userProfile.docID}`,
         {
           body: formData,
         },
@@ -434,21 +502,23 @@ const EditProfile = ({route}) => {
         <View style={styles.box}>
           <FormControl maxW="100%">
             <FormControl.Label ml="1" _text={{color: '#00415e'}}>
-              Additional Speciality
+              System of Medicine
             </FormControl.Label>
             <Select
               rounded="3xl"
               width={'100%'}
-              onValueChange={value => setOther(value)}
+              onValueChange={value => {
+                setOther(value), console.log(value);
+              }}
               defaultValue={preData?.other_spls_code}
-              selectedValue={other}
+              selectedValue={systemOfMedicine}
               isRequired
-              placeholder="Select additional speciality">
-              {diseaseList.map(i => (
+              placeholder="Types Of medicine">
+              {medicine.map(i => (
                 <Select.Item
                   key={Math.random().toString(36)}
-                  value={i[0]}
-                  label={i[1]}></Select.Item>
+                  value={i.med_id}
+                  label={i.med_type}></Select.Item>
               ))}
             </Select>
             <FormControl.ErrorMessage>
@@ -476,6 +546,40 @@ const EditProfile = ({route}) => {
             keyboard="numeric"
             value={num}
             onChangeText={num => setNum(num)}
+            size={'3xl'}
+          />
+        </View>
+        <View style={styles.box}>
+          <InputBox
+            placeholder={'Enter Address'}
+            label={'Address'}
+            keyboard="default"
+            defaultValue={address}
+            value={address}
+            onChangeText={text => setAddress(text)}
+            size={'3xl'}
+          />
+        </View>
+        <View style={styles.box}>
+          <InputBox
+            placeholder={'Enter National Registration Number'}
+            label={'National Regostration Number'}
+            keyboard="default"
+            defaultValue={registrationNumber}
+            value={registrationNumber}
+            onChangeText={text => setRegistrationNumber(text)}
+            size={'3xl'}
+          />
+        </View>
+        
+        <View style={styles.box}>
+          <InputBox
+            placeholder={'Enter Awards '}
+            label={'Awards'}
+            keyboard="default"
+            defaultValue={awards}
+            value={awards}
+            onChangeText={text => setAwards(text)}
             size={'3xl'}
           />
         </View>

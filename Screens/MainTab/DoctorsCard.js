@@ -15,6 +15,7 @@ const DoctorsCard = ({
   lastName,
   primary_spl,
   hospital_affliated,
+  img,
 }) => {
   const [imageExists, setImageExists] = useState(false);
   const [url, setUrl] = useState(
