@@ -44,7 +44,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import {scale, verticalScale} from '../../components/Scale';
-import { log } from 'react-native-reanimated';
+import {log} from 'react-native-reanimated';
 
 const ProfileTab = ({
   rowno,
@@ -53,12 +53,13 @@ const ProfileTab = ({
   primary_spl,
   hospital_affliated,
   state,
- 
 }) => {
   const [url, setUrl] = useState(
-    `http://all-cures.com:8080/cures_articleimages/doctors/${Number(rowno)}.png`,
+    `http://all-cures.com:8080/cures_articleimages/doctors/${Number(
+      rowno,
+    )}.png`,
   );
-  console.log("rowno",rowno);
+  console.log('rowno', rowno);
 
   const onError = e => {
     <Icon name="user-md" color={'#00415e'} size={26} />;

@@ -98,23 +98,13 @@ const EditProfile = ({route}) => {
         .then(res => res.json())
         .catch(err => err),
     ])
-      .then(
-        ([
-          diseaseData,
-          hospitalData,
-          stateData,
-          cityData,
-          countryData,
-          medicineData,
-        ]) => {
-          console.log('medicineData', medicineData);
-          setDiseaseList(diseaseData);
-          setHospitalList(hospitalData);
-          setStateList(stateData);
-          setCityList(cityData);
-          setCountryList(countryData);
-        },
-      )
+      .then(([diseaseData, hospitalData, stateData, cityData, countryData]) => {
+        setDiseaseList(diseaseData);
+        setHospitalList(hospitalData);
+        setStateList(stateData);
+        setCityList(cityData);
+        setCountryList(countryData);
+      })
       .catch(err => {
         err;
       });
@@ -571,7 +561,7 @@ const EditProfile = ({route}) => {
             size={'3xl'}
           />
         </View>
-        
+
         <View style={styles.box}>
           <InputBox
             placeholder={'Enter Awards '}

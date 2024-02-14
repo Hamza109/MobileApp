@@ -53,7 +53,7 @@ const DocResult = ({route}) => {
   const navigation = useNavigation();
   const names = route.params.names;
 
-  const {colors} = useTheme();
+  
 
   const theme = useTheme();
 

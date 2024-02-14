@@ -87,27 +87,7 @@ const DocProfile = ({navigation, route}) => {
   console.log('typeof', typeof ids);
   console.log('DocData', doc);
 
-  useEffect(() => {
-    // Define an async function inside the useEffect
-    setIsLoaded(false);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${backendHost}/video/get/${id}/availability`,
-        );
-        const data = await response.json(); // Convert the response to JSON
-        console.log('availabilty ', data);
-        setAvailability(data); // Update state with the data
-        setIsLoaded(true);
-        console.log('response', data); // Log the data
-      } catch (error) {
-        console.error('Error fetching data:', error); // Handle any errors
-      }
-    };
-
-    // Call the async function
-    fetchData();
-  }, []);
+  
 
   useEffect(() => {
     const backAction = () => {};
@@ -234,7 +214,7 @@ const DocProfile = ({navigation, route}) => {
         json => {
           var temp = [];
           json.forEach(i => {
-            if (i.pubstatus_id === 3) {
+            if (i.pubstatus_id === 3) { 
               temp.push(i);
             }
           });
@@ -345,26 +325,44 @@ const DocProfile = ({navigation, route}) => {
       dispatch(screenName('LOGIN'));
     }
   };
-
   useEffect(() => {
+    // Initially, mark the component as not loaded.
+    setIsLoaded(false);
+  
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${backendHost}/video/get/${id}/availability`);
+        const data = await response.json();
+        console.log('availability', data);
+        
+        // Update state with the fetched data and mark as loaded.
+        setAvailability(data);
+        setIsLoaded(true);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  useEffect(() => {
+    // Logic that runs on every render (similar to componentDidMount and componentDidUpdate)
     getRating();
     checkIfImage(url);
-  });
-  useEffect(() => {
-    store.dispatch(getDoc());
-    return () => {
-      // Cleanup code here
-      abort.abort(); // Cancel the fetch request when the component unmounts
-    };
-  }, [id, isConnected]);
-  useEffect(() => {
-    allpost();
-    return () => {
-      // Cleanup code here
-      abort.abort(); // Cancel the fetch request when the component unmounts
-    };
-  }, [id]);
 
+    // Logic that depends on `id` and `isConnected`
+    if (id && isConnected) {
+      store.dispatch(getDoc());
+    } else if (id) {
+      // Assuming `allpost` should be called when there's an `id`, regardless of `isConnected`
+      allpost();
+    }
+
+    // Cleanup function that combines both cleanup logics
+    return () => {
+      abort.abort(); // Cancel the fetch request when the component unmounts
+    };
+  }, [id, isConnected, url]);
   if (!isConnected) {
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
