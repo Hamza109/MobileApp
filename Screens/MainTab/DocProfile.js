@@ -33,7 +33,7 @@ import {Card, Checkbox, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
-import {backendHost} from '../../components/apiConfig';
+import {backendHost, imageHost} from '../../components/apiConfig';
 
 import Ratings from '../../components/StarRating';
 import StarRating from 'react-native-star-rating';
@@ -87,8 +87,6 @@ const DocProfile = ({navigation, route}) => {
   console.log('typeof', typeof ids);
   console.log('DocData', doc);
 
-  
-
   useEffect(() => {
     const backAction = () => {};
     const backHandler = BackHandler.addEventListener(
@@ -107,7 +105,7 @@ const DocProfile = ({navigation, route}) => {
       const result = await response.json();
       setApiUrl(result);
       setIsLoaded(true);
-      navigation.navigate('videoCall', {id: `${id}`, url: result});
+      // navigation.navigate('videoCall', {id: `${id}`, url: result});
 
       console.log('res', result);
     } catch (error) {
@@ -214,7 +212,7 @@ const DocProfile = ({navigation, route}) => {
         json => {
           var temp = [];
           json.forEach(i => {
-            if (i.pubstatus_id === 3) { 
+            if (i.pubstatus_id === 3) {
               temp.push(i);
             }
           });
@@ -328,13 +326,15 @@ const DocProfile = ({navigation, route}) => {
   useEffect(() => {
     // Initially, mark the component as not loaded.
     setIsLoaded(false);
-  
+
     const fetchData = async () => {
       try {
-        const response = await fetch(`${backendHost}/video/get/${id}/availability`);
+        const response = await fetch(
+          `${backendHost}/video/get/${id}/availability`,
+        );
         const data = await response.json();
         console.log('availability', data);
-        
+
         // Update state with the fetched data and mark as loaded.
         setAvailability(data);
         setIsLoaded(true);
@@ -342,7 +342,7 @@ const DocProfile = ({navigation, route}) => {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
   useEffect(() => {
@@ -394,7 +394,7 @@ const DocProfile = ({navigation, route}) => {
               justifyContent: 'center',
             }}>
             <View style={styles.row}>
-              {exist ? (
+              {doc.imgLoc ? (
                 <View
                   style={{
                     width: 130,
@@ -408,7 +408,7 @@ const DocProfile = ({navigation, route}) => {
                   }}>
                   <ImageBackground
                     source={{
-                      uri: url,
+                      uri: `${imageHost}${doc.imgLoc}`,
                     }}
                     style={{
                       width: 130,

@@ -5,7 +5,7 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import {imageHost} from '../../components/apiConfig';
 import {useNavigation} from '@react-navigation/native';
 import Svg, {Path, Circle} from 'react-native-svg';
 
@@ -52,12 +52,7 @@ const DoctorsCard = ({
   const navigation = useNavigation();
 
   const isfocus = useIsFocused();
-  useEffect(() => {
-    setUrl(
-      `http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`,
-    );
-    checkIfImageExits(url);
-  }, [rowno]);
+
   return (
     <View>
       <View>
@@ -79,11 +74,11 @@ const DoctorsCard = ({
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            {imageExists ? (
+            {img ? (
               <ImageBackground
                 resizeMode="stretch"
                 source={{
-                  uri: `https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`,
+                  uri: `${imageHost}${img}`,
                 }}
                 style={{
                   width: 110,

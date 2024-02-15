@@ -30,6 +30,7 @@ import {useSelector} from 'react-redux';
 
 const DocPreview = () => {
   const topDoc = useSelector(state => state.top.Data);
+  console.log('Top Doctor data', topDoc);
 
   return (
     <>
@@ -47,7 +48,7 @@ const DocPreview = () => {
                 lastName={i.map.lastName}
                 primary_spl={i.map.primarySpl}
                 hospital_affliated={i.map.hospitalAffiliated}
-                img ={i.map.imgLoc}
+                img={i.map.imgLoc}
               />
             ))}
           </ScrollView>

@@ -76,11 +76,12 @@ const DocResult = ({route}) => {
       if (isConnected) {
         setIsLoaded(false);
         fetch(
-          `${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}`,
+          `${backendHost}/SearchActionController?cmd=getResults&city=&doctors=${text}&Latitude=32.7266&Longitude=74.8570`,
         )
           .then(res => res.json())
           .then(json => {
             resolve(setItems(json.map.DoctorDetails.myArrayList));
+            console.log(json.map.DoctorDetails.myArrayList)
           })
           .catch(err => err);
       }
@@ -156,6 +157,7 @@ const DocResult = ({route}) => {
                   lastName={i.map.lastName}
                   primary_spl={i.map.primarySpl}
                   hospital_affliated={i.map.hospitalAffiliated}
+                  img = {i.map.imgLoc}
                 />
               </View>
               <View style={{position: 'relative', bottom: 0, left: 4}}></View>

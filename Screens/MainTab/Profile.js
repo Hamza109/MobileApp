@@ -24,7 +24,7 @@ import {useState, useEffect} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
 import {Card} from 'react-native-paper';
-import {backendHost} from '../../components/apiConfig';
+import {backendHost, imageHost} from '../../components/apiConfig';
 
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -156,7 +156,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       .catch(err => err);
   };
 
-  const [docData,setDocData]= useState()
+  const [docData, setDocData] = useState();
 
   const getUser = () => {
     return function (dispatch) {
@@ -176,7 +176,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
               .then(res => res.data)
               .then(json => {
                 console.log('profile', json);
-                setDocData(json)
+                setDocData(json);
                 if (json == null) {
                   setIsLoaded(true);
                   Alert.alert(
@@ -194,11 +194,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 } else {
                   resolve(dispatch(fetchSuccessProfile(json)));
 
-                  setImg(
-                    `http://all-cures.com:8280/cures_articleimages/doctors/${
-                      json.docID
-                    }.png?d=${parseInt(Math.random() * 1000)}`,
-                  );
+                  setImg(`${imageHost}${json.imgLoc}`);
                 }
               })
               .catch(err => {
@@ -271,8 +267,6 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   //   return () => backHandler.remove();
   // })
 
- 
-
   const remove = async () => {
     dispatch(reg(0));
   };
@@ -292,7 +286,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     ]);
     return true;
   };
- 
+
   const [selectedFile, setSelectedFile] = useState('');
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
@@ -305,7 +299,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     name: selectedFile,
     type: 'image/jpeg',
   };
-  
+
   if (!isConnected) {
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
@@ -348,9 +342,8 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       country_code: docData.country,
                       primary_spl: docData.primarySpl,
                       secondary_spl: docData.otherSpl,
-                      medicineType:docData.medicineType,
-                      websiteUrl:docData.websiteUrl,
-
+                      medicineType: docData.medicineType,
+                      websiteUrl: docData.websiteUrl,
                       eduTraining: docData.edu_training,
                       telephone_nos: docData.telephoneNos,
                       website_url: docData.websiteUrl,
@@ -442,7 +435,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                         width: 180,
                         position: 'relative',
                       }}>
-                      {userProfile.state} 
+                      {userProfile.state}
                     </Text>
                   </HStack>
                 </VStack>
