@@ -55,7 +55,7 @@ const VideoCall = ({route}) => {
   const videoUrl = route.params.url;
   // Make sure to replace with the correct import path
 
-  console.log('videourl',videoUrl)
+  console.log('videourl', videoUrl);
 
   useEffect(() => {
     if (!callObject || !roomUrl) {
@@ -138,7 +138,6 @@ const VideoCall = ({route}) => {
       callObject.off('app-message', handleAppMessage);
     };
   }, [callObject]);
-
 
   // useEffect(() => {
   //   if (!roomUrl) {
@@ -273,7 +272,6 @@ const VideoCall = ({route}) => {
                   disabled={startButtonDisabled}
                   starting={appState === AppState.Joining}
                 />
-             
               </View>
             </ScrollView>
           )}

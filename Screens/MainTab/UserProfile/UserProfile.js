@@ -1,6 +1,6 @@
-import React, { useEffect,useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native';
-import { useRef } from 'react';
+import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {useRef} from 'react';
 import {
   View,
   Text,
@@ -13,48 +13,44 @@ import {
   Animated,
   StatusBar,
   Pressable,
-  Alert
+  Alert,
 } from 'react-native';
-import { useToast, Divider,HStack } from 'native-base';
-import Svg, { Path, Circle } from 'react-native-svg';
-import { useNavigation } from '@react-navigation/core';
+import {useToast, Divider, HStack} from 'native-base';
+import Svg, {Path, Circle} from 'react-native-svg';
+import {useNavigation} from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StackActions } from '@react-navigation/routers';
+import {StackActions} from '@react-navigation/routers';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import LottieView from 'lottie-react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { screenName,reg } from '../../Redux/Action';
-import { backendHost } from '../../../components/apiConfig';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {useSelector, useDispatch} from 'react-redux';
+import {screenName, reg} from '../../Redux/Action';
+import {backendHost} from '../../../components/apiConfig';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-
-
-const UserProfile = ({first,last,number,mail}) => {
-
-
-    const user = useSelector((state) => state.userId.regId);
-    const dispatch=useDispatch()
-    const remove = async () => {
-      dispatch(reg(0))
-    }
-    const logout = () => {
-      Alert.alert('Hold on!', 'Are you sure you want Logout?', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
+const UserProfile = ({first, last, number, mail}) => {
+  const user = useSelector(state => state.userId.regId);
+  const dispatch = useDispatch();
+  const remove = async () => {
+    dispatch(reg(0));
+  };
+  const logout = () => {
+    Alert.alert('Hold on!', 'Are you sure you want Logout?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+          dispatch(screenName('MAIN')), remove();
         },
-        {
-          text: 'YES',
-          onPress: () => {
-         dispatch(screenName('MAIN')), remove()
-          },
-        },
-      ]);
-      return true;
-    };
+      },
+    ]);
+    return true;
+  };
 
   function User() {
     return (
@@ -71,109 +67,94 @@ const UserProfile = ({first,last,number,mail}) => {
     );
   }
 
-const navigation=useNavigation()
-
+  const navigation = useNavigation();
 
   return (
     <View>
-       <StatusBar backgroundColor="#00415e" barStyle="light-content" />
-    <View style={styles.profileHeader}>
-      <User
-        style={{
-          borderRadius: 10,
-        }}
-      />
-      <View>
-        <Text style={styles.profileName} >{first} {last}</Text>
-        <Text
-            style={styles.infoText}>
-            {mail}
+      <StatusBar backgroundColor="#00415e" barStyle="light-content" />
+      <View style={styles.profileHeader}>
+        <User
+          style={{
+            borderRadius: 10,
+          }}
+        />
+        <View>
+          <Text style={styles.profileName}>
+            {first} {last}
           </Text>
-
-      
+          <Text style={styles.infoText}>{mail}</Text>
+        </View>
       </View>
-
+      <Divider />
     </View>
-    <Divider />
+  );
+};
 
-    
-    </View>
-  )
-}
+export default UserProfile;
 
-export default UserProfile
+const styles = StyleSheet.create({
+  profileHeader: {
+    flexDirection: 'row',
 
-const styles=StyleSheet.create({
-    profileHeader: {
-      flexDirection:'row',
-  
-        alignItems: 'center',
-        padding:25
-      },
-    
-      profileName: {
-        color: '#00415e',
-        fontFamily: 'Raleway-Bold',
-        fontSize: 25,
-        marginLeft:14,
-        marginTop: -10
-      },
-    headerTitle:{
-    marginLeft:12,
-    padding:10
-    },
-    
-    headerText:{
-      color:'#00415e',
-      fontFamily:'Raleway-Medium',
-     fontSize:25
-    }
-    ,
-    
-      infoContainer:{
-       padding:10
-      },
-    info:{
-      backgroundColor:'#f0f8ff',
-      borderRadius:15,
-      justifyContent:'space-between'
-    },
-    infoDetails:{
-      flexDirection:'row',
-      alignItems:'center',
-      height:80,
-    padding:15,
-    
-      borderBottomColor:'grey'
-    
-      
-      
-    },
-      infoText: {
-        color: '#00415e',
-        fontFamily: 'Raleway-Medium',
-        fontSize: 14,
-        marginBottom:5,
-        marginLeft:15,
-      },
-    icon:{
-      backgroundColor:'#00415e',
-      width:35,
-      height:35,
-      justifyContent:'center',
-      borderRadius:50,
-      alignItems:'center'
-    },
-    logout:{
-      position:'absolute',
-      bottom:0,
-      width:'100%',
+    alignItems: 'center',
+    padding: 25,
+  },
 
+  profileName: {
+    color: '#00415e',
+    fontFamily: 'Raleway-Bold',
+    fontSize: 25,
+    marginLeft: 14,
+    marginTop: -10,
+  },
+  headerTitle: {
+    marginLeft: 12,
+    padding: 10,
+  },
 
-    },
-    infoLog:{
-      backgroundColor:'aliceblue',
-      padding:10
-    }
-    
-})
+  headerText: {
+    color: '#00415e',
+    fontFamily: 'Raleway-Medium',
+    fontSize: 25,
+  },
+  infoContainer: {
+    padding: 10,
+  },
+  info: {
+    backgroundColor: '#f0f8ff',
+    borderRadius: 15,
+    justifyContent: 'space-between',
+  },
+  infoDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 80,
+    padding: 15,
+
+    borderBottomColor: 'grey',
+  },
+  infoText: {
+    color: '#00415e',
+    fontFamily: 'Raleway-Medium',
+    fontSize: 14,
+    marginBottom: 5,
+    marginLeft: 15,
+  },
+  icon: {
+    backgroundColor: '#00415e',
+    width: 35,
+    height: 35,
+    justifyContent: 'center',
+    borderRadius: 50,
+    alignItems: 'center',
+  },
+  logout: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+  },
+  infoLog: {
+    backgroundColor: 'aliceblue',
+    padding: 10,
+  },
+});

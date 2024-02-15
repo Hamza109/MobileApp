@@ -13,15 +13,9 @@ import {
   ToastAndroid,
   Pressable,
 } from 'react-native';
-import {
-  HStack,
- Input,
-  useToast,
-  Spinner,
-  Checkbox,
-} from 'native-base';
+import {HStack, Input, useToast, Spinner, Checkbox} from 'native-base';
 import axios from 'axios';
-
+import {type} from '../Redux/Action';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -36,34 +30,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BootstrapStyleSheet from 'react-native-bootstrap-styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {usePasswordValidation} from '../../components/usePasswordValidation';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch,useStore } from 'react-redux';
-import { reg } from '../Redux/Action';
-import { screenName } from '../Redux/Action';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useStore} from 'react-redux';
+import {reg} from '../Redux/Action';
+import {screenName} from '../Redux/Action';
+import {row} from '../Redux/Action';
+import {fetchSuccessProfile} from '../Redux/Action';
 
 const SignUpScreen = ({props}) => {
   const [emails, setEmails] = useState('');
-const navigation=useNavigation()
-const[passwordSecured,setPasswordSecured]=useState(false)
+  const navigation = useNavigation();
+  const [passwordSecured, setPasswordSecured] = useState(false);
   const [password, setPassword] = useState({
     firstPassword: '',
     secondPassword: '',
   });
-  const user=useStore()
-  const dispatch=useDispatch();
-  const routeName = useStore()
+  const user = useStore();
+  const dispatch = useDispatch();
+  const routeName = useStore();
   const [firstName, setFname] = useState('');
   const [lastName, setLname] = useState('');
   const [userType, setUserType] = useState('other');
-  const [terms, setTerms] = useState('');
-  const [policy, setPolicy] = useState('');
-  const [rempwd, setRempwd] = useState('');
 
   const [message, setMessage] = useState('');
   const [isError, setError] = useState(false);
   const [status, setStatus] = useState('');
-
-
 
   const [number, setMname] = useState('');
   const toast = useToast();
@@ -87,13 +78,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
   const setSecond = event => {
     setPassword({...password, secondPassword: event});
   };
-  const setRow = async row => {
-    try {
-      await AsyncStorage.setItem('rowno', JSON.stringify(row));
-    } catch (error) {
-      error;
-    }
-  };
+
   const spinner = () => {
     return (
       <View style={{alignItems: 'center'}}>
@@ -112,58 +97,58 @@ const[passwordSecured,setPasswordSecured]=useState(false)
         </HStack>
       </View>
     );
-  }
-  const SignUpForm = () => {
+  };
+  const SignUpForm = async () => {
     setLoading(true);
-   
-    
-    var res;
 
-
-
-
+    // Check if all validation passed
     if (validEmail && upperCase && lowerCase && match) {
-      axios.post(
-        `${backendHost}/registration/add/new`,
-        {
-          headers: {'Access-Control-Allow-Credentials': true},
-          "firstname":firstName,
-"lastname":lastName,
-"email":emails,
-"psw":password.firstPassword,
-"psw-repeat":password.secondPassword,
-"rempwd":"1" ,
-"doc_patient":userType,
-"acceptTnc":"1",
-"number":number,
-"Age":null
-      },)
-      .then(response => {
-        console.log(response.data)
+      try {
+        const response = await axios.post(
+          `${backendHost}/registration/add/new`,
+          {
+            firstname: firstName,
+            lastname: lastName,
+            email: emails,
+            psw: password.firstPassword,
+            'psw-repeat': password.secondPassword,
+            rempwd: '1',
+            doc_patient: userType,
+            acceptTnc: '1',
+            number: number,
+            Age: null, // Assuming you intentionally set this to null
+          },
+          {
+            withCredentials: true, // This should be in the second argument as part of the config object
+            headers: {'Access-Control-Allow-Credentials': true},
+          },
+        );
+
+        console.log('Doc Res', response.data);
+
+        // Successful registration
         if (response.data.registration_id) {
-         setTimeout(()=>{
-          dispatch(screenName('MAIN'))
-        
-          user.dispatch(reg(response.data.registration_id))
-          console.log('docID',response.data.docID)
-          toast.show({
-            title: 'Signup Successful',
-            description: 'Welcome To All Cures',
-            status: 'success',
-            placement: 'bottom',
-            style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-          });
-          
-          user.dispatch(type(response.data.registration_type))
-          user.dispatch(row(response.data.docID))
+          setTimeout(() => {
+            dispatch(screenName('MAIN'));
+            user.dispatch(reg(response.data.registration_id));
+            console.log('docID', response.data.docID);
+            user.dispatch(fetchSuccessProfile(response.data));
 
+            toast.show({
+              title: 'Signup Successful',
+              description: 'Welcome To All Cures',
+              status: 'success',
+              placement: 'bottom',
+              style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+            });
 
-        setEmail(response.data.email_address);
-         },3000)
-         
-     
-        } else if (response.data == 'Email Address already Exists in the System') {
-          setLoading(false);
+            user.dispatch(type(response.data.registration_type));
+            user.dispatch(row(response.data.docID));
+            setEmail(response.data.email_address);
+          }, 3000);
+        } else if (
+          response.data === 'Email Address already Exists in the System'
+        ) {
           toast.show({
             title: 'Email already exists!',
             description: 'Try with another email',
@@ -171,65 +156,25 @@ const[passwordSecured,setPasswordSecured]=useState(false)
             placement: 'bottom',
             style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
           });
-
-         
         }
-      })
-      .catch(res => {
-
-       
-      });
-     
-    //   axios
-    //     .post(
-    //       `${backendHost}/RegistrationActionController?firstname=${firstName}&lastname=${lastName}&email=${emails}&psw=${password.firstPassword}&psw-repeat=${password.secondPassword}&rempwd=on&doc_patient=${userType}&acceptTnc=${terms}&number=${number}`,
-    //       {headers: {'Access-Control-Allow-Credentials': true}},
-    //     )
-    //     .then(response => {
-    //       if (response.data.registration_id) {
-    //        setTimeout(()=>{
-    //         dispatch(screenName('MAIN'))
-          
-    //         user.dispatch(reg(response.data.registration_id))
-    //         toast.show({
-    //           title: 'Signup Successful',
-    //           description: 'Welcome To All Cures',
-    //           status: 'success',
-    //           placement: 'bottom',
-    //           style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-    //         });
-            
-    //         setType(response.data.registration_type),
-    //         setFirst(response.data.first_name),
-    //         setLast(response.data.last_name),
-    //         setRow(response.data.rowno);
-    //       setEmail(response.data.email_address);
-    //        },3000)
-           
-       
-    //       } else if (response.data == 'Email Address already Exists in the System') {
-    //         setLoading(false);
-    //         toast.show({
-    //           title: 'Email already exists!',
-    //           description: 'Try with another email',
-    //           status: 'warning',
-    //           placement: 'bottom',
-    //           style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
-    //         });
-
-           
-    //       }
-    //     })
-    //     .catch(res => {
-
-         
-    //     });
-    // } else {
-    //   setTimeout(()=>{
-    //     setLoading(false);
-    
-    //   },2000)
-  
+      } catch (error) {
+        console.error(error);
+        // Handle error here, for example:
+        toast.show({
+          title: 'Registration failed',
+          description: 'An unexpected error occurred. Please try again later.',
+          status: 'error',
+          placement: 'bottom',
+          style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // If validation fails, immediately stop loading
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   };
 
@@ -240,9 +185,9 @@ const[passwordSecured,setPasswordSecured]=useState(false)
     });
   };
 
-useEffect(()=>{
-  console.log('userType',userType)
-})
+  useEffect(() => {
+    console.log('userType', userType);
+  });
 
   const validate = text => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -252,45 +197,9 @@ useEffect(()=>{
       return false;
     } else {
       setEmails(text);
-    ;
     }
   };
 
-  const setCheck = async value => {
-    try {
-      await AsyncStorage.setItem('check', JSON.stringify(value));
-    } catch (error) {
-      error;
-    }
-  };
-  const setId = async id => {
-    try {
-      await AsyncStorage.setItem('author', JSON.stringify(id));
-    } catch (error) {
-      error;
-    }
-  };
-  const setType = async type => {
-    try {
-      await AsyncStorage.setItem('rateType', JSON.stringify(type));
-    } catch (error) {
-      error;
-    }
-  };
-  const setFirst = async first => {
-    try {
-      await AsyncStorage.setItem('firstName', first);
-    } catch (error) {
-      error;
-    }
-  };
-  const setLast = async last => {
-    try {
-      await AsyncStorage.setItem('lastName', last);
-    } catch (error) {
-      error;
-    }
-  };
   const setEmail = async email => {
     try {
       await AsyncStorage.setItem('email', email);
@@ -329,10 +238,11 @@ useEffect(()=>{
         source={require('../../assets/img/backheart.png')}
         resizeMode="cover"
         style={styles.image}>
+        <Pressable onPress={() => dispatch(screenName('MAIN'))}>
+          <Text style={styles.skip}>Skip</Text>
+        </Pressable>
 
-<Pressable onPress={() => dispatch(screenName('MAIN'))}><Text  style={styles.skip}>Skip</Text></Pressable>
-
-{/* <TouchableOpacity
+        {/* <TouchableOpacity
           style={{ zIndex: 1 }}
           backgroundColor="#fff"
           onPress={() => dispatch(screenName('MAIN'))}>
@@ -343,171 +253,196 @@ useEffect(()=>{
         </TouchableOpacity> */}
 
         <View style={styles.body}>
-
-
           <View style={styles.header}>
             <Text style={styles.headerText}>Sign Up</Text>
           </View>
 
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter first name'
-            height={12} 
-            color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
-            autoCapitalize="none"
-            value={firstName}
-            returnKeyType="done"
-            onChangeText={e => setFname(e)}
-
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter first name"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              autoCapitalize="none"
+              value={firstName}
+              returnKeyType="done"
+              onChangeText={e => setFname(e)}
             />
           </View>
 
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter last name' 
-            height={12}
-             color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }}
-            secureTextEntry={passwordSecured}
-            autoCapitalize="none"
-            value={lastName}
-            returnKeyType="done"
-            onChangeText={e => setLname(e)}
-           
-             />
-          </View>
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter mobile number' 
-            height={12}
-            color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
-            value={number}
-            returnKeyType="done"
-            keyboardType="numeric"
-            onChangeText={e => setMname(e)}
-
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter last name"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              autoCapitalize="none"
+              value={lastName}
+              returnKeyType="done"
+              onChangeText={e => setLname(e)}
             />
+          </View>
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter mobile number"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              value={number}
+              returnKeyType="done"
+              keyboardType="numeric"
+              onChangeText={e => setMname(e)}
+            />
+          </View>
 
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter email"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              autoCapitalize="none"
+              value={emails}
+              returnKeyType="done"
+              onChangeText={e => validate(e)}
+            />
+          </View>
+
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="enter password"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              autoCapitalize="none"
+              returnKeyType="go"
+              secureTextEntry={passwordSecured}
+              value={password}
+              onChangeText={e => setFirstP(e)}
+            />
+          </View>
+
+          <View style={{marginBottom: 15}}>
+            <Input
+              placeholder="confirm password"
+              height={12}
+              color={'#fff'}
+              _focus={{
+                borderWidth: 2,
+                borderColor: '#fff',
+                color: '#fff',
+                placeholderTextColor: '#fff',
+              }}
+              autoCapitalize="none"
+              secureTextEntry={passwordSecured}
+              returnKeyType="go"
+              value={password}
+              onChangeText={e => setSecond(e)}
+              InputRightElement={
+                <View>
+                  <TouchableOpacity
+                    onPress={() => setPasswordSecured(!passwordSecured)}>
+                    <Feather
+                      name={passwordSecured ? 'eye-off' : 'eye'}
+                      color="grey"
+                      size={20}
+                      style={{marginRight: 10}}
+                    />
+                  </TouchableOpacity>
                 </View>
-
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter email' 
-            height={12}
-            color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
-            autoCapitalize="none"
-             value={emails}
-            returnKeyType="done"
-            onChangeText={e => validate(e)}
-            />
-          </View>
-          
-      
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='enter password' 
-            height={12}
-            color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
-            autoCapitalize="none"
-            returnKeyType="go"
-            value={password}
-            onChangeText={e => setFirstP(e)}
-
-            />
-          </View>
-
-          <View style={{marginBottom:15}}>
-            <Input 
-            placeholder='confirm password' 
-            height={12}
-            color={'#fff'}
-            _focus={{ borderWidth: 2, borderColor: '#fff', color: '#fff', placeholderTextColor: '#fff' }} 
-               autoCapitalize="none"
-                returnKeyType="go"
-                value={password}
-                onChangeText={e => setSecond(e)}
-                InputRightElement={<View><TouchableOpacity onPress={()=>setPasswordSecured(!passwordSecured)}><Feather name={passwordSecured?'eye-off':'eye'} color="grey" size={20} style={{marginRight:10}} /></TouchableOpacity></View>}
-
+              }
             />
           </View>
 
           <HStack space={2}>
-                <Checkbox
-                  value={userType}
-                  onChange={() => setUserType('Doctor')}></Checkbox>
-                <Text style={{fontFamily: 'Raleway', color: '#fff'}}>
-                  Select , If you are Doctor.
-                </Text>
-              </HStack>
+            <Checkbox
+              value={userType}
+              onChange={() => setUserType('Doctor')}></Checkbox>
+            <Text style={{fontFamily: 'Raleway', color: '#fff'}}>
+              Select , If you are Doctor.
+            </Text>
+          </HStack>
 
           <TouchableOpacity
-              style={styles.signIn}
-              onPress={
-                (() => {
-                  handleEmail(emails);
-                },
-                SignUpForm)
-              }>
-              <HStack space={2}>
-                <Text
-                  style={[
-                    styles.textSign,
-                    {
-                      fontFamily: 'Raleway-Bold',
-                      color: '#00415e',
-                    },
-                  ]}>
-                  Sign Up
-                </Text>
-                
-              </HStack>
-            </TouchableOpacity>
+            style={styles.signIn}
+            onPress={
+              (() => {
+                handleEmail(emails);
+              },
+              SignUpForm)
+            }>
+            <HStack space={2}>
+              <Text
+                style={[
+                  styles.textSign,
+                  {
+                    fontFamily: 'Raleway-Bold',
+                    color: '#00415e',
+                  },
+                ]}>
+                Sign Up
+              </Text>
+            </HStack>
+          </TouchableOpacity>
 
+          {loading ? spinner() : null}
 
-            {loading?spinner():null}
+          {loading ? (
+            <View>
+              {!validEmail && Alert.alert('Enter Valid Email')}
+              {!validLength &&
+                Alert.alert('Password should contain at least 8 characters!')}
+              {!upperCase &&
+                Alert.alert(
+                  ' Password should contain at least 1 uppercase character!',
+                )}
+              {!lowerCase &&
+                Alert.alert(
+                  'Password should contain at least 1 lowercase character!',
+                )}
+              {!match && Alert.alert("Passwords don't match!")}
+            </View>
+          ) : null}
 
-            {loading ? (
-                <View>
-                  {!validEmail && Alert.alert('Enter Valid Email')}
-                  {!validLength &&
-                    Alert.alert(
-                      'Password should contain at least 8 characters!',
-                    )}
-                  {!upperCase &&
-                    Alert.alert(
-                      ' Password should contain at least 1 uppercase character!',
-                    )}
-                  {!lowerCase &&
-                    Alert.alert(
-                      'Password should contain at least 1 lowercase character!',
-                    )}
-                  {!match && Alert.alert("Passwords don't match!")}
-                </View>
-              ) : null}
-
-            <TouchableOpacity>
-                <Text
-                  style={{
-                    color: '#fff',
-                    textAlign: 'center',
-                    marginTop: 25,
-                    fontFamily: 'Raleway',
-                  }}
-                  onPress={() => navigation.navigate('SignIn')}>
-                  Already have an account? Sign In
-                </Text>
-              </TouchableOpacity>
-          
-
-
-
-
-          </View>
-       {/* <TouchableOpacity
+          <TouchableOpacity>
+            <Text
+              style={{
+                color: '#fff',
+                textAlign: 'center',
+                marginTop: 25,
+                fontFamily: 'Raleway',
+              }}
+              onPress={() => navigation.navigate('SignIn')}>
+              Already have an account? Sign In
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {/* <TouchableOpacity
           style={{marginLeft: 20,   zIndex: 999,color: '#fff'}}
           backgroundColor="#fff"
           onPress={() => dispatch(screenName('Main'))& navigation.replace('Main')}>
@@ -734,7 +669,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '90%',
-    marginTop:40
+    marginTop: 40,
   },
   skip: {
     color: '#fff',
@@ -746,7 +681,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    marginBottom:10
+    marginBottom: 10,
   },
 
   headerText: {
@@ -754,9 +689,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Raleway-Bold',
     color: '#fff',
     alignSelf: 'center',
-    marginBottom:5,
-    marginTop:-10
-
+    marginBottom: 5,
+    marginTop: -10,
   },
 
   text_header: {
@@ -773,9 +707,9 @@ const styles = StyleSheet.create({
   },
   action: {
     flexDirection: 'row',
-padding:Platform.OS=='ios'?10:0,
+    padding: Platform.OS == 'ios' ? 10 : 0,
     borderWidth: 1,
-    borderRadius: Platform.OS=='android'?15:12,
+    borderRadius: Platform.OS == 'android' ? 15 : 12,
     borderColor: '#f2f2f2',
     paddingBottom: 5,
   },
@@ -809,7 +743,7 @@ padding:Platform.OS=='ios'?10:0,
     alignItems: 'center',
     borderRadius: 25,
     backgroundColor: '#fff',
-    marginTop:10
+    marginTop: 10,
   },
   textSign: {
     fontSize: 18,

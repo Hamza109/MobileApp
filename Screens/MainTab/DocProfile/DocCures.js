@@ -38,7 +38,7 @@ const DocCures = () => {
 
     const allpost = () => {
          
-        fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${doc.rowno}`,{
+        fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${doc.docID}`,{
           signal:abortController.signal
         })
           .then(res => res.json())

@@ -25,7 +25,7 @@ const rootReducer=combineReducers({
 const persistConfig ={
     key: 'root',
     storage:AsyncStorage,
-    blacklist: ['name','getArtId'],
+    blacklist: ['name','getArtId','userId'],
 }
 const persistedReducer= persistReducer(persistConfig,rootReducer)
 export default ()=>{

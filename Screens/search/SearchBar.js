@@ -66,7 +66,7 @@ const SearchBar = ({placeholder, doc, city}) => {
 
   const [search, setSearch] = useState('');
   const [filteredDataSource, setFilteredDataSource] = useState([]);
- 
+
   useEffect(() => {
     if (doc === 1) {
       axios

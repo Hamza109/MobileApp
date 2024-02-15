@@ -326,16 +326,12 @@ const App = () => {
         articeId({id: id, title: title});
       }
 
-   
       if (initialUrl.includes('/notification')) {
-        const url = initialUrl.split('/').slice(-2).join('/')
+        const url = initialUrl.split('/').slice(-2).join('/');
 
-        navigationRef.current?.navigate('videoCall',{url:` https://${url}`})
- 
-        
+        navigationRef.current?.navigate('videoCall', {url: ` https://${url}`});
 
         console.log('url', url);
-   
       }
 
       if (initialUrl.includes('/ResetPass')) {

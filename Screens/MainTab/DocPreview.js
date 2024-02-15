@@ -1,10 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Dimensions, ImageBackground} from 'react-native';
-import {
-  View,
-  ScrollView,
-
-} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import ArticleHeader from '../search/ArticleHeader';
 import {useRef} from 'react';
 import {useIsFocused, useTheme} from '@react-navigation/native';
@@ -34,6 +30,7 @@ import {useSelector} from 'react-redux';
 
 const DocPreview = () => {
   const topDoc = useSelector(state => state.top.Data);
+  console.log('Top Doctor data', topDoc);
 
   return (
     <>
@@ -47,10 +44,11 @@ const DocPreview = () => {
               <DoctorsCard
                 key={j}
                 rowno={i.map.docID}
-                firstName={i.map.docname_first}
-                lastName={i.map.docname_last}
-                primary_spl={i.map.primary_spl}
-                hospital_affliated={i.map.hospital_affliated}
+                firstName={i.map.firstName}
+                lastName={i.map.lastName}
+                primary_spl={i.map.primarySpl}
+                hospital_affliated={i.map.hospitalAffiliated}
+                img={i.map.imgLoc}
               />
             ))}
           </ScrollView>

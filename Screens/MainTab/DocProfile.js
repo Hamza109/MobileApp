@@ -33,7 +33,7 @@ import {Card, Checkbox, Portal, Provider} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
-import {backendHost} from '../../components/apiConfig';
+import {backendHost, imageHost} from '../../components/apiConfig';
 
 import Ratings from '../../components/StarRating';
 import StarRating from 'react-native-star-rating';
@@ -62,8 +62,6 @@ import NoInternet from '../../components/NoInternet';
 import {Fab} from 'native-base';
 import {v4 as uuidv4} from 'uuid';
 
-const Tab = createMaterialTopTabNavigator();
-
 const DocProfile = ({navigation, route}) => {
   const ids = route.params.ids;
   const [id, setId] = useState(Number(ids));
@@ -90,28 +88,6 @@ const DocProfile = ({navigation, route}) => {
   console.log('DocData', doc);
 
   useEffect(() => {
-    // Define an async function inside the useEffect
-    setIsLoaded(false);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${backendHost}/video/get/${id}/availability`,
-        );
-        const data = await response.json(); // Convert the response to JSON
-        console.log('availabilty ', data);
-        setAvailability(data); // Update state with the data
-        setIsLoaded(true);
-        console.log('response', data); // Log the data
-      } catch (error) {
-        console.error('Error fetching data:', error); // Handle any errors
-      }
-    };
-
-    // Call the async function
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     const backAction = () => {};
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -129,7 +105,7 @@ const DocProfile = ({navigation, route}) => {
       const result = await response.json();
       setApiUrl(result);
       setIsLoaded(true);
-      navigation.navigate('videoCall', {id: `${id}`, url: result});
+      // navigation.navigate('videoCall', {id: `${id}`, url: result});
 
       console.log('res', result);
     } catch (error) {
@@ -227,7 +203,6 @@ const DocProfile = ({navigation, route}) => {
 
   const [availability, setAvailability] = useState();
 
-  const Tab = createMaterialTopTabNavigator();
   const allpost = () => {
     fetch(`${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`, {
       signal: abort.signal,
@@ -289,7 +264,7 @@ const DocProfile = ({navigation, route}) => {
 
   const createChat = () => {
     axios
-      .post(`${backendHost}/chat/start/${user}/${doc.docid}`)
+      .post(`${backendHost}/chat/start/${user}/${doc.docID}`)
       .then(res => {
         if (res.data[0].Chat_id != null) {
           navigation.navigate('chat', {
@@ -302,15 +277,15 @@ const DocProfile = ({navigation, route}) => {
         } else {
           Alert.alert('Something went wrong,please try again');
         }
-      }) 
-      
+      })
+
       .catch(err => Alert.alert(err));
   };
 
   const initiateChat = () => {
     if (user != 0) {
       axios
-        .get(`${backendHost}/chat/${user}/${doc.docid}`)
+        .get(`${backendHost}/chat/${user}/${doc.docID}`)
         .then(res => {
           if (res.status === 200) {
             if (res.data[0].Chat_id === null) {
@@ -348,26 +323,46 @@ const DocProfile = ({navigation, route}) => {
       dispatch(screenName('LOGIN'));
     }
   };
-
   useEffect(() => {
+    // Initially, mark the component as not loaded.
+    setIsLoaded(false);
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${backendHost}/video/get/${id}/availability`,
+        );
+        const data = await response.json();
+        console.log('availability', data);
+
+        // Update state with the fetched data and mark as loaded.
+        setAvailability(data);
+        setIsLoaded(true);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  useEffect(() => {
+    // Logic that runs on every render (similar to componentDidMount and componentDidUpdate)
     getRating();
     checkIfImage(url);
-  });
-  useEffect(() => {
-    store.dispatch(getDoc());
-    return () => {
-      // Cleanup code here
-      abort.abort(); // Cancel the fetch request when the component unmounts
-    };
-  }, [id, isConnected]);
-  useEffect(() => {
-    allpost();
-    return () => {
-      // Cleanup code here
-      abort.abort(); // Cancel the fetch request when the component unmounts
-    };
-  }, [id]);
 
+    // Logic that depends on `id` and `isConnected`
+    if (id && isConnected) {
+      store.dispatch(getDoc());
+    } else if (id) {
+      // Assuming `allpost` should be called when there's an `id`, regardless of `isConnected`
+      allpost();
+    }
+
+    // Cleanup function that combines both cleanup logics
+    return () => {
+      abort.abort(); // Cancel the fetch request when the component unmounts
+    };
+  }, [id, isConnected, url]);
   if (!isConnected) {
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
@@ -399,7 +394,7 @@ const DocProfile = ({navigation, route}) => {
               justifyContent: 'center',
             }}>
             <View style={styles.row}>
-              {exist ? (
+              {doc.imgLoc ? (
                 <View
                   style={{
                     width: 130,
@@ -413,7 +408,7 @@ const DocProfile = ({navigation, route}) => {
                   }}>
                   <ImageBackground
                     source={{
-                      uri: url,
+                      uri: `${imageHost}${doc.imgLoc}`,
                     }}
                     style={{
                       width: 130,
@@ -436,7 +431,7 @@ const DocProfile = ({navigation, route}) => {
                       fontFamily: 'Raleway-Bold',
                       fontSize: scale(15),
                     }}>
-                    Dr. {doc.firstName} {doc.lastName}
+                    Dr.{doc.firstName} {doc.lastName}
                   </Text>
                   <HStack space={1}>
                     <Icon name="ribbon" size={18} color="#fff" />
@@ -449,7 +444,7 @@ const DocProfile = ({navigation, route}) => {
                         fontSize: scale(10),
                         width: scale(155),
                       }}>
-                      {doc.Primary_Spl}
+                      {doc.primarySpl}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -478,7 +473,7 @@ const DocProfile = ({navigation, route}) => {
                         width: scale(180),
                         position: 'relative',
                       }}>
-                      {doc.state} {doc.country_code}
+                      {doc.state}
                     </Text>
                   </HStack>
                   <View
@@ -508,7 +503,7 @@ const DocProfile = ({navigation, route}) => {
           <Center flex={1}></Center>
           <HStack bg="#fff" alignItems="center" shadow={5}>
             <Center mr="10" flex={1}>
-              <Ratings rowno={doc.rowno} article_id={null} />
+              <Ratings rowno={doc.docID} article_id={null} />
               <Text
                 style={{
                   fontFamily: 'Raleway-Regular',
@@ -659,7 +654,7 @@ const DocProfile = ({navigation, route}) => {
           </ScrollView>
           <Divider bg={'Darkgray'} />
           <View style={styles.cComment}>
-            <Comment article_id={null} doc_id={doc.rowno} />
+            <Comment article_id={null} doc_id={doc.docID} />
           </View>
         </Stack>
       </RBSheet>

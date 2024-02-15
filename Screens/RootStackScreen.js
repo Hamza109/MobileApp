@@ -157,7 +157,7 @@ const HomeStack = () => {
 
   const [exist, setExist] = useState(false);
   const [url, setUrl] = useState(
-    `http://all-cures.com:8080/cures_articleimages/doctors/${doc.rowno}.png`,
+    `http://all-cures.com:8080/cures_articleimages/doctors/${doc.docID}.png`,
   );
   const toast = useToast();
   const article = useSelector(state => state.getArtId.articleId);
@@ -799,7 +799,7 @@ const ProfileStack = () => {
   }
   return (
     <Stack.Navigator
-      initialRouteName="profile"
+      initialRouteName="Profile"
       screenOptions={{
         headerStyle: {
           backgroundColor: '#fff',
@@ -1029,7 +1029,7 @@ const ProfileStack = () => {
               color={'#00415e'}
               size={28}
               onPress={() => {
-                navigation.push('profile');
+                navigation.dispatch(StackActions.pop(1));
               }}
             />
           ),
@@ -1474,6 +1474,8 @@ const Navigator = () => {
     case 'LOGIN':
       return <LoginStack />;
     case 'MAIN':
+      return <DrawerNavigator />;
+    case 'Home':
       return <DrawerNavigator />;
     case 'SPLASH':
       return <SplashStack />;

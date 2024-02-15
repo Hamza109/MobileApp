@@ -24,7 +24,7 @@ import {useState, useEffect} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
 import {Card} from 'react-native-paper';
-import {backendHost} from '../../components/apiConfig';
+import {backendHost, imageHost} from '../../components/apiConfig';
 
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -94,7 +94,10 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   const abort = new AbortController();
 
   useEffect(() => {
-    console.log('userProfile',userProfile)
+    console.log('userProfile', userProfile);
+    console.log('user', user);
+    console.log('type', type);
+    console.log('row', row);
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
     });
@@ -124,6 +127,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
             signal: abort.signal,
           })
           .then(res => {
+            console.log('fetched Data', res);
             resolve(setFirstName(res.data.first_name));
             resolve(setLastName(res.data.last_name));
             resolve(setEmail(res.data.email_address));
@@ -152,6 +156,8 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       .catch(err => err);
   };
 
+  const [docData, setDocData] = useState();
+
   const getUser = () => {
     return function (dispatch) {
       const userData = new Promise((resolve, reject) => {
@@ -171,8 +177,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
               )
               .then(res => res.data)
               .then(json => {
-                console.log('profile',json)
-                if (json == []) {
+                console.log('profile', json);
+                setDocData(json);
+                if (json == null) {
                   setIsLoaded(true);
                   Alert.alert(
                     'No details found',
@@ -181,9 +188,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       {
                         text: 'OK',
                         onPress: () => {
-
-                          navigation.navigate('editprofile');
-
+                          navigation.navigate('editprofile', {data: json});
                         },
                       },
                     ],
@@ -191,11 +196,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 } else {
                   resolve(dispatch(fetchSuccessProfile(json)));
 
-                  setImg(
-                    `http://all-cures.com:8280/cures_articleimages/doctors/${
-                      json.rowno
-                    }.png?d=${parseInt(Math.random() * 1000)}`,
-                  );
+                  setImg(`${imageHost}${json.imgLoc}`);
                 }
               })
               .catch(err => {
@@ -271,25 +272,6 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
   //   return () => backHandler.remove();
   // })
 
-  const choosePhotoFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      compressImageQuality: 0.7,
-    })
-      .then(image => {
-        const a = image.path.split('/');
-        const b = a[a.length - 1];
-
-        type == 1
-          ? (setSelectedFile(b), bs.current.snapTo(1))
-          : setImageUser(image.path);
-        bs.current.snapTo(1);
-      })
-      .catch(err => err);
-  };
-
   const remove = async () => {
     dispatch(reg(0));
   };
@@ -309,14 +291,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     ]);
     return true;
   };
-  const changeHandler = event => {
-    if (photo.name.size > 1048576) {
-      Alert.alert('Image should be less than 1MB!');
-      return;
-    }
 
-    handleImageSubmission(event);
-  };
   const [selectedFile, setSelectedFile] = useState('');
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
@@ -329,29 +304,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     name: selectedFile,
     type: 'image/jpeg',
   };
-  const handleImageSubmission = e => {
-    // e.preventDefault()
-    setImageUploadLoading(true);
 
-    const formData = new FormData();
-    formData.append('File', photo);
-    fetch(`${backendHost}/dashboard/imageupload/doctor/${rowno}`, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => {
-        response.json();
-      })
-      .then(result => {
-        setTimeout(() => {
-          setIsFilePicked(true);
-          setImageUploadLoading(true);
-        }, 3000);
-      })
-      .catch(error => {
-        return;
-      });
-  };
   if (!isConnected) {
     return (
       <NoInternet isConnected={isConnected} setIsConnected={setIsConnected} />
@@ -386,21 +339,22 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 onPress={() =>
                   navigation.navigate('editprofile', {
                     data: {
-                      first: userProfile.firstName,
-                      last: userProfile.lastName,
-                      gender_code: userProfile.gender,
-                      city_code: userProfile.City,
-                      state_code: userProfile.State,
-                      country_code: userProfile.Country,
-                      primary_spl: userProfile.Primary_Spls,
-                      secondary_spl: userProfile.Secondary_Spls,
-                      other_code: userProfile.Other_Spls,
-                      eduTraining: userProfile.edu_training,
-                      telephone_nos: userProfile.telephoneNos,
-                      website_url: userProfile.websiteUrl,
-                      hospital_affliated: userProfile.hospital_affliated_code,
-                      insurance_accept: userProfile.insurance_accept,
-                      about: userProfile.about,
+                      first: docData.firstName,
+                      last: docData.lastName,
+                      gender_code: docData.gender,
+                      city_code: docData.city,
+                      state_code: docData.state,
+                      country_code: docData.country,
+                      primary_spl: docData.primarySpl,
+                      secondary_spl: docData.otherSpl,
+                      medicineType: docData.medicineType,
+                      websiteUrl: docData.websiteUrl,
+                      eduTraining: docData.edu_training,
+                      telephone_nos: docData.telephoneNos,
+                      website_url: docData.websiteUrl,
+                      hospital_affliated: docData.hospital_affliated_code,
+                      insurance_accept: docData.insurance_accept,
+                      about: docData.about,
                       img: img,
                     },
                   })
@@ -441,11 +395,10 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                   <Text
                     style={{
                       color: '#00415e',
-
                       fontFamily: 'Raleway-Bold',
                       fontSize: 15,
                     }}>
-                    Dr. {userProfile.docname_first} {userProfile.docname_last}
+                    Dr. {docData?.firstName} {docData?.lastName}
                   </Text>
                   <HStack space={1}>
                     <Icon name="ribbon" size={18} color="#00415e" />
@@ -458,7 +411,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                         fontSize: 10,
                         width: 155,
                       }}>
-                      {userProfile.primary_spl}
+                      {userProfile.awards}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -473,7 +426,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                         position: 'relative',
                         bottom: 0,
                       }}>
-                      {userProfile.hospital_affliated}
+                      {userProfile.hospitalAffiliated}
                     </Text>
                   </HStack>
                   <HStack space={1}>
@@ -487,7 +440,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                         width: 180,
                         position: 'relative',
                       }}>
-                      {userProfile.state} {userProfile.country_code}
+                      {userProfile.state}
                     </Text>
                   </HStack>
                 </VStack>
@@ -516,8 +469,8 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 </View>
                 <Text style={styles.dbodyHead}>Education</Text>
                 <Text style={styles.dbodyText}>
-                  {userProfile.edu_training
-                    ? userProfile.edu_training
+                  {userProfile.degDesc
+                    ? userProfile.degDesc
                     : '-- not available --'}
                 </Text>
                 <Text style={styles.dbodyHead}>Specialities</Text>
@@ -525,9 +478,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                 <Text
                   style={[
                     styles.dbodyText,
-                    {display: userProfile.primary_spl ? 'flex' : 'none'},
+                    {display: userProfile.primarySpl ? 'flex' : 'none'},
                   ]}>
-                  {userProfile.primary_spl}
+                  {userProfile.primarySpl}
                 </Text>
               </VStack>
             </ScrollView>

@@ -36,7 +36,7 @@ import {
   Container,
   Box,
 } from 'native-base';
-import {backendHost} from '../../components/apiConfig';
+import {backendHost, imageHost} from '../../components/apiConfig';
 
 import {
   widthPercentageToDP as wp,
@@ -44,7 +44,6 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 import {scale, verticalScale} from '../../components/Scale';
-import { log } from 'react-native-reanimated';
 
 const ProfileTab = ({
   rowno,
@@ -53,12 +52,10 @@ const ProfileTab = ({
   primary_spl,
   hospital_affliated,
   state,
-  country_code,
+  img,
 }) => {
-  const [url, setUrl] = useState(
-    `http://all-cures.com:8080/cures_articleimages/doctors/${Number(rowno)}.png`,
-  );
-  console.log("rowno",rowno);
+  const [url, setUrl] = useState(`http://  all-cures.com:8080/${img}`);
+  console.log('rowno', rowno);
 
   const onError = e => {
     <Icon name="user-md" color={'#00415e'} size={26} />;
@@ -101,7 +98,7 @@ const ProfileTab = ({
     <View>
       <HStack space={2}>
         <View>
-          {exist ? (
+          {img ? (
             <Card
               style={{
                 width: scale(120),
@@ -119,7 +116,7 @@ const ProfileTab = ({
                     navigation.navigate('DocProfile', {ids: `${rowno}`});
                   }}>
                   <ImageBackground
-                    source={{uri: url}}
+                    source={{uri: `${imageHost}${img}`}}
                     style={{
                       width: scale(120),
                       height: scale(120),
@@ -191,7 +188,7 @@ const ProfileTab = ({
                 right: 4,
               }}>
               {' '}
-              {state} {country_code}
+              {state}
             </Text>
           </View>
         </View>
