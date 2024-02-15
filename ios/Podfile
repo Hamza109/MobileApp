@@ -3,9 +3,14 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 $RNFirebaseAsStaticFramework = true
 platform :ios, '14.0'
 
+plugin 'cocoapods-user-defined-build-types'
+
+enable_user_defined_build_types!
+
+
 target 'AllCures' do
   config = use_native_modules!
-   use_frameworks!
+  #  use_frameworks!
 
   use_react_native!(
     :path => config[:reactNativePath],

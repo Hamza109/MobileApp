@@ -111,7 +111,7 @@ const navigation=useNavigation()
               Math.random() * 1000,
             )}`,
             {
-              docid: userProfile.docID,
+              docid: userProfile.docid,
               rowno: row,
               docname_first: firstName,
               docname_last: lastName,

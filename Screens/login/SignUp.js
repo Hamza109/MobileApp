@@ -157,7 +157,7 @@ const[passwordSecured,setPasswordSecured]=useState(false)
           user.dispatch(type(response.data.registration_type))
           user.dispatch(row(response.data.docID))
 
-          
+
         setEmail(response.data.email_address);
          },3000)
          
