@@ -22,7 +22,7 @@ import AllPost from '../../search/AllPost';
 import CenterWell from '../../Disease/CenterWell';
 import {useNavigation} from '@react-navigation/native';
 import {moderateScale, scale, verticalScale} from '../../../components/Scale';
-import {getArticleId} from '../../Redux/Action';
+
 
 const DocCures = () => {
   const [articleItems, setArticleItems] = useState([]);
@@ -211,7 +211,7 @@ const DocCures = () => {
                               fontFamily: 'Raleway-Medium',
                               fontSize: scale(9),
                             }}>
-                            Dr. {doc.docname_first} {doc.docname_last}▪️
+                            Dr. {doc.firstName} {doc.lastName}▪️
                             {i.published_date}
                           </Text>
                         </View>

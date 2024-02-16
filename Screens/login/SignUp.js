@@ -108,6 +108,7 @@ const SignUpScreen = ({props}) => {
           `${backendHost}/registration/add/new`,
           {
             firstname: firstName,
+            middleName:"",
             lastname: lastName,
             email: emails,
             psw: password.firstPassword,

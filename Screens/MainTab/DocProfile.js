@@ -462,7 +462,7 @@ const DocProfile = ({navigation, route}) => {
                       {doc.hospitalAffiliated}
                     </Text>
                   </HStack>
-                  <HStack space={1}>
+                  {state &&  <HStack space={1}>
                     <Icon name="globe" size={18} color="#fff" />
                     <Text
                       style={{
@@ -475,7 +475,8 @@ const DocProfile = ({navigation, route}) => {
                       }}>
                       {doc.state}
                     </Text>
-                  </HStack>
+                  </HStack>}
+                  
                   <View
                     style={{
                       width: wp('25%'),
