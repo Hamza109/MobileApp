@@ -39,8 +39,7 @@ const Subscribe = () => {
     
 
       if (value.length === 10) {
-        axios
-          .post(`${backendHost}/users/subscribe/${StringValue}`, {
+        axios.post(`${backendHost}/users/subscribe/${StringValue}`, {
             nl_subscription_disease_id: '0',
             nl_sub_type: 1,
             nl_subscription_cures_id: '0',
