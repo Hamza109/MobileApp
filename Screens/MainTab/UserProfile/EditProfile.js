@@ -63,7 +63,9 @@ const EditProfile = ({route}) => {
   const [primary, setPrimary] = useState();
   const [address, setAddress] = useState();
   const [secondary, setSecondary] = useState();
-  const [systemOfMedicine, setOther] = useState(route.params.data.medicineType);
+  const [systemOfMedicine, setOther] = useState(
+   
+  );
   const [education, setEducation] = useState();
   const [awards, setAwards] = useState();
   const [num, setNum] = useState();
@@ -71,7 +73,7 @@ const EditProfile = ({route}) => {
   const [acceptInsurance, setInsurance] = useState();
   const [imageUser, setImageUser] = useState(``);
   const [registrationNumber, setRegistrationNumber] = useState();
-  const [websiteUrl, setWebsiteUrl] = useState(preData.websiteUrl);
+  const [websiteUrl, setWebsiteUrl] = useState(preData?.websiteUrl);
 
   const [image, setImage] = useState(
     `http://all-cures.com:8280/cures_articleimages/doctors/${userProfile.docID}.png`,
@@ -189,7 +191,11 @@ const EditProfile = ({route}) => {
       })
       .then(res => {
         console.log('Response Edit ', res.data);
-        if (res.data != 0) {
+        if (res.data == 0) {
+          Alert.alert('Some error occured. Try again later');
+          
+        } else {
+          
           Alert.alert('Profile Updated', 'Profile updated successfully', [
             {
               text: 'OK',
@@ -198,8 +204,6 @@ const EditProfile = ({route}) => {
               },
             },
           ]);
-        } else {
-          Alert.alert('Some error occured. Try again later');
         }
       })
       .catch(res => {
@@ -501,7 +505,7 @@ const EditProfile = ({route}) => {
                 setOther(value), console.log(value);
               }}
               defaultValue={preData?.other_spls_code}
-              selectedValue={systemOfMedicine}
+              selectedValue={preData?.medicineType}
               isRequired
               placeholder="Types Of medicine">
               {medicine.map(i => (

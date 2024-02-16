@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ImageBackground,
-KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -28,7 +28,6 @@ const Subscribe = () => {
   const [formattedValue, setFormattedValue] = useState('');
 
   const postSubscription = val => {
-    
     setLoading(true);
     var phoneNumber = val.split('+')[1];
 
@@ -36,7 +35,6 @@ const Subscribe = () => {
       var countryCodeLength = phoneNumber.length % 10;
 
       var countryCode = phoneNumber.slice(0, countryCodeLength);
-    
 
       if (value.length === 10) {
         axios.post(`${backendHost}/users/subscribe/${StringValue}`, {
@@ -57,8 +55,7 @@ const Subscribe = () => {
                 duration: 2000,
                 style: {borderRadius: 20, width: wp('80%'), marginBottom: 20},
               });
-            } 
-            else if( res.data.includes('Already')){
+            } else if (res.data.includes('Already')) {
               setLoading(false);
               toast.show({
                 title: 'Already Subscribed',
@@ -96,67 +93,66 @@ const Subscribe = () => {
           />
         </View>
       ) : null}
-          <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
-            <ScrollView>
-      <ImageBackground
-        source={require('../assets/img/LandingMainImg.jpg')}
-        style={{width: wp('100%'), height: hp('30%')}}></ImageBackground>
-      <VStack ml="2" mt="5" space={5}>
-        <View style={{flexDirection: 'row', marginLeft: 2}}>
-          <Image
-            source={require('../assets/img/heart.png')}
-            style={styles.imageModal}></Image>
-          <Text
-            style={{
-              marginTop: 20,
-              marginRight: 15,
-              fontSize: 20,
-              color: '#00415e',
-            }}>
-            All Cures
-          </Text>
-        </View>
-        <VStack space={6} ml="2">
-          <Text style={{fontSize: 20, color: 'grey'}}>
-            Sign up for our free
-            <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily Newsletter
-          </Text>
-          <Text style={{fontSize: 20}}>
-            Get{' '}
-            <Text style={{color: '#1e7ca8', color: 'grey'}}>
-              doctor-approved
-            </Text>{' '}
-            health tips, news, and more
-          </Text>
-          <PhoneInput
-            defaultValue={value}
-            defaultCode="IN"
-            layout="first"
-            onChangeText={text => {
-              setValue(text);
-            }}
-            onChangeFormattedText={text => {
-              setFormattedValue(text);
-            }}
-            
-            withDarkTheme
-            withShadow
-            autoFocus
-          />
-          <View style={{alignItems: 'center'}}>
-            <Button
-              mode="contained"
-              style={styles.btn}
-              labelStyle={{color: '#fff'}}
-              onPress={() => postSubscription(formattedValue)}>
-              Submit
-            </Button>
-          </View>
-        </VStack>
-      </VStack>
+      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+        <ScrollView>
+          <ImageBackground
+            source={require('../assets/img/LandingMainImg.jpg')}
+            style={{width: wp('100%'), height: hp('30%')}}></ImageBackground>
+          <VStack ml="2" mt="5" space={5}>
+            <View style={{flexDirection: 'row', marginLeft: 2}}>
+              <Image
+                source={require('../assets/img/heart.png')}
+                style={styles.imageModal}></Image>
+              <Text
+                style={{
+                  marginTop: 20,
+                  marginRight: 15,
+                  fontSize: 20,
+                  color: '#00415e',
+                }}>
+                All Cures
+              </Text>
+            </View>
+            <VStack space={6} ml="2">
+              <Text style={{fontSize: 20, color: 'grey'}}>
+                Sign up for our free
+                <Text style={{color: '#1e7ca8'}}> All Cures</Text> Daily
+                Newsletter
+              </Text>
+              <Text style={{fontSize: 20}}>
+                Get{' '}
+                <Text style={{color: '#1e7ca8', color: 'grey'}}>
+                  doctor-approved
+                </Text>{' '}
+                health tips, news, and more
+              </Text>
+              <PhoneInput
+                defaultValue={value}
+                defaultCode="IN"
+                layout="first"
+                onChangeText={text => {
+                  setValue(text);
+                }}
+                onChangeFormattedText={text => {
+                  setFormattedValue(text);
+                }}
+                withDarkTheme
+                withShadow
+                autoFocus
+              />
+              <View style={{alignItems: 'center'}}>
+                <Button
+                  mode="contained"
+                  style={styles.btn}
+                  labelStyle={{color: '#fff'}}
+                  onPress={() => postSubscription(formattedValue)}>
+                  Submit
+                </Button>
+              </View>
+            </VStack>
+          </VStack>
         </ScrollView>
       </KeyboardAvoidingView>
-   
     </View>
   );
 };

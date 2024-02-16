@@ -18,21 +18,7 @@ const DoctorsCard = ({
   img,
 }) => {
   const [imageExists, setImageExists] = useState(false);
-  const [url, setUrl] = useState(
-    `http://all-cures.com:8080/cures_articleimages/doctors/${rowno}.png`,
-  );
-
-  const checkIfImageExits = imageUrl => {
-    fetch(imageUrl, {method: 'HEAD', mode: 'no-cors'})
-      .then(res => {
-        if (res.ok) {
-          setImageExists(true);
-        } else {
-          setImageExists(false);
-        }
-      })
-      .catch(err => err);
-  };
+  
 
   function User() {
     return (
