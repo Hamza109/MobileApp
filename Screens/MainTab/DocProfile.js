@@ -105,7 +105,7 @@ const DocProfile = ({navigation, route}) => {
       const result = await response.json();
       setApiUrl(result);
       setIsLoaded(true);
-      // navigation.navigate('videoCall', {id: `${id}`, url: result});
+      navigation.navigate('videoCall', {id: `${id}`, url: result});
 
       console.log('res', result);
     } catch (error) {
@@ -560,7 +560,7 @@ const DocProfile = ({navigation, route}) => {
 
         <DocProfileTab />
 
-        {doc.subscription === 1 ? (
+        {doc.chatService === 1 ? (
           row === 0 ? (
             <TouchableOpacity
               activeOpacity={0.9}

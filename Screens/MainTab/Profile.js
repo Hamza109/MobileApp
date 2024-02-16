@@ -344,11 +344,11 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       secondary_spl: docData.otherSpl,
                       medicineType: docData.medicineType,
                       websiteUrl: docData.websiteUrl,
-                      eduTraining: docData.edu_training,
+
                       telephone_nos: docData.telephoneNos,
                       website_url: docData.websiteUrl,
-                      hospital_affliated: docData.hospital_affliated_code,
-                      insurance_accept: docData.insurance_accept,
+                      hospital_affliated: docData.hospitalAffliatedCode,
+                      insurance_accept: docData.insuranceAccept,
                       about: docData.about,
                       img: img,
                     },
@@ -357,7 +357,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
               />
             </TouchableOpacity>
             <View style={styles.row}>
-              {exist ? (
+              {img ? (
                 <View
                   style={{
                     width: 130,
