@@ -163,7 +163,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
       const userData = new Promise((resolve, reject) => {
         if (isConnected) {
           dispatch(fetchRequestProfile());
+          
           if (row != 0) {
+
             axios
               .get(
                 `${backendHost}/DoctorsActionController?DocID=${Number(
@@ -221,8 +223,11 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
     }
   };
   useEffect(() => {
+
     getId();
+
     checkIfImage(img);
+    
     return () => {
       // Cleanup code here
       abort.abort(); // Cancel the fetch request when the component unmounts
