@@ -335,7 +335,7 @@ const DocProfile = ({navigation, route}) => {
         const data = await response.json();
         console.log('availability', data);
 
-        // Update state with the fetched data and mark as loaded.
+
         setAvailability(data);
         setIsLoaded(true);
       } catch (error) {
@@ -462,7 +462,7 @@ const DocProfile = ({navigation, route}) => {
                       {doc.hospitalAffiliated}
                     </Text>
                   </HStack>
-                  {state &&  <HStack space={1}>
+                  { <HStack space={1}>
                     <Icon name="globe" size={18} color="#fff" />
                     <Text
                       style={{
@@ -781,3 +781,5 @@ const styles = StyleSheet.create({
     height: 52,
   },
 });
+
+

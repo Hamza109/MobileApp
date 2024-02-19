@@ -310,7 +310,7 @@ const abort= new AbortController()
    
     
     const get = () => {
-  
+  console.log('article',id)
       const getArticle = new Promise((resolve,reject)=>{
         if(isConnected)
         { 
@@ -788,6 +788,7 @@ setToggle(false)
 
                             <TouchableOpacity
                               onPress={() => {
+                               
                                 navigation.push('DocProfile', {
                                   ids: `${data.reg_doc_pat_id}`,
                                 });
