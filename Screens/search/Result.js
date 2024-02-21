@@ -83,8 +83,9 @@ const Result = ({route}) => {
         fetch(`${backendHost}/article/allkv`)
           .then(res => res.json())
           .then(json => {
-            resolve(setItems(json));
+            resolve(setItems(json)), console.log(json);
           })
+
           .catch(err => err);
       }
     });
@@ -104,6 +105,7 @@ const Result = ({route}) => {
           .then(json => {
             setInitial(initial + 6);
             resolve(setItems(json));
+            console.log(json);
             setLoading(false);
           })
           .catch(err => err);
@@ -126,6 +128,7 @@ const Result = ({route}) => {
         setInitial(initial + 6);
         setIsLoaded(true);
         setItems(json);
+        console.log(json);
         setLoading(false);
       })
       .catch(err => err);
@@ -144,6 +147,7 @@ const Result = ({route}) => {
           .then(res => res.json())
           .then(json => {
             setInitial(initial + 6);
+            console.log(json);
 
             resolve(setItems(json));
             setLoading(false);
@@ -331,8 +335,10 @@ const Result = ({route}) => {
                                   resizeMode="stretch"
                                   key={Math.random().toString(36)}
                                   source={{
-                                    uri:
-                                      `${imageHost}${i.imgLoc}`
+                                    uri: imageLoc +
+                                    imgLocation
+                                      .replace('json', 'png')
+                                      .split('/webapps/')[1],
                                   }}
                                   style={{
                                     position: 'relative',

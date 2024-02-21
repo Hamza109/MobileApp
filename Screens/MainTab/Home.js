@@ -12,67 +12,49 @@ import {
   Alert,
   SafeAreaView,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   RefreshControl,
 } from 'react-native';
-import Category from '../Category/Category';
-import {Header} from '@rneui/themed';
 import {useIsFocused, useTheme} from '@react-navigation/native';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  moderateScale,
+  
   verticalScale,
   scale,
-  scalledPixel,
+  
 } from '../../components/Scale';
-import {Card, Checkbox, Modal, Portal, Provider} from 'react-native-paper';
+import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import System from '../Category/System';
 import messaging from '@react-native-firebase/messaging';
-import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {HStack, Stack} from 'native-base';
-import CenterWell from '../Disease/CenterWell';
+
 import {backendHost} from '../../components/apiConfig';
 import ArticlePreview from './ArticlePreview';
-import {Paragraph} from 'react-native-paper';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
 import DocPreview from './DocPreview';
-import crashlytics from '@react-native-firebase/crashlytics';
 import Svg, {Path, Circle} from 'react-native-svg';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 import {reg, screenName} from '../Redux/Action';
 import NetInfo from '@react-native-community/netinfo';
-import {useToast} from 'native-base';
 import * as Animatable from 'react-native-animatable';
-import {position} from 'native-base/lib/typescript/theme/styled-system';
 import {topDoctors, recentCures} from '../Redux/Action';
 import LottieView from 'lottie-react-native';
 import Tip from './Tip/Tip';
-import {set} from 'react-native-reanimated';
 
-const HomeScreen = ({navigation, route}) => {
-  const toast = useToast();
+
+const HomeScreen = ({navigation}) => {
+
   const user = useSelector(state => state.userId.regId);
-  const screen = useSelector(state => state.name.screen);
-  const theme = useTheme();
-  const articles = useStore();
-  const topDoc = useSelector(state => state.top.Data);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
-  const [open, setOpen] = useState(false);
   const [tip, setTip] = useState(false);
   const [ad, setAd] = useState(true);
   const [adUrl, setAdUrl] = useState();
-  const imageUrl = 'https://picsum.photos/id/237/200/300';
-
   const dispatch = useDispatch();
 
   function HomeAds() {
