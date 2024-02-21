@@ -409,7 +409,7 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       {userProfile.awards}
                     </Text>
                   </HStack>
-                  <HStack space={1}>
+                {userProfile.hospitalAffiliated?<HStack space={1}>
                     <Icon name="business" size={18} color="#00415e" />
                     <Text
                       style={{
@@ -423,8 +423,9 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       }}>
                       {userProfile.hospitalAffiliated}
                     </Text>
-                  </HStack>
-                  <HStack space={1}>
+
+                  </HStack>:null}  
+                  {userProfile.state?<HStack space={1}>
                     <Icon name="globe" size={18} color="#00415e" />
                     <Text
                       style={{
@@ -437,7 +438,8 @@ const ProfileScreen = ({sheetRef, onFileSelected}) => {
                       }}>
                       {userProfile.state}
                     </Text>
-                  </HStack>
+                  </HStack>:null}
+                  
                 </VStack>
               </View>
             </View>

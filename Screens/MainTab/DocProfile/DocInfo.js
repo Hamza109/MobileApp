@@ -26,15 +26,11 @@ const DocInfo = () => {
               <Text style={styles.dbodyText}>{doc.about}</Text>
             </View>
 
-            <View style={{display: doc.eduTraining ==  null ? 'none' : 'flex'}}>
-              <Text style={styles.dbodyHead}>Education</Text>
-              <Text style={styles.dbodyText}>{doc.eduTraining}</Text>
-            </View>
 
-            <View style={{display: doc.primarySpecialization == 0 ? 'none' : 'flex'}}>
+            <View style={{display: doc.primarySpl == 0 ? 'none' : 'flex'}}>
               <Text style={styles.dbodyHead}>Specialities</Text>
 
-              <Text style={styles.dbodyText}>{doc.primary_spl}</Text>
+              <Text style={styles.dbodyText}>{doc.primarySpl}</Text>
             </View>
           </VStack>
         }

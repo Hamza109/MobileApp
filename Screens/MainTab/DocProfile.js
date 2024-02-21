@@ -433,21 +433,21 @@ const DocProfile = ({navigation, route}) => {
                     }}>
                     Dr.{doc.firstName} {doc.lastName}
                   </Text>
-                  <HStack space={1}>
-                    <Icon name="ribbon" size={18} color="#fff" />
+                {doc.primarySpl?<HStack space={1}>
+                  <Icon name="ribbon" size={18} color="#fff" />
 
-                    <Text
-                      style={{
-                        color: '#fff',
+                  <Text
+                    style={{
+                      color: '#fff',
 
-                        fontFamily: 'Raleway-Regular',
-                        fontSize: scale(10),
-                        width: scale(155),
-                      }}>
-                      {doc.primarySpl}
-                    </Text>
-                  </HStack>
-                  <HStack space={1}>
+                      fontFamily: 'Raleway-Regular',
+                      fontSize: scale(10),
+                      width: scale(155),
+                    }}>
+                    {doc.primarySpl}
+                  </Text>
+                </HStack>:null}
+                 {doc.hospitalAffiliated? <HStack space={1}>
                     <Icon name="business" size={18} color="#fff" />
                     <Text
                       style={{
@@ -461,8 +461,8 @@ const DocProfile = ({navigation, route}) => {
                       }}>
                       {doc.hospitalAffiliated}
                     </Text>
-                  </HStack>
-                  { <HStack space={1}>
+                  </HStack>:null}
+                  { doc.state?<HStack space={1}>
                     <Icon name="globe" size={18} color="#fff" />
                     <Text
                       style={{
@@ -475,7 +475,7 @@ const DocProfile = ({navigation, route}) => {
                       }}>
                       {doc.state}
                     </Text>
-                  </HStack>}
+                  </HStack>:null}
                   
                   <View
                     style={{

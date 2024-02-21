@@ -30,6 +30,7 @@ import {useSelector} from 'react-redux';
 
 const DocPreview = () => {
   const topDoc = useSelector(state => state.top.Data);
+  console.log("Top Doc",topDoc)
  
 
   return (
