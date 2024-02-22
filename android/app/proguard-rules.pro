@@ -12,3 +12,7 @@
 -keep public class com.horcrux.svg.** {*;}
 -keep class com.swmansion.reanimated.** { *; }
 -keep class com.facebook.react.turbomodule.** { *; }
+
+-keep class org.webrtc.** { *; }
+-keep interface org.webrtc.** { *; }
+-keep interface org.webrtc.* { *; }

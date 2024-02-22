@@ -17,12 +17,7 @@ import {
 } from 'react-native';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  
-  verticalScale,
-  scale,
-  
-} from '../../components/Scale';
+import {verticalScale, scale} from '../../components/Scale';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -46,9 +41,7 @@ import {topDoctors, recentCures} from '../Redux/Action';
 import LottieView from 'lottie-react-native';
 import Tip from './Tip/Tip';
 
-
 const HomeScreen = ({navigation}) => {
-
   const user = useSelector(state => state.userId.regId);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
@@ -145,53 +138,64 @@ const HomeScreen = ({navigation}) => {
         // Perform any desired action based on the notification data
       });
     }
-
-    const headers = new Headers({
-      Authorization: 'Bearer local@7KpRq3XvF9',
-    });
-
-    const adServer = backendHost.includes('uat')
-      ? 'https://uat.all-cures.com:444'
-      : 'https://www.all-cures.com:444';
-
-    Promise.all([
-      fetch(`${backendHost}/article/allkv?limit=15`, {
-        headers: headers,
-      })
-        .then(res => res.json())
-        .catch(err => err),
-      fetch(
-        `${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=901,903,905`,
-      )
-        .then(res => res.json())
-
-        .catch(err => err),
-      fetch(`${backendHost}/sponsored/list/ads/url/1`)
-        .then(res => res.json())
-        .catch(err => err),
-    ]).then(([recentCuresData, topDoctorsData, adData]) => {
-      var temp = [];
-      recentCuresData.forEach(i => {
-        if (i.pubstatus_id === 3 && i.type.includes(2)) {
-          temp.push(i);
-        }
-      });
-      dispatch(recentCures(temp));
-      dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList));
-      var modifiedString = adData.replace(
-        '/cures_adsimages',
-        '/cures_adsimages/mobile',
-      );
-
-      setAdUrl(`${adServer}${modifiedString}`);
-
-      if (adData.includes('All')) {
-        setAd(false);
-      }
-
-      setIsLoaded(true);
-    });
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const headers = new Headers({
+          Authorization: 'Bearer local@7KpRq3XvF9',
+        });
+  
+        const adServer = backendHost.includes('uat')
+          ? 'https://uat.all-cures.com:444'
+          : 'https://www.all-cures.com:444';
+        
+        const startTimeRecentCures = performance.now();
+        const recentCuresRes = await fetch(`${backendHost}/article/allkv?limit=10`, { headers });
+        const recentCuresData = await recentCuresRes.json();
+        const endTimeRecentCures = performance.now();
+        console.log('Recent Cures API Time:', endTimeRecentCures - startTimeRecentCures, 'ms');
+        
+        const startTimeTopDoctors = performance.now();
+        const topDoctorsRes = await fetch(`${backendHost}/SearchActionController?cmd=getResults&FeaturedDoctors=901,903,905`);
+        const topDoctorsData = await topDoctorsRes.json();
+        const endTimeTopDoctors = performance.now();
+        console.log('Top Doctors API Time:', endTimeTopDoctors - startTimeTopDoctors, 'ms');
+        
+        const startTimeAdData = performance.now();
+        const adDataRes = await fetch(`${backendHost}/sponsored/list/ads/url/1`);
+        const adData = await adDataRes.json();
+        const endTimeAdData = performance.now();
+        console.log('Ad Data API Time:', endTimeAdData - startTimeAdData, 'ms');
+  
+        setIsLoaded(true);
+  
+        const temp = recentCuresData.filter(
+          i => i.pubstatus_id === 3 && i.type.includes(2),
+        );
+        dispatch(recentCures(temp));
+        
+        dispatch(topDoctors(topDoctorsData.map.DoctorDetails.myArrayList));
+      
+        const modifiedString = adData.replace(
+          '/cures_adsimages',
+          '/cures_adsimages/mobile',
+        );
+        setAdUrl(`${adServer}${modifiedString}`);
+  
+        if (adData.includes('All')) {
+          setAd(false);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Handle errors here
+      }
+    };
+  
+    fetchData();
+  }, [backendHost]);
+  
+
 
   const backAction = () => {
     if (navigation.isFocused()) {

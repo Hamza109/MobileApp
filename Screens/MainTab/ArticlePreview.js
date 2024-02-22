@@ -62,12 +62,11 @@ import Carousel from 'react-native-snap-carousel';
 import {useSelector, useStore, useDispatch} from 'react-redux';
 import {getArticleId} from '../Redux/Action';
 const ArticlePreview = () => {
-  const [items, setItems] = useState([]);
-  const [isLoaded, setLoaded] = useState(false);
+  
   const store = useStore();
   const articles = store.getState().recent.Data;
   const navigation = useNavigation();
-  const dispatch = useDispatch();
+ 
   const handlePress = (id, title) => {
     // dispatch(getArticleId({id:id,title:title}))
 
