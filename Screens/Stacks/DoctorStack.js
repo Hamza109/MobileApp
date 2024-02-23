@@ -6,7 +6,7 @@ import {
   DOCTOR_MAIN_SCREEN,
   DOC_CURES,
   FILTER_DOC,
-  RESULTS
+  RESULTS,VIDEO_CALL  
 } from '../../routes';
 import Doctor from '../Doctor/Doctor';
 import DoctorMainScreen from '../Doctor/DoctorMainScreen';
@@ -14,6 +14,7 @@ import {FontFamily} from '../../config/GlobalStyles';
 import ArticlesRead from '../Article/ArticlesRead';
 import DocCures from '../Doctor/DocCures';
 import FilterDoc from '../Doctor/FilterDoc';
+import VideoCall from "../VideoCall/VideoCall"
 import SearchResult from '../Find/SearchResult';
 const DoctorStack = () => {
   const Stack = createNativeStackNavigator();
@@ -24,6 +25,7 @@ const DoctorStack = () => {
       }}>
       <Stack.Screen name={DOCTOR} component={Doctor} />
       <Stack.Screen name={ARTICLES_READ} component={ArticlesRead} />
+      <Stack.Screen name={VIDEO_CALL} component={VideoCall}/>
 
       <Stack.Screen
         name={DOCTOR_MAIN_SCREEN}

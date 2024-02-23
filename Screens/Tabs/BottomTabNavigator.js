@@ -20,8 +20,6 @@ const BottomTabNavigator = ({route}) => {
   const BottomTab = createBottomTabNavigator();
   const h = useSelector(state => state.height.height);
 
-
-
   return (
     <>
       <BottomTab.Navigator

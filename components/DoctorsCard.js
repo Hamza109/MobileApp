@@ -9,10 +9,11 @@ import {
 import React from 'react';
 import {width, height, Color, FontFamily} from '../config/GlobalStyles';
 import Dot from '../assets/img/dot.svg';
-import {ViewComponent} from 'react-native';
+
+import { imageHost } from './apiConfig';
 
 const cardItemHeight = 136;
-const DoctorsCard = ({firstName, secondName, rowno, primarySpl, training}) => {
+const DoctorsCard = ({firstName, secondName, DocID, primarySpl, training,imgLoc,state,hospitalAffiliated}) => {
   return (
     // <View style={styles.cardContainer}>
     //   <View style={styles.detailsCardContainer}>
@@ -43,7 +44,8 @@ const DoctorsCard = ({firstName, secondName, rowno, primarySpl, training}) => {
         </Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.time}>
-            {training} <Dot height={5} width={5} />
+            
+             <Dot height={5} width={5} />{state}
           </Text>
         </View>
       </View>
@@ -53,7 +55,7 @@ const DoctorsCard = ({firstName, secondName, rowno, primarySpl, training}) => {
           <Image
             style={styles.image}
             source={{
-              uri: `https://all-cures.com:444/cures_articleimages/doctors/${rowno}.png`,
+              uri: `${imageHost}${imgLoc}`,
             }}
           />
         </View>

@@ -13,6 +13,7 @@ import {
 import {width, height, FontFamily, Color} from '../../config/GlobalStyles';
 import NotificationIcon from '../../assets/img/Notification.svg';
 import Daily from '@daily-co/react-native-daily-js';
+import { VIDEO_CALL } from '../../routes';
 import RazorpayCheckout from 'react-native-razorpay';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {FlashList} from '@shopify/flash-list';
@@ -52,6 +53,7 @@ const Doctor = ({navigation}) => {
 
         const data1 = await response1.json();
         const data2 = await response2.json();
+        console.log('DPcData=>', data1.map.DoctorDetails.myArrayList);
 
         setFeaturedDoctors(data1.map.DoctorDetails.myArrayList);
         setSpeciality(data2);
@@ -121,23 +123,41 @@ const Doctor = ({navigation}) => {
     }
 
     return (
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() =>
-          navigation.navigate(DOCTOR_MAIN_SCREEN, {
-            ids: item.map.rowno,
-            firstName: item.map.docname_first,
-            secondName: item.map.docname_last,
-          })
-        }>
-        <DoctorsCard
-          training={item.map.edu_training}
-          firstName={item.map.docname_first}
-          secondName={item.map.docname_last}
-          rowno={item.map.rowno}
-          primarySpl={item.map.primary_spl}
-        />
-      </TouchableOpacity>
+      <>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {
+            console.log('ID', item.map.docID);
+            navigation.navigate(DOCTOR_MAIN_SCREEN, {
+              ids: item.map.docID,
+              firstName: item.map.firstName,
+              secondName: item.map.lastName,
+              imgLoc:item.map.imgLoc
+            });
+          }}>
+          <DoctorsCard
+            training={item.map.medtype}
+            firstName={item.map.firstName}
+            secondName={item.map.lastName}
+            DocID={item.map.docID}
+            primarySpl={item.map.primarySpl}
+            imgLoc={item.map.imgLoc}
+            state = {item.map.state}
+            hospitalAffiliated={item.map.hospitalAffiliated}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            backgroundColor: 'aliceblue',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 30,
+          }}
+          onPress={()=>{navigation.navigate(VIDEO_CALL)}}>
+          <Text>Video call Start</Text>
+        </TouchableOpacity>
+      </>
     );
   };
 
@@ -213,17 +233,17 @@ const Doctor = ({navigation}) => {
                 })}
               </ScrollView>
             }
-            <View style={{marginTop:20}}>
+            <View style={{marginTop: 20}}>
               <Pressable
                 style={{
                   justifyContent: 'center',
-                  
+
                   alignItems: 'center',
                   flexDirection: 'row',
                 }}
                 onPress={() => navigation.navigate(FILTER_DOC)}>
                 <Line width={24} height={24} />
-                <FilterList width={24} height={24}  />
+                <FilterList width={24} height={24} />
               </Pressable>
             </View>
           </View>

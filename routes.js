@@ -8,6 +8,7 @@ export const DOCTOR="DOCTOR"
 export const DOCTOR_TAB="DOCTOR_TAB"
 export const DOCTOR_MAIN_SCREEN="DOCTOR_MAIN_SCREEN"
 export const DOC_CURES = "DOC_CURES"
+export const VIDEO_CALL = "VIDEO_CALL"
 export const FILTER_DOC = "FILTER_DOC"
 //search screen and tab
 export const SEARCH="SEARCH"

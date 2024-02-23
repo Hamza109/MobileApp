@@ -11,7 +11,7 @@ import {
   StatusBar
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {backendHost} from '../../components/apiConfig';
+import {backendHost, imageHost} from '../../components/apiConfig';
 import axios from 'axios';
 import {docData} from '../../Redux/Slice/DoctorDetailSlice';
 import {useDispatch, useSelector} from 'react-redux';
@@ -25,8 +25,9 @@ import {ARTICLES_READ, DOC_CURES} from '../../routes';
 
 const DoctorMainScreen = ({route, navigation}) => {
   const doc = useSelector(state => state.docData.doc);
-  const dispatch = useDispatch();
+  
   const id = route.params.ids;
+  const imgLoc = route.params.imgLoc
   const [isLoaded, setIsLoaded] = useState(false);
   const [item, setItem] = useState();
   const [exist, setExist] = useState(false);
@@ -57,7 +58,7 @@ const DoctorMainScreen = ({route, navigation}) => {
         // Array of promises representing your API calls
         const promises = [
           fetch(
-            `${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`,
+            `${backendHost}/DoctorsActionController?docID=${id}&cmd=getProfile`,
           ),
           fetch(
             `${backendHost}/article/authallkv/reg_type/1/reg_doc_pat_id/${id}`,
@@ -90,7 +91,7 @@ const DoctorMainScreen = ({route, navigation}) => {
   async function getDoc() {
     try {
       const response = await fetch(
-        `${backendHost}/DoctorsActionController?rowno=${id}&cmd=getProfile`,
+        `${backendHost}/DoctorsActionController?docID=${id}&cmd=getProfile`,
       );
 
       if (!response.ok) {
@@ -119,7 +120,7 @@ const DoctorMainScreen = ({route, navigation}) => {
           <View style={{backgroundColor: '#fff'}}>
             <Image
               source={{
-                uri: url,
+                uri: `${imageHost}${imgLoc}`,
               }}
               style={{
                 width: 372,

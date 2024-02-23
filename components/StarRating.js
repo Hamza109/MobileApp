@@ -82,7 +82,7 @@ export default function Ratings({article_id,rowno}) {
         starSize={25}
         maxStars={5}
         rating={showValue}
-        emptyStarColor={'#00415e'}
+         
         selectedStar={newValue => onStarRatingPress(newValue)}
         fullStarColor={'orange'}
       />
