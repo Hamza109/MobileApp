@@ -78,7 +78,7 @@ const DocCures = () => {
       // Cleanup code here
       abortController.abort(); // Cancel the fetch request when the component unmounts
     };
-  }, [doc.rowno]);
+  }, [doc.docID]);
 
   return (
     <View style={styles.container}>
