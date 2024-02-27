@@ -139,8 +139,8 @@ android {
         applicationId "com.allcures"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
-        versionName "1.5"
+        versionCode 21
+        versionName "1.6"
         vectorDrawables.useSupportLibrary = true
     }
     splits {
